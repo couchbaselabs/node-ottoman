@@ -1,0 +1,29 @@
+{
+  "description": "ODM for Couchbase Node.js driver.",
+  "keywords": [
+    "couchbase",
+    "odm",
+    "nosql",
+    "json",
+    "document"
+  ],
+  "main": "./lib/ottoman",
+  "license": "Apache2",
+  "name": "ottoman",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
+  "dependencies": {
+    "couchbase": "~1.1.1",
+    "underscore": "~1.5.2",
+    "node-uuid": "~1.4.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/brett19/ottoman.git"
+  },
+  "version": "0.0.1"
+}
