@@ -6,6 +6,11 @@ function BucketMock() {
   this.values = {};
   this.casIdx = 1;
 }
+BucketMock.cbError = function(code, message) {
+  var err = new Error(message);
+  err.code = code;
+  return err;
+};
 BucketMock.prototype.set = function(key, value, options, callback) {
   var self = this;
   process.nextTick(function(){
@@ -27,7 +32,9 @@ BucketMock.prototype.get = function(key, options, callback) {
   process.nextTick(function(){
     if (!self.values[key]) {
       if (MOCK_LOGGING) console.log('BucketMock::get', key, 'err::not_found');
-      return callback(new Error());
+
+
+      return callback(BucketMock.cbError(Couchbase.errors.keyNotFound));
     }
 
     var result = {
@@ -49,3 +56,5 @@ module.exports.uniqueId = uniqueId;
 
 module.exports.bucket = new BucketMock();
 //module.exports.bucket = new Couchbase.Connection({});
+
+module.exports.cbErrors = Couchbase.errors;
