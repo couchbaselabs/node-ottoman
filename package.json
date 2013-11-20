@@ -19,7 +19,8 @@
     "node-uuid": "~1.4.1"
   },
   "devDependencies": {
-    "mocha": "~1.13.0"
+    "mocha": "~1.13.0",
+    "chai": "~1.8.1"
   },
   "repository": {
     "type": "git",
