@@ -3,12 +3,12 @@
 Ottoman is a ODM built for Couchbase and Node.js.  It is designed to remove all
 of the boilerplate neccessary to build Node.js apps with Couchbase.
 
-[![Build Status](https://api.travis-ci.org/brett19/node-ottoman.png)](https://travis-ci.org/brett19/node-ottoman)
+[![Build Status](https://api.travis-ci.org/couchbaselabs/node-ottoman.png)](https://travis-ci.org/couchbaselabs/node-ottoman)
 
 
 ## Useful Links
 
-Source - http://github.com/brett19/node-ottoman
+Source - http://github.com/couchbaselabs/node-ottoman
 
 Couchbase Node.js Community - http://couchbase.com/communities/nodejs
 
@@ -18,7 +18,7 @@ Couchbase Node.js Community - http://couchbase.com/communities/nodejs
 Ottoman is not yet published to npm, to install the in development version
 directly from GitHub, run:
 ```
-npm install git+https://github.com/brett19/node-ottoman.git
+npm install git+https://github.com/couchbaselabs/node-ottoman.git
 ```
 
 
@@ -63,13 +63,15 @@ test cases which are available in the /test/ directory.
 ## Source Control
 
 The source code is available at
-[https://github.com/brett19/node-ottoman](https://github.com/brett19/node-ottoman).
+[https://github.com/couchbaselabs/node-ottoman](https://github.com/couchbaselabs/node-ottoman).
 Once you have cloned the repository, you may contribute changes by submitting
 a GitHub Pull Request.
 
 To execute our test suite, run `npm test` from your checked out root directory.
 
 ## License
+
+Copyright 2013 Couchbase Inc.
 
 Licensed under the Apache License, Version 2.0.
 

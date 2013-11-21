@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/brett19/ottoman.git"
+    "url": "http://github.com/couchbaselabs/ottoman.git"
   },
   "version": "0.0.1"
 }
