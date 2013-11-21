@@ -439,4 +439,18 @@ describe('#basic', function(){
 
     done();
   });
+
+  it('should have an accurate name', function(done) {
+    var modelName = H.uniqueId('model');
+
+    var MyModel = Ottoman.model(modelName, {
+      'name': 'string'
+    }, {
+      bucket: H.bucket
+    });
+
+    expect(MyModel.name).to.equal(modelName);
+
+    done();
+  });
 });

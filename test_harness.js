@@ -4,6 +4,7 @@ var MOCK_LOGGING = false;
 
 function BucketMock() {
   this.values = {};
+  this.ddocs = {};
   this.casIdx = 1;
 }
 BucketMock.cbError = function(code, message) {
@@ -44,6 +45,51 @@ BucketMock.prototype.get = function(key, options, callback) {
     if (MOCK_LOGGING) console.log('BucketMock::get', key, result);
     callback(null, result);
   });
+}
+BucketMock.prototype.setDesignDoc = function(name, data, callback) {
+  var self = this;
+  process.nextTick(function(){
+    self.ddocs[name] = data;
+    if (MOCK_LOGGING) console.log('BucketMock::setDesignDoc', name, data);
+    callback(null);
+  });
+}
+BucketMock.prototype.view = function(ddoc, name) {
+  var self = this;
+
+  var retobj = {};
+  retobj.query = function(options, callback) {
+    var viewFuncStr = self.ddocs[ddoc][name].map;
+    var viewFunc = function() {
+      var retvals = [];
+
+      var curdockey = null;
+      function emit(key, val) {
+        if (options.key && key !== options.key) return;
+
+        retvals.push({key: curdockey, value: val});
+      }
+
+      var procOne = function(doc,meta){};
+      eval('procOne = ' + viewFuncStr);
+
+      for (var i in self.values) {
+        if (self.values.hasOwnProperty(i)) {
+          curdockey = i;
+          procOne(JSON.parse(self.values[i].value), {id: i});
+        }
+      }
+
+      return retvals;
+    }
+
+    process.nextTick(function(){
+      if (MOCK_LOGGING) console.log('BucketMock::ViewQuery::query', ddoc, name, options);
+      callback(null, viewFunc());
+    });
+  };
+  if (MOCK_LOGGING) console.log('BucketMock::view', ddoc, name);
+  return retobj;
 }
 module.exports.BucketMock = BucketMock;
 
