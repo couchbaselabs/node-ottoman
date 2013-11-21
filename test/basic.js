@@ -453,4 +453,34 @@ describe('#basic', function(){
 
     done();
   });
+
+  it('should support Date types', function(done) {
+    var modelName = H.uniqueId('model');
+
+    var MyModel = Ottoman.model(modelName, {
+      'name': 'string',
+      'lastLogin': 'Date',
+      'mixedDate': 'Mixed'
+    }, {
+      bucket: H.bucket
+    });
+
+    var test = new MyModel();
+    test.name = 'Bratok';
+    test.lastLogin = new Date();
+    test.mixedDate = new Date();
+
+    Ottoman.save(test, function(err) {
+      expect(err).to.be.null;
+
+      MyModel.findById(test._id, function(err, obj) {
+        expect(err).to.be.null;
+        expect(obj.lastLogin).to.be.an.instanceof(Date);
+        expect(obj.mixedDate).to.be.an.instanceof(Date);
+        expect(obj).to.eql(test);
+
+        done();
+      });
+    });
+  });
 });
