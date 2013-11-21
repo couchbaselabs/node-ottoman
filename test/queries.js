@@ -41,8 +41,6 @@ describe('#querying', function(){
     post2.title = 'Post 2';
     post2.creator = test;
 
-    console.log(post1, post2);
-
     Ottoman.registerDesignDocs(function(err) {
       expect(err).to.be.null;
 
@@ -55,7 +53,11 @@ describe('#querying', function(){
           Ottoman.load(posts, function(err) {
             expect(err).to.be.null;
 
-            console.log(posts);
+            expect(posts).to.have.length(2);
+            for (var i = 0; i < posts.length; ++i) {
+              expect(posts[i].creator).to.equal(test);
+            }
+
             done();
           });
         });
