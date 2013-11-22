@@ -1,6 +1,7 @@
 var expect = require('chai').expect;
 var Ottoman = require('../lib/ottoman');
 var H = require('../test_harness');
+var V = Ottoman.Validator;
 
 describe('#basic', function(){
   it('should handle storage/retrieval of basic types', function(done) {
@@ -482,5 +483,34 @@ describe('#basic', function(){
         done();
       });
     });
+  });
+
+  it('should support validators', function(done) {
+    var modelName = H.uniqueId('model');
+
+    var MyModel = Ottoman.model(modelName, {
+      'val': { type: 'integer', validator: V.min(100) }
+    }, {
+      bucket: H.bucket
+    });
+
+    var test = new MyModel();
+
+    test.val = 99;
+    Ottoman.save(test, function(err) {
+      expect(err).to.exist;
+
+      test.val = 100;
+      Ottoman.save(test, function(err) {
+        expect(err).to.be.null;
+
+        test.val = 101;
+        Ottoman.save(test, function(err) {
+          expect(err).to.be.null;
+
+          done();
+        });
+      });
+    })
   });
 });

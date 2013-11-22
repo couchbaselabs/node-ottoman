@@ -1,6 +1,7 @@
 var expect = require('chai').expect;
 var Ottoman = require('../lib/ottoman');
 var H = require('../test_harness');
+var V = Ottoman.Validator;
 
 describe('#querying', function(){
   it('should support simple queries', function(done) {
