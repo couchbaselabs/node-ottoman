@@ -513,4 +513,36 @@ describe('#basic', function(){
       });
     })
   });
+
+  it('should allow private fields to restrict toJSON values', function(done) {
+    var modelName = H.uniqueId('model');
+
+    var MyModel = Ottoman.model(modelName, {
+      'valx': { type: 'integer', private: true },
+      'valy': { type: 'integer', private: false },
+      'valz': { type: 'integer' }
+    }, {
+      bucket: H.bucket
+    });
+
+    var test = new MyModel();
+    test.valx = 19;
+    test.valy = 32;
+    test.valz = 65;
+
+    var objy = test.toJSON();
+    var objz = test.toJSON(true);
+
+    expect(objy.valx).to.not.exist;
+    expect(objy.valy).to.exist;
+    expect(objy.valz).to.exist;
+
+    expect(objz.valx).to.exist;
+    expect(objz.valy).to.exist;
+    expect(objz.valz).to.exist;
+
+    expect(JSON.stringify(objy)).to.equal(JSON.stringify(test.toJSON()));
+
+    done();
+  });
 });
