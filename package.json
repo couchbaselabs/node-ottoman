@@ -14,7 +14,7 @@
     "test": "./node_modules/mocha/bin/mocha"
   },
   "dependencies": {
-    "couchbase": "~1.1.1",
+    "couchbase": "git+https://github.com/couchbase/couchnode.git",
     "underscore": "~1.5.2",
     "node-uuid": "~1.4.1"
   },
