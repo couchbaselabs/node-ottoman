@@ -137,6 +137,31 @@ describe('#basic', function(){
     });
   });
 
+  it('should be able to handle direct type references', function(done) {
+    var modelName = H.uniqueId('model');
+
+    var MyModel = Ottoman.model(modelName, {
+      'name': String
+    }, {
+      bucket: H.bucket
+    });
+
+    var test = new MyModel();
+    test.name = 'Matt';
+
+    Ottoman.save(test, function(err) {
+      expect(err).to.be.null;
+
+      MyModel.findById(test._id, function(err, obj) {
+        expect(err).to.be.null;
+        expect(obj.name).to.be.a('string');
+        expect(obj.name).to.equal('Matt');
+
+        done();
+      });
+    })
+  });
+
   it('should be able to handle self references', function(done) {
     var modelName = H.uniqueId('model');
 
