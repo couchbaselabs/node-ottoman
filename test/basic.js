@@ -137,6 +137,29 @@ describe('#basic', function(){
     });
   });
 
+  it('should callback even with no changes to save', function(done) {
+    var modelName = H.uniqueId('model');
+
+    var MyModel = Ottoman.model(modelName, {
+      'name': String
+    }, {
+      bucket: H.bucket
+    });
+
+    var test = new MyModel();
+    test.name = 'Matt';
+
+    Ottoman.save(test, function(err) {
+      expect(err).to.be.null;
+
+      Ottoman.save(test, function(err) {
+        expect(err).to.be.null;
+
+        done();
+      });
+    })
+  });
+
   it('should be able to handle direct type references', function(done) {
     var modelName = H.uniqueId('model');
 
