@@ -92,8 +92,7 @@ describe('#querying', function(){
       expect(err).to.be.null;
 
       User.getByName('brett19', function(err, doc) {
-        console.log(H.bucket.values);
-        console.log('getByName', err, doc);
+        expect(doc.fname).to.equal('brett');
         done();
       });
     });
@@ -128,9 +127,7 @@ describe('#querying', function(){
       User.getByName('brett19', function(err, doc) {
         expect(err).to.be.null;
         expect(test._id).to.equal(doc._id);
-
-        console.log(H.bucket.values);
-        console.log('getByName', err, doc);
+        expect(doc.fname).to.equal('brett');
         done();
       });
     });
@@ -168,9 +165,7 @@ describe('#querying', function(){
       User.getByName('brett', 'lawson', function(err, doc) {
         expect(err).to.be.null;
         expect(test._id).to.equal(doc._id);
-
-        console.log(H.bucket.values);
-        console.log('getByName', err, doc);
+        expect(doc.fname, 'brett');
         done();
       });
     });
