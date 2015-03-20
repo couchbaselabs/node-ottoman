@@ -19,7 +19,7 @@
     "uuid": "~2.0.1"
   },
   "devDependencies": {
-    "couchbase": "~2.0.0",
+    "couchbase": "git+https://github.com/brett19/couchnode#master",
     "mocha": "~1.13.0",
     "chai": "~1.8.1",
     "istanbul": "~0.3.2",
