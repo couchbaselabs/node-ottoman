@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var H = require('./harness');
-var ottoman = require('../lib/ottoman');
+var ottoman = H.lib;
 
 describe('Models', function() {
 
@@ -208,6 +208,114 @@ describe('Models', function() {
     });
   });
 
+  describe('Groups', function() {
+    it('should serialize groups properly', function() {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        who: {
+          name: 'string'
+        }
+      });
+      var x = new TestMdl();
+      x.who.name = 'George';
+      var xJson = x.toJSON();
+
+      assert.instanceOf(xJson.who, Object);
+      assert.equal(xJson.who.name, 'George');
+    });
+  });
+
+  describe('Defaults', function() {
+    it('should work with default string values', function() {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        name: {type: 'string', default:'Frank'}
+      });
+      var x = new TestMdl();
+      var xJson = x.toJSON();
+
+      assert.typeOf(xJson.name, 'string');
+      assert.equal(xJson.name, 'Frank');
+    });
+
+    it('should work with default number values', function() {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        num: {type: 'number', default:14.4}
+      });
+      var x = new TestMdl();
+      var xJson = x.toJSON();
+
+      assert.typeOf(xJson.num, 'number');
+      assert.equal(xJson.num, 14.4);
+    });
+
+    it('should work with default date values', function() {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        when: {type: 'Date', default:new Date()}
+      });
+      var x = new TestMdl();
+      var xJson = x.toJSON();
+
+      assert.typeOf(xJson.when, 'string');
+      assert.equal(xJson.when, x.when.toISOString());
+    });
+
+    it('should work with default value functions', function() {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        num: {type: 'number', default:function(){return 19.3;}}
+      });
+      var x = new TestMdl();
+      var xJson = x.toJSON();
+
+      assert.typeOf(xJson.num, 'number');
+      assert.equal(xJson.num, 19.3);
+    });
+  });
+
+  describe('Ids', function() {
+    it('should fail if the model defines an id property', function() {
+      assert.throws(function() {
+        var modelId = H.uniqueId('model');
+        var TestMdl = ottoman.model(modelId, {
+          id: 'string'
+        });
+      }, Error);
+    });
+
+    it('should accept custom id properties', function() {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        customId: {type:'string', auto:'uuid', readonly:true}
+      }, {
+        id: 'customId'
+      });
+      var x = new TestMdl();
+      var xJson = x.toJSON();
+
+      assert.notProperty(xJson, '_id');
+      assert.equal(xJson.customId, x.customId);
+    });
+
+    it('should accept custom id properties inside groups', function() {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        test: {
+          customId: {type:'string', auto:'uuid', readonly:true}
+        }
+      }, {
+        id: 'test.customId'
+      });
+      var x = new TestMdl();
+      var xJson = x.toJSON();
+
+      assert.notProperty(xJson, '_id');
+      assert.equal(xJson.test.customId, x.test.customId);
+    });
+  });
+
   it('should have a working custom inspector', function() {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
@@ -221,6 +329,30 @@ describe('Models', function() {
 
     var y = TestMdl.ref('11');
     y.inspect();
+  });
+
+  it('should successfully save and load an object', function(done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'George';
+
+    x.save(function(err) {
+      assert.isNull(err);
+
+      var y = TestMdl.ref(x._id);
+      y.load(function(err) {
+        assert.isNull(err);
+
+        assert.instanceOf(y, TestMdl);
+        assert.equal(x._id, y._id);
+        assert.equal(x.name, y.name);
+        done();
+      });
+    });
   });
 
 });

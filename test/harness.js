@@ -1,4 +1,5 @@
 var couchbase = require('couchbase');
+var ottoman = require('../lib/ottoman.js');
 
 var uniqueIdCounter = 0;
 function uniqueId(prefix) {
@@ -7,6 +8,10 @@ function uniqueId(prefix) {
 module.exports.uniqueId = uniqueId;
 
 var cluster = new couchbase.Mock.Cluster();
-module.exports.bucket = cluster.openBucket();
+var bucket = cluster.openBucket();
+module.exports.bucket = bucket;
+
+ottoman.bucket = new ottoman.CbStoreAdapter(bucket);
+module.exports.lib = ottoman;
 
 module.exports.cbErrors = couchbase.errors;
