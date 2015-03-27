@@ -54,7 +54,6 @@ describe('Models', function() {
 
   it('should serialize string types properly', function () {
     var modelId = H.uniqueId('model');
-
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
     });
@@ -63,6 +62,21 @@ describe('Models', function() {
     var xJson = x.toJSON();
 
     assert.equal(xJson.name, 'Frank');
+  });
+
+  it('should round-trip COO properly', function() {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'Frank';
+    var xCoo = ottoman.toCoo(x);
+    var xObj = ottoman.fromCoo(xCoo);
+
+    assert.instanceOf(xObj, TestMdl);
+    assert.equal(x.name, xObj.name);
   });
 
   describe('Strings', function() {
@@ -352,6 +366,54 @@ describe('Models', function() {
         assert.equal(x.name, y.name);
         done();
       });
+    });
+  });
+
+  it('should successfully load object with getById', function(done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'George';
+
+    x.save(function(err) {
+      assert.isNull(err);
+
+      TestMdl.getById(x._id, function(err, y) {
+        assert.isNull(err);
+
+        assert.instanceOf(y, TestMdl);
+        assert.equal(x._id, y._id);
+        assert.equal(x.name, y.name);
+        done();
+      });
+    });
+  });
+
+  it('should fail to load an invalid id', function(done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var y = TestMdl.ref('INVALID ID');
+    y.load(function(err) {
+      assert.isNotNull(err);
+      done();
+    });
+  });
+
+  it('should fail getById with invalid id', function(done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    TestMdl.getById('INVALID ID', function(err, y) {
+      assert.isNotNull(err);
+      done();
     });
   });
 

@@ -14,4 +14,25 @@ module.exports.bucket = bucket;
 ottoman.bucket = new ottoman.CbStoreAdapter(bucket);
 module.exports.lib = ottoman;
 
+function _saveAllModels(modelArr, callback) {
+  var i = 0;
+  (function __doOne() {
+    if (i >= modelArr.length) {
+      callback(null);
+      return;
+    }
+
+    modelArr[i].save(function(err) {
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      i++;
+      __doOne();
+    })
+  })();
+}
+module.exports.saveAll = _saveAllModels;
+
 module.exports.cbErrors = couchbase.errors;
