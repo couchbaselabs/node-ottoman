@@ -1,0 +1,23 @@
+{
+  "tags": {
+    "allowUnknownTags": false
+  },
+  "source": {
+    "include": ["./lib/", "./README.md"],
+    "includePattern": ".+\\.js(doc)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "template": "../../node_modules/ink-docstrap/template",
+    "destination": "./docs/",
+    "private": true
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "templates": {
+    "systemName": "Ottoman",
+    "copyright": "Copyright 2010-2015 Couchbase, Inc.",
+    "theme": "couchbase"
+  }
+}
