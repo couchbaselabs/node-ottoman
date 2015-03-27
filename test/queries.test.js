@@ -71,4 +71,39 @@ describe('Model Queries', function() {
     });
   });
 
+  it('should fail queries where the other type is not registered', function(done) {
+    var userModelId = H.uniqueId('model');
+    var postModelId = H.uniqueId('model');
+    var UserMdl = ottoman.model(userModelId, {
+      name: 'string'
+    }, {
+      queries: {
+        topPosts: {
+          type: 'view',
+          of: postModelId,
+          by: 'creator'
+        }
+      }
+    });
+
+    ottoman.ensureIndices(function (err) {
+      assert.isNull(err);
+
+      var ux = new UserMdl();
+      ux.name = 'Bob';
+
+      ux.save(function(err) {
+        assert.isNull(err);
+
+        assert.throw(function() {
+          ux.topPosts(function(err, res) {
+            assert.fail();
+          });
+        }, Error);
+
+        done();
+      });
+    });
+  });
+
 });

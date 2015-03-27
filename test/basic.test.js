@@ -79,6 +79,71 @@ describe('Models', function() {
     assert.equal(x.name, xObj.name);
   });
 
+  it('should fail to deserialize a type with incorrect explicit type', function() {
+    var modelId = H.uniqueId('model');
+    var fakeModelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'Frank';
+    var xCoo = ottoman.toCoo(x);
+
+    assert.throw(function() {
+      ottoman.fromCoo(xCoo, fakeModelId);
+    }, Error);
+  });
+
+  it('should deserialize a type with correct explicit type', function() {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'Frank';
+    var xCoo = ottoman.toCoo(x);
+    var xObj = ottoman.fromCoo(xCoo, modelId);
+
+    assert.instanceOf(xObj, TestMdl);
+    assert.equal(x.name, xObj.name);
+  });
+
+  it('should fail to deserialize a Mixed type without _type', function() {
+    var data = {
+      name: 'Frank'
+    };
+    assert.throw(function() {
+      ottoman.fromCoo(data);
+    }, Error);
+  });
+
+  it('should deserialize with an explicit type', function() {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var data = {
+      name: 'Frank'
+    };
+    var x = ottoman.fromCoo(data, modelId);
+    assert.instanceOf(x, TestMdl);
+    assert.equal(x.name, 'Frank');
+  });
+
+  it('should fail to deserialize an unregistered type', function() {
+    var modelId = H.uniqueId('model');
+    var data = {
+      _type: modelId,
+      name: 'Frank'
+    };
+    assert.throw(function() {
+      ottoman.fromCoo(data);
+    }, Error);
+  });
+
   describe('Strings', function() {
     it('should serialize string types properly', function() {
       var modelId = H.uniqueId('model');
@@ -364,6 +429,32 @@ describe('Models', function() {
         assert.instanceOf(y, TestMdl);
         assert.equal(x._id, y._id);
         assert.equal(x.name, y.name);
+        done();
+      });
+    });
+  });
+
+  it('should correctly advertise .loaded()', function(done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'George';
+
+    assert.isTrue(x.loaded());
+
+    x.save(function(err) {
+      assert.isNull(err);
+      assert.isTrue(x.loaded());
+
+      var y = TestMdl.ref(x._id);
+      assert.isFalse(y.loaded());
+      y.load(function(err) {
+        assert.isNull(err);
+        assert.isTrue(y.loaded());
+
         done();
       });
     });
