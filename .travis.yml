@@ -1,8 +1,9 @@
 language: node_js
 node_js:
-  - "0.12"
   - "0.10"
-  - "0.8"
+  - "0.12"
 
 # 0.6 is not enabled as couchnode does not support
-# this particular version of Node.js.
+#   this particular version of Node.js.
+# 0.8 is not enabled as many of our imported libraries
+#   do not support it.
