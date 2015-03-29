@@ -304,6 +304,36 @@ describe('Models', function() {
     });
   });
 
+  describe('Types', function() {
+    it('should use types by name properly', function() {
+      var typeId = H.uniqueId('type');
+      var modelId = H.uniqueId('model');
+      var TestType = ottoman.type(typeId, {
+        type: 'string'
+      });
+      var TestMdl = ottoman.model(modelId, {
+        name: typeId
+      });
+      var x = new TestMdl();
+      x.name = 'George';
+      var xJson = x.toJSON();
+      assert.typeOf(xJson.name, 'string');
+    });
+
+    it('should use types by reference properly', function() {
+      var typeId = H.uniqueId('type');
+      var modelId = H.uniqueId('model');
+      var TestType = ottoman.type(typeId, 'string');
+      var TestMdl = ottoman.model(modelId, {
+        name: TestType
+      });
+      var x = new TestMdl();
+      x.name = 'George';
+      var xJson = x.toJSON();
+      assert.typeOf(xJson.name, 'string');
+    });
+  });
+
   describe('Defaults', function() {
     it('should work with default string values', function() {
       var modelId = H.uniqueId('model');
