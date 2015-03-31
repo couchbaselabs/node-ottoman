@@ -11,7 +11,7 @@ var cluster = new couchbase.Mock.Cluster();
 var bucket = cluster.openBucket();
 module.exports.bucket = bucket;
 
-ottoman.bucket = new ottoman.CbStoreAdapter(bucket);
+ottoman.bucket = bucket;
 module.exports.lib = ottoman;
 
 function _saveAllModels(modelArr, callback) {

@@ -188,7 +188,7 @@ describe('Model Indexes', function() {
 
   it('should fail to ensureIndex with an invalid index type', function(done) {
     var ottoX = new ottoman.Ottoman();
-    ottoX.bucket = ottoman.bucket;
+    ottoX.store = ottoman.store;
 
     var modelId = H.uniqueId('model');
     var TestMdl = ottoX.model(modelId, {
@@ -210,7 +210,7 @@ describe('Model Indexes', function() {
 
   it('should fail to search with an invalid index type', function(done) {
     var ottoX = new ottoman.Ottoman();
-    ottoX.bucket = ottoman.bucket;
+    ottoX.store = ottoman.store;
 
     var modelId = H.uniqueId('model');
     var TestMdl = ottoX.model(modelId, {
