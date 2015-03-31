@@ -46,7 +46,7 @@ describe('Models', function() {
     };
 
     assert.typeOf(xJson._type, 'string');
-    assert.equal(xJson._type, modelId);
+    assert.equal(xJson._type, ottoman.nsPrefix() + modelId);
     assert.typeOf(xJson._id, 'string');
     assert.equal(xJson._id, x._id);
     assert.isUndefined(xJson.name);
