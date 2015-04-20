@@ -19,7 +19,7 @@ describe('Model Queries', function() {
       }
     });
     var PostMdl = ottoman.model(postModelId, {
-      creator: userModelId,
+      creator: {ref:userModelId},
       msg: 'string'
     });
 
@@ -29,7 +29,7 @@ describe('Model Queries', function() {
       var ux = new UserMdl();
       ux.name = 'Bob';
       var uy = new UserMdl();
-      ux.name = 'Joe';
+      uy.name = 'Joe';
 
       var px1 = new PostMdl();
       px1.creator = ux;
