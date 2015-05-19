@@ -9,7 +9,7 @@
   },
   "opts": {
     "template": "../../node_modules/ink-docstrap/template",
-    "destination": "./docs/",
+    "destination": "./apidocs/",
     "private": true
   },
   "plugins": [

@@ -13,7 +13,7 @@ fastcover:
 
 check: test lint cover
 
-docs: node_modules
+apidocs: node_modules
 	node ./node_modules/jsdoc/jsdoc.js -c .jsdoc
 
-.PHONY: test fasttest lint cover fastcover check docs
+.PHONY: test fasttest lint cover fastcover check apidocs
