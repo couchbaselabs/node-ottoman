@@ -538,4 +538,14 @@ describe('Models', function() {
     });
   });
 
+  it('should allow constructor options', function() {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl({name:'Joseph'});
+    assert.isEqual(x.name, 'Joseph');
+  });
+
 });

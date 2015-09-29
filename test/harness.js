@@ -7,8 +7,14 @@ function uniqueId(prefix) {
 }
 module.exports.uniqueId = uniqueId;
 
-var cluster = new couchbase.Mock.Cluster();
-var bucket = cluster.openBucket();
+var cluster = null;
+if (process.env.CNCSTR !== undefined) {
+  cluster = new couchbase.Cluster(process.env.CNCSTR);
+} else {
+  cluster = new couchbase.Mock.Cluster();
+}
+
+bucket = cluster.openBucket();
 module.exports.bucket = bucket;
 
 ottoman.bucket = bucket;
