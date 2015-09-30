@@ -63,6 +63,9 @@ describe('Model Indexes', function() {
   it('should perform refdoc string indexing successfully', function(done) {
     _indexTest.call(this, 'refdoc', done);
   });
+  it('should perform n1ql string indexing successfully', function(done) {
+    _indexTest.call(this, 'n1ql', done);
+  });
 
   it('should fail to have two identical refdoc keys', function(done) {
     var modelId = H.uniqueId('model');
