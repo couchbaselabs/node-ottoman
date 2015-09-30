@@ -14,7 +14,8 @@ describe('Model Queries', function() {
       queries: {
         topPosts: {
           of: postModelId,
-          by: 'creator'
+          by: 'creator',
+          consistency: ottoman.Consistency.GLOBAL
         }
       }
     });
@@ -59,8 +60,6 @@ describe('Model Queries', function() {
             assert.fail();
           }
 
-          var objx1 = res[0];
-          var objx2 = res[1];
           assert.equal(objx1._id, px1._id);
           assert.equal(objx1.msg, 'Bob Post 1');
           assert.equal(objx2._id, px2._id);

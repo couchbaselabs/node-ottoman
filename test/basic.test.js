@@ -545,7 +545,7 @@ describe('Models', function() {
     });
 
     var x = new TestMdl({name:'Joseph'});
-    assert.isEqual(x.name, 'Joseph');
+    assert.equal(x.name, 'Joseph');
   });
 
 });

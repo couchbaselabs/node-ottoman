@@ -14,11 +14,13 @@ describe('Model Indexes', function() {
       index: {
         findByName: {
           type: indexType,
-          by: 'name'
+          by: 'name',
+          consistency: ottoman.Consistency.GLOBAL
         },
         findByCompany: {
           type: indexType,
-          by: 'company'
+          by: 'company',
+          consistency: ottoman.Consistency.GLOBAL
         }
       }
     });
