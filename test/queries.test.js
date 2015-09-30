@@ -4,7 +4,7 @@ var ottoman = H.lib;
 
 describe('Model Queries', function() {
 
-  it('should perform queries successfully', function(done) {
+  function _queryTest(indexType, done) {
     var userModelId = H.uniqueId('model');
     var postModelId = H.uniqueId('model');
 
@@ -13,6 +13,7 @@ describe('Model Queries', function() {
     }, {
       queries: {
         topPosts: {
+          type: indexType,
           of: postModelId,
           by: 'creator',
           consistency: ottoman.Consistency.GLOBAL
@@ -68,6 +69,16 @@ describe('Model Queries', function() {
         });
       });
     });
+  }
+
+  it('should perform default type queries successfully', function(done) {
+    _queryTest.call(this, undefined, done);
+  });
+  it('should perform view type queries successfully', function(done) {
+    _queryTest.call(this, 'view', done);
+  });
+  it('should perform n1ql type queries successfully', function(done) {
+    _queryTest.call(this, 'n1ql', done);
   });
 
   it('should fail queries where the other type is not registered', function(done) {
