@@ -14,7 +14,7 @@
     "test": "jshint --verbose lib/*.js && mocha test/*.test.js"
   },
   "dependencies": {
-    "couchbase": "git+https://github.com/brett19/couchnode#master",
+    "couchbase": "~2.1.2",
     "uuid": "~2.0.1"
   },
   "devDependencies": {
