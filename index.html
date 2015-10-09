@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Ottoman.js by couchbaselabs</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Ottoman.js</h1>
+        <p>Node.js ODM for Couchbase</p>
+
+        <p class="view"><a href="https://github.com/couchbaselabs/node-ottoman">View the Project on GitHub <small>couchbaselabs/node-ottoman</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/couchbaselabs/node-ottoman/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/couchbaselabs/node-ottoman/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/couchbaselabs/node-ottoman">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="nodejs-odm-for-couchbase" class="anchor" href="#nodejs-odm-for-couchbase" aria-hidden="true"><span class="octicon octicon-link"></span></a>Node.js ODM for Couchbase</h1>
+
+<p>Ottoman is a ODM built for Couchbase and Node.js.  It is designed to remove all
+of the boilerplate neccessary to build Node.js apps with Couchbase.</p>
+
+<p><a href="https://travis-ci.org/couchbaselabs/node-ottoman"><img src="https://api.travis-ci.org/couchbaselabs/node-ottoman.png" alt="Build Status"></a></p>
+
+<h2>
+<a id="useful-links" class="anchor" href="#useful-links" aria-hidden="true"><span class="octicon octicon-link"></span></a>Useful Links</h2>
+
+<p>Source - <a href="http://github.com/couchbaselabs/node-ottoman">http://github.com/couchbaselabs/node-ottoman</a></p>
+
+<p>Couchbase Node.js Community - <a href="http://couchbase.com/communities/nodejs">http://couchbase.com/communities/nodejs</a></p>
+
+<h2>
+<a id="installing" class="anchor" href="#installing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installing</h2>
+
+<p>Ottoman is not yet published to npm, to install the in development version
+directly from GitHub, run:</p>
+
+<pre><code>npm install git+https://github.com/couchbaselabs/node-ottoman.git
+</code></pre>
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>Building and interacting with models using ottoman is very simple:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> User <span class="pl-k">=</span> Ottoman.model(<span class="pl-s"><span class="pl-pds">'</span>User<span class="pl-pds">'</span></span>, {
+  <span class="pl-s"><span class="pl-pds">'</span>username<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>string<span class="pl-pds">'</span></span>,
+  <span class="pl-s"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>string<span class="pl-pds">'</span></span>,
+  <span class="pl-s"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>string<span class="pl-pds">'</span></span>
+}, {
+  bucket<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">couchbase.Connection</span>({})
+});
+
+<span class="pl-k">var</span> test <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">User</span>();
+test.username <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>brett19<span class="pl-pds">'</span></span>;
+test.<span class="pl-c1">name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>Brett Lawson<span class="pl-pds">'</span></span>;
+test.email <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>brett19@gmail.com<span class="pl-pds">'</span></span>;
+
+Ottoman.save(test, <span class="pl-k">function</span>(<span class="pl-smi">err</span>) {
+  <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+
+  MyModel.findById(test._id, <span class="pl-k">function</span>(<span class="pl-smi">err</span>, <span class="pl-smi">obj</span>) {
+    <span class="pl-k">if</span> (err) <span class="pl-k">throw</span> err;
+
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(obj.<span class="pl-c1">name</span>);
+    <span class="pl-c">// Brett Lawson</span>
+  });
+});
+</pre></div>
+
+<h2>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p>As ottoman is currently in rapid active development, documentation for it is
+not yet available.  A good source of information in the interim should be the
+test cases which are available in the /test/ directory.</p>
+
+<h2>
+<a id="source-control" class="anchor" href="#source-control" aria-hidden="true"><span class="octicon octicon-link"></span></a>Source Control</h2>
+
+<p>The source code is available at
+<a href="https://github.com/couchbaselabs/node-ottoman">https://github.com/couchbaselabs/node-ottoman</a>.
+Once you have cloned the repository, you may contribute changes by submitting
+a GitHub Pull Request.</p>
+
+<p>To execute our test suite, run <code>npm test</code> from your checked out root directory.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright 2013 Couchbase Inc.</p>
+
+<p>Licensed under the Apache License, Version 2.0.</p>
+
+<p>See <a href="http://www.apache.org/licenses/LICENSE-2.0">the Apache 2.0 license</a>.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/couchbaselabs">couchbaselabs</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
