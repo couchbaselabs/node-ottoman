@@ -145,7 +145,7 @@ Ottoman supports a number of standard types:
 - `integer` - An integer number.
 - `boolean` - A boolean value.
 - `Date` - A date value.
-- `mixed` - Any valid ottoman type, both models and built-in types.
+- `Mixed` - Any valid ottoman type, both models and built-in types.
 
 These simple types can have default values specified or default value generators:
 ```javascript
