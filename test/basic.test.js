@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('chai').assert;
 var H = require('./harness');
 var ottoman = H.lib;
@@ -574,6 +576,29 @@ describe('Models', function() {
 
     var x = new TestMdl({name:'Joseph'});
     assert.equal(x.name, 'Joseph');
+  });
+
+  describe('Validations', function() {
+    it('should perform validations', function(done) {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        email: {
+          type: 'string',
+          validator: function(val, name, model) {
+            if (!val) {
+              this.errors.push('Should have a value...');
+            }
+          }
+        }
+      });
+
+      var model = new TestMdl({email: null});
+      model.save(function() {
+        var field = model.$.schema.field('email');
+        assert.equal(field.errors[0], 'Should have a value...');
+        done();
+      });
+    });
   });
 
 });

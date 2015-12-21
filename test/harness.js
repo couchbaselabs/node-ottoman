@@ -1,3 +1,5 @@
+'use strict';
+
 var couchbase = require('couchbase');
 var ottoman = require('../lib/ottoman.js');
 
@@ -9,7 +11,7 @@ if (process.env.CNCSTR !== undefined) {
   cluster = new couchbase.Mock.Cluster();
 }
 
-bucket = cluster.openBucket();
+var bucket = cluster.openBucket();
 module.exports.bucket = bucket;
 
 // Hijack storage operations on the bucket to track keys
@@ -67,7 +69,7 @@ function _saveAllModels(modelArr, callback) {
 
       i++;
       __doOne();
-    })
+    });
   })();
 }
 module.exports.saveAll = _saveAllModels;
