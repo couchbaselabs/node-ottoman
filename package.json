@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "couchbase": "~2.1.2",
+    "jsonpath": "~0.2.2",
     "uuid": "~2.0.1"
   },
   "devDependencies": {
