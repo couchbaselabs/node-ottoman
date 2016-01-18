@@ -39,7 +39,7 @@ describe('Models', function() {
       name: 'string'
     });
     var x = new TestMdl();
-    var xJson = x.toJSON();
+    var xJson = x.toCoo();
     var expectJson = {
       _type: modelId,
       _id: xJson._id
@@ -59,7 +59,7 @@ describe('Models', function() {
     });
     var x = new TestMdl();
     x.name = 'Frank';
-    var xJson = x.toJSON();
+    var xJson = x.toCoo();
 
     assert.equal(xJson.name, 'Frank');
   });
@@ -152,7 +152,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.str = 'Bob';
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.str, 'string');
       assert.equal(xJson.str, 'Bob');
@@ -165,7 +165,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.str = 'Bob';
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.str, 'string');
       assert.equal(xJson.str, 'Bob');
@@ -180,7 +180,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.num = 44.4;
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.num, 'number');
       assert.equal(xJson.num, 44.4);
@@ -193,7 +193,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.num = 44.4;
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.num, 'number');
       assert.equal(xJson.num, 44.4);
@@ -208,7 +208,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.int = 44;
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.int, 'number');
       assert.equal(xJson.int, 44);
@@ -221,7 +221,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.int = 44;
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.int, 'number');
       assert.equal(xJson.int, 44);
@@ -236,7 +236,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.bool = true;
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.bool, 'boolean');
       assert.equal(xJson.bool, true);
@@ -249,7 +249,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.bool = true;
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.bool, 'boolean');
       assert.equal(xJson.bool, true);
@@ -265,7 +265,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.when = new Date();
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.when, 'string');
       assert.equal(xJson.when, x.when.toISOString());
@@ -279,7 +279,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.when = new Date();
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.instanceOf(xJson.when, Object);
       assert.equal(xJson.when._type, 'Date');
@@ -297,7 +297,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.who.name = 'George';
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.instanceOf(xJson.who, Object);
       assert.equal(xJson.who.name, 'George');
@@ -316,7 +316,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.name = 'George';
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
       assert.typeOf(xJson.name, 'string');
     });
 
@@ -329,7 +329,7 @@ describe('Models', function() {
       });
       var x = new TestMdl();
       x.name = 'George';
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
       assert.typeOf(xJson.name, 'string');
     });
   });
@@ -341,7 +341,7 @@ describe('Models', function() {
         name: {type: 'string', default:'Frank'}
       });
       var x = new TestMdl();
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.name, 'string');
       assert.equal(xJson.name, 'Frank');
@@ -353,7 +353,7 @@ describe('Models', function() {
         num: {type: 'number', default:14.4}
       });
       var x = new TestMdl();
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.num, 'number');
       assert.equal(xJson.num, 14.4);
@@ -365,7 +365,7 @@ describe('Models', function() {
         when: {type: 'Date', default:new Date()}
       });
       var x = new TestMdl();
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.when, 'string');
       assert.equal(xJson.when, x.when.toISOString());
@@ -377,7 +377,7 @@ describe('Models', function() {
         num: {type: 'number', default:function(){return 19.3;}}
       });
       var x = new TestMdl();
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.typeOf(xJson.num, 'number');
       assert.equal(xJson.num, 19.3);
@@ -402,7 +402,7 @@ describe('Models', function() {
         id: 'customId'
       });
       var x = new TestMdl();
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.notProperty(xJson, '_id');
       assert.equal(xJson.customId, x.customId);
@@ -418,7 +418,7 @@ describe('Models', function() {
         id: 'test.customId'
       });
       var x = new TestMdl();
-      var xJson = x.toJSON();
+      var xJson = x.toCoo();
 
       assert.notProperty(xJson, '_id');
       assert.equal(xJson.test.customId, x.test.customId);
