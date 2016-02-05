@@ -1,8 +1,9 @@
-var couchbase = require('couchbase');
 var ottoman = require('../lib/ottoman.js');
 
 // Open a connection
 if (process.env.CNCSTR) {
+  var couchbase = require('couchbase');
+
   cluster = new couchbase.Cluster(process.env.CNCSTR);
   bucket = cluster.openBucket();
 
