@@ -576,4 +576,46 @@ describe('Models', function() {
     assert.equal(x.name, 'Joseph');
   });
 
+  it('should validate a model', function() {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: {
+        type:'string', 
+        validator:function(value){
+          if(typeof(value) !== 'string' ){
+            throw new Error('bad data');
+          }
+        }
+      }
+    });
+
+    var x = new TestMdl({name:'Joseph'});
+    ottoman.validate(x, function(err){
+      assert.isNull(err);
+    });
+  });
+
+  it('should fail to validate bad data', function() {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: {
+        type:'string', 
+        validator:function(value){
+          if(typeof value !== 'string' ){
+            throw new Error('bad data');
+          }
+        }
+      }
+    });
+
+    var x = new TestMdl({name:'Joseph'});
+    x.name = 1;
+    ottoman.validate(x, function(err){
+      assert.isNotNull(err);
+    });
+  });
+
+
+
+
 });
