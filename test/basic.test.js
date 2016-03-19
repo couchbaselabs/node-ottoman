@@ -613,3 +613,92 @@ describe('Models', function() {
   });
 
 });
+
+describe("Schemas", function() {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+        num: 'integer',
+        str: 'string',
+        b: 'boolean',
+        mixed: 'Mixed',
+        aDate: 'Date',
+        someDoc: {
+            prop1: 'string',
+            prop2: 'number',
+            prop3: 'boolean'
+        }
+    });
+    
+    var validExample = {
+        num: 3,
+        str: 'Hello, World!',
+        b: false,
+        mixed: { a: "Foo", b: "Bar" },
+        aDate: new Date(),
+        someDoc: {
+            prop1: 'hi',
+            prop2: 3.141592,
+            prop3: true
+        }
+    };
+    
+    // Committing 4 errors here on purpose.
+    var invalid_CompleteButBadType = {
+        num: 3,
+        str: 'Hello, World!',
+        // Error 1
+        b: 'I am not supposed to be a string!',
+        mixed: { a: "Foo", b: "Bar" },
+        // Error 2
+        aDate: 'Supposed to be a date',
+        someDoc: {
+            prop1: 0,
+            // Error 3
+            prop2: false,
+            // Error 4
+            prop3: 'Totally invalid',
+        }        
+    };
+    
+    var validModel = new TestMdl(validExample);
+    var invalidModel = new TestMdl(invalid_CompleteButBadType);
+
+    /*
+     * Test basic schema generation and plausibility, require
+     * that certain generated minimums are present.
+     */
+    it('should generate a schema', function() {
+        var schema = validModel.toJSONSchema();
+        assert.instanceOf(schema, Object);
+        assert.isDefined(schema.title);
+        assert.isDefined(schema.type);
+        assert.isDefined(schema.properties);
+    });
+    
+    /*
+     * Verify that the generated schema is good enough to validate
+     * the model instance JSON, otherwise the schema isn't an 
+     * accurate representation.
+     */
+    it('schema should validate model instance', function () {
+        var validate = require('jsonschema').validate;
+        var vResult = validate(validModel.toJSON(), 
+                               validModel.toJSONSchema());
+        assert.equal(vResult.errors.length, 0);    
+    });
+
+    /*
+     * By using a validator and checking that the expected outputs
+     * are there, we test that the schema is syntactically vaild
+     * enough to do useful stuff with other tools.
+     */    
+    it('should generate validatable schemas', function () {
+        var schema = validModel.toJSONSchema();
+        var validate = require('jsonschema').validate;
+        var goodResult = validate(validModel.toJSON(), schema);
+        var badResult = validate(invalidModel.toJSON(), schema);
+        
+        assert.equal(goodResult.errors.length, 0);
+        assert.equal(badResult.errors.length, 4);        
+    });
+});
