@@ -541,6 +541,42 @@ describe('Models', function() {
     });
   });
 
+  it('should successfully remove objects with refdoc indices', function(done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    }, {
+      index: {
+        findByName: {
+          type: 'refdoc',
+          by: 'name'
+        }
+      }
+    });
+
+    var x = new TestMdl();
+    x.name = 'George';
+
+    x.save(function(err) {
+      assert.isNull(err);
+
+      TestMdl.findByName(x.name, function(err, y) {
+        assert.isNull(err);
+
+        x.remove(function(err) {
+          assert.isNull(err);
+
+          TestMdl.findByName(x.name, function(err, z) {
+            assert.isNull(err);
+            assert.lengthOf(z, 0);
+
+            done();
+          });
+        });
+      });
+    });
+  });
+
   it('should fail to load an invalid id', function(done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
