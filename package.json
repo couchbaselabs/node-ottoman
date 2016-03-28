@@ -25,6 +25,7 @@
     "istanbul": "~0.3.21",
     "mocha": "~2.3.3",
     "jsdoc": "~3.3.0-alpha9",
+    "jsonschema": "^1.1.0",
     "ink-docstrap": "git+https://github.com/brett19/docstrap.git#master",
     "jshint": "~2.6.3"
   },
