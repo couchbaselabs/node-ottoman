@@ -107,6 +107,80 @@ describe('Model Indexes', function() {
     });
   });
 
+  it('should allow two paths with the same name when undefined', function(done) {
+    var modelId = H.uniqueId('model');
+
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string',
+      company: 'string'
+    }, {
+      index: {
+        findByNameAndCompany: {
+          type: 'refdoc',
+          by: ['name', 'company']
+        }
+      }
+    });
+
+    ottoman.ensureIndices(function(err) {
+      assert.isNull(err);
+
+      var x = new TestMdl();
+      x.name = 'Frank';
+      var y = new TestMdl();
+      y.company = 'Frank';
+
+      x.save(function(err) {
+        assert.isNull(err);
+
+        y.save(function(err) {
+          assert.isNull(err);
+          done();
+        });
+      });
+    });
+  });
+
+
+  it('should be ok to have two refdocs both undefined', function(done) {
+    var modelId = H.uniqueId('model');
+
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string',
+      company: 'string'
+    }, {
+      index: {
+        findByName: {
+          type: 'refdoc',
+          by: 'name'
+        },
+        findByCompany: {
+          type: 'refdoc',
+          by: 'company'
+        }
+      }
+    });
+
+    ottoman.ensureIndices(function(err) {
+      assert.isNull(err);
+
+      var x = new TestMdl();
+      x.name = 'Frank';
+      var y = new TestMdl();
+      y.name = 'George';
+
+      x.save(function(err) {
+        assert.isNull(err);
+
+        y.save(function(err) {
+          assert.isNull(err);
+          done();
+        });
+      });
+    });
+  });
+
+
   it('should succeed with a previously changed refdoc key', function(done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
