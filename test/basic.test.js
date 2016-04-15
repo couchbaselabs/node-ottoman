@@ -22,6 +22,24 @@ describe('Models', function() {
     });
   });
 
+  it('should fail with an invalid type specified in array', function() {
+    var modelId = H.uniqueId('model');
+    assert.throws(function() {
+      ottoman.model(modelId, {
+        'test': ['stringxxxx']
+      });
+    });
+  });
+
+  it('should fail when an array type has more than one member', function() {
+    var modelId = H.uniqueId('model');
+    assert.throws(function () {
+      ottoman.model(modelId, {
+        'someField': ['string', 'string']
+      });
+    });  
+  });
+
   it('should understand all basic types', function() {
     var modelId = H.uniqueId('model');
     ottoman.model(modelId, {
@@ -32,7 +50,7 @@ describe('Models', function() {
     });
   });
 
-  it('should understand all basic types in both schema formats', function () {
+  it('should understand all basic types in both schema formats, flat and object', function () {
     var modelId = H.uniqueId('model');
     
     var counter = 0;
