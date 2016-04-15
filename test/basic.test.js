@@ -32,6 +32,36 @@ describe('Models', function() {
     });
   });
 
+  it('should understand all basic types in both schema formats', function () {
+    var modelId = H.uniqueId('model');
+    
+    var counter = 0;
+    function mkName(str) {
+      return modelId + '_' + str + '_' + (++counter); 
+    }
+    
+    var types = ['string', 'number', 'integer', 'boolean'];
+    
+    types.forEach(function(type) {
+      ottoman.model(mkName(type), {
+        'someField': type
+      });
+      
+      ottoman.model(mkName(type), {
+        'someField': { type: type }
+      });
+      
+      ottoman.model(mkName(type), {
+        'someFieldArray': [type]  
+      });
+      
+      ottoman.model(mkName(type), {
+        'someFieldArray': [{ type: type }]
+      });
+    });
+
+  });
+
   it('should serialize basic types properly', function () {
     var modelId = H.uniqueId('model');
 
