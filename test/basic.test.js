@@ -430,6 +430,21 @@ describe('Models', function() {
       assert.typeOf(xJson.num, 'number');
       assert.equal(xJson.num, 19.3);
     });
+
+    it('should work with default falsy value', function() {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        num: {type: 'number', default: 0},
+        bool: {type: 'boolean', default: false}
+      });
+      var x = new TestMdl();
+      var xJson = x.toCoo();
+
+      assert.typeOf(xJson.num, 'number');
+      assert.equal(xJson.num, 0);
+      assert.typeOf(xJson.bool, 'boolean');
+      assert.equal(xJson.bool, false);
+    });
   });
 
   describe('Ids', function() {
