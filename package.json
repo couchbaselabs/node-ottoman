@@ -11,7 +11,7 @@
   "license": "Apache2",
   "name": "ottoman",
   "scripts": {
-    "test": "jshint --verbose lib/*.js && mocha test/*.test.js"
+    "test": "eslint . && mocha test/*.test.js"
   },
   "dependencies": {
     "jsonpath": "~0.2.2",
@@ -22,11 +22,11 @@
   },
   "devDependencies": {
     "chai": "~3.3.0",
-    "istanbul": "~0.3.21",
-    "mocha": "~2.3.3",
-    "jsdoc": "~3.3.0-alpha9",
+    "eslint": "^2.9.0",
     "ink-docstrap": "git+https://github.com/brett19/docstrap.git#master",
-    "jshint": "~2.6.3"
+    "istanbul": "~0.3.21",
+    "jsdoc": "~3.3.0-alpha9",
+    "mocha": "~2.3.3"
   },
   "repository": {
     "type": "git",
