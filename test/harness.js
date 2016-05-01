@@ -1,11 +1,13 @@
+'use strict';
+
 var ottoman = require('../lib/ottoman.js');
 
 // Open a connection
 if (process.env.CNCSTR) {
   var couchbase = require('couchbase');
 
-  cluster = new couchbase.Cluster(process.env.CNCSTR);
-  bucket = cluster.openBucket();
+  var cluster = new couchbase.Cluster(process.env.CNCSTR);
+  var bucket = cluster.openBucket();
 
   var seenKeys = [];
   var _bucketInsert = bucket.insert.bind(bucket);

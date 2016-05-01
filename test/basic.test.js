@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('chai').assert;
 var H = require('./harness');
 var ottoman = H.lib;
@@ -52,7 +54,9 @@ describe('Models', function() {
     });
   });
 
-  it('should understand all basic types in both schema formats, flat and object', function () {
+  it('should understand all basic types in both schema formats,'
+  + ' flat and object',
+  function () {
     var modelId = H.uniqueId('model');
 
     var counter = 0;
@@ -90,10 +94,6 @@ describe('Models', function() {
     });
     var x = new TestMdl();
     var xJson = x.toCoo();
-    var expectJson = {
-      _type: modelId,
-      _id: xJson._id
-    };
 
     assert.typeOf(xJson._type, 'string');
     assert.equal(xJson._type, ottoman.nsPrefix() + modelId);
@@ -129,7 +129,8 @@ describe('Models', function() {
     assert.equal(x.name, xObj.name);
   });
 
-  it('should fail to deserialize a type with incorrect explicit type', function() {
+  it('should fail to deserialize a type with incorrect explicit type',
+  function() {
     var modelId = H.uniqueId('model');
     var fakeModelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
@@ -358,7 +359,7 @@ describe('Models', function() {
     it('should use types by name properly', function() {
       var typeId = H.uniqueId('type');
       var modelId = H.uniqueId('model');
-      var TestType = ottoman.type(typeId, {
+      ottoman.type(typeId, {
         type: 'string'
       });
       var TestMdl = ottoman.model(modelId, {
@@ -453,7 +454,7 @@ describe('Models', function() {
     it('should fail if the model defines an id property', function() {
       assert.throws(function() {
         var modelId = H.uniqueId('model');
-        var TestMdl = ottoman.model(modelId, {
+        ottoman.model(modelId, {
           id: 'string'
         });
       }, Error);
@@ -590,13 +591,13 @@ describe('Models', function() {
     x.save(function(err) {
       assert.isNull(err);
 
-      TestMdl.getById(x._id, function(err, y) {
+      TestMdl.getById(x._id, function(err) {
         assert.isNull(err);
 
         x.remove(function(err) {
           assert.isNull(err);
 
-          TestMdl.getById(x._id, function(err, z) {
+          TestMdl.getById(x._id, function(err) {
             assert.isNotNull(err);
 
             done();
@@ -625,7 +626,7 @@ describe('Models', function() {
     x.save(function(err) {
       assert.isNull(err);
 
-      TestMdl.findByName(x.name, function(err, y) {
+      TestMdl.findByName(x.name, function(err) {
         assert.isNull(err);
 
         x.remove(function(err) {
@@ -661,7 +662,7 @@ describe('Models', function() {
       name: 'string'
     });
 
-    TestMdl.getById('INVALID ID', function(err, y) {
+    TestMdl.getById('INVALID ID', function(err) {
       assert.isNotNull(err);
       done();
     });
