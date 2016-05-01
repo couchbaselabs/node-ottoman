@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('chai').assert;
 var H = require('./harness');
 var ottoman = H.lib;
@@ -106,7 +108,7 @@ describe('Model Queries', function() {
         assert.isNull(err);
 
         assert.throw(function() {
-          ux.topPosts(function(err, res) {
+          ux.topPosts(function() {
             assert.fail();
           });
         }, Error);

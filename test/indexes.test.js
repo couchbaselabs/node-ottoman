@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('chai').assert;
 var H = require('./harness');
 var ottoman = H.lib;
@@ -269,17 +271,17 @@ describe('Model Indexes', function() {
     var ottoX = new ottoman.Ottoman();
     ottoX.store = ottoman.store;
 
-    var modelId = H.uniqueId('model');
-    var TestMdl = ottoX.model(modelId, {
-      name: 'string'
-    }, {
-      index: {
-        findByName: {
-          type: 'INVALID INDEX',
-          by: 'name'
-        }
-      }
-    });
+    var modelId = H.uniqueId('model'); 
+    ottoX.model(modelId, { 
+      name: 'string' 
+    }, { 
+      index: { 
+        findByName: { 
+          type: 'INVALID INDEX', 
+          by: 'name' 
+        } 
+      } 
+    }); 
 
     ottoX.ensureIndices(function(err) {
       assert.isNotNull(err);
