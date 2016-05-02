@@ -27,6 +27,7 @@
       "any"
     ],
     "no-use-before-define": 2,
+    "no-console": 0,
     "new-cap": 2,
     "no-caller": 2,
     "no-empty": 2,
