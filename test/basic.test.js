@@ -354,6 +354,9 @@ describe('Models', function() {
     it('should use types by name properly', function() {
       var typeId = H.uniqueId('type');
       var modelId = H.uniqueId('model');
+      ottoman.type(typeId, {
+        type: 'string'
+      });
       var TestMdl = ottoman.model(modelId, {
         name: typeId
       });
