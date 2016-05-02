@@ -83,7 +83,8 @@ describe('Model Queries', function() {
     _queryTest.call(this, 'n1ql', done);
   });
 
-  it('should fail queries where the other type is not registered', function(done) {
+  it('should fail queries where the other type is not registered',
+  function(done) {
     var userModelId = H.uniqueId('model');
     var postModelId = H.uniqueId('model');
     var UserMdl = ottoman.model(userModelId, {

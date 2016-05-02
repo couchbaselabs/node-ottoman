@@ -52,7 +52,9 @@ describe('Models', function() {
     });
   });
 
-  it('should understand all basic types in both schema formats, flat and object', function () {
+  it('should understand all basic types in both schema formats,'
+  + ' flat and object',
+  function () {
     var modelId = H.uniqueId('model');
     
     var counter = 0;
@@ -125,7 +127,8 @@ describe('Models', function() {
     assert.equal(x.name, xObj.name);
   });
 
-  it('should fail to deserialize a type with incorrect explicit type', function() {
+  it('should fail to deserialize a type with incorrect explicit type',
+  function() {
     var modelId = H.uniqueId('model');
     var fakeModelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {

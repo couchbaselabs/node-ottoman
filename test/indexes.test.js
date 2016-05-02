@@ -109,7 +109,8 @@ describe('Model Indexes', function() {
     });
   });
 
-  it('should allow two paths with the same name when undefined', function(done) {
+  it('should allow two paths with the same name when undefined',
+  function(done) {
     var modelId = H.uniqueId('model');
 
     var TestMdl = ottoman.model(modelId, {
