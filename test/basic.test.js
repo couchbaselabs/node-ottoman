@@ -22,6 +22,24 @@ describe('Models', function() {
     });
   });
 
+  it('should fail with an invalid type specified in array', function() {
+    var modelId = H.uniqueId('model');
+    assert.throws(function() {
+      ottoman.model(modelId, {
+        'test': ['stringxxxx']
+      });
+    });
+  });
+
+  it('should fail when an array type has more than one member', function() {
+    var modelId = H.uniqueId('model');
+    assert.throws(function () {
+      ottoman.model(modelId, {
+        'someField': ['string', 'string']
+      });
+    });  
+  });
+
   it('should understand all basic types', function() {
     var modelId = H.uniqueId('model');
     ottoman.model(modelId, {
@@ -30,6 +48,36 @@ describe('Models', function() {
       'int': 'integer',
       'bool': 'boolean'
     });
+  });
+
+  it('should understand all basic types in both schema formats, flat and object', function () {
+    var modelId = H.uniqueId('model');
+    
+    var counter = 0;
+    function mkName(str) {
+      return modelId + '_' + str + '_' + (++counter); 
+    }
+    
+    var types = ['string', 'number', 'integer', 'boolean'];
+    
+    types.forEach(function(type) {
+      ottoman.model(mkName(type), {
+        'someField': type
+      });
+      
+      ottoman.model(mkName(type), {
+        'someField': { type: type }
+      });
+      
+      ottoman.model(mkName(type), {
+        'someFieldArray': [type]  
+      });
+      
+      ottoman.model(mkName(type), {
+        'someFieldArray': [{ type: type }]
+      });
+    });
+
   });
 
   it('should serialize basic types properly', function () {
@@ -381,6 +429,21 @@ describe('Models', function() {
 
       assert.typeOf(xJson.num, 'number');
       assert.equal(xJson.num, 19.3);
+    });
+
+    it('should work with default falsy value', function() {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        num: {type: 'number', default: 0},
+        bool: {type: 'boolean', default: false}
+      });
+      var x = new TestMdl();
+      var xJson = x.toCoo();
+
+      assert.typeOf(xJson.num, 'number');
+      assert.equal(xJson.num, 0);
+      assert.typeOf(xJson.bool, 'boolean');
+      assert.equal(xJson.bool, false);
     });
   });
 
