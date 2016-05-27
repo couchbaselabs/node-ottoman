@@ -4,7 +4,8 @@ var ottoman = require('../lib/ottoman.js');
 if (process.env.CNCSTR) {
   var couchbase = require('couchbase');
 
-  cluster = new couchbase.Cluster(process.env.CNCSTR);
+  console.log('Connecting to ' + process.env.CNCSTR);
+  cluster = new couchbase.Cluster(process.env.CNCSTR + '?detailed_errcodes=1');
   bucket = cluster.openBucket();
 
   var seenKeys = [];
