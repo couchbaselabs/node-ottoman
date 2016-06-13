@@ -1,3 +1,8 @@
 /node_modules
 /coverage/
 /apidocs/
+build-local.sh
+run-local.sh
+stop-local.sh
+coverage
+test-results.xml
