@@ -3,6 +3,8 @@ var H = require('./harness');
 var ottoman = H.lib;
 
 describe('Models', function() {
+  // Add long timeout in case of slow response on CI build servers.
+  this.timeout(10000);
 
   it('should fail to register two models with the same name', function() {
     var modelId = H.uniqueId('model');
@@ -37,7 +39,7 @@ describe('Models', function() {
       ottoman.model(modelId, {
         'someField': ['string', 'string']
       });
-    });  
+    });
   });
 
   it('should understand all basic types', function() {
@@ -52,27 +54,27 @@ describe('Models', function() {
 
   it('should understand all basic types in both schema formats, flat and object', function () {
     var modelId = H.uniqueId('model');
-    
+
     var counter = 0;
     function mkName(str) {
-      return modelId + '_' + str + '_' + (++counter); 
+      return modelId + '_' + str + '_' + (++counter);
     }
-    
+
     var types = ['string', 'number', 'integer', 'boolean'];
-    
+
     types.forEach(function(type) {
       ottoman.model(mkName(type), {
         'someField': type
       });
-      
+
       ottoman.model(mkName(type), {
         'someField': { type: type }
       });
-      
+
       ottoman.model(mkName(type), {
-        'someFieldArray': [type]  
+        'someFieldArray': [type]
       });
-      
+
       ottoman.model(mkName(type), {
         'someFieldArray': [{ type: type }]
       });
@@ -679,7 +681,7 @@ describe('Models', function() {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: {
-        type:'string', 
+        type:'string',
         validator:function(value){
           if(typeof(value) !== 'string' ){
             throw new Error('bad data');
@@ -698,7 +700,7 @@ describe('Models', function() {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: {
-        type:'string', 
+        type:'string',
         validator:function(value){
           if(typeof value !== 'string' ){
             throw new Error('bad data');

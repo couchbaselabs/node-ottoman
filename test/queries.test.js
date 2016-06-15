@@ -3,6 +3,7 @@ var H = require('./harness');
 var ottoman = H.lib;
 
 describe('Model Queries', function() {
+  this.timeout(10000);
 
   function _queryTest(indexType, done) {
     var userModelId = H.uniqueId('model');
@@ -43,31 +44,34 @@ describe('Model Queries', function() {
       py1.creator = uy;
       py1.msg = 'Joe Post 1';
 
-      H.saveAll([ux, uy, px1, px2, py1], function (err) {
-        assert.isNull(err);
-
-        ux.topPosts(function (err, res) {
+      // Let index creation catch up.
+      setTimeout(function() {
+        H.saveAll([ux, uy, px1, px2, py1], function (err) {
           assert.isNull(err);
-          assert.isArray(res);
-          assert.propertyVal(res, 'length', 2);
-          var objx1 = null, objx2 = null;
-          if (res[0]._id === px1._id) {
-            objx1 = res[0];
-            objx2 = res[1];
-          } else if (res[0]._id === px2._id) {
-            objx2 = res[0];
-            objx1 = res[1];
-          } else {
-            assert.fail();
-          }
 
-          assert.equal(objx1._id, px1._id);
-          assert.equal(objx1.msg, 'Bob Post 1');
-          assert.equal(objx2._id, px2._id);
-          assert.equal(objx2.msg, 'Bob Post 2');
-          done();
+          ux.topPosts(function (err, res) {
+            assert.isNull(err);
+            assert.isArray(res);
+            assert.propertyVal(res, 'length', 2);
+            var objx1 = null, objx2 = null;
+            if (res[0]._id === px1._id) {
+              objx1 = res[0];
+              objx2 = res[1];
+            } else if (res[0]._id === px2._id) {
+              objx2 = res[0];
+              objx1 = res[1];
+            } else {
+              assert.fail();
+            }
+
+            assert.equal(objx1._id, px1._id);
+            assert.equal(objx1.msg, 'Bob Post 1');
+            assert.equal(objx2._id, px2._id);
+            assert.equal(objx2.msg, 'Bob Post 2');
+            done();
+          });
         });
-      });
+      }, 1000);
     });
   }
 
@@ -99,20 +103,23 @@ describe('Model Queries', function() {
     ottoman.ensureIndices(function (err) {
       assert.isNull(err);
 
-      var ux = new UserMdl();
-      ux.name = 'Bob';
+      // Let index creation catch up.
+      setTimeout(function () {
+        var ux = new UserMdl();
+        ux.name = 'Bob';
 
-      ux.save(function(err) {
-        assert.isNull(err);
+        ux.save(function(err) {
+          assert.isNull(err);
 
-        assert.throw(function() {
-          ux.topPosts(function(err, res) {
-            assert.fail();
-          });
-        }, Error);
+          assert.throw(function() {
+            ux.topPosts(function(err, res) {
+              assert.fail();
+            });
+          }, Error);
 
-        done();
-      });
+          done();
+        });
+      }, 1000);
     });
   });
 

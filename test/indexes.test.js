@@ -3,6 +3,8 @@ var H = require('./harness');
 var ottoman = H.lib;
 
 describe('Model Indexes', function() {
+  // Add timeout to permit CI tests to take some time.
+  this.timeout(10000);
 
   function _indexTest(indexType, done) {
     var modelId = H.uniqueId('model');
@@ -39,17 +41,22 @@ describe('Model Indexes', function() {
         assert.isNull(err);
         y.save(function(err) {
           assert.isNull(err);
-
-          TestMdl.findByName('Frank', function(err, res) {
-            assert.isNull(err);
-            assert.isArray(res);
-            assert.propertyVal(res, 'length', 1);
-            var obj = res[0];
-            assert.equal(obj._id, x._id);
-            assert.equal(obj.name, 'Frank');
-            assert.equal(obj.company, 'Couchbase');
-            done();
-          });
+          // Not pretty; but for n1ql indexes, this sometimes executes too fast
+          // before indices are in full ready state on the DB.  If the n1ql tests
+          // in particular executes before indexes are ready, results come back
+          // empty [] and the test fails, which is a red herring.
+          setTimeout(function (){
+            TestMdl.findByName('Frank', function(err, res) {
+              assert.isNull(err);
+              assert.isArray(res);
+              assert.propertyVal(res, 'length', 1);
+              var obj = res[0];
+              assert.equal(obj._id, x._id);
+              assert.equal(obj.name, 'Frank');
+              assert.equal(obj.company, 'Couchbase');
+              done();
+            });
+          }, 1000);
         });
       });
     });
