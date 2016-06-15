@@ -11,7 +11,7 @@
   "license": "Apache2",
   "name": "ottoman",
   "scripts": {
-    "test": "jshint --verbose lib/*.js && mocha test/*.test.js"
+    "test": "jshint --verbose lib/*.js && istanbul cover ./node_modules/mocha/bin/_mocha -- test/*.test.js"
   },
   "dependencies": {
     "jsonpath": "~0.2.2",
