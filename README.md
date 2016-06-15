@@ -87,7 +87,7 @@ table.save(function(err) {
 });
 ```
 
-Now that we've saved our table to the database, we need to be able to retreive it.  Let's revise our model to add an index on the name!
+Now that we've saved our table to the database, we need to be able to retrieve it.  Let's revise our model to add an index on the name!
 ```javascript
 var Furniture = ottoman.model('Furniture', {
   name: 'string'
@@ -127,7 +127,7 @@ full application tutorial a try?
 
 ### Schemas
 
-Schema's define the layout of our stored data objects.  They contain a list of properties for the document, this can be any JSON representable data.
+Schemas define the layout of our stored data objects.  They contain a list of properties for the document. This can be any JSON representable data.
 
 You can store simple types:
 ```javascript
@@ -190,7 +190,7 @@ You can also define validator functions for model fields:
 ```javascript
 function PhoneValidator(val) {
   var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-  if(val && !val.match(phoneno)) {
+  if (val && !val.match(phoneno)) {
     throw new Error('Phone number is invalid.');
   }
 }
@@ -203,7 +203,7 @@ ottoman.model('User', {
 
 ### Model References
 
-In addition to supporting groups of properties, models also support referencing whole other documents.  Through these references we are able to store related by not neccessarily dependant data.
+In addition to supporting groups of properties, models also support referencing whole other documents.  Through these references we are able to store related but not neccessarily dependent data.
 
 Example reference relationship:
 ```javascript
@@ -307,7 +307,7 @@ These indices utilize the new SQL-like query language available in Couchbase Ser
 
 ### Queries
 
-Queries allow you to perform searches between your models.  For instance allowing you to query all of the posts published by a particular user.
+Queries allow you to perform searches among your models.  For instance allowing you to query all of the posts published by a particular user.
 
 User/Post example:
 ```javascript
