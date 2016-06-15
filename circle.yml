@@ -1,0 +1,45 @@
+machine:
+    services:
+        - docker
+    node:
+        version: 5.5
+    pre:
+        - sudo curl -L -o /usr/bin/docker 'https://s3-external-1.amazonaws.com/circle-downloads/docker-1.9.1-circleci'
+        - sudo chmod 0755 /usr/bin/docker
+    environment:
+        IMAGE_NAME: couchbase
+        COUCHBASE_HOST: localhost
+        COUCHBASE_PORT: 8091
+        # Ottoman tests look for this.
+        CNCSTR: couchbase://localhost
+
+general:
+    build_dir: .
+    artifacts:
+        - ./coverage
+
+dependencies:
+    pre:
+        - docker version
+        - docker info
+        - npm prune
+        - npm install
+        - npm install couchbase --compile
+    cache_directories:
+        - node_modules
+    override:
+        - docker info
+        - docker ps
+        - docker images
+        - docker pull mdavidallen/couchbase:latest
+
+test:
+    pre:
+        - docker run -d --name couchtest -p 8090-8099:8090-8099 -p 9110:9110 -p 11210:11210 -p 18091:18091 -p 18092:18092 -t mdavidallen/couchbase:latest
+        - sleep 10
+        - curl --retry 20 --retry-delay 10 -v http://$COUCHBASE_HOST:$COUCHBASE_PORT/index.html -C -
+    override:
+        - docker ps
+        - node -e 'console.log(process.env.CNCSTR)'
+        - npm test
+        - docker logs --tail=200 couchtest
