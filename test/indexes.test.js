@@ -80,6 +80,30 @@ describe('Model Indexes', function () {
     _indexTest.call(this, 'n1ql', done);
   });
 
+  if (ottoman.store instanceof ottoman.CbStoreAdapter) {
+    it('should create index on _type when indexing for n1ql', function (done) {
+      var couchbase = require('couchbase');
+
+      _indexTest.call(this, 'n1ql', function () {
+        // At this point, all GSI indexes should have been made, meaning there
+        // should be one on type.
+        var verifyQ = 'SELECT * FROM system:indexes WHERE ' +
+          'keyspace_id=\'' + ottoman.bucket._name + '\' AND ' +
+          '(ARRAY_CONTAINS(index_key, \'`_type`\') OR ' +
+          'ARRAY_CONTAINS(index_key, \'_type\'))';
+
+        ottoman.bucket.query(couchbase.N1qlQuery.fromString(verifyQ),
+          function (err, rows) {
+            if (err) { return done(err); }
+
+            // If we got anything back, then the appropriate index exists.
+            assert.isAtLeast(rows.length, 1);
+            done();
+          });
+      });
+    });
+  }
+
   it('should fail to have two identical refdoc keys', function (done) {
     var modelId = H.uniqueId('model');
 
