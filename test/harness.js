@@ -11,21 +11,21 @@ if (process.env.CNCSTR) {
 
   var seenKeys = [];
   var _bucketInsert = bucket.insert.bind(bucket);
-  bucket.insert = function(key, value, options, callback) {
+  bucket.insert = function (key, value, options, callback) {
     seenKeys.push(key);
     return _bucketInsert(key, value, options, callback);
   };
   var _bucketUpsert = bucket.upsert.bind(bucket);
-  bucket.upsert = function(key, value, options, callback) {
+  bucket.upsert = function (key, value, options, callback) {
     seenKeys.push(key);
     return _bucketUpsert(key, value, options, callback);
   };
   var _bucketReplace = bucket.replace.bind(bucket);
-  bucket.replace = function(key, value, options, callback) {
+  bucket.replace = function (key, value, options, callback) {
     seenKeys.push(key);
     return _bucketReplace(key, value, options, callback);
   };
-  after(function(done) {
+  after(function (done) {
     if (seenKeys.length === 0) {
       return done();
     }
@@ -59,7 +59,7 @@ function _saveAllModels(modelArr, callback) {
       return;
     }
 
-    modelArr[i].save(function(err) {
+    modelArr[i].save(function (err) {
       if (err) {
         callback(err);
         return;
