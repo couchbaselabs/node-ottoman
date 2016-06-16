@@ -251,7 +251,7 @@ User.find({username: 'brett19'}, function(err, myUser) {
 
 You can specify numerous indices on a model.  There are multiple different kinds of indices, each with it's own benefits and restrictions.
 
-To specify indices on a model:
+To specify indices on a model, pass a second "options" object to the model function, with an index key:
 ```javascript
 ottoman.model('User', {
   email: 'string',
@@ -278,7 +278,7 @@ ottoman.model('User', {
 });
 ```
 
-It is also important to remember that in order for indices to be created on the server, you must call the `ensureIndices` method.  This method will internally generate a list of indexes which will be used and the most optimal configuration for them and them build any which are missing on the server.  This must be called after all models are defined, and it is a good idea to only call this when needed rather than any time your server is started.
+In order for indices to be created on the server, you must call the `ensureIndices` method.  This method will internally generate a list of indexes which will be used and the most optimal configuration for them and them build any which are missing on the server.  This must be called after all models are defined, and it is a good idea to only call this when needed rather than any time your server is started.
 
 ```javascript
 var ottoman = require('ottoman');
@@ -295,15 +295,27 @@ ottoman.ensureIndices(function(err) {
 
 #### Index Types
 
+Below are some quick notes on the types of indices available, and their pros and cons.  For a more in-depth discussion, consider
+reading [Couchbasics: How Functional and Performance Needs Determine Data Access in Couchbase](http://blog.couchbase.com/2015/october/determine-data-access-in-couchbase)
+
 ##### `refdoc`
-These indices are the most performant.  They allow only a single document to occupy any particular value and do direct key-value lookups using a referential document to identify a matching document in Couchbase.
+These indices are the most performant, but the least flexible.  They allow only a single document to occupy any particular value and do direct key-value lookups using a referential document to identify a matching document in Couchbase.
+
+In short, if you need to look up a document by a single value of a single attribute quickly (e.g. key lookups), this is the way to go.  But you cannot combine multiple refdoc indexes to speed up finding
+something like "all customers with first name 'John' last name 'Smith'".
 
 ##### `view`
 These indices are the default and use map-reduce views.  This type of index is always available once `ensureIndices` is called and will work with any Couchbase Server version.
 
+Because views use map-reduce, certain types of queries can be faster as the query can be parallelized over all nodes in the cluster, with each node
+returning only partial results.  One of the cons of views is that they are eventually consistent by default, and incur a performance
+penalty if you want consistency in the result.
+
 ##### `n1ql`
 These indices utilize the new SQL-like query language available in Couchbase Server 4.0.0.  These indices are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
 
+N1ql indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html).  If you need flexibility of query and
+speed, this is the way to go.
 
 ### Queries
 
@@ -327,6 +339,36 @@ ottoman.model('User', {
     }
   }
 });
+```
+
+### Finding models via N1ql Queries
+
+All models also expose a `find` method that can locate model instances by any number of criteria, and that also support pagination.
+
+This method is very useful for finding model instances under any arbitrary criteria; however keep in mind that you may wish to put
+n1ql indexes on fields that would be very often a part of these queries, to improve lookup performance, and prevent couchbase
+from having to scan most or all documents in the bucket in order to find the results.
+
+As you can see in the example below, you can even optionally specify pagination (limit/skip) and adjust the consistency of the query executed on couchbase.
+
+```javascript
+var filters = { 
+  lastName: 'Smith',
+  state: 'VA'
+};
+
+var options = {
+  limit: 10,
+  skip: 10,
+  consistency: ottoman.Consistency.LOCAL
+};
+
+Customer.find(filters, options,  
+  function(err, items) {
+    if (err) throw err;
+
+    console.log('Page 2 of Smiths of Virginia: ', JSON.stringify(items));
+  });
 ```
 
 
