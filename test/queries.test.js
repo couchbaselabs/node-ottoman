@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var H = require('./harness');
 var ottoman = H.lib;
 
-describe('Model Queries', function() {
+describe('Model Queries', function () {
   this.timeout(10000);
 
   function _queryTest(indexType, done) {
@@ -14,17 +14,17 @@ describe('Model Queries', function() {
     var UserMdl = ottoman.model(userModelId, {
       name: 'string'
     }, {
-      queries: {
-        topPosts: {
-          type: indexType,
-          of: postModelId,
-          by: 'creator',
-          consistency: ottoman.Consistency.GLOBAL
+        queries: {
+          topPosts: {
+            type: indexType,
+            of: postModelId,
+            by: 'creator',
+            consistency: ottoman.Consistency.GLOBAL
+          }
         }
-      }
-    });
+      });
     var PostMdl = ottoman.model(postModelId, {
-      creator: {ref:userModelId},
+      creator: { ref: userModelId },
       msg: 'string'
     });
 
@@ -47,7 +47,7 @@ describe('Model Queries', function() {
       py1.msg = 'Joe Post 1';
 
       // Let index creation catch up.
-      setTimeout(function() {
+      setTimeout(function () {
         H.saveAll([ux, uy, px1, px2, py1], function (err) {
           assert.isNull(err);
 
@@ -77,53 +77,54 @@ describe('Model Queries', function() {
     });
   }
 
-  it('should perform default type queries successfully', function(done) {
+  it('should perform default type queries successfully', function (done) {
     _queryTest.call(this, undefined, done);
   });
-  it('should perform view type queries successfully', function(done) {
+  it('should perform view type queries successfully', function (done) {
     _queryTest.call(this, 'view', done);
   });
-  it('should perform n1ql type queries successfully', function(done) {
+  it('should perform n1ql type queries successfully', function (done) {
     _queryTest.call(this, 'n1ql', done);
   });
 
   it('should fail queries where the other type is not registered',
-  function(done) {
-    var userModelId = H.uniqueId('model');
-    var postModelId = H.uniqueId('model');
-    var UserMdl = ottoman.model(userModelId, {
-      name: 'string'
-    }, {
-      queries: {
-        topPosts: {
-          type: 'view',
-          of: postModelId,
-          by: 'creator'
-        }
-      }
-    });
-
-    ottoman.ensureIndices(function (err) {
-      assert.isNull(err);
-
-      // Let index creation catch up.
-      setTimeout(function () {
-        var ux = new UserMdl();
-        ux.name = 'Bob';
-
-        ux.save(function(err) {
-          assert.isNull(err);
-
-          assert.throw(function() {
-            ux.topPosts(function() {
-              assert.fail();
-            });
-          }, Error);
-
-          done();
+    function (done) {
+      var userModelId = H.uniqueId('model');
+      var postModelId = H.uniqueId('model');
+      var UserMdl = ottoman.model(userModelId, {
+        name: 'string'
+      },
+        {
+          queries: {
+            topPosts: {
+              type: 'view',
+              of: postModelId,
+              by: 'creator'
+            }
+          }
         });
-      }, 1000);
+
+      ottoman.ensureIndices(function (err) {
+        assert.isNull(err);
+
+        // Let index creation catch up.
+        setTimeout(function () {
+          var ux = new UserMdl();
+          ux.name = 'Bob';
+
+          ux.save(function (err) {
+            assert.isNull(err);
+
+            assert.throw(function () {
+              ux.topPosts(function () {
+                assert.fail();
+              });
+            }, Error);
+
+            done();
+          });
+        }, 1000);
+      });
     });
-  });
 
 });

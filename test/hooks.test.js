@@ -17,59 +17,61 @@ describe('Model hooks', function () {
   var events = ['validate', 'save', 'load', 'remove'];
 
   var testMilestoneEvent = function (milestone, event) {
-    it('should trigger callbacks on ' + milestone + '-' + event, function (done) {
-      var called = false;
+    it('should trigger callbacks on ' + milestone + '-' + event,
+      function (done) {
+        var called = false;
 
-      var callMeOnEvent = function (mdlInst, next) {
-        // console.log('I got called: ' + milestone + ' ' + event);
-        called = true;
-        next();
-      };
+        var callMeOnEvent = function (mdlInst, next) {
+          // console.log('I got called: ' + milestone + ' ' + event);
+          called = true;
+          next();
+        };
 
-      var modelId = H.uniqueId('model');
-      var TestMdl = ottoman.model(modelId, {
-        name: 'string'
-      }, {
-          index: {
-            findByName: {
-              type: 'refdoc',
-              by: 'name',
-              consistency: ottoman.Consistency.GLOBAL
+        var modelId = H.uniqueId('model');
+        var TestMdl = ottoman.model(modelId, {
+          name: 'string'
+        },
+          {
+            index: {
+              findByName: {
+                type: 'refdoc',
+                by: 'name',
+                consistency: ottoman.Consistency.GLOBAL
+              }
             }
-          }
-      });
+          });
 
-      var x = new TestMdl();
-      var searchStr = 'Hello ' + Math.random();
-      x.name = searchStr;
+        var x = new TestMdl();
+        var searchStr = 'Hello ' + Math.random();
+        x.name = searchStr;
 
-      // Set hanlder...
-      TestMdl[milestone](event, callMeOnEvent);
+        // Set hanlder...
+        TestMdl[milestone](event, callMeOnEvent);
 
-      // Now save and load to make sure all lifecycle would be covered.
-      x.save(function (err) {
-        expect(err).to.be.null;
-
-        if(called) { return done(); }
-
-        // Now search for it.
-        TestMdl.findByName(searchStr, function (err, res) {
+        // Now save and load to make sure all lifecycle would be covered.
+        x.save(function (err) {
           expect(err).to.be.null;
-          expect(res).to.be.an('array');
-          expect(res.length).to.equal(1);
 
           if (called) { return done(); }
 
-          // Finally remove it.
-          res[0].remove(function (err) {
+          // Now search for it.
+          TestMdl.findByName(searchStr, function (err, res) {
             expect(err).to.be.null;
-            expect(called).to.be.true;
+            expect(res).to.be.an('array');
+            expect(res.length).to.equal(1);
 
-            return done();
+            if (called) { return done(); }
+
+            // Finally remove it.
+            res[0].remove(function (err) {
+              expect(err).to.be.null;
+              expect(called).to.be.true;
+
+              return done();
+            });
           });
         });
       });
-    });
   };
 
   for (var x = 0; x < milestones.length; x++) {
@@ -79,7 +81,6 @@ describe('Model hooks', function () {
       var event = events[y];
 
       testMilestoneEvent(milestone, event);
-    };
+    }
   }
-
 });
