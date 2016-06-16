@@ -4,38 +4,38 @@ var assert = require('chai').assert;
 var H = require('./harness');
 var ottoman = H.lib;
 
-describe('Models', function() {
+describe('Models', function () {
   // Add long timeout in case of slow response on CI build servers.
   this.timeout(10000);
 
-  it('should fail to register two models with the same name', function() {
+  it('should fail to register two models with the same name', function () {
     var modelId = H.uniqueId('model');
 
     ottoman.model(modelId, {});
-    assert.throws(function() {
+    assert.throws(function () {
       ottoman.model(modelId, {});
     });
   });
 
-  it('should fail with an invalid type specified', function() {
+  it('should fail with an invalid type specified', function () {
     var modelId = H.uniqueId('model');
-    assert.throws(function() {
+    assert.throws(function () {
       ottoman.model(modelId, {
         'test': 'stringxxxx'
       });
     });
   });
 
-  it('should fail with an invalid type specified in array', function() {
+  it('should fail with an invalid type specified in array', function () {
     var modelId = H.uniqueId('model');
-    assert.throws(function() {
+    assert.throws(function () {
       ottoman.model(modelId, {
         'test': ['stringxxxx']
       });
     });
   });
 
-  it('should fail when an array type has more than one member', function() {
+  it('should fail when an array type has more than one member', function () {
     var modelId = H.uniqueId('model');
     assert.throws(function () {
       ottoman.model(modelId, {
@@ -44,7 +44,7 @@ describe('Models', function() {
     });
   });
 
-  it('should understand all basic types', function() {
+  it('should understand all basic types', function () {
     var modelId = H.uniqueId('model');
     ottoman.model(modelId, {
       'str': 'string',
@@ -55,36 +55,36 @@ describe('Models', function() {
   });
 
   it('should understand all basic types in both schema formats,'
-  + ' flat and object',
-  function () {
-    var modelId = H.uniqueId('model');
+    + ' flat and object',
+    function () {
+      var modelId = H.uniqueId('model');
 
-    var counter = 0;
-    function mkName(str) {
-      return modelId + '_' + str + '_' + (++counter);
-    }
+      var counter = 0;
+      function mkName(str) {
+        return modelId + '_' + str + '_' + (++counter);
+      }
 
-    var types = ['string', 'number', 'integer', 'boolean'];
+      var types = ['string', 'number', 'integer', 'boolean'];
 
-    types.forEach(function(type) {
-      ottoman.model(mkName(type), {
-        'someField': type
+      types.forEach(function (type) {
+        ottoman.model(mkName(type), {
+          'someField': type
+        });
+
+        ottoman.model(mkName(type), {
+          'someField': { type: type }
+        });
+
+        ottoman.model(mkName(type), {
+          'someFieldArray': [type]
+        });
+
+        ottoman.model(mkName(type), {
+          'someFieldArray': [{ type: type }]
+        });
       });
 
-      ottoman.model(mkName(type), {
-        'someField': { type: type }
-      });
-
-      ottoman.model(mkName(type), {
-        'someFieldArray': [type]
-      });
-
-      ottoman.model(mkName(type), {
-        'someFieldArray': [{ type: type }]
-      });
     });
-
-  });
 
   it('should serialize basic types properly', function () {
     var modelId = H.uniqueId('model');
@@ -114,7 +114,7 @@ describe('Models', function() {
     assert.equal(xJson.name, 'Frank');
   });
 
-  it('should round-trip COO properly', function() {
+  it('should round-trip COO properly', function () {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
@@ -130,23 +130,23 @@ describe('Models', function() {
   });
 
   it('should fail to deserialize a type with incorrect explicit type',
-  function() {
-    var modelId = H.uniqueId('model');
-    var fakeModelId = H.uniqueId('model');
-    var TestMdl = ottoman.model(modelId, {
-      name: 'string'
+    function () {
+      var modelId = H.uniqueId('model');
+      var fakeModelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        name: 'string'
+      });
+
+      var x = new TestMdl();
+      x.name = 'Frank';
+      var xCoo = ottoman.toCoo(x);
+
+      assert.throw(function () {
+        ottoman.fromCoo(xCoo, fakeModelId);
+      }, Error);
     });
 
-    var x = new TestMdl();
-    x.name = 'Frank';
-    var xCoo = ottoman.toCoo(x);
-
-    assert.throw(function() {
-      ottoman.fromCoo(xCoo, fakeModelId);
-    }, Error);
-  });
-
-  it('should deserialize a type with correct explicit type', function() {
+  it('should deserialize a type with correct explicit type', function () {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
@@ -161,16 +161,16 @@ describe('Models', function() {
     assert.equal(x.name, xObj.name);
   });
 
-  it('should fail to deserialize a Mixed type without _type', function() {
+  it('should fail to deserialize a Mixed type without _type', function () {
     var data = {
       name: 'Frank'
     };
-    assert.throw(function() {
+    assert.throw(function () {
       ottoman.fromCoo(data);
     }, Error);
   });
 
-  it('should deserialize with an explicit type', function() {
+  it('should deserialize with an explicit type', function () {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
@@ -184,19 +184,19 @@ describe('Models', function() {
     assert.equal(x.name, 'Frank');
   });
 
-  it('should fail to deserialize an unregistered type', function() {
+  it('should fail to deserialize an unregistered type', function () {
     var modelId = H.uniqueId('model');
     var data = {
       _type: modelId,
       name: 'Frank'
     };
-    assert.throw(function() {
+    assert.throw(function () {
       ottoman.fromCoo(data);
     }, Error);
   });
 
-  describe('Strings', function() {
-    it('should serialize string types properly', function() {
+  describe('Strings', function () {
+    it('should serialize string types properly', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
         str: 'string'
@@ -209,7 +209,7 @@ describe('Models', function() {
       assert.equal(xJson.str, 'Bob');
     });
 
-    it('should serialize mixed string types properly', function() {
+    it('should serialize mixed string types properly', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
         str: 'Mixed'
@@ -223,8 +223,8 @@ describe('Models', function() {
     });
   });
 
-  describe('Numbers', function() {
-    it('should serialize numbers types properly', function() {
+  describe('Numbers', function () {
+    it('should serialize numbers types properly', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
         num: 'integer'
@@ -237,7 +237,7 @@ describe('Models', function() {
       assert.equal(xJson.num, 44.4);
     });
 
-    it('should serialize mixed numbers types properly', function() {
+    it('should serialize mixed numbers types properly', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
         num: 'Mixed'
@@ -251,8 +251,8 @@ describe('Models', function() {
     });
   });
 
-  describe('Integers', function() {
-    it('should serialize integer types properly', function() {
+  describe('Integers', function () {
+    it('should serialize integer types properly', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
         int: 'integer'
@@ -265,7 +265,7 @@ describe('Models', function() {
       assert.equal(xJson.int, 44);
     });
 
-    it('should serialize mixed integer types properly', function() {
+    it('should serialize mixed integer types properly', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
         int: 'Mixed'
@@ -279,8 +279,8 @@ describe('Models', function() {
     });
   });
 
-  describe('Booleans', function() {
-    it('should serialize boolean types properly', function() {
+  describe('Booleans', function () {
+    it('should serialize boolean types properly', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
         bool: 'integer'
@@ -293,7 +293,7 @@ describe('Models', function() {
       assert.equal(xJson.bool, true);
     });
 
-    it('should serialize mixed boolean types properly', function() {
+    it('should serialize mixed boolean types properly', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
         bool: 'Mixed'
@@ -307,7 +307,7 @@ describe('Models', function() {
     });
   });
 
-  describe('Dates', function() {
+  describe('Dates', function () {
     it('should serialize date types properly', function () {
       var modelId = H.uniqueId('model');
 
@@ -338,8 +338,8 @@ describe('Models', function() {
     });
   });
 
-  describe('Groups', function() {
-    it('should serialize groups properly', function() {
+  describe('Groups', function () {
+    it('should serialize groups properly', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
         who: {
@@ -355,8 +355,8 @@ describe('Models', function() {
     });
   });
 
-  describe('Types', function() {
-    it('should use types by name properly', function() {
+  describe('Types', function () {
+    it('should use types by name properly', function () {
       var typeId = H.uniqueId('type');
       var modelId = H.uniqueId('model');
       ottoman.type(typeId, {
@@ -371,7 +371,7 @@ describe('Models', function() {
       assert.typeOf(xJson.name, 'string');
     });
 
-    it('should use types by reference properly', function() {
+    it('should use types by reference properly', function () {
       var typeId = H.uniqueId('type');
       var modelId = H.uniqueId('model');
       var TestType = ottoman.type(typeId, 'string');
@@ -385,11 +385,11 @@ describe('Models', function() {
     });
   });
 
-  describe('Defaults', function() {
-    it('should work with default string values', function() {
+  describe('Defaults', function () {
+    it('should work with default string values', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
-        name: {type: 'string', default:'Frank'}
+        name: { type: 'string', default: 'Frank' }
       });
       var x = new TestMdl();
       var xJson = x.toCoo();
@@ -398,10 +398,10 @@ describe('Models', function() {
       assert.equal(xJson.name, 'Frank');
     });
 
-    it('should work with default number values', function() {
+    it('should work with default number values', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
-        num: {type: 'number', default:14.4}
+        num: { type: 'number', default: 14.4 }
       });
       var x = new TestMdl();
       var xJson = x.toCoo();
@@ -410,10 +410,10 @@ describe('Models', function() {
       assert.equal(xJson.num, 14.4);
     });
 
-    it('should work with default date values', function() {
+    it('should work with default date values', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
-        when: {type: 'Date', default:new Date()}
+        when: { type: 'Date', default: new Date() }
       });
       var x = new TestMdl();
       var xJson = x.toCoo();
@@ -422,10 +422,10 @@ describe('Models', function() {
       assert.equal(xJson.when, x.when.toISOString());
     });
 
-    it('should work with default value functions', function() {
+    it('should work with default value functions', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
-        num: {type: 'number', default:function(){return 19.3;}}
+        num: { type: 'number', default: function () { return 19.3; } }
       });
       var x = new TestMdl();
       var xJson = x.toCoo();
@@ -434,11 +434,11 @@ describe('Models', function() {
       assert.equal(xJson.num, 19.3);
     });
 
-    it('should work with default falsy value', function() {
+    it('should work with default falsy value', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
-        num: {type: 'number', default: 0},
-        bool: {type: 'boolean', default: false}
+        num: { type: 'number', default: 0 },
+        bool: { type: 'boolean', default: false }
       });
       var x = new TestMdl();
       var xJson = x.toCoo();
@@ -450,9 +450,9 @@ describe('Models', function() {
     });
   });
 
-  describe('Ids', function() {
-    it('should fail if the model defines an id property', function() {
-      assert.throws(function() {
+  describe('Ids', function () {
+    it('should fail if the model defines an id property', function () {
+      assert.throws(function () {
         var modelId = H.uniqueId('model');
         ottoman.model(modelId, {
           id: 'string'
@@ -460,13 +460,13 @@ describe('Models', function() {
       }, Error);
     });
 
-    it('should accept custom id properties', function() {
+    it('should accept custom id properties', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
-        customId: {type:'string', auto:'uuid', readonly:true}
+        customId: { type: 'string', auto: 'uuid', readonly: true }
       }, {
-        id: 'customId'
-      });
+          id: 'customId'
+        });
       var x = new TestMdl();
       var xJson = x.toCoo();
 
@@ -474,15 +474,15 @@ describe('Models', function() {
       assert.equal(xJson.customId, x.customId);
     });
 
-    it('should accept custom id properties inside groups', function() {
+    it('should accept custom id properties inside groups', function () {
       var modelId = H.uniqueId('model');
       var TestMdl = ottoman.model(modelId, {
         test: {
-          customId: {type:'string', auto:'uuid', readonly:true}
+          customId: { type: 'string', auto: 'uuid', readonly: true }
         }
       }, {
-        id: 'test.customId'
-      });
+          id: 'test.customId'
+        });
       var x = new TestMdl();
       var xJson = x.toCoo();
 
@@ -491,7 +491,7 @@ describe('Models', function() {
     });
   });
 
-  it('should have a working custom inspector', function() {
+  it('should have a working custom inspector', function () {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string',
@@ -506,7 +506,7 @@ describe('Models', function() {
     y.inspect();
   });
 
-  it('should successfully save and load an object', function(done) {
+  it('should successfully save and load an object', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
@@ -515,11 +515,11 @@ describe('Models', function() {
     var x = new TestMdl();
     x.name = 'George';
 
-    x.save(function(err) {
+    x.save(function (err) {
       assert.isNull(err);
 
       var y = TestMdl.ref(x._id);
-      y.load(function(err) {
+      y.load(function (err) {
         assert.isNull(err);
 
         assert.instanceOf(y, TestMdl);
@@ -530,7 +530,7 @@ describe('Models', function() {
     });
   });
 
-  it('should correctly advertise .loaded()', function(done) {
+  it('should correctly advertise .loaded()', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
@@ -541,13 +541,13 @@ describe('Models', function() {
 
     assert.isTrue(x.loaded());
 
-    x.save(function(err) {
+    x.save(function (err) {
       assert.isNull(err);
       assert.isTrue(x.loaded());
 
       var y = TestMdl.ref(x._id);
       assert.isFalse(y.loaded());
-      y.load(function(err) {
+      y.load(function (err) {
         assert.isNull(err);
         assert.isTrue(y.loaded());
 
@@ -556,7 +556,7 @@ describe('Models', function() {
     });
   });
 
-  it('should successfully load object with getById', function(done) {
+  it('should successfully load object with getById', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
@@ -565,10 +565,10 @@ describe('Models', function() {
     var x = new TestMdl();
     x.name = 'George';
 
-    x.save(function(err) {
+    x.save(function (err) {
       assert.isNull(err);
 
-      TestMdl.getById(x._id, function(err, y) {
+      TestMdl.getById(x._id, function (err, y) {
         assert.isNull(err);
 
         assert.instanceOf(y, TestMdl);
@@ -579,7 +579,7 @@ describe('Models', function() {
     });
   });
 
-  it('should successfully remove objects', function(done) {
+  it('should successfully remove objects', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
@@ -588,16 +588,16 @@ describe('Models', function() {
     var x = new TestMdl();
     x.name = 'George';
 
-    x.save(function(err) {
+    x.save(function (err) {
       assert.isNull(err);
 
-      TestMdl.getById(x._id, function(err) {
+      TestMdl.getById(x._id, function (err) {
         assert.isNull(err);
 
-        x.remove(function(err) {
+        x.remove(function (err) {
           assert.isNull(err);
 
-          TestMdl.getById(x._id, function(err) {
+          TestMdl.getById(x._id, function (err) {
             assert.isNotNull(err);
 
             done();
@@ -607,32 +607,32 @@ describe('Models', function() {
     });
   });
 
-  it('should successfully remove objects with refdoc indices', function(done) {
+  it('should successfully remove objects with refdoc indices', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
     }, {
-      index: {
-        findByName: {
-          type: 'refdoc',
-          by: 'name'
+        index: {
+          findByName: {
+            type: 'refdoc',
+            by: 'name'
+          }
         }
-      }
-    });
+      });
 
     var x = new TestMdl();
     x.name = 'George';
 
-    x.save(function(err) {
+    x.save(function (err) {
       assert.isNull(err);
 
-      TestMdl.findByName(x.name, function(err) {
+      TestMdl.findByName(x.name, function (err) {
         assert.isNull(err);
 
-        x.remove(function(err) {
+        x.remove(function (err) {
           assert.isNull(err);
 
-          TestMdl.findByName(x.name, function(err, z) {
+          TestMdl.findByName(x.name, function (err, z) {
             assert.isNull(err);
             assert.lengthOf(z, 0);
 
@@ -643,76 +643,76 @@ describe('Models', function() {
     });
   });
 
-  it('should fail to load an invalid id', function(done) {
+  it('should fail to load an invalid id', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
     });
 
     var y = TestMdl.ref('INVALID ID');
-    y.load(function(err) {
+    y.load(function (err) {
       assert.isNotNull(err);
       done();
     });
   });
 
-  it('should fail getById with invalid id', function(done) {
+  it('should fail getById with invalid id', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
     });
 
-    TestMdl.getById('INVALID ID', function(err) {
+    TestMdl.getById('INVALID ID', function (err) {
       assert.isNotNull(err);
       done();
     });
   });
 
-  it('should allow constructor options', function() {
+  it('should allow constructor options', function () {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
     });
 
-    var x = new TestMdl({name:'Joseph'});
+    var x = new TestMdl({ name: 'Joseph' });
     assert.equal(x.name, 'Joseph');
   });
 
-  it('should validate a model', function() {
+  it('should validate a model', function () {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: {
-        type:'string',
-        validator:function(value){
-          if(typeof(value) !== 'string' ){
+        type: 'string',
+        validator: function (value) {
+          if (typeof (value) !== 'string') {
             throw new Error('bad data');
           }
         }
       }
     });
 
-    var x = new TestMdl({name:'Joseph'});
-    ottoman.validate(x, function(err){
+    var x = new TestMdl({ name: 'Joseph' });
+    ottoman.validate(x, function (err) {
       assert.isNull(err);
     });
   });
 
-  it('should fail to validate bad data', function() {
+  it('should fail to validate bad data', function () {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: {
-        type:'string',
-        validator:function(value){
-          if(typeof value !== 'string' ){
+        type: 'string',
+        validator: function (value) {
+          if (typeof value !== 'string') {
             throw new Error('bad data');
           }
         }
       }
     });
 
-    var x = new TestMdl({name:'Joseph'});
+    var x = new TestMdl({ name: 'Joseph' });
     x.name = 1;
-    ottoman.validate(x, function(err){
+    ottoman.validate(x, function (err) {
       assert.isNotNull(err);
     });
   });

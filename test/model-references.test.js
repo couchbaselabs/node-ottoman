@@ -1,3 +1,4 @@
+'use strict';
 var chai = require('chai');
 var expect = chai.expect;
 var H = require('./harness');
@@ -17,29 +18,31 @@ describe('Model references', function () {
 
   var User = ottoman.model(idB, {
     username: 'string',
-    account: { ref: Account },
-  }, {
+    account: { ref: Account }
+  },
+    {
       index: {
         findByUsername: {
           type: 'n1ql',
           by: 'username',
-          consistency: ottoman.Consistency.GLOBAL,
+          consistency: ottoman.Consistency.GLOBAL
         }
       }
     });
 
   var MultiAccountUser = ottoman.model(idC, {
     username: 'string',
-    accounts: [ {ref: Account }]
-  }, {
-    index: {
-      findByUsername: {
-        type: 'n1ql',
-        by: 'username',
-        consistency: ottoman.Consistency.GLOBAL,
+    accounts: [{ ref: Account }]
+  },
+    {
+      index: {
+        findByUsername: {
+          type: 'n1ql',
+          by: 'username',
+          consistency: ottoman.Consistency.GLOBAL
+        }
       }
-    }
-  })
+    })
 
   before(function (done) {
     ottoman.ensureIndices(function (err) {
@@ -50,7 +53,7 @@ describe('Model references', function () {
 
   it('shouldn\'t require reference to be present', function (done) {
     var notLinked = new User({
-      username: 'foo',
+      username: 'foo'
     });
 
     notLinked.save(function (err) {
@@ -69,7 +72,7 @@ describe('Model references', function () {
 
     var myUser = new User({
       username: 'brett19',
-      account: myAccount,
+      account: myAccount
     });
 
     myAccount.save(function (err) {
@@ -89,7 +92,8 @@ describe('Model references', function () {
           // console.log('Loaded? ' + myUser.account.loaded());
           expect(myUser.account.loaded()).to.be.false;
 
-          myUser.account.load(function (err) {
+          myUser.account.load(function (err2) {
+            if (err2) { return done(err2); }
             expect(myUser.account.email).to.equal('burtteh@fakemail.com');
             done();
           });
@@ -100,7 +104,7 @@ describe('Model references', function () {
 
   it('should allow re-linking of models', function (done) {
     var notLinked = new User({
-      username: 'relink',
+      username: 'relink'
     });
 
     notLinked.save(function (err) {
@@ -110,7 +114,7 @@ describe('Model references', function () {
 
       var newLinkage = new Account({
         email: 'foo@bar.com',
-        name: 'Foobar',
+        name: 'Foobar'
       });
 
       newLinkage.save(function (err) {
@@ -161,7 +165,7 @@ describe('Model references', function () {
     var toSave = [account1, account2, myUser];
     var saved = 0;
 
-    function proceed () {
+    function proceed() {
       MultiAccountUser.findByUsername('multi-account', function (err, users) {
         if (err) { return done(err); }
         expect(users).to.be.an('array');
@@ -172,7 +176,7 @@ describe('Model references', function () {
         expect(multiUser.accounts).to.be.an('array');
         expect(multiUser.accounts.length).to.equal(2);
 
-        for(var i=0; i<multiUser.accounts.length; i++) {
+        for (var i = 0; i < multiUser.accounts.length; i++) {
 
           expect(multiUser.accounts[i].loaded()).to.be.false;
         }
@@ -185,7 +189,7 @@ describe('Model references', function () {
       if (err) { return done(err); }
 
       saved++;
-      if(saved === toSave.length) {
+      if (saved === toSave.length) {
         proceed();
       }
     }
