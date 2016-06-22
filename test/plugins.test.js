@@ -43,6 +43,22 @@ describe('Ottoman Plugins', function () {
     done();
   });
 
+  it('global plugins must be functions', function (done) {
+    expect(function () {
+      ottoman.plugin({}, {});
+    }).to.throw(Error);
+
+    expect(function () {
+      ottoman.plugin('Hello, World!');
+    }).to.throw(Error);
+
+    expect(function () {
+      ottoman.plugin(null);
+    }).to.throw(Error);
+
+    done();
+  });
+
   // Note that these tests, by passing a "watch" variable that gets modified,
   // also prove that the plugin is called with specified arguments, so that's
   // not a separate unit test.
