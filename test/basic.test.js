@@ -530,6 +530,43 @@ describe('Models', function () {
     });
   });
 
+  it('should successfully update an object', function (done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'George';
+
+    x.save(function (err) {
+      assert.isNull(err);
+
+      var y = TestMdl.ref(x._id);
+      y.load(function (err) {
+        assert.isNull(err);
+
+        assert.instanceOf(y, TestMdl);
+        assert.equal(x._id, y._id);
+        assert.equal(x.name, y.name);
+        y.name = 'Not George';
+        y.save(function (err) {
+          assert.isNull(err);
+
+          var z = TestMdl.ref(x._id);
+          z.load(function (err) {
+            assert.isNull(err);
+
+            assert.instanceOf(y, TestMdl);
+            assert.equal(y._id, z._id);
+            assert.equal(y.name, z.name);
+            done();
+          });
+        });
+      });
+    });
+  });
+
   it('should correctly advertise .loaded()', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
