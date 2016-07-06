@@ -14,6 +14,7 @@
     "test": "eslint ./lib && istanbul cover ./node_modules/mocha/bin/_mocha -- test/*.test.js"
   },
   "dependencies": {
+    "bluebird": "^3.4.1",
     "jsonpath": "~0.2.2",
     "uuid": "~2.0.1"
   },
