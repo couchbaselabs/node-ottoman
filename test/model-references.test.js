@@ -42,13 +42,61 @@ describe('Model references', function () {
           consistency: ottoman.Consistency.GLOBAL
         }
       }
-    })
+    });
 
   before(function (done) {
     ottoman.ensureIndices(function (err) {
       if (err) { return done(err); }
       setTimeout(function () { done(); }, 2000);
     });
+  });
+
+  it('should allow mixed references', function (done) {
+    var MixedRefModel = ottoman.model(H.uniqueId('throwaway'), {
+      anyRef: { ref: 'Mixed' }
+    });
+
+    for (var i = 0; i < 10; i++) {
+      var M = ottoman.model(H.uniqueId('throwaway'), {
+        name: 'string'
+      });
+
+      var inst = new M({ name: 'Frank' });
+
+      var mixer = new MixedRefModel({ anyRef: inst });
+      var frozen = mixer.toCoo();
+
+      expect(frozen.anyRef).to.be.an('object');
+      expect(frozen.anyRef._type).to.contain('throwaway');
+
+      // Demonstrate that when we bring it back from coo, the reference is
+      // intact, and doesn't throw an error related to unknown types.
+      var thawed = ottoman.fromCoo(frozen, MixedRefModel.name);
+      expect(thawed.anyRef).to.be.ok;
+
+      // Naturally it will be an unloaded reference, but this proves that
+      // the ref has a 'loaded' function, meaning it's actually a reference.
+      expect(thawed.anyRef.loaded()).to.be.false;
+    }
+
+    done();
+  });
+
+  it('disallow non-reference values in mixed references', function (done) {
+    var MixedRefModel = ottoman.model(H.uniqueId('throwaway'), {
+      anyRef: { ref: 'Mixed' }
+    });
+
+    // Horribly illegal, Frank is not a reference.
+    var inst = new MixedRefModel({ anyRef: 'Frank' });
+
+    try {
+      inst.toCoo();
+      done(new Error('toCoo allows non-reference values in mixed refs'));
+    } catch (err) {
+      // toCoo blows up with: Error: Expected anyRef type to be a ModelInstance.
+      done();
+    }
   });
 
   it('shouldn\'t require reference to be present', function (done) {
@@ -146,7 +194,6 @@ describe('Model references', function () {
   });
 
   it('should allow one-to-many linkages', function (done) {
-
     var account1 = new Account({
       email: 'account1@fake.com',
       name: 'Account1'
