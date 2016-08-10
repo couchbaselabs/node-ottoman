@@ -67,7 +67,7 @@ describe('Model references', function () {
       var frozen = mixer.toCoo();
 
       expect(frozen.anyRef).to.be.an('object');
-      expect(frozen.anyRef._type).to.contain('throwaway');
+      expect(frozen.anyRef[ottoman.ottomanType]).to.contain('throwaway');
 
       // Demonstrate that when we bring it back from coo, the reference is
       // intact, and doesn't throw an error related to unknown types.

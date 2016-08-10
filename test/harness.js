@@ -44,7 +44,7 @@ if (process.env.CNCSTR) {
 
   ottoman.bucket = bucket;
 } else {
-  ottoman.store = new ottoman.MockStoreAdapter();
+  ottoman.store = new ottoman.MockStoreAdapter(ottoman.ottomanType);
 }
 
 // Setup Ottoman
