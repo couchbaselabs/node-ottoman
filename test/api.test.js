@@ -27,7 +27,7 @@ describe('Public API', function () {
 
   var mdlInstance = new TestMdl({ name: 'foo' });
 
-  var adapterInst = new CbStoreAdapter({ 'bogusBucket': true });
+  var adapterInst = new CbStoreAdapter({ 'bogusBucket': true }, {});
 
   var publicAPI = {
     CbStoreAdapter: {

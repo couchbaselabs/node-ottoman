@@ -19,7 +19,7 @@
     "uuid": "~2.0.1"
   },
   "optionalDependencies": {
-    "couchbase": "~2.1.8"
+    "couchbase": "~2.2.2"
   },
   "devDependencies": {
     "chai": "~3.3.0",
@@ -33,5 +33,5 @@
     "type": "git",
     "url": "http://github.com/couchbaselabs/ottoman.git"
   },
-  "version": "1.0.3"
+  "version": "1.0.4"
 }
