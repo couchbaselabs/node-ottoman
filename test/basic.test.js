@@ -785,6 +785,56 @@ describe('Models', function () {
     });
   });
 
+  // null subdocs without a validator should pass through unharmed
+  it('should validate a model to all depths unless null subdocs have no validator', function () {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      person: {
+        notes: { type: 'string' },
+        info:{
+          name: {
+            type: 'string',
+          }
+        }
+      }
+    });
+    // leaving off the person.info.name bit should be ok in this case
+    var x = new TestMdl({ person: { notes: 'goes by joe'  } });
+    ottoman.validate(x, function (err) {
+      assert.isNull(err);
+    });
+  });
+
+
+
+  // A model instance may have a null subdoc that needs to be validated
+  it('should validate a model to all depths and handle null subdocs', function () {
+    var modelId = H.uniqueId('model');
+    var called = false;
+    var TestMdl = ottoman.model(modelId, {
+      person: {
+        notes: { type: 'string' },
+        info:{
+          name: {
+            type: 'string',
+            validator: function (value) {
+              if (typeof (value) !== 'string') {
+                called = true;
+                throw new Error('bad data');
+              }
+            }
+          }
+        }
+      }
+    });
+    // leaving off the name field is not ok here because info is null
+    var x = new TestMdl({ person: { notes: 'goes by joe'  } });
+    ottoman.validate(x, function (err) {
+      assert.isNotNull(err);
+      assert.equal(called, true);
+    });
+  });
+
 
 
 
