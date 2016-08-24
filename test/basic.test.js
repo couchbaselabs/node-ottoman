@@ -715,7 +715,7 @@ describe('Models', function () {
     assert.equal(x.name, 'Joseph');
   });
 
-  it('should validate a model', function () {
+  it('should validate a model', function (done) {
     var modelId = H.uniqueId('model');
     var called = false;
     var TestMdl = ottoman.model(modelId, {
@@ -736,10 +736,11 @@ describe('Models', function () {
     ottoman.validate(x, function (err) {
       assert.isNull(err);
       assert.equal(called, true);
+      done();
     });
   });
 
-  it('should fail to validate bad data', function () {
+  it('should fail to validate bad data', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       name: {
@@ -756,10 +757,11 @@ describe('Models', function () {
     x.name = 1;
     ottoman.validate(x, function (err) {
       assert.isNotNull(err);
+      done();
     });
   });
 
-  it('should validate a model to all depths', function () {
+  it('should validate a model to all depths', function (done) {
     var modelId = H.uniqueId('model');
     var called = false;
     var TestMdl = ottoman.model(modelId, {
@@ -782,11 +784,12 @@ describe('Models', function () {
     ottoman.validate(x, function (err) {
       assert.isNull(err);
       assert.equal(called, true);
+      done();
     });
   });
 
   // null subdocs without a validator should pass through unharmed
-  it('should validate a model to all depths unless null subdocs have no validator', function () {
+  it('should validate a model to all depths unless null subdocs have no validator', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
       person: {
@@ -802,13 +805,14 @@ describe('Models', function () {
     var x = new TestMdl({ person: { notes: 'goes by joe'  } });
     ottoman.validate(x, function (err) {
       assert.isNull(err);
+      done();
     });
   });
 
 
 
   // A model instance may have a null subdoc that needs to be validated
-  it('should validate a model to all depths and handle null subdocs', function () {
+  it('should validate a model to all depths and handle null subdocs', function (done) {
     var modelId = H.uniqueId('model');
     var called = false;
     var TestMdl = ottoman.model(modelId, {
@@ -832,6 +836,7 @@ describe('Models', function () {
     ottoman.validate(x, function (err) {
       assert.isNotNull(err);
       assert.equal(called, true);
+      done();
     });
   });
 
