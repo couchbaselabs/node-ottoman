@@ -16,6 +16,8 @@
   "dependencies": {
     "bluebird": "^3.4.1",
     "jsonpath": "~0.2.2",
+    "lodash": "^4.15.0",
+    "lodash-deep": "^2.0.0",
     "uuid": "~2.0.1"
   },
   "optionalDependencies": {
