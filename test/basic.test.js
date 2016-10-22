@@ -636,6 +636,32 @@ describe('Models', function () {
     });
   });
 
+  it('should successfully save and load an object (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'Georgio';
+    var y;
+
+    x.save()
+      .then(function () {
+        y = TestMdl.ref(x._id);
+        return y.load()
+      })
+      .then(function (a) {
+        assert.instanceOf(y, TestMdl);
+        assert.equal(x._id, y._id);
+        assert.equal(x.name, y.name);
+        done();
+      })
+      .catch(function (err) {
+        assert.isNull(err);
+      });
+  });
+
   it('should successfully update an object', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
@@ -671,6 +697,44 @@ describe('Models', function () {
         });
       });
     });
+  });
+
+  it('should successfully update an object (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'Georgio';
+    var y;
+    var z;
+
+    x.save()
+      .then(function () {
+        y = TestMdl.ref(x._id);
+        return y.load();
+      })
+      .then(function () {
+        assert.instanceOf(y, TestMdl);
+        assert.equal(x._id, y._id);
+        assert.equal(x.name, y.name);
+        y.name = 'Not Georgio';
+        return y.save();
+      })
+      .then(function () {
+        z = TestMdl.ref(x._id);
+        return z.load();
+      })
+      .then(function () {
+        assert.instanceOf(y, TestMdl);
+        assert.equal(y._id, z._id);
+        assert.equal(y.name, z.name);
+        done();
+      })
+      .catch(function (err) {
+        assert.isNull(err);
+      });
   });
 
   it('should correctly advertise .loaded()', function (done) {
@@ -722,6 +786,30 @@ describe('Models', function () {
     });
   });
 
+  it('should successfully load object with getById (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'Georgio';
+
+    x.save()
+      .then(function () {
+        return TestMdl.getById(x._id);
+      })
+      .then(function (y) {
+        assert.instanceOf(y, TestMdl);
+        assert.equal(x._id, y._id);
+        assert.equal(x.name, y.name);
+        done();
+      })
+      .catch(function (err) {
+        assert.isNull(err);
+      });
+  });
+
   it('should successfully remove objects', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
@@ -748,6 +836,39 @@ describe('Models', function () {
         });
       });
     });
+  });
+
+  it('should successfully remove objects (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var x = new TestMdl();
+    x.name = 'Georgio';
+
+    x.save()
+      .then(function () {
+        return TestMdl.getById(x._id);
+      })
+      .then(function () {
+        return x.remove();
+      })
+      .then(function () {
+        // Nested this promise chain so the outer .catch will catch unexpected
+        // errors while the inner one will catch the expected error.
+        TestMdl.getById(x._id)
+          .then(function () {
+            // Shouldn't have been able to retrieve Georgio
+            assert.fail('Error', 'null', null, '!=');
+          })
+          .catch(function () {
+            done();
+          });
+      })
+      .catch(function (err) {
+        assert.isNull(err);
+      });
   });
 
   it('should successfully remove objects with refdoc indices', function (done) {
@@ -786,6 +907,42 @@ describe('Models', function () {
     });
   });
 
+  it('should successfully remove objects with refdoc indices (promise)',
+    function (done) {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        name: 'string'
+      }, {
+          index: {
+            findByName: {
+              type: 'refdoc',
+              by: 'name'
+            }
+          }
+        });
+
+      var x = new TestMdl();
+      x.name = 'Georgio';
+
+      x.save()
+        .then(function () {
+          return TestMdl.findByName(x.name)
+        })
+        .then(function () {
+          return x.remove();
+        })
+        .then(function () {
+          return TestMdl.findByName(x.name);
+        })
+        .then(function (z) {
+          assert.lengthOf(z, 0);
+          done();
+        })
+        .catch(function (err) {
+          assert.isNull(err);
+        });
+    });
+
   it('should fail to load an invalid id', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
@@ -799,6 +956,23 @@ describe('Models', function () {
     });
   });
 
+  it('should fail to load an invalid id (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    var y = TestMdl.ref('INVALID ID');
+    y.load()
+      .then(function () {
+        assert.fail('null', 'Error', null, '!=');
+      })
+      .catch(function (err) {
+        assert.isNotNull(err);
+        done();
+      });
+  });
+
   it('should fail getById with invalid id', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
@@ -809,6 +983,22 @@ describe('Models', function () {
       assert.isNotNull(err);
       done();
     });
+  });
+
+  it('should fail getById with invalid id (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: 'string'
+    });
+
+    TestMdl.getById('INVALID ID')
+      .then(function () {
+        assert.fail('null', 'Error', null, '!=');
+      })
+      .catch(function (err) {
+        assert.isNotNull(err);
+        done();
+      });
   });
 
   it('should allow constructor options', function () {

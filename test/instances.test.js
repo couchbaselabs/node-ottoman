@@ -57,6 +57,17 @@ describe('Model Instances', function () {
       });
     });
 
+    it('should have a working find function (promise)', function (done) {
+      TestMdl.find({ name: 'Jose Blowse' }, {})
+        .then(function (items) {
+          expect(items).to.be.an('Array');
+          done();
+        })
+        .catch(function (err) {
+          done(err);
+        });
+    });
+
     it('should have a working count function', function (done) {
       TestMdl.count({ name: 'Joe Blow' }, {}, function (err, count) {
         if (err) { return done(err); }
@@ -64,6 +75,17 @@ describe('Model Instances', function () {
         expect(count).to.be.an('number');
         done();
       });
+    });
+
+    it('should have a working count function (promise)', function (done) {
+      TestMdl.count({ name: 'Joe Blow' }, {})
+        .then(function (count) {
+          expect(count).to.be.an('number');
+          done();
+        })
+        .catch(function (err) {
+          done(err)
+        });
     });
   }
 
@@ -84,6 +106,18 @@ describe('Model Instances', function () {
       expect(modelInst.name).to.equal('Jack Sparrow');
       done();
     });
+  });
+
+  it('should permit using ModelInstance.create (promise)', function (done) {
+    TestMdl.create({ name: 'Will Turner' })
+      .then(function (modelInst) {
+        expect(modelInst).to.be.ok;
+        expect(modelInst.name).to.equal('Will Turner');
+        done();
+      })
+      .catch(function (err) {
+        throw err;
+      });
   });
 
   it('should support loadAll', function (done) {
@@ -133,6 +167,58 @@ describe('Model Instances', function () {
 
         done();
       });
+    });
+  });
+
+  it('should support loadAll (promise)', function (done) {
+    var ids = [];
+
+    function createDummies(cb) {
+      var created = 0;
+
+      function makeDummy(cb) {
+        if (created === 10) { return cb(null); }
+
+        var mi = new TestMdl({ name: 'Test ' + created });
+
+        mi.save(function (err) {
+          if (err) { return cb(err); }
+
+          created++;
+          // console.log('Pushing ' + mi.id());
+          ids.push(mi.id());
+
+          return makeDummy(cb);
+        });
+      }
+
+      makeDummy(cb);
+    }
+
+    createDummies(function (err) {
+      if (err) { return done(err); }
+
+      var toLoad = [];
+
+      for(var i=0; i<10; i++) {
+        var v = TestMdl.ref(ids[i]);
+        toLoad = toLoad.concat([v]);
+      }
+
+      TestMdl.loadAll(toLoad)
+        .then(function () {
+          expect(toLoad.length).to.equal(10);
+
+          for (var z = 0; z < 10; z++) {
+            expect(toLoad[z]).to.be.an('object');
+            expect(toLoad[z].name).to.be.ok;
+          }
+
+          done();
+        })
+        .catch(function (err) {
+          done(err);
+        });
     });
   });
 });
