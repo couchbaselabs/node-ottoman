@@ -33,7 +33,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/couchbaselabs/ottoman.git"
+    "url": "http://github.com/couchbaselabs/node-ottoman.git"
   },
   "version": "1.0.4"
 }
