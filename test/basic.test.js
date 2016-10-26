@@ -8,6 +8,24 @@ describe('Models', function () {
   // Add long timeout in case of slow response on CI build servers.
   this.timeout(10000);
 
+  before(function () {
+    // Add custom validators
+    ottoman.addValidators({
+      string: function (value) {
+        if (typeof value !== 'string') {
+          throw new Error('Not a string!');
+        }
+      },
+      integer: function (value) {
+        // Numbers are converted to strings before entering validator functions
+        var intRegex = /^\+?(0|[1-9]\d*)$/;
+        if (!intRegex.test(value)) {
+          throw new Error('Not an integer!');
+        }
+      }
+    });
+  });
+
   it('should fail to register two models with the same name', function () {
     var modelId = H.uniqueId('model');
 
@@ -867,6 +885,84 @@ describe('Models', function () {
     });
   });
 
+  it('should validate a model with custom validators', function (done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: {
+        type: 'string',
+        validator: 'string' // reference the customer validator by name
+      },
+      score: {
+        type: 'integer',
+        validator: ottoman.validators.integer // direct ref to validator func
+      }
+    });
+
+    var x = new TestMdl({ name: 'Joseph', score: '1234' });
+    ottoman.validate(x, function (err) {
+      assert.isNull(err);
+      done();
+    });
+  });
+
+  it('should fail to validate bad data with custom validators', function (done){
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: {
+        type: 'string',
+        validator: 'string' // reference the customer validator by name
+      },
+      score: {
+        type: 'integer',
+        validator: ottoman.validators.integer // direct ref to validator func
+      }
+    });
+
+    var x = new TestMdl({ name: 'Joseph', score: 'NaN' });
+    ottoman.validate(x, function (err) {
+      assert.isNotNull(err);
+      done();
+    });
+  });
+
+  it('should throw an error if custom validator doesn\'t exist', function () {
+    var modelId = H.uniqueId('model');
+    assert.throws(function () {
+      ottoman.model(modelId, {
+        name: {
+          type: 'string',
+          validator: ottoman.validators.DNE
+        }
+      });
+    }, /Undefined validator given for field/);
+  });
+
+  it('should throw an error if custom validator doesn\'t exist', function () {
+    var modelId = H.uniqueId('model');
+    assert.throws(function () {
+      ottoman.model(modelId, {
+        name: {
+          type: 'string',
+          validator: 'DNE'
+        }
+      });
+    }, /Validator "DNE" for field "name" does not exist/);
+  });
+
+  it('should throw an error if validator isn\'t a string or function',
+    function () {
+      var modelId = H.uniqueId('model');
+      assert.throws(function () {
+        ottoman.model(modelId, {
+          name: {
+            type: 'string',
+            validator: 1
+          }
+        });
+      }, /must be a function or a string/);
+    }
+  );
+  
   it('should validate a model to all depths', function (done) {
     var modelId = H.uniqueId('model');
     var called = false;
