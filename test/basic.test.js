@@ -1036,6 +1036,34 @@ describe('Models', function () {
     });
   });
 
+  it('should validate a model (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var called = false;
+    var TestMdl = ottoman.model(modelId, {
+      name: {
+        type: 'string',
+        validator: function (value) {
+          if (typeof (value) !== 'string') {
+            throw new Error('bad data');
+          }
+          else {
+            called = true;
+          }
+        }
+      }
+    });
+
+    var x = new TestMdl({ name: 'Joseph' });
+    ottoman.validate(x)
+      .then(function () {
+        assert.equal(called, true);
+        done();
+      })
+      .catch(function (err) {
+        throw err;
+      });
+  });
+
   it('should fail to validate bad data', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
@@ -1055,6 +1083,31 @@ describe('Models', function () {
       assert.isNotNull(err);
       done();
     });
+  });
+
+  it('should fail to validate bad data (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      name: {
+        type: 'string',
+        validator: function (value) {
+          if (typeof value !== 'string') {
+            throw new Error('bad data');
+          }
+        }
+      }
+    });
+
+    var x = new TestMdl({ name: 'Joseph' });
+    x.name = 1;
+    ottoman.validate(x)
+      .then(function(res) {
+        assert.isNull(res);
+      })
+      .catch(function (err) {
+        assert.isNotNull(err);
+        done();
+      });
   });
 
   it('should validate a model to all depths', function (done) {
@@ -1084,6 +1137,36 @@ describe('Models', function () {
     });
   });
 
+  it('should validate a model to all depths (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var called = false;
+    var TestMdl = ottoman.model(modelId, {
+      person: {
+        name: {
+          type: 'string',
+          validator: function (value) {
+            if (typeof (value) !== 'string') {
+              throw new Error('bad data');
+            }
+            else {
+              called = true;
+            }
+          }
+        }
+      }
+    });
+
+    var x = new TestMdl({ person: { name: 'Joseph' } });
+    ottoman.validate(x)
+      .then(function () {
+        assert.equal(called, true);
+        done();
+      })
+      .catch(function (err) {
+        throw err;
+      });
+  });
+
   // null subdocs without a validator should pass through unharmed
   it('should validate a model to all depths unless null subdocs have no validator', function (done) {
     var modelId = H.uniqueId('model');
@@ -1105,7 +1188,29 @@ describe('Models', function () {
     });
   });
 
-
+  // null subdocs without a validator should pass through unharmed
+  it('should validate a model to all depths unless null subdocs have no validator (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var TestMdl = ottoman.model(modelId, {
+      person: {
+        notes: { type: 'string' },
+        info:{
+          name: {
+            type: 'string',
+          }
+        }
+      }
+    });
+    // leaving off the person.info.name bit should be ok in this case
+    var x = new TestMdl({ person: { notes: 'goes by joe'  } });
+    ottoman.validate(x)
+      .then(function () {
+        done();
+      })
+      .catch(function (err) {
+        throw err;
+      });
+  });
 
   // A model instance may have a null subdoc that needs to be validated
   it('should validate a model to all depths and handle null subdocs', function (done) {
@@ -1136,7 +1241,36 @@ describe('Models', function () {
     });
   });
 
-
-
-
+  // A model instance may have a null subdoc that needs to be validated
+  it('should validate a model to all depths and handle null subdocs (promise)', function (done) {
+    var modelId = H.uniqueId('model');
+    var called = false;
+    var TestMdl = ottoman.model(modelId, {
+      person: {
+        notes: { type: 'string' },
+        info:{
+          name: {
+            type: 'string',
+            validator: function (value) {
+              if (typeof (value) !== 'string') {
+                called = true;
+                throw new Error('bad data');
+              }
+            }
+          }
+        }
+      }
+    });
+    // leaving off the name field is not ok here because info is null
+    var x = new TestMdl({ person: { notes: 'goes by joe'  } });
+    ottoman.validate(x)
+      .then(function (res) {
+        assert.isNull(res);
+      })
+      .catch(function (err) {
+        assert.isNotNull(err);
+        assert.equal(called, true);
+        done();
+      });
+  });
 });
