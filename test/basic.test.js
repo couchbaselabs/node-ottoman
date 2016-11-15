@@ -428,6 +428,43 @@ describe('Models', function () {
       assert.equal(xJson.when, x.when.toISOString());
     });
 
+    it('should permit null dates', function () {
+      var modelId = H.uniqueId('model');
+
+      var TestMdl = ottoman.model(modelId, {
+        when: 'Date'
+      });
+
+      var x = new TestMdl();
+      x.when = null;
+      var xJson = x.toCoo();
+
+      assert.equal(xJson.when, null);
+
+      var y = new TestMdl({ when: null });
+      assert.equal(y.when, null);
+    });
+
+    it('should respect default values on dates', function () {
+      var modelId = H.uniqueId('model');
+
+      var val = new Date('2015-01-01');
+
+      var TestMdl = ottoman.model(modelId, {
+        when: { type: 'Date', default: val }
+      });
+
+      var x = new TestMdl();
+      assert.equal(x.when, val);
+
+      var Test2 = ottoman.model(H.uniqueId('model'), {
+        when: { type: 'Date', default: null }
+      });
+
+      var y = new Test2();
+      assert.equal(y.when, null);
+    });
+
     it('should serialize mixed date types properly', function () {
       var modelId = H.uniqueId('model');
 
@@ -615,7 +652,8 @@ describe('Models', function () {
   it('should successfully save and load an object', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
-      name: 'string'
+      name: 'string',
+      when: { type: 'Date', default: null }
     });
 
     var x = new TestMdl();
@@ -631,6 +669,8 @@ describe('Models', function () {
         assert.instanceOf(y, TestMdl);
         assert.equal(x._id, y._id);
         assert.equal(x.name, y.name);
+        assert.equal(x.when, y.when);
+        assert.equal(y.when, null);
         done();
       });
     });
@@ -639,11 +679,15 @@ describe('Models', function () {
   it('should successfully update an object', function (done) {
     var modelId = H.uniqueId('model');
     var TestMdl = ottoman.model(modelId, {
-      name: 'string'
+      name: 'string',
+      when: 'Date',
     });
+
+    var myMoment = new Date();
 
     var x = new TestMdl();
     x.name = 'George';
+    x.when = myMoment;
 
     x.save(function (err) {
       assert.isNull(err);
@@ -655,6 +699,9 @@ describe('Models', function () {
         assert.instanceOf(y, TestMdl);
         assert.equal(x._id, y._id);
         assert.equal(x.name, y.name);
+        assert.notStrictEqual(x.when, y.when);
+        assert.notStrictEqual(y.when, myMoment);
+
         y.name = 'Not George';
         y.save(function (err) {
           assert.isNull(err);
@@ -666,6 +713,7 @@ describe('Models', function () {
             assert.instanceOf(y, TestMdl);
             assert.equal(y._id, z._id);
             assert.equal(y.name, z.name);
+            assert.notStrictEqual(z.when, myMoment);
             done();
           });
         });
