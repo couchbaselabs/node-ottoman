@@ -112,6 +112,28 @@ describe('Model references', function () {
     });
   });
 
+  it('should allow a reference to be present, but null', function (done) {
+    var nullLinked = new User({
+      username: 'nullAccountLink',
+      account: null
+    });
+
+    nullLinked.save(function (err) {
+      if (err) { return done(err); }
+
+      expect(nullLinked.account).to.be.null;
+
+      User.findByUsername('nullAccountLink', function (err, myUsers) {
+        expect(myUsers).to.be.an('array');
+        expect(myUsers.length).to.equal(1);
+        var user = myUsers[0];
+
+        expect(user.account).to.be.null;
+        done();
+      });
+    })
+  });
+
   it('should permit referencing two models together', function (done) {
     var myAccount = new Account({
       email: 'burtteh@fakemail.com',
