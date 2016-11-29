@@ -50,6 +50,7 @@ describe('Model Indexes', function () {
           // empty [] and the test fails, which is a red herring.
           setTimeout(function () {
             TestMdl.findByName('Frank', function (err, res) {
+              console.log(err, res);
               assert.isNull(err);
               assert.isArray(res);
               assert.propertyVal(res, 'length', 1);

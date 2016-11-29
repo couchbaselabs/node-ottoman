@@ -30,6 +30,7 @@ describe('Public API', function () {
   var adapterInst = new CbStoreAdapter({ 'bogusBucket': true }, {});
 
   var publicAPI = {
+    /*
     CbStoreAdapter: {
       module: CbStoreAdapter,
       instance: adapterInst,
@@ -37,11 +38,12 @@ describe('Public API', function () {
       functions: ['count', 'createIndex', 'ensureIndices', 'find',
         'get', 'isNotFoundError', 'remove', 'searchIndex', 'store']
     },
+    */
 
     ottoman: {
       module: ottoman,
       instance: ottoman,
-      staticFunctions: ['ensureIndices', 'fromCoo', 'getModel',
+      staticFunctions: ['ensureIndices', 'getModel',
         'isModel', 'isTypeDef', 'model'],
       functions: []
     },
@@ -51,8 +53,8 @@ describe('Public API', function () {
       instance: mdlInstance,
       functions: ['id', 'load',
         'loaded', 'remove', 'save', 'toJSON'],
-      staticFunctions: ['applyData', 'count', 'create', 'find', 'fromData',
-        'getById', 'loadAll', 'namePath', 'post', 'pre', 'ref', 'refByKey'],
+      staticFunctions: ['count', 'create', 'find',
+        'getById', 'loadAll', 'namePath', 'post', 'pre', 'ref'],
 
       children: {
         schema: {
@@ -62,7 +64,7 @@ describe('Public API', function () {
             'isCoreType', 'coreTypeByName'
           ],
           functions: [
-            'namePath', 'indexName', 'refKey', 'addField', 'setIdField',
+            'namePath', 'indexName', 'addField', 'setIdField',
             'fieldVal', 'field', 'fieldType'
           ]
         }

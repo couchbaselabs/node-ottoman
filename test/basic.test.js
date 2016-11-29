@@ -86,7 +86,7 @@ describe('Models', function () {
 
     });
 
-  describe('Coo format', function () {
+  describe('JSON format', function () {
     it('should serialize basic types properly', function () {
       var modelId = H.uniqueId('model');
 
@@ -94,10 +94,8 @@ describe('Models', function () {
         name: 'string'
       });
       var x = new TestMdl();
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
-      assert.typeOf(xJson._type, 'string');
-      assert.equal(xJson._type, ottoman.nsPrefix() + modelId);
       assert.typeOf(xJson._id, 'string');
       assert.equal(xJson._id, x._id);
       assert.isUndefined(xJson.name);
@@ -110,90 +108,9 @@ describe('Models', function () {
       });
       var x = new TestMdl();
       x.name = 'Frank';
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.equal(xJson.name, 'Frank');
-    });
-
-    it('should round-trip COO properly', function () {
-      var modelId = H.uniqueId('model');
-      var TestMdl = ottoman.model(modelId, {
-        name: 'string'
-      });
-
-      var x = new TestMdl();
-      x.name = 'Frank';
-      var xCoo = ottoman.toCoo(x);
-      var xObj = ottoman.fromCoo(xCoo);
-
-      assert.instanceOf(xObj, TestMdl);
-      assert.equal(x.name, xObj.name);
-    });
-
-    it('should fail to deserialize a type with incorrect explicit type',
-      function () {
-        var modelId = H.uniqueId('model');
-        var fakeModelId = H.uniqueId('model');
-        var TestMdl = ottoman.model(modelId, {
-          name: 'string'
-        });
-
-        var x = new TestMdl();
-        x.name = 'Frank';
-        var xCoo = ottoman.toCoo(x);
-
-        assert.throw(function () {
-          ottoman.fromCoo(xCoo, fakeModelId);
-        }, Error);
-      });
-
-    it('should deserialize a type with correct explicit type', function () {
-      var modelId = H.uniqueId('model');
-      var TestMdl = ottoman.model(modelId, {
-        name: 'string'
-      });
-
-      var x = new TestMdl();
-      x.name = 'Frank';
-      var xCoo = ottoman.toCoo(x);
-      var xObj = ottoman.fromCoo(xCoo, modelId);
-
-      assert.instanceOf(xObj, TestMdl);
-      assert.equal(x.name, xObj.name);
-    });
-
-    it('should fail to deserialize a Mixed type without _type', function () {
-      var data = {
-        name: 'Frank'
-      };
-      assert.throw(function () {
-        ottoman.fromCoo(data);
-      }, Error);
-    });
-
-    it('should deserialize with an explicit type', function () {
-      var modelId = H.uniqueId('model');
-      var TestMdl = ottoman.model(modelId, {
-        name: 'string'
-      });
-
-      var data = {
-        name: 'Frank'
-      };
-      var x = ottoman.fromCoo(data, modelId);
-      assert.instanceOf(x, TestMdl);
-      assert.equal(x.name, 'Frank');
-    });
-
-    it('should fail to deserialize an unregistered type', function () {
-      var modelId = H.uniqueId('model');
-      var data = {
-        _type: modelId,
-        name: 'Frank'
-      };
-      assert.throw(function () {
-        ottoman.fromCoo(data);
-      }, Error);
     });
 
     describe('Strings', function () {
@@ -204,7 +121,7 @@ describe('Models', function () {
         });
         var x = new TestMdl();
         x.str = 'Bob';
-        var xJson = x.toCoo();
+        var xJson = x.toJSON();
 
         assert.typeOf(xJson.str, 'string');
         assert.equal(xJson.str, 'Bob');
@@ -217,7 +134,7 @@ describe('Models', function () {
         });
         var x = new TestMdl();
         x.str = 'Bob';
-        var xJson = x.toCoo();
+        var xJson = x.toJSON();
 
         assert.typeOf(xJson.str, 'string');
         assert.equal(xJson.str, 'Bob');
@@ -232,7 +149,7 @@ describe('Models', function () {
         });
         var x = new TestMdl();
         x.num = 44.4;
-        var xJson = x.toCoo();
+        var xJson = x.toJSON();
 
         assert.typeOf(xJson.num, 'number');
         assert.equal(xJson.num, 44.4);
@@ -245,7 +162,7 @@ describe('Models', function () {
         });
         var x = new TestMdl();
         x.num = 44.4;
-        var xJson = x.toCoo();
+        var xJson = x.toJSON();
 
         assert.typeOf(xJson.num, 'number');
         assert.equal(xJson.num, 44.4);
@@ -260,7 +177,7 @@ describe('Models', function () {
         });
         var x = new TestMdl();
         x.int = 44;
-        var xJson = x.toCoo();
+        var xJson = x.toJSON();
 
         assert.typeOf(xJson.int, 'number');
         assert.equal(xJson.int, 44);
@@ -273,7 +190,7 @@ describe('Models', function () {
         });
         var x = new TestMdl();
         x.int = 44;
-        var xJson = x.toCoo();
+        var xJson = x.toJSON();
 
         assert.typeOf(xJson.int, 'number');
         assert.equal(xJson.int, 44);
@@ -288,7 +205,7 @@ describe('Models', function () {
         });
         var x = new TestMdl();
         x.bool = true;
-        var xJson = x.toCoo();
+        var xJson = x.toJSON();
 
         assert.typeOf(xJson.bool, 'boolean');
         assert.equal(xJson.bool, true);
@@ -301,7 +218,7 @@ describe('Models', function () {
         });
         var x = new TestMdl();
         x.bool = true;
-        var xJson = x.toCoo();
+        var xJson = x.toJSON();
 
         assert.typeOf(xJson.bool, 'boolean');
         assert.equal(xJson.bool, true);
@@ -422,7 +339,7 @@ describe('Models', function () {
       });
       var x = new TestMdl();
       x.when = new Date();
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.typeOf(xJson.when, 'string');
       assert.equal(xJson.when, x.when.toISOString());
@@ -436,7 +353,7 @@ describe('Models', function () {
       });
       var x = new TestMdl();
       x.when = new Date();
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.instanceOf(xJson.when, Object);
       assert.equal(xJson.when._type, 'Date');
@@ -454,7 +371,7 @@ describe('Models', function () {
       });
       var x = new TestMdl();
       x.who.name = 'George';
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.instanceOf(xJson.who, Object);
       assert.equal(xJson.who.name, 'George');
@@ -473,7 +390,7 @@ describe('Models', function () {
       });
       var x = new TestMdl();
       x.name = 'George';
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
       assert.typeOf(xJson.name, 'string');
     });
 
@@ -486,7 +403,7 @@ describe('Models', function () {
       });
       var x = new TestMdl();
       x.name = 'George';
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
       assert.typeOf(xJson.name, 'string');
     });
   });
@@ -498,7 +415,7 @@ describe('Models', function () {
         name: { type: 'string', default: 'Frank' }
       });
       var x = new TestMdl();
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.typeOf(xJson.name, 'string');
       assert.equal(xJson.name, 'Frank');
@@ -510,7 +427,7 @@ describe('Models', function () {
         num: { type: 'number', default: 14.4 }
       });
       var x = new TestMdl();
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.typeOf(xJson.num, 'number');
       assert.equal(xJson.num, 14.4);
@@ -522,7 +439,7 @@ describe('Models', function () {
         when: { type: 'Date', default: new Date() }
       });
       var x = new TestMdl();
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.typeOf(xJson.when, 'string');
       assert.equal(xJson.when, x.when.toISOString());
@@ -534,7 +451,7 @@ describe('Models', function () {
         num: { type: 'number', default: function () { return 19.3; } }
       });
       var x = new TestMdl();
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.typeOf(xJson.num, 'number');
       assert.equal(xJson.num, 19.3);
@@ -547,7 +464,7 @@ describe('Models', function () {
         bool: { type: 'boolean', default: false }
       });
       var x = new TestMdl();
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.typeOf(xJson.num, 'number');
       assert.equal(xJson.num, 0);
@@ -574,7 +491,7 @@ describe('Models', function () {
           id: 'customId'
         });
       var x = new TestMdl();
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.notProperty(xJson, '_id');
       assert.equal(xJson.customId, x.customId);
@@ -590,7 +507,7 @@ describe('Models', function () {
           id: 'test.customId'
         });
       var x = new TestMdl();
-      var xJson = x.toCoo();
+      var xJson = x.toJSON();
 
       assert.notProperty(xJson, '_id');
       assert.equal(xJson.test.customId, x.test.customId);
