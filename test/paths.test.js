@@ -1,13 +1,13 @@
 var chai = require('chai');
 var expect = chai.expect;
-var ottopath = require('../lib/ottopath');
+var ottopath = require('../lib/ottopath/ottopath');
 
 describe('Ottopath', function () {
   it('should parse correctly', function (done) {
     var input = 'creator.$ref';
     var result = ottopath.parse(input);
 
-    expect(result).to.be.an('array');
+    expect(result).to.be.an.instanceof(ottopath);
     expect(result).to.be.ok;
 
     expect(result.length).to.be.above(0);
@@ -29,7 +29,7 @@ describe('Ottopath', function () {
   it('should stringify', function (done) {
     var input = 'creator.$ref';
     var result = ottopath.parse(input);
-    var out = ottopath.stringify(result);
+    var out = result.toString()
 
     expect(out).to.equal('creator.$ref');
     done();
@@ -40,7 +40,7 @@ describe('Ottopath', function () {
     var result = ottopath.parse(input);
     result[0].expression.type = 'totally illegal';
 
-    expect(function () { ottopath.stringify(result); })
+    expect(function () { result.toString(); })
       .to.throw(Error);
     done();
   });
