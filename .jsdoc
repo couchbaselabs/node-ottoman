@@ -10,7 +10,7 @@
   "opts": {
     "template": "../../node_modules/ink-docstrap/template",
     "destination": "./apidocs/",
-    "private": true
+    "recurse": true
   },
   "plugins": [
     "plugins/markdown"
