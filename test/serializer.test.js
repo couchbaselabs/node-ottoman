@@ -363,6 +363,14 @@ describe('Serializers', function() {
   }
 
   function testJsSer(ser, usesRefs) {
+    it('should serialize correctly', function() {
+      var serData = ser.serialize(testStringObj);
+      expect(serData).to.deep.equal({
+        _id: testStringObj._id,
+        value: 'hello world'
+      });
+    });
+
     it('should serialize model refs correctly', function() {
       if (!usesRefs) {
         checkSerValue(ser, testModelRefObj, {
@@ -502,6 +510,14 @@ describe('Serializers', function() {
       }
       return obj;
     }
+
+    it('should serialize correctly', function() {
+      var serData = ser.serialize(testStringObj);
+      expect(serData).to.deep.equal(_wrapType({
+        _id: testStringObj._id,
+        value: 'hello world'
+      }, 'StringMdl', true));
+    });
 
     it('should serialize model refs correctly', function() {
       checkSerValue(ser, testModelRefObj, _wrapType({
