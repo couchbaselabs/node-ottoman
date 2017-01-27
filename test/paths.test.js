@@ -7,7 +7,7 @@ describe('Ottopath', function () {
     var input = 'creator.$ref';
     var result = ottopath.parse(input);
 
-    expect(result).to.be.an.instanceof(ottopath);
+    expect(result).to.be.an.instanceof(ottopath.Path);
     expect(result).to.be.ok;
 
     expect(result.length).to.be.above(0);
