@@ -3,9 +3,9 @@
 var chai = require('chai');
 var expect = chai.expect;
 var ottoman = require('./../lib/ottoman');
-var JsSerializer = require('./../lib/codec/jsserializer');
-var CooSerializer = require('./../lib/codec/cooserializer');
-var RefJsSerializer = require('./../lib/codec/refjsserializer');
+var JsSerializer = require('./../lib/serialization/jsserializer');
+var CooSerializer = require('./../lib/serialization/cooserializer');
+var RefJsSerializer = require('./../lib/serialization/refjsserializer');
 var ModelInstance = require('./../lib/model/modelinstance');
 
 describe('Serializers', function() {
