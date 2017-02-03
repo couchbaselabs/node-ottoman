@@ -20,7 +20,7 @@ Couchbase Node.js Community - [http://couchbase.com/communities/nodejs](http://c
 
 An ODM allows developers to:
 
- - Work natively with Javascript Objects.
+ - Work natively with JavaScript Objects.
  - Rapidly prototype and define your data model together with their relationships.
  - Let someone else handle the heavy lifting and tedious tasks.
  - Support many different data-types, including several which come predefined with Ottoman in addition to support for custom data-types.
@@ -28,7 +28,7 @@ An ODM allows developers to:
  - Model your data for embedding objects or references and keep those relationships crisp.
  - Provide support for generic finds.
  - Support for multiple indexing strategies natively and automatically.
- - Control and enfoce your data model from within your application.
+ - Control and enforce your data model from within your application.
  - Programmatically define object methods that map to the data model.
 
 
@@ -36,7 +36,7 @@ An ODM allows developers to:
 
 ### Installing
 
-Ottoman is not yet published to npm, to install the in development version
+Ottoman is not yet published to npm, to install the development version
 directly from GitHub, run:
 ```
 npm install ottoman
@@ -45,7 +45,7 @@ npm install ottoman
 
 ### Introduction
 
-Set up your ottoman instance with a connection to couchbase.
+Set up your Ottoman instance with a connection to Couchbase.
 ```javascript
 var ottoman = require('ottoman');
 var couchbase = require('couchbase');
@@ -79,7 +79,7 @@ var table = new Furniture({name:'Table'});
 table.dance();
 ```
 
-But we haven't actually saved anythign to Couchbase yet.  Let's do that:
+But we haven't actually saved anything to Couchbase yet.  Let's do that:
 ```javascript
 table.save(function(err) {
   if (err) return console.error(err);
@@ -145,7 +145,7 @@ Ottoman supports a number of standard types:
 - `integer` - An integer number.
 - `boolean` - A boolean value.
 - `Date` - A date value.
-- `Mixed` - Any valid ottoman type, both models and built-in types.
+- `Mixed` - Any valid Ottoman type, both models and built-in types.
 
 These simple types can have default values specified or default value generators:
 ```javascript
@@ -175,7 +175,7 @@ ottoman.model('User', {
 });
 ```
 
-and arrays of groups:
+And arrays of groups:
 ```javascript
 ottoman.model('User', {
   name: 'string',
@@ -203,7 +203,7 @@ ottoman.model('User', {
 
 ### Model References
 
-In addition to supporting groups of properties, models also support referencing whole other documents.  Through these references we are able to store related but not neccessarily dependent data.
+In addition to supporting groups of properties, models also support referencing whole other documents.  Through these references we are able to store related but not necessarily dependent data.
 
 Example reference relationship:
 ```javascript
@@ -278,14 +278,14 @@ ottoman.model('User', {
 });
 ```
 
-In order for indices to be created on the server, you must call the `ensureIndices` method.  This method will internally generate a list of indexes which will be used and the most optimal configuration for them and them build any which are missing on the server.  This must be called after all models are defined, and it is a good idea to only call this when needed rather than any time your server is started.
+In order for indices to be created on the server, you must call the `ensureIndices` method.  This method will internally generate a list of indexes which will be used and the most optimal configuration for them and build any which are missing on the server.  This must be called after all models are defined, and it is a good idea to only call this when needed rather than any time your server is started.
 
 ```javascript
 var ottoman = require('ottoman');
 var models = require('./all_my_models');
 ottoman.ensureIndices(function(err) {
   if (err) {
-    console.log('failed to created neccessary indices', err);
+    console.log('failed to created necessary indices', err);
     return;
   }
 
@@ -314,7 +314,7 @@ penalty if you want consistency in the result.
 ##### `n1ql`
 These indices utilize the new SQL-like query language available in Couchbase Server 4.0.0.  These indices are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
 
-N1ql indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html).  If you need flexibility of query and
+N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html).  If you need flexibility of query and
 speed, this is the way to go.
 
 ### Queries
@@ -341,15 +341,15 @@ ottoman.model('User', {
 });
 ```
 
-### Finding models via N1ql Queries
+### Finding models via N1QL Queries
 
 All models also expose a `find` method that can locate model instances by any number of criteria, and that also support pagination.
 
 This method is very useful for finding model instances under any arbitrary criteria; however keep in mind that you may wish to put
-n1ql indexes on fields that would be very often a part of these queries, to improve lookup performance, and prevent couchbase
+N1QL indexes on fields that would be very often a part of these queries, to improve lookup performance, and prevent Couchbase
 from having to scan most or all documents in the bucket in order to find the results.
 
-As you can see in the example below, you can even optionally specify pagination (limit/skip) and adjust the consistency of the query executed on couchbase.
+As you can see in the example below, you can even optionally specify pagination (limit/skip) and adjust the consistency of the query executed on Couchbase.
 
 ```javascript
 var filters = { 
