@@ -82,6 +82,38 @@ describe('Model references', function () {
     done();
   });
 
+  it('should allow mixed references with namespace', function (done) {
+    ottoman.namespace = 'TESTNAMESPACE';
+    var MixedRefModel = ottoman.model(H.uniqueId('throwaway'), {
+      anyRef: { ref: 'Mixed' }
+    });
+
+    for (var i = 0; i < 10; i++) {
+      var M = ottoman.model(H.uniqueId('throwaway'), {
+        name: 'string'
+      });
+
+      var inst = new M({ name: 'Frank' });
+
+      var mixer = new MixedRefModel({ anyRef: inst });
+      var frozen = mixer.toCoo();
+
+      expect(frozen.anyRef).to.be.an('object');
+      expect(frozen.anyRef._type).to.contain('throwaway');
+
+      // Demonstrate that when we bring it back from coo, the reference is
+      // intact, and doesn't throw an error related to unknown types.
+      var thawed = ottoman.fromCoo(frozen, MixedRefModel.name);
+      expect(thawed.anyRef).to.be.ok;
+
+      // Naturally it will be an unloaded reference, but this proves that
+      // the ref has a 'loaded' function, meaning it's actually a reference.
+      expect(thawed.anyRef.loaded()).to.be.false;
+    }
+    ottoman.namespace = '';
+    done();
+  });
+
   it('disallow non-reference values in mixed references', function (done) {
     var MixedRefModel = ottoman.model(H.uniqueId('throwaway'), {
       anyRef: { ref: 'Mixed' }

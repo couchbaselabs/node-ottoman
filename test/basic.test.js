@@ -382,6 +382,36 @@ describe('Models', function () {
       assert.equal(myUserJson.account.$ref, Account.name);
     });
 
+    it('should serialize references as mongoose references with namespace',
+    function () {
+      ottoman.namespace = 'TESTNAMESPACE';
+      var Account = ottoman.model(H.uniqueId('model'), {
+        email: 'string',
+        name: 'string'
+      });
+
+      var User = ottoman.model(H.uniqueId('model'), {
+        username: 'string',
+        account: { ref: Account }
+      });
+
+      var myAccount = new Account({
+        email: 'burtteh@fakemail.com',
+        name: 'Brett Lawson'
+      });
+
+      var myUser = new User({
+        username: 'brett19',
+        account: myAccount
+      });
+
+      var myUserJson = myUser.toJSON();
+      assert.typeOf(myUserJson.account, 'object');
+      assert.equal(myUserJson.account.$id, myAccount._id);
+      assert.equal(myUserJson.account.$ref, Account.name);
+      ottoman.namespace = '';
+    });
+
     it('should serialize mixed references correctly', function () {
       var Container = ottoman.model(H.uniqueId('model'), {
         myRef: { ref: 'Mixed' }
@@ -400,6 +430,29 @@ describe('Models', function () {
       assert.typeOf(containerJson.myRef, 'object');
       assert.equal(containerJson.myRef.$id, steve._id);
       assert.equal(containerJson.myRef.$ref, Platypus.name);
+    });
+
+    it('should serialize mixed references correctly with namespace',
+    function () {
+      ottoman.namespace = 'TESTNAMESPACE';
+      var Container = ottoman.model(H.uniqueId('model'), {
+        myRef: { ref: 'Mixed' }
+      });
+
+      var Platypus = ottoman.model(H.uniqueId('model'), {
+        name: { type: 'string', default: 'Steve' }
+      });
+
+      var steve = new Platypus({ name: 'Steve' });
+      var container = new Container({
+        myRef: steve
+      });
+
+      var containerJson = container.toJSON();
+      assert.typeOf(containerJson.myRef, 'object');
+      assert.equal(containerJson.myRef.$id, steve._id);
+      assert.equal(containerJson.myRef.$ref, Platypus.name);
+      ottoman.namespace = '';
     });
 
     it('should serialize unloaded references as null', function () {
