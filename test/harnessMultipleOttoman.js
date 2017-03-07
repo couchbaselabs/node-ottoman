@@ -1,6 +1,7 @@
 'use strict';
 
 var ottoman = require('../lib/ottoman.js');
+var H = require('./harness');
 
 // Some helpers
 function _saveAllModels(modelArr, callback) {
@@ -24,11 +25,7 @@ function _saveAllModels(modelArr, callback) {
 }
 module.exports.saveAll = _saveAllModels;
 
-var uniqueIdCounter = 0;
-function uniqueId(prefix) {
-  return prefix + (uniqueIdCounter++);
-}
-module.exports.uniqueId = uniqueId;
+module.exports.uniqueId = H.uniqueId;
 
 function setupOttoman(namespace, models, types) {
   var o = new ottoman.Ottoman({
