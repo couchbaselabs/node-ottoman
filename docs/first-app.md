@@ -14,8 +14,8 @@ Install Node.js from the [Node.js website](http://nodejs.org/).  Once Node.js is
 
 From the Terminal:
 ```bash
-​$ mkdir ~/bikeshop-cb
-$ git clone https://github.com/ToddGreenstein/bikeshop-cb.git ~/bikeshop-cb/
+​$ git clone https://github.com/couchbaselabs/bikeshop-cb.git
+$ cd bikeshop-cb
 ```
 
 The package.json file in the root directory of the application lists the dependencies for the application.
@@ -23,9 +23,9 @@ The package.json file in the root directory of the application lists the depende
 ```json
 "dependencies": {
     "express": "*",
-    "couchbase": "*",
+    "couchbase": "~2.3.0",
     "body-parser": "*",
-    "ottoman":"~1.0.0"
+    "ottoman":"~1.0.2"
 }
 ```
 
