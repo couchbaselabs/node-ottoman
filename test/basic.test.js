@@ -442,6 +442,53 @@ describe('Models', function () {
       assert.equal(xJson.when._type, 'Date');
       assert.equal(xJson.when.v, x.when.toISOString());
     });
+
+    it('should not find mismatching dates', function (done) {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        when: { type: 'Date', default: Date.now }
+      });
+
+      var x = new TestMdl();
+      var otherDate = new Date('2013-11-11T22:25:42.000Z');
+
+      x.save(function (err) {
+        assert.isNull(err);
+
+        TestMdl.find({when: otherDate}, {}, function (err, res) {
+          assert.isNull(err);
+
+          assert.lengthOf(res, 0);
+          done();
+        });
+      });
+    });
+
+    it('should only find a matching date', function (done) {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        when: { type: 'Date', default: Date.now }
+      });
+
+      var someWhen = new Date('2013-11-11T22:25:42.000Z');
+      var x = new TestMdl();
+      var y = new TestMdl({when: someWhen});
+
+      x.save(function (err) {
+        assert.isNull(err);
+
+        y.save(function (err) {
+          assert.isNull(err);
+
+          TestMdl.find({when: someWhen}, {}, function (err, res) {
+            assert.isNull(err);
+
+            assert.lengthOf(res, 1);
+            done();
+          });
+        });
+      });
+    });
   });
 
   describe('Groups', function () {
