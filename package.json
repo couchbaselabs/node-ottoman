@@ -26,12 +26,12 @@
     "couchbase": "~2.4.3"
   },
   "devDependencies": {
-    "chai": "4.1.2",
-    "eslint": "4.17.0",
+    "chai": "~3.3.0",
+    "eslint": "^2.9.0",
     "ink-docstrap": "git+https://github.com/brett19/docstrap.git#master",
-    "istanbul": "0.4.5",
+    "istanbul": "~0.3.21",
     "jsdoc": "~3.3.0-alpha9",
-    "mocha": "5.0.0"
+    "mocha": "~2.3.3"
   },
   "repository": {
     "type": "git",
