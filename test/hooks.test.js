@@ -1,3 +1,5 @@
+'use strict';
+
 var chai = require('chai');
 var expect = chai.expect;
 var H = require('./harness');
@@ -31,15 +33,15 @@ describe('Model hooks', function () {
         var TestMdl = ottoman.model(modelId, {
           name: 'string'
         },
-          {
-            index: {
-              findByName: {
-                type: 'refdoc',
-                by: 'name',
-                consistency: ottoman.Consistency.GLOBAL
-              }
+        {
+          index: {
+            findByName: {
+              type: 'refdoc',
+              by: 'name',
+              consistency: ottoman.Consistency.GLOBAL
             }
-          });
+          }
+        });
 
         var x = new TestMdl();
         var searchStr = 'Hello ' + Math.random();

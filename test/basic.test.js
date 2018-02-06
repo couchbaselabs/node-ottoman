@@ -56,35 +56,35 @@ describe('Models', function () {
 
   it('should understand all basic types in both schema formats,'
     + ' flat and object',
-    function () {
-      var modelId = H.uniqueId('model');
+  function () {
+    var modelId = H.uniqueId('model');
 
-      var counter = 0;
-      function mkName(str) {
-        return modelId + '_' + str + '_' + (++counter);
-      }
+    var counter = 0;
+    function mkName(str) {
+      return modelId + '_' + str + '_' + (++counter);
+    }
 
-      var types = ['string', 'number', 'integer', 'boolean'];
+    var types = ['string', 'number', 'integer', 'boolean'];
 
-      types.forEach(function (type) {
-        ottoman.model(mkName(type), {
-          'someField': type
-        });
-
-        ottoman.model(mkName(type), {
-          'someField': { type: type }
-        });
-
-        ottoman.model(mkName(type), {
-          'someFieldArray': [type]
-        });
-
-        ottoman.model(mkName(type), {
-          'someFieldArray': [{ type: type }]
-        });
+    types.forEach(function (type) {
+      ottoman.model(mkName(type), {
+        'someField': type
       });
 
+      ottoman.model(mkName(type), {
+        'someField': { type: type }
+      });
+
+      ottoman.model(mkName(type), {
+        'someFieldArray': [type]
+      });
+
+      ottoman.model(mkName(type), {
+        'someFieldArray': [{ type: type }]
+      });
     });
+
+  });
 
   describe('Coo format', function () {
     it('should serialize basic types properly', function () {
@@ -571,8 +571,8 @@ describe('Models', function () {
       var TestMdl = ottoman.model(modelId, {
         customId: { type: 'string', auto: 'uuid', readonly: true }
       }, {
-          id: 'customId'
-        });
+        id: 'customId'
+      });
       var x = new TestMdl();
       var xJson = x.toCoo();
 
@@ -587,8 +587,8 @@ describe('Models', function () {
           customId: { type: 'string', auto: 'uuid', readonly: true }
         }
       }, {
-          id: 'test.customId'
-        });
+        id: 'test.customId'
+      });
       var x = new TestMdl();
       var xJson = x.toCoo();
 
@@ -755,13 +755,13 @@ describe('Models', function () {
     var TestMdl = ottoman.model(modelId, {
       name: 'string'
     }, {
-        index: {
-          findByName: {
-            type: 'refdoc',
-            by: 'name'
-          }
+      index: {
+        findByName: {
+          type: 'refdoc',
+          by: 'name'
         }
-      });
+      }
+    });
 
     var x = new TestMdl();
     x.name = 'George';
@@ -895,56 +895,60 @@ describe('Models', function () {
   });
 
   // null subdocs without a validator should pass through unharmed
-  it('should validate a model to all depths unless null subdocs have no validator', function (done) {
-    var modelId = H.uniqueId('model');
-    var TestMdl = ottoman.model(modelId, {
-      person: {
-        notes: { type: 'string' },
-        info:{
-          name: {
-            type: 'string',
+  it(
+    'should validate a model to all depths unless null subdocs have ' +
+    'no validator',
+    function (done) {
+      var modelId = H.uniqueId('model');
+      var TestMdl = ottoman.model(modelId, {
+        person: {
+          notes: { type: 'string' },
+          info:{
+            name: {
+              type: 'string',
+            }
           }
         }
-      }
+      });
+      // leaving off the person.info.name bit should be ok in this case
+      var x = new TestMdl({ person: { notes: 'goes by joe'  } });
+      ottoman.validate(x, function (err) {
+        assert.isNull(err);
+        done();
+      });
     });
-    // leaving off the person.info.name bit should be ok in this case
-    var x = new TestMdl({ person: { notes: 'goes by joe'  } });
-    ottoman.validate(x, function (err) {
-      assert.isNull(err);
-      done();
-    });
-  });
 
 
 
   // A model instance may have a null subdoc that needs to be validated
-  it('should validate a model to all depths and handle null subdocs', function (done) {
-    var modelId = H.uniqueId('model');
-    var called = false;
-    var TestMdl = ottoman.model(modelId, {
-      person: {
-        notes: { type: 'string' },
-        info:{
-          name: {
-            type: 'string',
-            validator: function (value) {
-              if (typeof (value) !== 'string') {
-                called = true;
-                throw new Error('bad data');
+  it('should validate a model to all depths and handle null subdocs',
+    function (done) {
+      var modelId = H.uniqueId('model');
+      var called = false;
+      var TestMdl = ottoman.model(modelId, {
+        person: {
+          notes: { type: 'string' },
+          info:{
+            name: {
+              type: 'string',
+              validator: function (value) {
+                if (typeof (value) !== 'string') {
+                  called = true;
+                  throw new Error('bad data');
+                }
               }
             }
           }
         }
-      }
+      });
+      // leaving off the name field is not ok here because info is null
+      var x = new TestMdl({ person: { notes: 'goes by joe'  } });
+      ottoman.validate(x, function (err) {
+        assert.isNotNull(err);
+        assert.equal(called, true);
+        done();
+      });
     });
-    // leaving off the name field is not ok here because info is null
-    var x = new TestMdl({ person: { notes: 'goes by joe'  } });
-    ottoman.validate(x, function (err) {
-      assert.isNotNull(err);
-      assert.equal(called, true);
-      done();
-    });
-  });
 
 
 

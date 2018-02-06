@@ -20,29 +20,29 @@ describe('Model references', function () {
     username: 'string',
     account: { ref: Account }
   },
-    {
-      index: {
-        findByUsername: {
-          type: 'n1ql',
-          by: 'username',
-          consistency: ottoman.Consistency.GLOBAL
-        }
+  {
+    index: {
+      findByUsername: {
+        type: 'n1ql',
+        by: 'username',
+        consistency: ottoman.Consistency.GLOBAL
       }
-    });
+    }
+  });
 
   var MultiAccountUser = ottoman.model(idC, {
     username: 'string',
     accounts: [{ ref: Account }]
   },
-    {
-      index: {
-        findByUsername: {
-          type: 'n1ql',
-          by: 'username',
-          consistency: ottoman.Consistency.GLOBAL
-        }
+  {
+    index: {
+      findByUsername: {
+        type: 'n1ql',
+        by: 'username',
+        consistency: ottoman.Consistency.GLOBAL
       }
-    });
+    }
+  });
 
   before(function (done) {
     ottoman.ensureIndices(function (err) {

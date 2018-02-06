@@ -28,8 +28,8 @@ describe('Model Instances', function () {
     myId: { type: 'string', auto: 'uuid', readonly: true },
     name: 'string'
   }, {
-      id: 'myId'
-    });
+    id: 'myId'
+  });
 
   var testIdInstance = new IdTestModel({ name: 'Jane Smith' });
 

@@ -14,15 +14,15 @@ describe('Model Queries', function () {
     var UserMdl = ottoman.model(userModelId, {
       name: 'string'
     }, {
-        queries: {
-          topPosts: {
-            type: indexType,
-            of: postModelId,
-            by: 'creator',
-            consistency: ottoman.Consistency.GLOBAL
-          }
+      queries: {
+        topPosts: {
+          type: indexType,
+          of: postModelId,
+          by: 'creator',
+          consistency: ottoman.Consistency.GLOBAL
         }
-      });
+      }
+    });
     var PostMdl = ottoman.model(postModelId, {
       creator: { ref: userModelId },
       msg: 'string'
@@ -94,15 +94,15 @@ describe('Model Queries', function () {
       var UserMdl = ottoman.model(userModelId, {
         name: 'string'
       },
-        {
-          queries: {
-            topPosts: {
-              type: 'view',
-              of: postModelId,
-              by: 'creator'
-            }
+      {
+        queries: {
+          topPosts: {
+            type: 'view',
+            of: postModelId,
+            by: 'creator'
           }
-        });
+        }
+      });
 
       ottoman.ensureIndices(function (err) {
         assert.isNull(err);

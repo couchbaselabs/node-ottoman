@@ -4,7 +4,6 @@ var chai = require('chai');
 var expect = chai.expect;
 var H = require('./harness');
 var ottoman = H.lib;
-var ModelInstance = require('../lib/modelinstance');
 var CbStoreAdapter = require('../lib/cbstoreadapter');
 var StoreAdapter = require('../lib/storeadapter');
 var Schema = require('../lib/schema');
@@ -110,25 +109,28 @@ describe('Public API', function () {
       if (publicAPI[key].children) {
         var children = publicAPI[key].children;
 
-        Object.keys(children).forEach(function (childProp) {
-          publicAPI[key].children[childProp].staticFunctions.forEach(function (childFunc) {
-            var thisMod = publicAPI[key].children[childProp].module;
+        Object.keys(children).forEach(function (prop) {
+          publicAPI[key].children[prop].staticFunctions
+            .forEach(function (func) {
+              var thisMod = publicAPI[key].children[prop].module;
 
-            it('should expose static child field ' + childProp + '.' + childFunc,
-              function (done) {
-                expect(thisMod[childFunc]).to.be.an('function');
-                done();
-              });
-          });
+              it(
+                'should expose static child field ' + prop + '.' + func,
+                function (done) {
+                  expect(thisMod[func]).to.be.an('function');
+                  done();
+                });
+            });
 
-          publicAPI[key].children[childProp].functions.forEach(function (childFunc) {
-            it('should expose child field ' + childProp + '.' + childFunc,
-              function (done) {
-                expect(module[childProp]).to.be.an('object');
-                expect(module[childProp][childFunc]).to.be.an('function');
-                done();
-              });
-          });
+          publicAPI[key].children[prop].functions
+            .forEach(function (func) {
+              it('should expose child field ' + prop + '.' + func,
+                function (done) {
+                  expect(module[prop]).to.be.an('object');
+                  expect(module[prop][func]).to.be.an('function');
+                  done();
+                });
+            });
         });
       }
     });
