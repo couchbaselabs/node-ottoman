@@ -14,22 +14,23 @@
     "test": "eslint ./lib && istanbul cover ./node_modules/mocha/bin/_mocha -- test/*.test.js"
   },
   "dependencies": {
-    "bluebird": "^3.4.1",
-    "jsonpath": "~0.2.2",
-    "lodash": "^4.15.0",
+    "bluebird": "^3.5.1",
+    "couchbase": "^2.4.3",
+    "jsonpath": "^1.0.0",
+    "lodash": "^4.17.5",
     "lodash-deep": "^2.0.0",
-    "uuid": "~2.0.1"
+    "uuid": "^3.2.1"
   },
   "optionalDependencies": {
-    "couchbase": "~2.4.1"
+    "couchbase": "~2.4.3"
   },
   "devDependencies": {
-    "chai": "~3.3.0",
-    "eslint": "^2.9.0",
+    "chai": "4.1.2",
+    "eslint": "4.17.0",
     "ink-docstrap": "git+https://github.com/brett19/docstrap.git#master",
-    "istanbul": "~0.3.21",
+    "istanbul": "0.4.5",
     "jsdoc": "~3.3.0-alpha9",
-    "mocha": "~2.3.3"
+    "mocha": "5.0.0"
   },
   "repository": {
     "type": "git",
