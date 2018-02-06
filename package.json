@@ -16,6 +16,7 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "couchbase": "^2.4.3",
+    "debug": "^3.1.0",
     "jsonpath": "^1.0.0",
     "lodash": "^4.17.5",
     "lodash-deep": "^2.0.0",
