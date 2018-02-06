@@ -4,10 +4,10 @@ node_js:
   - "0.12"
   - "4.4"
   - "5.1"
-  - "6"
-  - "7"
-  - "8"
-  - "9"
+  - "6.12"
+  - "7.10"
+  - "8.9"
+  - "9.5"
 
 # 0.6 is not enabled as couchnode does not support
 #   this particular version of Node.js.
