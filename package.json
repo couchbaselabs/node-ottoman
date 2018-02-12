@@ -10,6 +10,7 @@
   "main": "./lib/ottoman",
   "license": "Apache2",
   "name": "ottoman",
+  "types": "index.d.ts",
   "scripts": {
     "test": "eslint ./lib && istanbul cover ./node_modules/mocha/bin/_mocha -- test/*.test.js"
   },
@@ -24,6 +25,7 @@
     "couchbase": "~2.4.1"
   },
   "devDependencies": {
+    "@types/couchbase": "^2.1.30",
     "chai": "~3.3.0",
     "eslint": "^2.9.0",
     "ink-docstrap": "git+https://github.com/brett19/docstrap.git#master",
