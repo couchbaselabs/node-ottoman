@@ -24,7 +24,7 @@ declare namespace OttomanJS {
 
   type ValidatorFunction = (value: any) => void
   interface SchemaField {
-    type: 'string' | 'number' | 'integer' | 'boolean' | 'Date', 'mixed',
+    type: 'string' | 'number' | 'integer' | 'boolean' | 'Date' | 'mixed',
     auto: 'uuid',
     readonly: boolean,
     validator: ValidatorFunction
