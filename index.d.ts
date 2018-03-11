@@ -45,10 +45,10 @@ declare namespace OttomanJS {
     getById<T> (id: string, callback: GetByIdCallback<T>): void
     create<T> (data: any, callback: CreateCallback<T>): void
     save (callback: SaveCallback<T>): void
-    schema: Schema
   }
 
   interface ModelInstanceCtor {
+    schema: Schema
   }
 
   class Ottoman {
