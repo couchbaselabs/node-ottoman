@@ -23,11 +23,7 @@ declare namespace OttomanJS {
   }
 
   interface Schema {
-
-  }
-
-  interface ModelSchema {
-    validate<T> (mdlInst: T, callback: ValidateCallback<T>): void
+    validate<T> (modelInstance: ModelInstance<T>, callback: ValidationCallback<T>): void
   }
 
   interface Indices {
@@ -42,14 +38,14 @@ declare namespace OttomanJS {
   type CreateCallback<T> = (error: CouchbaseError | null, document: ModelInstance<T> | undefined) => void
   type GetByIdCallback<T> = (error: CouchbaseError | null, model: ModelInstance<T> | undefined) => void
   type SaveCallback<T> = (error: CouchbaseError | null, response: ModelInstance<T> | undefined) => void
-  type ValidateCallback<T> = (error: CouchbaseError | null) => void
+  type ValidationCallback<T> = (error: CouchbaseError | null) => void
 
   class ModelInstance<T> {
     fromData<T> (data: any): T
     getById<T> (id: string, callback: GetByIdCallback<T>): void
     create<T> (data: any, callback: CreateCallback<T>): void
     save (callback: SaveCallback<T>): void
-    schema: ModelSchema
+    schema: Schema
   }
 
   interface ModelInstanceCtor {
