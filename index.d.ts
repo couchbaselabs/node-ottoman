@@ -22,6 +22,18 @@ declare namespace OttomanJS {
     namespace?: string
   }
 
+  type ValidatorFunction = (value: any) => void
+  interface SchemaField {
+    type: 'string' | 'number' | 'integer' | 'boolean' | 'Date', 'mixed',
+    auto: 'uuid',
+    readonly: boolean,
+    validator: ValidatorFunction
+  }
+
+  interface SchemaDefinition {
+    [key: string]: Partial<SchemaField>
+  }
+
   interface Schema {
     validate<T> (modelInstance: ModelInstance<T>, callback: ValidationCallback<T>): void
   }
@@ -62,7 +74,7 @@ declare namespace OttomanJS {
 
     constructor (options: OttomanOptions)
 
-    model (key: string, schema: Schema, index: Indices): ModelInstanceCtor
+    model (key: string, schema: SchemaDefinition, index: Indices): ModelInstanceCtor
   }
 }
 
