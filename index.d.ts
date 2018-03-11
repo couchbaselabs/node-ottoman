@@ -45,7 +45,6 @@ declare namespace OttomanJS {
   type ValidateCallback<T> = (error: CouchbaseError | null) => void
 
   class ModelInstance<T> {
-    constructor(data: any)
     fromData<T> (data: any): T
     getById<T> (id: string, callback: GetByIdCallback<T>): void
     create<T> (data: any, callback: CreateCallback<T>): void
