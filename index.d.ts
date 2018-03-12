@@ -22,11 +22,33 @@ declare namespace OttomanJS {
     namespace?: string
   }
 
-  interface Schema {
-
+  interface ModelReference {
+    ref: string
   }
 
-  interface Indices {
+  type ValidatorFunction = (value: any) => void
+  interface SchemaField {
+    type: 'string' | 'number' | 'integer' | 'boolean' | 'Date' | 'mixed' | ModelReference,
+    auto: 'uuid',
+    readonly: boolean,
+    validator: ValidatorFunction
+  }
+
+  interface SchemaDefinition {
+    [key: string]: Partial<SchemaField>
+  }
+
+  interface Schema {
+    validate<T> (modelInstance: ModelInstance<T>, callback: ValidationCallback<T>): void
+  }
+
+  interface Index {
+    type: 'refdoc' | 'view' | 'n1ql',
+    by: string
+  }
+
+  interface IndexDefinition {
+    [key: string]: Partial<Index>
   }
 
   interface GetByIdOptions {
@@ -38,6 +60,7 @@ declare namespace OttomanJS {
   type CreateCallback<T> = (error: CouchbaseError | null, document: ModelInstance<T> | undefined) => void
   type GetByIdCallback<T> = (error: CouchbaseError | null, model: ModelInstance<T> | undefined) => void
   type SaveCallback<T> = (error: CouchbaseError | null, response: ModelInstance<T> | undefined) => void
+  type ValidationCallback<T> = (error: CouchbaseError | null) => void
 
   class ModelInstance<T> {
     fromData<T> (data: any): T
@@ -47,6 +70,7 @@ declare namespace OttomanJS {
   }
 
   interface ModelInstanceCtor {
+    schema: Schema
   }
 
   class Ottoman {
@@ -60,7 +84,7 @@ declare namespace OttomanJS {
 
     constructor (options: OttomanOptions)
 
-    model (key: string, schema: Schema, index: Indices): ModelInstanceCtor
+    model (key: string, schema: SchemaDefinition, index: IndexDefinition): ModelInstanceCtor
   }
 }
 
