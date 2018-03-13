@@ -31,7 +31,8 @@ declare namespace OttomanJS {
     type: 'string' | 'number' | 'integer' | 'boolean' | 'Date' | 'mixed' | ModelReference,
     auto: 'uuid',
     readonly: boolean,
-    validator: ValidatorFunction
+    validator: ValidatorFunction,
+    default: boolean | Date | string | number | null
   }
 
   interface SchemaDefinition {
