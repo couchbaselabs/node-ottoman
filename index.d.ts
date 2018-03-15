@@ -43,6 +43,20 @@ declare namespace OttomanJS {
     validate<T> (modelInstance: ModelInstance<T>, callback: ValidationCallback<T>): void
   }
 
+  interface ModelOptions {
+    index?: IndexDefinition
+    query?: QueryDefinition
+  }
+
+  interface Query {
+    of: string
+    by: string
+  }
+
+  interface QueryDefinition {
+    [key: string]: Query
+  }
+
   interface Index {
     type: 'refdoc' | 'view' | 'n1ql',
     by: string
@@ -85,7 +99,7 @@ declare namespace OttomanJS {
 
     constructor (options: OttomanOptions)
 
-    model (key: string, schema: SchemaDefinition, index: IndexDefinition): ModelInstanceCtor
+    model (key: string, schema: SchemaDefinition, options: ModelOptions): ModelInstanceCtor
   }
 }
 
