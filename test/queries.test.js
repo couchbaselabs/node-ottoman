@@ -28,7 +28,7 @@ describe('Model Queries', function () {
       msg: 'string'
     });
 
-    ottoman.ensureIndices(function (err) {
+    ottoman.ensureIndices(true, function (err) {
       assert.isNull(err);
 
       var ux = new UserMdl();
@@ -104,7 +104,7 @@ describe('Model Queries', function () {
           }
         });
 
-      ottoman.ensureIndices(function (err) {
+      ottoman.ensureIndices(true, function (err) {
         assert.isNull(err);
 
         // Let index creation catch up.

@@ -76,6 +76,7 @@ declare namespace OttomanJS {
   type GetByIdCallback<T> = (error: CouchbaseError | null, model: ModelInstance<T> | undefined) => void
   type SaveCallback<T> = (error: CouchbaseError | null, response: ModelInstance<T> | undefined) => void
   type ValidationCallback<T> = (error: CouchbaseError | null) => void
+  type EnsureIndicesCallback = (error: CouchbaseError | null) => void
 
   class ModelInstance<T> {
     fromData<T> (data: any): T
@@ -100,6 +101,7 @@ declare namespace OttomanJS {
     constructor (options: OttomanOptions)
 
     model (key: string, schema: SchemaDefinition, options: ModelOptions): ModelInstanceCtor
+    ensureIndices (DeferBuild: boolean, callback: Function): void
   }
 }
 

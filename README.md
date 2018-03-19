@@ -100,9 +100,9 @@ var Furniture = ottoman.model('Furniture', {
 });
 ```
 
-Now we need to ensure that this index is available on the server for searching:
+Now we need to ensure that this index is available on the server for searching (1st param to `ensureIndices` enables or disables [deferred index building](https://blog.couchbase.com/deferring-of-index-creation/)):
 ```javascript
-ottoman.ensureIndices(function(err) {
+ottoman.ensureIndices(true, function(err) {
   if (err) return console.error(err);
 });
 ```
@@ -280,10 +280,12 @@ ottoman.model('User', {
 
 In order for indices to be created on the server, you must call the `ensureIndices` method.  This method will internally generate a list of indexes which will be used and the most optimal configuration for them and build any which are missing on the server.  This must be called after all models are defined, and it is a good idea to only call this when needed rather than any time your server is started.
 
+The 1st parameter passed to `ensureIndices` enables or disables [deferred index building](https://blog.couchbase.com/deferring-of-index-creation/).
+
 ```javascript
 var ottoman = require('ottoman');
 var models = require('./all_my_models');
-ottoman.ensureIndices(function(err) {
+ottoman.ensureIndices(true, function(err) {
   if (err) {
     console.log('failed to created necessary indices', err);
     return;

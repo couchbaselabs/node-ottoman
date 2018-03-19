@@ -45,7 +45,7 @@ describe('Model references', function () {
     });
 
   before(function (done) {
-    ottoman.ensureIndices(function (err) {
+    ottoman.ensureIndices(true, function (err) {
       if (err) { return done(err); }
       setTimeout(function () { done(); }, 2000);
     });

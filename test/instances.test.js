@@ -13,7 +13,7 @@ describe('Model Instances', function () {
   var testInstance = new TestMdl({ name: 'Joe Blow' });
 
   before (function (done) {
-    ottoman.ensureIndices(function (err) {
+    ottoman.ensureIndices(true, function (err) {
       if (err) { return done(err); }
 
       // Guarantee at least one saved.

@@ -30,7 +30,7 @@ describe('Model Indexes', function () {
         }
       });
 
-    ottoman.ensureIndices(function (err) {
+    ottoman.ensureIndices(true, function (err) {
       assert.isNull(err);
 
       var x = new TestMdl();
@@ -124,7 +124,7 @@ describe('Model Indexes', function () {
         }
       });
 
-    ottoman.ensureIndices(function (err) {
+    ottoman.ensureIndices(true, function (err) {
       assert.isNull(err);
 
       var x = new TestMdl();
@@ -162,7 +162,7 @@ describe('Model Indexes', function () {
           }
         });
 
-      ottoman.ensureIndices(function (err) {
+      ottoman.ensureIndices(true, function (err) {
         assert.isNull(err);
 
         var x = new TestMdl();
@@ -202,7 +202,7 @@ describe('Model Indexes', function () {
         }
       });
 
-    ottoman.ensureIndices(function (err) {
+    ottoman.ensureIndices(true, function (err) {
       assert.isNull(err);
 
       var x = new TestMdl();
@@ -241,7 +241,7 @@ describe('Model Indexes', function () {
         }
       });
 
-    ottoman.ensureIndices(function (err) {
+    ottoman.ensureIndices(true, function (err) {
       assert.isNull(err);
 
       var x = new TestMdl();
@@ -288,7 +288,7 @@ describe('Model Indexes', function () {
         }
       });
 
-    ottoman.ensureIndices(function (err) {
+    ottoman.ensureIndices(true, function (err) {
       assert.isNull(err);
 
       var x = new TestMdl();
@@ -325,7 +325,7 @@ describe('Model Indexes', function () {
         }
       });
 
-    ottoX.ensureIndices(function (err) {
+    ottoX.ensureIndices(true, function (err) {
       assert.isNotNull(err);
       done();
     });
