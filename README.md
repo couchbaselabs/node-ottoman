@@ -36,8 +36,7 @@ An ODM allows developers to:
 
 ### Installing
 
-Ottoman is not yet published to npm, to install the development version
-directly from GitHub, run:
+Ottoman is published to npm, to install it in the project, run:
 ```
 npm install ottoman
 ```
