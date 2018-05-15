@@ -1,11 +1,10 @@
 language: node_js
 node_js:
-  - "0.10"
-  - "0.12"
-  - "4.4"
-  - "5.1"
+  - 6
+  - 8
+  - 9
+  - 10
+  - 11
 
-# 0.6 is not enabled as couchnode does not support
-#   this particular version of Node.js.
-# 0.8 is not enabled as many of our imported libraries
-#   do not support it.
+# We strive to support all the currently `active` Node.js
+# releases, as defined by the Node.js Releases Working Group.
