@@ -25,7 +25,7 @@
     "couchbase": "~2.4.1"
   },
   "devDependencies": {
-    "@types/couchbase": "^2.1.30",
+    "@types/couchbase": "^2.4.1",
     "chai": "~3.3.0",
     "eslint": "^2.9.0",
     "ink-docstrap": "git+https://github.com/brett19/docstrap.git#master",
