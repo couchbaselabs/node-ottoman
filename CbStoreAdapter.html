@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
 	<title>Ottoman Class: CbStoreAdapter</title>
 
 	<!--[if lt IE 9]>
@@ -10,93 +11,92 @@
 	<![endif]-->
 	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
 
-	<link type="text/css" rel="stylesheet" href="styles/site.couchbase.css">
+	<link type="text/css" rel="stylesheet" href="styles/site.lumen.css">
 
 </head>
 
 <body>
-<div class="container-fluid">
-	<div class="navbar navbar-fixed-top ">
-		<div class="navbar-inner">
-			<a class="brand" href="index.html">Ottoman</a>
-			<ul class="nav">
-				
-				<li class="dropdown">
-					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
-						class="caret"></b></a>
 
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="CbStoreAdapter.html">CbStoreAdapter</a>
-						</li>
-						
-						<li>
-							<a href="ModelInstance.html">ModelInstance</a>
-						</li>
-						
-						<li>
-							<a href="Ottoman.html">Ottoman</a>
-						</li>
-						
-						<li>
-							<a href="StoreAdapter.html">StoreAdapter</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="global.html#SearchConsistency">SearchConsistency</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-			</ul>
-		</div>
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Ottoman</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="CbStoreAdapter.html">CbStoreAdapter</a></li><li><a href="ModelInstance.html">ModelInstance</a></li><li><a href="Ottoman.html">Ottoman</a></li><li><a href="StoreAdapter.html">StoreAdapter</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#SearchConsistency">SearchConsistency</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
 	</div>
 
-	<div class="row-fluid">
+</div>
+</div>
 
-		
-		<div class="span8">
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
 			
-				<div id="main">
-					
-
 
 	<h1 class="page-title">Class: CbStoreAdapter</h1>
 <section>
 
 <header>
-    <h2>
-    CbStoreAdapter
-    </h2>
+    
+        <h2>
+        CbStoreAdapter
+        </h2>
+        
     
 </header>
+
 
 <article>
     <div class="container-overview">
     
-
-    
         
+<hr>
 <dt>
-    <h4 class="name" id="CbStoreAdapter"><span class="type-signature"></span>new CbStoreAdapter<span class="signature">(bucket)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="CbStoreAdapter"><span class="type-signature"></span>new CbStoreAdapter(bucket)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>The Couchbase store adapter implements an Ottoman StoreAdapter suitable
@@ -105,8 +105,9 @@
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -114,23 +115,23 @@
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -148,21 +149,29 @@
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -185,17 +194,19 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
@@ -219,13 +230,14 @@
 
         <dl>
             
+<hr>
 <dt>
-    <h4 class="name" id="count"><span class="type-signature"></span>count<span class="signature">(type, modelName, options, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="count"><span class="type-signature"></span>count(type, modelName, options, callback)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Performs a count of the documents matching a particular
@@ -234,8 +246,9 @@
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -243,23 +256,23 @@
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -272,6 +285,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -282,7 +296,7 @@
             <td class="description last"><p>The type of index to use for the search.  Currently unused (always N1QL).</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -295,6 +309,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -305,7 +320,7 @@
             <td class="description last"><p>The name of the model to look for.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -318,6 +333,7 @@
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -326,28 +342,28 @@
             
 
             <td class="description last">
-                <h6>Properties</h6>
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
                 
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -360,6 +376,7 @@
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -370,14 +387,14 @@
             <td class="description last"><p>The filter expression for filtering documents for counting.</p></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
             </td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -390,6 +407,7 @@
 <span class="param-type"><a href="StoreAdapter.html#~SearchCallback">StoreAdapter~SearchCallback</a></span>
 
 
+
             
             </td>
 
@@ -400,21 +418,29 @@
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -437,29 +463,32 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="createIndex"><span class="type-signature"></span>createIndex<span class="signature">(type, modelName, name, fields, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="createIndex"><span class="type-signature"></span>createIndex(type, modelName, name, fields, callback)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Creates an index of the specified type.  This simply records the data for
@@ -469,8 +498,9 @@
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -478,23 +508,23 @@
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -505,6 +535,7 @@
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -518,7 +549,7 @@
     type field specified in a schema's index definition.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -529,6 +560,7 @@
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -541,7 +573,7 @@
             <td class="description last"><p>The name of the model this index belongs to.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -554,6 +586,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -564,7 +597,7 @@
             <td class="description last"><p>The name of the index to created.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -577,6 +610,7 @@
 <span class="param-type">Array.&lt;string></span>
 
 
+
             
             </td>
 
@@ -587,7 +621,7 @@
             <td class="description last"><p>A list of field names that should be indexed.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -600,6 +634,7 @@
 <span class="param-type"><a href="StoreAdapter.html#~CreateIndexCallback">StoreAdapter~CreateIndexCallback</a></span>
 
 
+
             
             </td>
 
@@ -610,21 +645,29 @@
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -647,29 +690,32 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="ensureIndices"><span class="type-signature"></span>ensureIndices<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="ensureIndices"><span class="type-signature"></span>ensureIndices(callback)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Ensures that all indexes specified by createIndex calls are created and
@@ -678,8 +724,9 @@
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -687,23 +734,23 @@
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -716,6 +763,7 @@
 <span class="param-type"><a href="StoreAdapter.html#~EnsureCallback">StoreAdapter~EnsureCallback</a></span>
 
 
+
             
             </td>
 
@@ -726,21 +774,29 @@
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -763,29 +819,32 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="find"><span class="type-signature"></span>find<span class="signature">(type, modelName, options, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="find"><span class="type-signature"></span>find(type, modelName, options, callback)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Performs a generic find by a filter expression.</p>
@@ -793,8 +852,9 @@
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -802,23 +862,23 @@
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -831,6 +891,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -841,7 +902,7 @@
             <td class="description last"><p>The type of index to use for the search.  Currently unused (always N1QL).</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -854,6 +915,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -864,7 +926,7 @@
             <td class="description last"><p>The name of the model to search within.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -877,6 +939,7 @@
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -885,28 +948,28 @@
             
 
             <td class="description last">
-                <h6>Properties</h6>
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
                 
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -919,6 +982,7 @@
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -929,7 +993,7 @@
             <td class="description last"><p>The filter expression to filter with.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -942,6 +1006,7 @@
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -952,7 +1017,7 @@
             <td class="description last"><p>The maximum number of results to return.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -965,6 +1030,7 @@
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -975,7 +1041,7 @@
             <td class="description last"><p>The number of results to skip before returning results.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -991,6 +1057,7 @@
 <span class="param-type">Array.&lt;string></span>
 
 
+
             
             </td>
 
@@ -1001,14 +1068,14 @@
             <td class="description last"><p>A field name or list of field names to sort the results by.</p></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
             </td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1021,6 +1088,7 @@
 <span class="param-type"><a href="StoreAdapter.html#~SearchCallback">StoreAdapter~SearchCallback</a></span>
 
 
+
             
             </td>
 
@@ -1031,21 +1099,29 @@
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1068,29 +1144,32 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="get"><span class="type-signature"></span>get<span class="signature">(key, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="get"><span class="type-signature"></span>get(key, callback)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Retrieves a stored document by it's key.</p>
@@ -1098,8 +1177,9 @@
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -1107,23 +1187,23 @@
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -1136,6 +1216,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1146,7 +1227,7 @@
             <td class="description last"><p>The key of the document to retrieve.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1159,6 +1240,7 @@
 <span class="param-type"><a href="StoreAdapter.html#~GetCallback">StoreAdapter~GetCallback</a></span>
 
 
+
             
             </td>
 
@@ -1169,21 +1251,29 @@
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1206,29 +1296,32 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="isNotFoundError"><span class="type-signature"></span>isNotFoundError<span class="signature">(err)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="isNotFoundError"><span class="type-signature"></span>isNotFoundError(err)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Returns whether a particular error is a document not-found error.</p>
@@ -1236,8 +1329,9 @@
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -1245,23 +1339,23 @@
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -1279,21 +1373,29 @@
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1316,15 +1418,17 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
-    
-    
+
     
     <h5>Returns:</h5>
     
@@ -1332,32 +1436,34 @@
 
 
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type">boolean</span>
 
 
-	</dd>
+
+    </dd>
 </dl>
 
 
         
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(key, cas, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove(key, cas, callback)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Removes a document using it's key.</p>
@@ -1365,8 +1471,9 @@
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -1374,23 +1481,23 @@
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -1408,7 +1515,7 @@
             <td class="description last"><p>The key of the document to remove.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1421,6 +1528,7 @@
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -1431,7 +1539,7 @@
             <td class="description last"><p>If not-null, an opaque CAS value to verify before the operation succeeds.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1444,6 +1552,7 @@
 <span class="param-type"><a href="StoreAdapter.html#~RemoveCallback">StoreAdapter~RemoveCallback</a></span>
 
 
+
             
             </td>
 
@@ -1454,21 +1563,29 @@
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1491,29 +1608,32 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="searchIndex"><span class="type-signature"></span>searchIndex<span class="signature">(type, modelName, name, options, key, range, start, end, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="searchIndex"><span class="type-signature"></span>searchIndex(type, modelName, name, options, key, range, start, end, callback)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Performs a search against an index.</p>
@@ -1521,8 +1641,9 @@
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -1530,23 +1651,23 @@
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -1559,6 +1680,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1569,7 +1691,7 @@
             <td class="description last"><p>The type of index that we are searching.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1582,6 +1704,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1592,7 +1715,7 @@
             <td class="description last"><p>The model that this index is related to.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1605,6 +1728,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1615,7 +1739,7 @@
             <td class="description last"><p>The name of the index to search</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1628,6 +1752,7 @@
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -1638,7 +1763,7 @@
             <td class="description last"></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1649,6 +1774,7 @@
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -1661,7 +1787,7 @@
             <td class="description last"><p>The specific key we want to locate in the index.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1674,6 +1800,7 @@
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -1684,7 +1811,7 @@
             <td class="description last"></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1697,6 +1824,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1707,7 +1835,7 @@
             <td class="description last"><p>The starting key of a key-range to search.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1720,6 +1848,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1730,7 +1859,7 @@
             <td class="description last"><p>The ending key of a key-range to search.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1743,6 +1872,7 @@
 <span class="param-type"><a href="StoreAdapter.html#~SearchCallback">StoreAdapter~SearchCallback</a></span>
 
 
+
             
             </td>
 
@@ -1753,21 +1883,29 @@
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1790,29 +1928,32 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="store"><span class="type-signature"></span>store<span class="signature">(key, data, cas, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="store"><span class="type-signature"></span>store(key, data, cas, callback)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Stores a document using it's key for later retrieval.</p>
@@ -1820,8 +1961,9 @@
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -1829,23 +1971,23 @@
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -1858,6 +2000,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1868,7 +2011,7 @@
             <td class="description last"><p>The key of the document to store.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1881,6 +2024,7 @@
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -1891,7 +2035,7 @@
             <td class="description last"><p>The data to store for the document.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1904,6 +2048,7 @@
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -1914,7 +2059,7 @@
             <td class="description last"><p>If not-null, an opaque CAS value to verify before the operation succeeds.</p></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1927,6 +2072,7 @@
 <span class="param-type"><a href="StoreAdapter.html#~StoreCallback">StoreAdapter~StoreCallback</a></span>
 
 
+
             
             </td>
 
@@ -1937,21 +2083,29 @@
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1974,17 +2128,19 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
@@ -2001,101 +2157,136 @@
 
 
 
-				</div>
-
-				<div class="clearfix"></div>
-				<footer>
-					
-					
-		<span class="copyright">
-		Copyright 2010-2015 Couchbase, Inc.
-		</span>
-					<br />
-					
-		<span class="jsdoc-message">
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a>
-		on 2015-10-09T13:46:28-03:00 using the <a
-			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
-		</span>
-				</footer>
-			</div>
-
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
-			
-			<br clear="both">
 		</div>
-
 	</div>
-	<!--<script src="scripts/sunlight.js"></script>-->
-	<script src="scripts/docstrap.lib.js"></script>
-	<script src="scripts/bootstrap-dropdown.js"></script>
-	<script src="scripts/toc.js"></script>
 
-	<script>
-		$( function () {
-			$( "[id*='$']" ).each( function () {
-				var $this = $( this );
+	<div class="clearfix"></div>
 
-				$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
-			} );
-
-			$( "#toc" ).toc( {
-				anchorName  : function ( i, heading, prefix ) {
-					return $( heading ).attr( "id" ) || ( prefix + i );
-				},
-				selectors   : "h1,h2,h3,h4",
-				showAndHide : false,
-				scrollTo    : "100px"
-			} );
-
-			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
-			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-			$( '.dropdown-toggle' ).dropdown();
-//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
-
-			$( ".tutorial-section pre, .readme-section pre" ).each( function () {
-				var $this = $( this );
-
-				var example = $this.find( "code" );
-				exampleText = example.html();
-				var lang = /{@lang (.*?)}/.exec( exampleText );
-				if ( lang && lang[1] ) {
-					exampleText = exampleText.replace( lang[0], "" );
-					example.html( exampleText );
-					lang = lang[1];
-				} else {
-					lang = "javascript";
-				}
-
-				if ( lang ) {
-
-					$this
-						.addClass( "sunlight-highlight-" + lang )
-						.addClass( "linenums" )
-						.html( example.html() );
-
-				}
-			} );
-
-			Sunlight.highlightAll( {
-				lineNumbers : false,
-				showMenu : true,
-				enableDoclinks : true
-			} );
-		} );
-	 </script>
-
-
-
-	<!--Navigation and Symbol Display-->
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
 	
 
+</div>
+</div>
 
-	<!--Google Analytics-->
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	Copyright 2010-2015 Couchbase, Inc.
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
+		on 2018-10-15T17:06:20-07:00
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : false,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
 
 </body>
 </html>

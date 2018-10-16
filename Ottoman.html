@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
 	<title>Ottoman Class: Ottoman</title>
 
 	<!--[if lt IE 9]>
@@ -10,93 +11,92 @@
 	<![endif]-->
 	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
 
-	<link type="text/css" rel="stylesheet" href="styles/site.couchbase.css">
+	<link type="text/css" rel="stylesheet" href="styles/site.lumen.css">
 
 </head>
 
 <body>
-<div class="container-fluid">
-	<div class="navbar navbar-fixed-top ">
-		<div class="navbar-inner">
-			<a class="brand" href="index.html">Ottoman</a>
-			<ul class="nav">
-				
-				<li class="dropdown">
-					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
-						class="caret"></b></a>
 
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="CbStoreAdapter.html">CbStoreAdapter</a>
-						</li>
-						
-						<li>
-							<a href="ModelInstance.html">ModelInstance</a>
-						</li>
-						
-						<li>
-							<a href="Ottoman.html">Ottoman</a>
-						</li>
-						
-						<li>
-							<a href="StoreAdapter.html">StoreAdapter</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="global.html#SearchConsistency">SearchConsistency</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-			</ul>
-		</div>
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Ottoman</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="CbStoreAdapter.html">CbStoreAdapter</a></li><li><a href="ModelInstance.html">ModelInstance</a></li><li><a href="Ottoman.html">Ottoman</a></li><li><a href="StoreAdapter.html">StoreAdapter</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#SearchConsistency">SearchConsistency</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
 	</div>
 
-	<div class="row-fluid">
+</div>
+</div>
 
-		
-		<div class="span8">
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
 			
-				<div id="main">
-					
-
 
 	<h1 class="page-title">Class: Ottoman</h1>
 <section>
 
 <header>
-    <h2>
-    Ottoman
-    </h2>
+    
+        <h2>
+        Ottoman
+        </h2>
+        
     
 </header>
+
 
 <article>
     <div class="container-overview">
     
-
-    
         
+<hr>
 <dt>
-    <h4 class="name" id="Ottoman"><span class="type-signature"></span>new Ottoman<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Ottoman"><span class="type-signature"></span>new Ottoman()</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>The core manager class for the ODM.</p>
@@ -104,20 +104,29 @@
     
 
     
+
+    
+
     
     
-    
-    
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -140,17 +149,19 @@
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
@@ -174,13 +185,153 @@
 
         <dl>
             
+<hr>
 <dt>
-    <h4 class="name" id="ensureIndices"><span class="type-signature"></span>ensureIndices<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="_applyPlugins"><span class="type-signature"></span>_applyPlugins(a)</h4>
     
     
 </dt>
 <dd>
+
     
+    <div class="description">
+        <p>Applies global plugins to models as they are created.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">model</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>new model that has been created.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>the ottoman singleton for chaining.</p>
+</div>
+
+
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="ensureIndices"><span class="type-signature"></span>ensureIndices(callback)</h4>
+    
+    
+</dt>
+<dd>
+
     
     <div class="description">
         <p>Ensures all currently registered indices have been persisted to the data
@@ -189,8 +340,9 @@ store and are useable.</p>
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -198,23 +350,23 @@ store and are useable.</p>
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -227,6 +379,7 @@ store and are useable.</p>
 <span class="param-type">function</span>
 
 
+
             
             </td>
 
@@ -237,21 +390,29 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -274,29 +435,32 @@ store and are useable.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="fromCoo"><span class="type-signature"></span>fromCoo<span class="signature">(data, type)</span><span class="type-signature"> &rarr; {<a href="ModelInstance.html">ModelInstance</a>}</span></h4>
+    <h4 class="name" id="fromCoo"><span class="type-signature"></span>fromCoo(data, type)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Decodes a model instance from a data object.</p>
@@ -304,8 +468,9 @@ store and are useable.</p>
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -313,23 +478,23 @@ store and are useable.</p>
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -342,6 +507,7 @@ store and are useable.</p>
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -352,7 +518,7 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -365,6 +531,7 @@ store and are useable.</p>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -375,21 +542,29 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -412,15 +587,17 @@ store and are useable.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
-    
-    
+
     
     <h5>Returns:</h5>
     
@@ -428,32 +605,34 @@ store and are useable.</p>
 
 
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type"><a href="ModelInstance.html">ModelInstance</a></span>
 
 
-	</dd>
+
+    </dd>
 </dl>
 
 
         
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="getModel"><span class="type-signature"></span>getModel<span class="signature">(name, prefixed)</span><span class="type-signature"> &rarr; {ModelInstanceCtor}</span></h4>
+    <h4 class="name" id="getModel"><span class="type-signature"></span>getModel(name, prefixed)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Returns a specific model based on the name.</p>
@@ -461,8 +640,9 @@ store and are useable.</p>
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -470,23 +650,23 @@ store and are useable.</p>
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -499,6 +679,7 @@ store and are useable.</p>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -509,7 +690,7 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -522,6 +703,7 @@ store and are useable.</p>
 <span class="param-type">boolean</span>
 
 
+
             
             </td>
 
@@ -532,21 +714,29 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -569,15 +759,17 @@ store and are useable.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
-    
-    
+
     
     <h5>Returns:</h5>
     
@@ -585,32 +777,34 @@ store and are useable.</p>
 
 
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type">ModelInstanceCtor</span>
 
 
-	</dd>
+
+    </dd>
 </dl>
 
 
         
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="isModel"><span class="type-signature"></span>isModel<span class="signature">(model)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="isModel"><span class="type-signature"></span>isModel(model)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Returns whether the passed type is a model instance.</p>
@@ -618,8 +812,9 @@ store and are useable.</p>
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -627,23 +822,23 @@ store and are useable.</p>
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -656,6 +851,7 @@ store and are useable.</p>
 <span class="param-type">*</span>
 
 
+
             
             </td>
 
@@ -666,21 +862,29 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -703,15 +907,17 @@ store and are useable.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
-    
-    
+
     
     <h5>Returns:</h5>
     
@@ -719,32 +925,34 @@ store and are useable.</p>
 
 
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type">boolean</span>
 
 
-	</dd>
+
+    </dd>
 </dl>
 
 
         
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="isTypeDef"><span class="type-signature"></span>isTypeDef<span class="signature">(type)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="isTypeDef"><span class="type-signature"></span>isTypeDef(type)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Returns whether the passed type is a typedef object.</p>
@@ -752,8 +960,9 @@ store and are useable.</p>
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -761,23 +970,23 @@ store and are useable.</p>
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -790,6 +999,7 @@ store and are useable.</p>
 <span class="param-type">*</span>
 
 
+
             
             </td>
 
@@ -800,21 +1010,29 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -837,15 +1055,17 @@ store and are useable.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
-    
-    
+
     
     <h5>Returns:</h5>
     
@@ -853,32 +1073,34 @@ store and are useable.</p>
 
 
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type">boolean</span>
 
 
-	</dd>
+
+    </dd>
 </dl>
 
 
         
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="model"><span class="type-signature"></span>model<span class="signature">(name, schemaDef, options)</span><span class="type-signature"> &rarr; {ModelInstanceCtor}</span></h4>
+    <h4 class="name" id="model"><span class="type-signature"></span>model(name, schemaDef, options)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Creates and registers a model object.</p>
@@ -886,8 +1108,9 @@ store and are useable.</p>
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -895,23 +1118,23 @@ store and are useable.</p>
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -924,6 +1147,7 @@ store and are useable.</p>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -934,7 +1158,7 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -947,6 +1171,7 @@ store and are useable.</p>
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -957,7 +1182,7 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -970,6 +1195,7 @@ store and are useable.</p>
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -978,30 +1204,30 @@ store and are useable.</p>
             
 
             <td class="description last">
-                <h6>Properties</h6>
+                <h6 class="method-params-label method-subparams-label">Properties</h6>
                 
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
-		<th>Default</th>
-		
+        
+        <th>Default</th>
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -1014,6 +1240,7 @@ store and are useable.</p>
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -1028,7 +1255,7 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1041,6 +1268,7 @@ store and are useable.</p>
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -1055,7 +1283,7 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1066,6 +1294,7 @@ store and are useable.</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -1084,7 +1313,7 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1095,6 +1324,7 @@ store and are useable.</p>
             
                 
 <span class="param-type"><a href="StoreAdapter.html">StoreAdapter</a></span>
+
 
 
             
@@ -1113,28 +1343,36 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
             </td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1157,15 +1395,17 @@ store and are useable.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
-    
-    
+
     
     <h5>Returns:</h5>
     
@@ -1173,32 +1413,34 @@ store and are useable.</p>
 
 
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type">ModelInstanceCtor</span>
 
 
-	</dd>
+
+    </dd>
 </dl>
 
 
         
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="nsPrefix"><span class="type-signature"></span>nsPrefix<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="nsPrefix"><span class="type-signature"></span>nsPrefix()</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Returns the currently specific namespace prefix for this manager.</p>
@@ -1206,20 +1448,29 @@ store and are useable.</p>
     
 
     
+
+    
+
     
     
-    
-    
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1242,15 +1493,17 @@ store and are useable.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
-    
-    
+
     
     <h5>Returns:</h5>
     
@@ -1258,41 +1511,45 @@ store and are useable.</p>
 
 
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type">string</span>
 
 
-	</dd>
+
+    </dd>
 </dl>
 
 
         
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="toCoo"><span class="type-signature"></span>toCoo<span class="signature">(obj)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="plugin"><span class="type-signature"></span>plugin(pluginFn, options)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
-        <p>Encodes a model instance to its JSON representation.</p>
+        <p>Registers a global plugin with ottoman.  Global plugins will be
+attached to all models defined <em>after</em> this call.</p>
     </div>
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -1300,23 +1557,175 @@ store and are useable.</p>
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pluginFn</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the plugin, which must be a function.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>an options object to pass to the plugin function
+when it is called.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
 	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>the ottoman singleton for chaining.</p>
+</div>
+
+
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="toCoo"><span class="type-signature"></span>toCoo(obj)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Encodes a model instance to its JSON representation.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
 
         <tr>
             
@@ -1329,6 +1738,7 @@ store and are useable.</p>
 <span class="param-type"><a href="ModelInstance.html">ModelInstance</a></span>
 
 
+
             
             </td>
 
@@ -1339,21 +1749,29 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1376,15 +1794,17 @@ store and are useable.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
-    
-    
+
     
     <h5>Returns:</h5>
     
@@ -1392,32 +1812,34 @@ store and are useable.</p>
 
 
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type">Object</span>
 
 
-	</dd>
+
+    </dd>
 </dl>
 
 
         
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="type"><span class="type-signature"></span>type<span class="signature">(name, options)</span><span class="type-signature"> &rarr; {TypeDef}</span></h4>
+    <h4 class="name" id="type"><span class="type-signature"></span>type(name, options)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Creates a typedef specifying a simple name for a list of field options.</p>
@@ -1425,8 +1847,9 @@ store and are useable.</p>
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -1434,23 +1857,23 @@ store and are useable.</p>
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -1463,6 +1886,7 @@ store and are useable.</p>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1473,7 +1897,7 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
+    
 
         <tr>
             
@@ -1486,6 +1910,7 @@ store and are useable.</p>
 <span class="param-type">Object</span>
 
 
+
             
             </td>
 
@@ -1496,21 +1921,29 @@ store and are useable.</p>
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1533,15 +1966,17 @@ store and are useable.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
-    
-    
+
     
     <h5>Returns:</h5>
     
@@ -1549,32 +1984,34 @@ store and are useable.</p>
 
 
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type">TypeDef</span>
 
 
-	</dd>
+
+    </dd>
 </dl>
 
 
         
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="typeByName"><span class="type-signature"></span>typeByName<span class="signature">(type)</span><span class="type-signature"> &rarr; {<a href="ModelInstance.html">ModelInstance</a>|TypeDef|CoreType}</span></h4>
+    <h4 class="name" id="typeByName"><span class="type-signature"></span>typeByName(type)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Returns the type data for a specific type by name.  This can be
@@ -1583,8 +2020,9 @@ a model, a typedef or a core type.</p>
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -1592,23 +2030,23 @@ a model, a typedef or a core type.</p>
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -1621,6 +2059,7 @@ a model, a typedef or a core type.</p>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1631,21 +2070,29 @@ a model, a typedef or a core type.</p>
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1668,15 +2115,17 @@ a model, a typedef or a core type.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
-    
-    
+
     
     <h5>Returns:</h5>
     
@@ -1684,11 +2133,11 @@ a model, a typedef or a core type.</p>
 
 
 <dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type"><a href="ModelInstance.html">ModelInstance</a></span>
 |
 
@@ -1698,24 +2147,26 @@ a model, a typedef or a core type.</p>
 <span class="param-type">CoreType</span>
 
 
-	</dd>
+
+    </dd>
 </dl>
 
 
         
-    
+
     
 </dd>
 
         
             
+<hr>
 <dt>
-    <h4 class="name" id="validate"><span class="type-signature"></span>validate<span class="signature">(mdlInst)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="validate"><span class="type-signature"></span>validate(mdlInst)</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Executes the validation logic against a model and throws
@@ -1724,8 +2175,9 @@ exceptions for any failures.</p>
     
 
     
+
     
-    
+
     
     
         <h5>Parameters:</h5>
@@ -1733,23 +2185,23 @@ exceptions for any failures.</p>
 
 <table class="params table table-striped">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
+    <tr>
+        
+        <th>Name</th>
+        
 
-		<th>Type</th>
+        <th>Type</th>
 
-		
+        
 
-		
+        
 
-		<th class="last">Description</th>
-	</tr>
-	</thead>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-	<tbody>
-	
+    <tbody>
+    
 
         <tr>
             
@@ -1762,6 +2214,7 @@ exceptions for any failures.</p>
 <span class="param-type"><a href="ModelInstance.html">ModelInstance</a></span>
 
 
+
             
             </td>
 
@@ -1772,21 +2225,29 @@ exceptions for any failures.</p>
             <td class="description last"></td>
         </tr>
 
-	
-	</tbody>
+    
+    </tbody>
 </table>
 
     
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
 	
 
 	
+
+    
+
+    
+
+    
+
+    
 
 	
 
@@ -1809,17 +2270,19 @@ exceptions for any failures.</p>
 	
 </dl>
 
+
     
+
     
 
     
 
     
+
     
+
     
-    
-    
-    
+
     
 </dd>
 
@@ -1836,101 +2299,136 @@ exceptions for any failures.</p>
 
 
 
-				</div>
-
-				<div class="clearfix"></div>
-				<footer>
-					
-					
-		<span class="copyright">
-		Copyright 2010-2015 Couchbase, Inc.
-		</span>
-					<br />
-					
-		<span class="jsdoc-message">
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a>
-		on 2015-10-09T13:46:28-03:00 using the <a
-			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
-		</span>
-				</footer>
-			</div>
-
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
-			
-			<br clear="both">
 		</div>
-
 	</div>
-	<!--<script src="scripts/sunlight.js"></script>-->
-	<script src="scripts/docstrap.lib.js"></script>
-	<script src="scripts/bootstrap-dropdown.js"></script>
-	<script src="scripts/toc.js"></script>
 
-	<script>
-		$( function () {
-			$( "[id*='$']" ).each( function () {
-				var $this = $( this );
+	<div class="clearfix"></div>
 
-				$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
-			} );
-
-			$( "#toc" ).toc( {
-				anchorName  : function ( i, heading, prefix ) {
-					return $( heading ).attr( "id" ) || ( prefix + i );
-				},
-				selectors   : "h1,h2,h3,h4",
-				showAndHide : false,
-				scrollTo    : "100px"
-			} );
-
-			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
-			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-			$( '.dropdown-toggle' ).dropdown();
-//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
-
-			$( ".tutorial-section pre, .readme-section pre" ).each( function () {
-				var $this = $( this );
-
-				var example = $this.find( "code" );
-				exampleText = example.html();
-				var lang = /{@lang (.*?)}/.exec( exampleText );
-				if ( lang && lang[1] ) {
-					exampleText = exampleText.replace( lang[0], "" );
-					example.html( exampleText );
-					lang = lang[1];
-				} else {
-					lang = "javascript";
-				}
-
-				if ( lang ) {
-
-					$this
-						.addClass( "sunlight-highlight-" + lang )
-						.addClass( "linenums" )
-						.html( example.html() );
-
-				}
-			} );
-
-			Sunlight.highlightAll( {
-				lineNumbers : false,
-				showMenu : true,
-				enableDoclinks : true
-			} );
-		} );
-	 </script>
-
-
-
-	<!--Navigation and Symbol Display-->
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
 	
 
+</div>
+</div>
 
-	<!--Google Analytics-->
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	Copyright 2010-2015 Couchbase, Inc.
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
+		on 2018-10-15T17:06:20-07:00
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : false,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
 
 </body>
 </html>

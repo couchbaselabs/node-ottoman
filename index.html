@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
 	<title>Ottoman Index</title>
 
 	<!--[if lt IE 9]>
@@ -10,75 +11,69 @@
 	<![endif]-->
 	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
 
-	<link type="text/css" rel="stylesheet" href="styles/site.couchbase.css">
+	<link type="text/css" rel="stylesheet" href="styles/site.lumen.css">
 
 </head>
 
 <body>
-<div class="container-fluid">
-	<div class="navbar navbar-fixed-top ">
-		<div class="navbar-inner">
-			<a class="brand" href="index.html">Ottoman</a>
-			<ul class="nav">
-				
-				<li class="dropdown">
-					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
-						class="caret"></b></a>
 
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="CbStoreAdapter.html">CbStoreAdapter</a>
-						</li>
-						
-						<li>
-							<a href="ModelInstance.html">ModelInstance</a>
-						</li>
-						
-						<li>
-							<a href="Ottoman.html">Ottoman</a>
-						</li>
-						
-						<li>
-							<a href="StoreAdapter.html">StoreAdapter</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="global.html#SearchConsistency">SearchConsistency</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-			</ul>
-		</div>
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Ottoman</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="CbStoreAdapter.html">CbStoreAdapter</a></li><li><a href="ModelInstance.html">ModelInstance</a></li><li><a href="Ottoman.html">Ottoman</a></li><li><a href="StoreAdapter.html">StoreAdapter</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#SearchConsistency">SearchConsistency</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
 	</div>
 
-	<div class="row-fluid">
+</div>
+</div>
 
-		
-		<div class="span8">
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
 			
-				<div id="main">
-					
-
 
 	
-	<span class="page-title">Index</span>
 	
-	
-
 
 
 
@@ -99,7 +94,7 @@
 
     <section class="readme-section">
         <article><h1>Ottoman.js (Node.js ODM for Couchbase)</h1><p>Ottoman is a ODM built for Couchbase and Node.js.  It is designed to remove all
-of the boilerplate neccessary to build Node.js apps with Couchbase.</p>
+of the boilerplate necessary to build Node.js apps with Couchbase.</p>
 <p><a href="https://travis-ci.org/couchbaselabs/node-ottoman"><img src="https://api.travis-ci.org/couchbaselabs/node-ottoman.png" alt="Build Status"></a></p>
 <h2>Useful Links</h2><p>Source - <a href="http://github.com/couchbaselabs/node-ottoman">http://github.com/couchbaselabs/node-ottoman</a></p>
 <p>Documentation - <a href="http://ottomanjs.com/">http://ottomanjs.com/</a></p>
@@ -107,7 +102,7 @@ of the boilerplate neccessary to build Node.js apps with Couchbase.</p>
 <p>Couchbase Node.js Community - <a href="http://couchbase.com/communities/nodejs">http://couchbase.com/communities/nodejs</a></p>
 <h2>Why Use Ottoman</h2><p>An ODM allows developers to:</p>
 <ul>
-<li>Work natively with Javascript Objects.</li>
+<li>Work natively with JavaScript Objects.</li>
 <li>Rapidly prototype and define your data model together with their relationships.</li>
 <li>Let someone else handle the heavy lifting and tedious tasks.</li>
 <li>Support many different data-types, including several which come predefined with Ottoman in addition to support for custom data-types.</li>
@@ -115,12 +110,11 @@ of the boilerplate neccessary to build Node.js apps with Couchbase.</p>
 <li>Model your data for embedding objects or references and keep those relationships crisp.</li>
 <li>Provide support for generic finds.</li>
 <li>Support for multiple indexing strategies natively and automatically.</li>
-<li>Control and enfoce your data model from within your application.</li>
+<li>Control and enforce your data model from within your application.</li>
 <li>Programmatically define object methods that map to the data model.</li>
 </ul>
-<h2>Getting Started</h2><h3>Installing</h3><p>Ottoman is not yet published to npm, to install the in development version
-directly from GitHub, run:</p>
-<pre class="prettyprint source"><code>npm install ottoman</code></pre><h3>Introduction</h3><p>Set up your ottoman instance with a connection to couchbase.</p>
+<h2>Getting Started</h2><h3>Installing</h3><p>Ottoman is published to npm, to install it in the project, run:</p>
+<pre class="prettyprint source"><code>npm install ottoman</code></pre><h3>Introduction</h3><p>Set up your Ottoman instance with a connection to Couchbase.</p>
 <pre class="prettyprint source lang-javascript"><code>var ottoman = require('ottoman');
 var couchbase = require('couchbase');
 var cluster = new couchbase.Cluster('couchbase://127.0.0.1');
@@ -134,11 +128,11 @@ console.log(couch.name); // 'Couch'</code></pre><p>We can also add methods direc
   console.log('I am furniture, I do not dance.');
 };</code></pre><p>Our furniture now can take an action!</p>
 <pre class="prettyprint source lang-javascript"><code>var table = new Furniture({name:'Table'});
-table.dance();</code></pre><p>But we haven't actually saved anythign to Couchbase yet.  Let's do that:</p>
+table.dance();</code></pre><p>But we haven't actually saved anything to Couchbase yet.  Let's do that:</p>
 <pre class="prettyprint source lang-javascript"><code>table.save(function(err) {
   if (err) return console.error(err);
   table.dance();
-});</code></pre><p>Now that we've saved our table to the database, we need to be able to retreive it.  Let's revise our model to add an index on the name!</p>
+});</code></pre><p>Now that we've saved our table to the database, we need to be able to retrieve it.  Let's revise our model to add an index on the name!</p>
 <pre class="prettyprint source lang-javascript"><code>var Furniture = ottoman.model('Furniture', {
   name: 'string'
 }, {
@@ -158,7 +152,7 @@ table.dance();</code></pre><p>But we haven't actually saved anythign to Couchbas
 <h4>What Next?</h4><p>Now that you've successfully built your first models, why not give our
 full application tutorial a try?</p>
 <p><a href="https://github.com/couchbaselabs/node-ottoman/blob/master/docs/first-app.md">Build Your First Application</a></p>
-<h3>Schemas</h3><p>Schema's define the layout of our stored data objects.  They contain a list of properties for the document, this can be any JSON representable data.</p>
+<h3>Schemas</h3><p>Schemas define the layout of our stored data objects.  They contain a list of properties for the document. This can be any JSON representable data.</p>
 <p>You can store simple types:</p>
 <pre class="prettyprint source lang-javascript"><code>ottoman.model('User', {
     who: 'string',
@@ -171,7 +165,7 @@ full application tutorial a try?</p>
 <li><code>integer</code> - An integer number.</li>
 <li><code>boolean</code> - A boolean value.</li>
 <li><code>Date</code> - A date value.</li>
-<li><code>mixed</code> - Any valid ottoman type, both models and built-in types.</li>
+<li><code>Mixed</code> - Any valid Ottoman type, both models and built-in types.</li>
 </ul>
 <p>These simple types can have default values specified or default value generators:</p>
 <pre class="prettyprint source lang-javascript"><code>ottoman.model('User', {
@@ -189,7 +183,7 @@ full application tutorial a try?</p>
     last: 'string',
     full: 'string'
   }
-});</code></pre><p>and arrays of groups:</p>
+});</code></pre><p>And arrays of groups:</p>
 <pre class="prettyprint source lang-javascript"><code>ottoman.model('User', {
   name: 'string',
   roles: [{
@@ -199,7 +193,7 @@ full application tutorial a try?</p>
 });</code></pre><p>You can also define validator functions for model fields:</p>
 <pre class="prettyprint source lang-javascript"><code>function PhoneValidator(val) {
   var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-  if(val && !val.match(phoneno)) {
+  if (val && !val.match(phoneno)) {
     throw new Error('Phone number is invalid.');
   }
 }
@@ -207,7 +201,7 @@ full application tutorial a try?</p>
 ottoman.model('User', {
   name: 'string',
   phone: { type:'string', validator:PhoneValidator },
-});</code></pre><h3>Model References</h3><p>In addition to supporting groups of properties, models also support referencing whole other documents.  Through these references we are able to store related by not neccessarily dependant data.</p>
+});</code></pre><h3>Model References</h3><p>In addition to supporting groups of properties, models also support referencing whole other documents.  Through these references we are able to store related but not necessarily dependent data.</p>
 <p>Example reference relationship:</p>
 <pre class="prettyprint source lang-javascript"><code>var Account = ottoman.model('Account', {
   email: 'string',
@@ -237,7 +231,7 @@ myUser.save(function(err) {
   console.log('My Email:', myUser.account.email);
   // My Email: burtteh@fakemail.com
 });</code></pre><h3>Indices</h3><p>You can specify numerous indices on a model.  There are multiple different kinds of indices, each with it's own benefits and restrictions.</p>
-<p>To specify indices on a model:</p>
+<p>To specify indices on a model, pass a second &quot;options&quot; object to the model function, with an index key:</p>
 <pre class="prettyprint source lang-javascript"><code>ottoman.model('User', {
   email: 'string',
   name: {
@@ -260,20 +254,29 @@ myUser.save(function(err) {
       type: 'n1ql'
     }
   }
-});</code></pre><p>It is also important to remember that in order for indices to be created on the server, you must call the <code>ensureIndices</code> method.  This method will internally generate a list of indexes which will be used and the most optimal configuration for them and them build any which are missing on the server.  This must be called after all models are defined, and it is a good idea to only call this when needed rather than any time your server is started.</p>
+});</code></pre><p>In order for indices to be created on the server, you must call the <code>ensureIndices</code> method.  This method will internally generate a list of indexes which will be used and the most optimal configuration for them and build any which are missing on the server.  This must be called after all models are defined, and it is a good idea to only call this when needed rather than any time your server is started.</p>
 <pre class="prettyprint source lang-javascript"><code>var ottoman = require('ottoman');
 var models = require('./all_my_models');
 ottoman.ensureIndices(function(err) {
   if (err) {
-    console.log('failed to created neccessary indices', err);
+    console.log('failed to created necessary indices', err);
     return;
   }
 
   console.log('ottoman indices are ready for use!');
-});</code></pre><h4>Index Types</h4><h5><code>refdoc</code></h5><p>These indices are the most performant.  They allow only a single document to occupy any particular value and do direct key-value lookups using a referential document to identify a matching document in Couchbase.</p>
+});</code></pre><h4>Index Types</h4><p>Below are some quick notes on the types of indices available, and their pros and cons.  For a more in-depth discussion, consider
+reading <a href="http://blog.couchbase.com/2015/october/determine-data-access-in-couchbase">Couchbasics: How Functional and Performance Needs Determine Data Access in Couchbase</a></p>
+<h5><code>refdoc</code></h5><p>These indices are the most performant, but the least flexible.  They allow only a single document to occupy any particular value and do direct key-value lookups using a referential document to identify a matching document in Couchbase.</p>
+<p>In short, if you need to look up a document by a single value of a single attribute quickly (e.g. key lookups), this is the way to go.  But you cannot combine multiple refdoc indexes to speed up finding
+something like &quot;all customers with first name 'John' last name 'Smith'&quot;.</p>
 <h5><code>view</code></h5><p>These indices are the default and use map-reduce views.  This type of index is always available once <code>ensureIndices</code> is called and will work with any Couchbase Server version.</p>
+<p>Because views use map-reduce, certain types of queries can be faster as the query can be parallelized over all nodes in the cluster, with each node
+returning only partial results.  One of the cons of views is that they are eventually consistent by default, and incur a performance
+penalty if you want consistency in the result.</p>
 <h5><code>n1ql</code></h5><p>These indices utilize the new SQL-like query language available in Couchbase Server 4.0.0.  These indices are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.</p>
-<h3>Queries</h3><p>Queries allow you to perform searches between your models.  For instance allowing you to query all of the posts published by a particular user.</p>
+<p>N1QL indexes in Ottoman use <a href="http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html">Couchbase GSIs</a>.  If you need flexibility of query and
+speed, this is the way to go.</p>
+<h3>Queries</h3><p>Queries allow you to perform searches among your models.  For instance allowing you to query all of the posts published by a particular user.</p>
 <p>User/Post example:</p>
 <pre class="prettyprint source lang-javascript"><code>ottoman.model('Post', {
   user: {ref:'User'},
@@ -290,7 +293,28 @@ ottoman.model('User', {
       by: 'user'
     }
   }
-});</code></pre><h2>License</h2><p>Copyright 2013 Couchbase Inc.</p>
+});</code></pre><h3>Finding models via N1QL Queries</h3><p>All models also expose a <code>find</code> method that can locate model instances by any number of criteria, and that also support pagination.</p>
+<p>This method is very useful for finding model instances under any arbitrary criteria; however keep in mind that you may wish to put
+N1QL indexes on fields that would be very often a part of these queries, to improve lookup performance, and prevent Couchbase
+from having to scan most or all documents in the bucket in order to find the results.</p>
+<p>As you can see in the example below, you can even optionally specify pagination (limit/skip) and adjust the consistency of the query executed on Couchbase.</p>
+<pre class="prettyprint source lang-javascript"><code>var filters = { 
+  lastName: 'Smith',
+  state: 'VA'
+};
+
+var options = {
+  limit: 10,
+  skip: 10,
+  consistency: ottoman.Consistency.LOCAL
+};
+
+Customer.find(filters, options,  
+  function(err, items) {
+    if (err) throw err;
+
+    console.log('Page 2 of Smiths of Virginia: ', JSON.stringify(items));
+  });</code></pre><h2>License</h2><p>Copyright 2013 Couchbase Inc.</p>
 <p>Licensed under the Apache License, Version 2.0.</p>
 <p>See <a href="http://www.apache.org/licenses/LICENSE-2.0">the Apache 2.0 license</a>.</p></article>
     </section>
@@ -301,101 +325,136 @@ ottoman.model('User', {
 
 
 
-				</div>
-
-				<div class="clearfix"></div>
-				<footer>
-					
-					
-		<span class="copyright">
-		Copyright 2010-2015 Couchbase, Inc.
-		</span>
-					<br />
-					
-		<span class="jsdoc-message">
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a>
-		on 2015-10-09T13:46:28-03:00 using the <a
-			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
-		</span>
-				</footer>
-			</div>
-
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
-			
-			<br clear="both">
 		</div>
-
 	</div>
-	<!--<script src="scripts/sunlight.js"></script>-->
-	<script src="scripts/docstrap.lib.js"></script>
-	<script src="scripts/bootstrap-dropdown.js"></script>
-	<script src="scripts/toc.js"></script>
 
-	<script>
-		$( function () {
-			$( "[id*='$']" ).each( function () {
-				var $this = $( this );
+	<div class="clearfix"></div>
 
-				$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
-			} );
-
-			$( "#toc" ).toc( {
-				anchorName  : function ( i, heading, prefix ) {
-					return $( heading ).attr( "id" ) || ( prefix + i );
-				},
-				selectors   : "h1,h2,h3,h4",
-				showAndHide : false,
-				scrollTo    : "100px"
-			} );
-
-			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
-			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-			$( '.dropdown-toggle' ).dropdown();
-//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
-
-			$( ".tutorial-section pre, .readme-section pre" ).each( function () {
-				var $this = $( this );
-
-				var example = $this.find( "code" );
-				exampleText = example.html();
-				var lang = /{@lang (.*?)}/.exec( exampleText );
-				if ( lang && lang[1] ) {
-					exampleText = exampleText.replace( lang[0], "" );
-					example.html( exampleText );
-					lang = lang[1];
-				} else {
-					lang = "javascript";
-				}
-
-				if ( lang ) {
-
-					$this
-						.addClass( "sunlight-highlight-" + lang )
-						.addClass( "linenums" )
-						.html( example.html() );
-
-				}
-			} );
-
-			Sunlight.highlightAll( {
-				lineNumbers : false,
-				showMenu : true,
-				enableDoclinks : true
-			} );
-		} );
-	 </script>
-
-
-
-	<!--Navigation and Symbol Display-->
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
 	
 
+</div>
+</div>
 
-	<!--Google Analytics-->
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	Copyright 2010-2015 Couchbase, Inc.
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
+		on 2018-10-15T17:06:20-07:00
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : false,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
 
 </body>
 </html>
