@@ -8,7 +8,7 @@
     "excludePattern": "(^|\\/|\\\\)_"
   },
   "opts": {
-    "template": "../../node_modules/ink-docstrap/template",
+    "template": "./node_modules/ink-docstrap/template",
     "destination": "./apidocs/",
     "private": true
   },
@@ -18,6 +18,6 @@
   "templates": {
     "systemName": "Ottoman",
     "copyright": "Copyright 2010-2015 Couchbase, Inc.",
-    "theme": "couchbase"
+    "theme": "lumen"
   }
 }
