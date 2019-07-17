@@ -1,0 +1,50 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "impliedStrict": true
+    }
+  },
+  "settings": {},
+  "extends": [
+    "eslint:recommended",
+    "airbnb",
+    "prettier",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["jest", "json", "prettier"],
+  "rules": {
+    "array-callback-return": ["error"],
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "all"
+      }
+    ],
+    "no-eval": ["error"],
+    "no-new-func": ["error"],
+    "no-redeclare": ["error"],
+    "no-underscore-dangle": ["off"],
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "after-used"
+      }
+    ],
+    "radix": ["error"],
+    "prettier/prettier": [
+      "error",
+      {
+        "useTabs": false
+      },
+      {
+        "usePrettierrc": true
+      }
+    ]
+  }
+}

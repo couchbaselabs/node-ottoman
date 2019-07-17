@@ -1,13 +1,11 @@
-'use strict';
+const assert = require('assert');
+const Schema = require('../lib/schema');
 
-var assert = require('assert');
-var Schema = require('../lib/schema');
-
-it('should provide a custom inspector for CoreTypes', function () {
+it('should provide a custom inspector for CoreTypes', function() {
   assert.equal(Schema.StringType.inspect(), 'CoreType(string)');
 });
 
-it('should provide a custom inspector for ModelRefs', function () {
-  var testRef = new Schema.ModelRef('Test');
+it('should provide a custom inspector for ModelRefs', function() {
+  const testRef = new Schema.ModelRef('Test');
   assert.equal(testRef.inspect(), 'ModelRef(Test)');
 });
