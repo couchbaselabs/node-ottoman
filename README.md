@@ -36,9 +36,9 @@ An ODM allows developers to:
 
 ### Installing
 
-Ottoman is published to npm, to install it in the project, run:
+AgConnections' ottoman is published to npm, to install it in the project, run:
 ```
-npm install ottoman
+npm install @agconnections/ottoman
 ```
 
 
