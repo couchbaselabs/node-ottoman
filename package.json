@@ -22,7 +22,7 @@
     "uuid": "^3.3.2"
   },
   "optionalDependencies": {
-    "couchbase": "~2.6.4"
+    "couchbase": "~2.6.7"
   },
   "devDependencies": {
     "chai": "^4.2.0",
