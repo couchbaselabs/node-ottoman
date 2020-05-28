@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [v2]
+  pull_request:
+    branches: [v2]
+
+jobs:
+  build:
+    services:
+      couchbase:
+        image: couchbase/server-sandbox:6.5.0
+        ports:
+          - 8091-8094:8091-8094
+          - 11210:11210
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['10', '12']
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm run test
+
+      - name: Generate Docs
+        run: npm run docs
