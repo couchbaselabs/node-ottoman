@@ -3,7 +3,7 @@ import { CoreType, CoreTypeOptions } from './core-type';
 type FunctionsString = () => string[];
 
 interface StringTypeOptions {
-  enumValues?: string[] | FunctionsString;
+  enum?: string[] | FunctionsString;
 }
 
 export class StringType extends CoreType {
@@ -12,7 +12,8 @@ export class StringType extends CoreType {
   }
 
   get enumValues(): unknown {
-    return this.options?.defaultValue;
+    const _options = this.options as StringTypeOptions;
+    return _options.enum;
   }
 
   applyValidations(value: unknown): string[] {
