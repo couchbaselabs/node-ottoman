@@ -1,23 +1,37 @@
-import { getCollection } from '../adapter/adapter';
-import { validateSchema } from '../schema/schema';
+import { getCollection, validateSchema } from '..';
+import { save } from '../handler/save';
+import { find } from '../handler/find';
 
-class ModelBase {
-  constructor(public __data, public __collection, public __schema) {}
+export class Model {
+  __schema;
+  __collection;
+  data;
+
+  constructor(data: any) {
+    this.data = data;
+  }
 
   save(key) {
-    validateSchema(this.__data, this.__schema);
-    return this.__collection.upsert(key, this.__data);
+    validateSchema(this.data, this.__schema);
+    return save(key, this.data, this.__collection);
   }
+
+  static find = (params): Promise<any> => Promise.resolve();
+  static create = (key: string, data: any): Promise<any> => Promise.resolve();
 }
 
-export const createModel = (name, schema?, options?) => {
+export const model = (name, schema?, connection?, options?) => {
   const collection = getCollection(name);
-  return class Model extends ModelBase {
+  return class ModelFactory extends Model {
     constructor(data) {
-      super(data, collection, schema);
+      super(data);
+      this.__collection = collection;
+      this.__schema = schema;
     }
-    static find(params) {
-      return collection.get(params);
-    }
+
+    static find = (params) => {
+      return find(params, collection)
+    };
+    static create = (key, data) => save(key, data, collection);
   };
 };

@@ -14,9 +14,10 @@
     "schema",
     "database"
   ],
-  "license": "Apache2",
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "tsc --watch --incremental",
+    "devOnce": "tsc && jest",
     "build": "rm -rf ./lib && tsc",
     "test": "jest",
     "test:dev": "jest --watch",
@@ -44,6 +45,7 @@
     "eslint-plugin-prettier": "^3.1.3",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
+    "lint-staged": "^10.2.6",
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",
     "ts-jest": "^26.0.0",

@@ -1,3 +1,2 @@
-export { connect, getCollection, closeConnection } from './adapter/adapter';
-export { createModel } from './model/model';
+export { connect, getCollection, closeConnection, model } from './connections/connection-handler';
 export { validateSchema } from './schema/schema';

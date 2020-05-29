@@ -1,4 +1,4 @@
-import { createModel } from '../lib';
+import { model } from '../lib';
 
 class User {
   constructor(public name: string) {}
@@ -24,7 +24,7 @@ test('insert 1 document', async () => {
     letters: [String],
     user: User,
   };
-  const UserModel = createModel('User', schema);
+  const UserModel = model('User', schema);
   const document = new UserModel(doc);
   const key = `${doc.type}_${doc.id}`;
   const result = await document.save(key);
@@ -32,8 +32,15 @@ test('insert 1 document', async () => {
 });
 
 test('query created document', async () => {
-  const UserModel = createModel('User');
+  const UserModel = model('User');
   const key = `${doc.type}_${doc.id}`;
   const result = await UserModel.find(key);
   expect(result.value).toBeDefined();
+});
+
+test('Create Document', async () => {
+  const UserModel = model('User');
+  const key = `${doc.type}_${doc.id}`;
+  const result = await UserModel.create(key, {...doc, ...{id: 1234}});
+  expect(result.token).toBeDefined();
 });
