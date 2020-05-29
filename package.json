@@ -55,7 +55,8 @@
     "vuepress": "^1.5.0"
   },
   "dependencies": {
-    "couchbase": "^3.0.2"
+    "couchbase": "^3.0.2",
+    "uuid": "^8.1.0"
   },
   "repository": {
     "type": "git",
