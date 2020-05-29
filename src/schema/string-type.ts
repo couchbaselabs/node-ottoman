@@ -1,17 +1,18 @@
-import { CoreType, BooleanFunction, Validator } from './core-type';
+import { CoreType, CoreTypeOptions } from './core-type';
 
 type FunctionsString = () => string[];
 
+interface StringTypeOptions {
+  enumValues?: string[] | FunctionsString;
+}
+
 export class StringType extends CoreType {
-  constructor(
-    name: string,
-    defaultValue?: unknown,
-    auto?: unknown,
-    required?: boolean | BooleanFunction,
-    validator?: Validator,
-    public enumValues?: string[] | FunctionsString,
-  ) {
-    super(name, required, defaultValue, auto, validator);
+  constructor(name: string, options?: CoreTypeOptions & StringTypeOptions) {
+    super(name, options);
+  }
+
+  get enumValues(): unknown {
+    return this.options?.defaultValue;
   }
 
   applyValidations(value: unknown): string[] {
@@ -37,7 +38,4 @@ export class StringType extends CoreType {
   typeName = 'String';
 }
 
-export const stringTypeFactory = (key: string, opts) => {
-  const { required, default: defaultValue, auto, enum: enumValues, validator } = opts || {};
-  return new StringType(key, defaultValue, auto, required, validator, enumValues);
-};
+export const stringTypeFactory = (key: string, opts: StringTypeOptions & CoreTypeOptions) => new StringType(key, opts);

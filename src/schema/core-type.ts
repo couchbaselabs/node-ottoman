@@ -6,16 +6,34 @@ export type BooleanFunction = () => boolean;
 export type ValidationFunction = (value: unknown) => string[] | void;
 export type Validator = Record<string, RegExp> | ValidationFunction;
 
+export interface CoreTypeOptions {
+  required?: boolean | BooleanFunction;
+  default?: unknown;
+  auto?: unknown;
+  validator?: Validator;
+}
+
 export abstract class CoreType {
-  protected constructor(
-    public name: string,
-    public required?: boolean | BooleanFunction,
-    public defaultValue?: unknown,
-    public auto?: unknown,
-    public validator?: Validator,
-  ) {
+  protected constructor(public name: string, public options?: CoreTypeOptions) {
     this._checkIntegrity();
   }
+
+  get required(): boolean | BooleanFunction | undefined {
+    return this.options?.required;
+  }
+
+  get validator(): Validator | undefined {
+    return this.options?.validator;
+  }
+
+  get auto(): unknown {
+    return this.options?.auto;
+  }
+
+  get default(): unknown {
+    return this.options?.default;
+  }
+
   /***
    * First check types and later apply specific validation of the type
    * @param {String|Date|Number} value
@@ -53,7 +71,7 @@ export abstract class CoreType {
 
   private _checkIntegrity() {
     if (this.auto !== undefined) {
-      if (this.defaultValue !== undefined) {
+      if (this.default !== undefined) {
         throw new Error('Property `' + name + '` cannot be both auto and have a default.');
       }
 
