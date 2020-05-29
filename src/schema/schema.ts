@@ -161,10 +161,10 @@ class Schema {
   applyDefaultsToObject(obj: ModelObject) {
     for (const key in this.fields) {
       const field = this.fields[key];
-      if (field.defaultValue instanceof Function) {
-        obj[field.name] = field.defaultValue();
-      } else if (field.defaultValue !== undefined) {
-        obj[field.name] = field.defaultValue;
+      if (field.default instanceof Function) {
+        obj[field.name] = field.default();
+      } else if (field.default !== undefined) {
+        obj[field.name] = field.default;
       }
     }
   }

@@ -1,8 +1,8 @@
-import { CoreType, BooleanFunction } from './core-type';
+import { CoreType, CoreTypeOptions } from './core-type';
 
 export class BooleanType extends CoreType {
-  constructor(name: string, required?: boolean | BooleanFunction, defaultValue?: unknown, auto?: unknown) {
-    super(name, required, defaultValue, auto);
+  constructor(name: string, options?: CoreTypeOptions) {
+    super(name, options);
   }
 
   applyValidations(value: unknown): string[] {
@@ -11,7 +11,6 @@ export class BooleanType extends CoreType {
     if (_required && !this.hasValue(value)) {
       errors.push(`Property ${this.name} is required`);
     }
-
     return errors;
   }
 
@@ -22,7 +21,4 @@ export class BooleanType extends CoreType {
   typeName = 'Boolean';
 }
 
-export const booleanTypeFactory = (key: string, opts): BooleanType => {
-  const { required, default: defaultValue, auto } = opts || {};
-  return new BooleanType(key, required, defaultValue, auto);
-};
+export const booleanTypeFactory = (key: string, opts: CoreTypeOptions): BooleanType => new BooleanType(key, opts);
