@@ -1,4 +1,4 @@
-import { ConnectOptions } from '../adapter/adapter';
+import { ConnectOptions } from '../connections/connection-handler';
 
 export const extractConnectionString = (connectOptions: string): ConnectOptions => {
   const [connUrl, credentials] = connectOptions.split('@');

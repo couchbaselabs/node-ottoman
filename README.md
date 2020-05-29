@@ -10,10 +10,10 @@ bringing to developers a reliable tool to build easy-to-design, maintain and sca
 #### Getting started
 
 ```javascript
-import { connect, createModel } from "ottoman";
+import { connect, model } from "ottoman";
 connect("couchbase://localhost/travel-sample@admin:password");
 
-const User = createModel('User', { name: String });
+const User = model('User', { name: String });
 
 const user = new User({name:'Jane Doe'});
 user.save().then(() => console.log('Nice Job!'));
