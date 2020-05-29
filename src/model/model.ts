@@ -1,6 +1,7 @@
 import { getCollection, validateSchema } from '..';
 import { save } from '../handler/save';
 import { find } from '../handler/find';
+import { generateUUID } from '../utils/generate-uuid';
 
 export class Model {
   __schema;
@@ -11,13 +12,13 @@ export class Model {
     this.data = data;
   }
 
-  save(key) {
+  save() {
     validateSchema(this.data, this.__schema);
-    return save(key, this.data, this.__collection);
+    return save(generateUUID(), this.data, this.__collection);
   }
 
   static find = (params): Promise<any> => Promise.resolve();
-  static create = (key: string, data: any): Promise<any> => Promise.resolve();
+  static create = (data: any): Promise<any> => Promise.resolve();
 }
 
 export const model = (name, schema?, connection?, options?) => {
@@ -29,9 +30,14 @@ export const model = (name, schema?, connection?, options?) => {
       this.__schema = schema;
     }
 
-    static find = (params) => {
-      return find(params, collection)
+    static find = (params): Promise<any> => {
+      return find(params, collection);
     };
-    static create = (key, data) => save(key, data, collection);
+
+    static create = (data: Record<string, any>): Promise<any> => save(generateUUID(), data, collection);
+
+    static insertMany(data: Record<string, any>[]): Promise<any> {
+      return Promise.all(data.map((d) => this.create(d)));
+    }
   };
 };
