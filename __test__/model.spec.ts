@@ -19,11 +19,7 @@ describe('Test Document Access Functions', () => {
   test('Insert 1 document', async () => {
     const schema = {
       type: String,
-      id: Number,
-      createAt: Date,
       isActive: Boolean,
-      letters: [String],
-      user: User,
     };
     const UserModel = model('User', schema);
     const result = await UserModel.create(accessDoc);
@@ -32,11 +28,7 @@ describe('Test Document Access Functions', () => {
   test('Insert multiple document', async () => {
     const schema = {
       type: String,
-      id: Number,
-      createAt: Date,
       isActive: Boolean,
-      letters: [String],
-      user: User,
     };
     const UserModel = model('User', schema);
     const result = await UserModel.insertMany([accessDoc, accessDoc]);

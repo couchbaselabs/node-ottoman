@@ -1,4 +1,5 @@
-import { model } from '../model/model';
+import {createModel} from '../model/create-model';
+import {Model} from "../model/model";
 
 /**
  * Define Couchbase connection class
@@ -7,21 +8,50 @@ import { model } from '../model/model';
  * Support multiple instance
  */
 export class ConnectionManager {
+  /**
+   * Store intance to a bucket
+   */
   bucket;
+  
+  /**
+   * Dictionary for all models create on this connection
+   */
+  models = {};
 
   constructor(public cluster, public bucketName: string, public couchbase) {
     this.bucket = cluster.bucket(bucketName);
   }
-
+  
+  /**
+   * Return a Model constructor from the given name
+   */
+  getModel(name): Model | undefined {
+    return this.models[name];
+  }
+  
+  /**
+   * Return a collection from the given collectionName in this bucket
+   * Or default collection if collectionName is missing
+   */
   getCollection(collectionName?) {
     return collectionName ? this.bucket.collection(collectionName) : this.bucket.defaultCollection();
   }
-
+  
+  /**
+   * Create a Model on this connection
+   */
   model(name, schema?, options?) {
-    const collection = this.getCollection(name);
-    return model({ collection, schema, connection: this, options });
+    // if (this.models[name]) {
+    //   throw new Error(`Model with name ${name}, already exist`);
+    // }
+    const ModelFactory = createModel({ name, schema, options, connection: this });
+    this.models[name] = ModelFactory;
+    return ModelFactory;
   }
-
+  
+  /**
+   * Close connection
+   */
   close() {
     this.cluster.close();
   }
