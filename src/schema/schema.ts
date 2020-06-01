@@ -1,6 +1,7 @@
 import { CoreType } from './core-type';
 import { stringTypeFactory } from './string-type';
 import { booleanTypeFactory } from './boolean-type';
+import {COLLECTION_KEY} from "../utils/constants";
 
 type SchemaDef = Record<string, any>;
 type ModelObject = Record<string, any>;
@@ -141,9 +142,12 @@ class Schema {
   validate(object: ModelObject) {
     let errors: string[] = [];
     for (const key in this.fields) {
-      const type = this.fields[key];
-      const value = object[type.name];
-      errors = [...errors, ...type.validate(value)];
+      const isMetadataKey = key === 'id' || key === COLLECTION_KEY
+      if (!isMetadataKey) {
+        const type = this.fields[key];
+        const value = object[type.name];
+        errors = [...errors, ...type.validate(value)];
+      }
     }
 
     if (errors.length > 0) {

@@ -43,6 +43,10 @@ export const getCollection = (collectionName?: string) => __conn.getCollection(c
 export const model = (name: string, schema) => __conn.model(name, schema);
 
 /**
+ * isModel
+ */
+
+/**
  * Close Couchbase connection
  */
 export const closeConnection = () => __conn.close();
