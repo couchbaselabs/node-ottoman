@@ -1,6 +1,6 @@
-import { createSchema, model } from '../../src';
+import { fnSchema, model } from '../../src';
 
-const UserSchema = createSchema({
+const UserSchema = fnSchema({
   name: String,
   isActive: Boolean,
 });
