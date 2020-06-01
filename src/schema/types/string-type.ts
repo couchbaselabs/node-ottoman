@@ -1,4 +1,5 @@
 import { CoreType, CoreTypeOptions } from './core-type';
+import { generateUUID } from '../../utils/generate-uuid';
 
 type FunctionsString = () => string[];
 
@@ -8,7 +9,7 @@ interface StringTypeOptions {
 
 export class StringType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & StringTypeOptions) {
-    super(name, options);
+    super(name, options, 'String');
   }
 
   get enumValues(): unknown {
@@ -16,27 +17,25 @@ export class StringType extends CoreType {
     return _options.enum;
   }
 
-  applyValidations(value: unknown): string[] {
-    const _value = String(value);
+  applyValidations(value: string): string[] {
     const errors: string[] = [];
-    const _required = typeof this.required === 'function' ? this.required() : this.required;
-    if (_required && !this.hasValue(_value)) {
-      errors.push(`Property ${this.name} is required`);
-    }
     if (typeof this.enumValues !== 'undefined') {
       const _enumValues = typeof this.enumValues === 'function' ? this.enumValues() : this.enumValues;
-      if (!_enumValues.includes(_value)) {
+      if (!_enumValues.includes(value)) {
         errors.push(`Property ${this.name} value must be ${_enumValues.join(',')}`);
       }
     }
     return errors;
   }
 
-  protected hasValue(value: unknown): boolean {
-    return (typeof value === 'string' || value instanceof String) && value.length > 0;
+  buildDefault(): string {
+    if (this.auto === 'uuid') {
+      return generateUUID();
+    }
+    return String(super.buildDefault());
   }
 
-  typeName = 'String';
+  isEmpty = (value: string): boolean => [, '', null].includes(value);
 }
 
 export const stringTypeFactory = (key: string, opts: StringTypeOptions & CoreTypeOptions) => new StringType(key, opts);
