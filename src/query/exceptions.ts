@@ -1,38 +1,38 @@
 export class SelectClauseException extends Error {
   constructor() {
-    super('');
-    this.name = 'The SELECT clause does not have a proper structure';
+    super('The SELECT clause does not have a proper structure');
   }
 }
 
 export class WhereClauseException extends Error {
   constructor() {
-    super('');
-    this.name = 'The WHERE clause does not have a proper structure';
+    super('The WHERE clause does not have a proper structure');
   }
 }
 export class MultipleQueryTypesException extends Error {
   constructor(type1: string, type2: string) {
-    super(`(ex: an ${type1} with an ${type2}`);
-    this.name = `You can't combine different query types`;
+    super(`You can't combine different query types (ex: an ${type1} with an ${type2})`);
   }
 }
 export class IndexQueryException extends Error {
   constructor() {
-    super('');
-    this.name = `Syntax error in INDEX clause`;
+    super(`Syntax error in INDEX clause`);
   }
 }
 export class SelectQueryException extends Error {
   constructor() {
-    super('');
-    this.name = `Syntax error in SELECT clause`;
+    super(`Syntax error in SELECT clause`);
   }
 }
 
 export class QueryOperatorNotFoundException extends Error {
   constructor(operator: string) {
-    super(operator);
-    this.name = `Operator not found`;
+    super(`Operator not found: ${operator}`);
+  }
+}
+
+export class IndexParamsOnExceptions extends Error {
+  constructor(clause: string[]) {
+    super(`The ON parameter can only be applied in the following clauses: ${JSON.stringify(clause)}`);
   }
 }

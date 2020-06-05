@@ -1,7 +1,10 @@
 import {
   ComparisonWhereExpr,
   IField,
+  IIndexOnParams,
+  IIndexWithParams,
   ILetExpr,
+  IndexType,
   ISelectAggType,
   ISelectType,
   LogicalWhereExpr,
@@ -209,3 +212,74 @@ const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWh
 };
 
 // end where expressions functions
+
+// index expressions functions
+
+export const buildIndexExpr = (
+  collection: string,
+  type: IndexType,
+  name: string,
+  on?: IIndexOnParams[],
+  where?: LogicalWhereExpr,
+  usingGSI?: boolean,
+  withExpr?: IIndexWithParams,
+) => {
+  if (['BUILD', 'CREATE', 'CREATE PRIMARY'].includes(type) && on) {
+    return `${type} INDEX \`${name}\` ON \`${collection}\`(${buildOnExpr(on)})${buildWhereExpr(where)} ${
+      usingGSI ? 'USING GSI' : ''
+    } ${buildWithExpr(withExpr)}`;
+  } else {
+    return `${type} INDEX \`${collection}\`.\`${name}\`${usingGSI ? ' USING GSI' : ''}`;
+  }
+};
+
+const buildOnExpr = (on: IIndexOnParams[]) => {
+  return on
+    .map((value: IIndexOnParams) => {
+      return `\`${value.name}\`${buildOnSortExpr(value)}`;
+    })
+    .join(',');
+};
+
+const buildOnSortExpr = (onExpr?: IIndexOnParams) => {
+  if (onExpr && onExpr.hasOwnProperty('sort')) {
+    return `['${onExpr.sort}']`;
+  }
+  return '';
+};
+
+const buildWithExpr = (withExpr?: IIndexWithParams) => {
+  if (withExpr) {
+    const resultExpr = Object.keys(withExpr)
+      .map((value: string) => {
+        switch (value) {
+          case 'nodes':
+            return buildWithNodesExpr(withExpr[value]);
+          case 'defer_build':
+          case 'num_replica':
+            return `'${value}': ${withExpr[value]}`;
+          default:
+            throw new Error('The WITH clause has incorrect syntax');
+        }
+      })
+      .join(',');
+    return !!resultExpr ? `WITH {${resultExpr}}` : '';
+  }
+  return '';
+};
+
+const buildWithNodesExpr = (withNodesExpr?: string[]) => {
+  if (withNodesExpr) {
+    return `'nodes': ${arrayStringToStringSingleQuote(withNodesExpr)}`;
+  }
+};
+
+const arrayStringToStringSingleQuote = (array: string[]) => {
+  return `[${array
+    .map((value: string) => {
+      return `'${value}'`;
+    })
+    .join(',')}]`;
+};
+
+// end index expressions functions
