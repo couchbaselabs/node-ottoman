@@ -85,3 +85,16 @@ export interface IConditionExpr {
   $offset?: number;
   $use?: string[];
 }
+
+export type IndexType = 'CREATE' | 'BUILD' | 'DROP' | 'CREATE PRIMARY';
+
+export interface IIndexOnParams {
+  name: string;
+  sort?: SortType;
+}
+
+export interface IIndexWithParams {
+  nodes?: string[];
+  defer_build?: boolean;
+  num_replica?: number;
+}

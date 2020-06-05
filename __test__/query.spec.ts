@@ -2,7 +2,9 @@ import {
   buildSelectExpr,
   buildWhereClauseExpr,
   SelectClauseException,
+  buildIndexExpr,
   QueryOperatorNotFoundException,
+  MultipleQueryTypesException,
   Query,
   ILetExpr,
   SortType,
@@ -227,5 +229,58 @@ describe('Test Query Types', () => {
     expect(query).toBe(
       "SELECT * FROM `travel-sample` WHERE (address IS NULL OR free_breakfast IS MISSING OR free_breakfast IS NOT VALUED OR id = 8000 OR id != 9000 OR id > 7000 OR id >= 6999 OR id < 5000 OR id <= 4999) AND (address IS NOT NULL AND address IS NOT MISSING AND address IS VALUED) AND NOT (address LIKE '%59%' AND name NOT LIKE 'Otto%' AND (id BETWEEN 1 AND 2000 OR id NOT BETWEEN 2001 AND 8000) AND address LIKE '%20%') LIMIT 20",
     );
+  });
+
+  test('Check INDEX parameters clause', async () => {
+    const expr_where = { 'travel-sample.callsign': { $like: '%57-59%' } };
+
+    const on = [{ name: 'travel-sample.callsing', sort: 'ASC' }];
+
+    const withExpr = {
+      nodes: ['192.168.1.1:8078', '192.168.1.1:8079'],
+      defer_build: true,
+      num_replica: 2,
+    };
+
+    const index = buildIndexExpr('travel-sample', 'CREATE', 'travel_sample_id_test', on, expr_where, true, withExpr);
+
+    expect(index).toBe(
+      "CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`['ASC']) WHERE travel-sample.callsign LIKE '%57-59%' USING GSI WITH {'nodes': ['192.168.1.1:8078','192.168.1.1:8079'],'defer_build': true,'num_replica': 2}",
+    );
+  });
+
+  test('Check Query Builder INDEX clause', async () => {
+    const expr_where = { 'travel-sample.callsign': { $like: '%57-59%' } };
+
+    const on = [{ name: 'travel-sample.callsing', sort: 'ASC' }];
+
+    const withExpr = {
+      nodes: ['192.168.1.1:8078', '192.168.1.1:8079'],
+      defer_build: true,
+      num_replica: 2,
+    };
+
+    const query = new Query({}, 'travel-sample')
+      .index('CREATE', 'travel_sample_id_test')
+      .on(on)
+      .where(expr_where)
+      .usingGSI()
+      .with(withExpr)
+      .build();
+
+    expect(query).toBe(
+      "CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`['ASC']) WHERE travel-sample.callsign LIKE '%57-59%' USING GSI WITH {'nodes': ['192.168.1.1:8078','192.168.1.1:8079'],'defer_build': true,'num_replica': 2}",
+    );
+  });
+
+  test('Check Multiple Query Exceptions', () => {
+    const run = () => new Query({}, 'travel-sample').index('travel_index', 'CREATE').select('*');
+    expect(run).toThrow(MultipleQueryTypesException);
+  });
+
+  test('Check Query Builder DROP INDEX clause', async () => {
+    const query = new Query({}, 'travel-sample').index('DROP', 'travel_sample_id_test').usingGSI().build();
+
+    expect(query).toBe('DROP INDEX `travel-sample`.`travel_sample_id_test` USING GSI');
   });
 });

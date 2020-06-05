@@ -7,6 +7,7 @@ export {
   selectBuilder,
   buildSelectExpr,
   buildWhereClauseExpr,
+  buildIndexExpr,
   SelectClauseException,
   MultipleQueryTypesException,
   SelectQueryException,

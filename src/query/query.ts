@@ -1,12 +1,22 @@
 import { BaseQuery } from './base-query';
-import { IConditionExpr, ILetExpr, ISelectType, LogicalWhereExpr, SortType } from './interface/query-types';
 import {
+  IConditionExpr,
+  IIndexOnParams,
+  IIndexWithParams,
+  ILetExpr,
+  IndexType,
+  ISelectType,
+  LogicalWhereExpr,
+  SortType,
+} from './interface/query-types';
+import {
+  IndexParamsOnExceptions,
   IndexQueryException,
   MultipleQueryTypesException,
   SelectClauseException,
   SelectQueryException,
 } from './exceptions';
-import { selectBuilder } from './helpers';
+import { buildIndexExpr, selectBuilder } from './helpers';
 
 export class Query extends BaseQuery {
   private selectExpr?: ISelectType[] | string;
@@ -17,8 +27,11 @@ export class Query extends BaseQuery {
   private letExpr?: ILetExpr[];
   private useKeysExpr?: string[];
   private queryType?: 'SELECT' | 'INDEX';
-  private indexExpr?: string;
-  private indexOnExpr?: string;
+  private indexOn?: IIndexOnParams[];
+  private indexType?: IndexType;
+  private indexName?: string;
+  private indexUsingGSI?: boolean;
+  private indexWith?: IIndexWithParams;
   constructor(conditions: IConditionExpr, collection: string, model?: any) {
     super(conditions, collection, model);
     this.compileFromConditions(conditions);
@@ -42,22 +55,43 @@ export class Query extends BaseQuery {
     throw new MultipleQueryTypesException('SELECT', this.queryType);
   }
 
-  index(type: 'CREATE' | 'DROP' | 'CREATE PRIMARY', name: string): Query {
+  index(type: IndexType, name: string): Query {
     if (this.queryType === undefined) {
+      if (name.search(/^[A-Za-z][A-Za-z0-9#_]*$/g) === -1) {
+        throw new Error(
+          'Valid GSI index names can contain any of the following characters: A-Z a-z 0-9 # _, and must start with a letter, [A-Z a-z]',
+        );
+      }
       this.queryType = 'INDEX';
-      this.indexExpr = `${type} INDEX ${name} `;
+      this.indexType = type;
+      this.indexName = name;
       return this;
     }
     throw new MultipleQueryTypesException('INDEX', this.queryType);
   }
 
-  on(value: string): Query {
-    if (this.queryType === 'INDEX') {
-      this.indexOnExpr = `ON ${value}`;
+  on(value: IIndexOnParams[]): Query {
+    if (this.queryType === 'INDEX' && ['CREATE', 'CREATE PRIMARY', 'BUILD'].includes(this.indexType || '')) {
+      this.indexOn = value;
       return this;
     }
-    // todo create exception class
-    throw new Error('todo');
+    throw new IndexParamsOnExceptions(['CREATE', 'CREATE PRIMARY', 'BUILD']);
+  }
+
+  usingGSI(): Query {
+    if (this.queryType === 'INDEX') {
+      this.indexUsingGSI = true;
+      return this;
+    }
+    throw new IndexParamsOnExceptions(['CREATE', 'CREATE PRIMARY', 'BUILD']);
+  }
+
+  with(value: IIndexWithParams): Query {
+    if (this.queryType === 'INDEX') {
+      this.indexWith = value;
+      return this;
+    }
+    throw new Error('The WITH clause is only available for Indexes');
   }
 
   where(value: LogicalWhereExpr): Query {
@@ -121,8 +155,30 @@ export class Query extends BaseQuery {
   build(): string {
     switch (this.queryType) {
       case 'INDEX':
-        if (this.indexExpr && this.indexOnExpr) {
-          return `${this.indexExpr}${this.indexOnExpr}`;
+        switch (this.indexType) {
+          case 'BUILD':
+          case 'CREATE':
+          case 'CREATE PRIMARY':
+            if (this.indexOn) {
+              return buildIndexExpr(
+                this.collection,
+                this.indexType,
+                this.indexName || '',
+                this.indexOn,
+                this.whereExpr,
+                this.indexUsingGSI,
+                this.indexWith,
+              );
+            }
+          case 'DROP':
+            return buildIndexExpr(
+              this.collection,
+              this.indexType,
+              this.indexName || '',
+              undefined,
+              undefined,
+              this.indexUsingGSI,
+            );
         }
 
         throw new IndexQueryException();
