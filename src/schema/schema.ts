@@ -14,8 +14,8 @@ export class Schema {
 
   statics = {};
   methods = {};
-  pre = {};
-  post = {};
+  preHooks = {};
+  postHooks = {};
 
   /**
    * @summary Create an instance of Schema
@@ -82,11 +82,28 @@ export class Schema {
   /**
    * Allow to apply plugins to extend schema and model features.
    */
-  plugin(...fns: PluginConstructor[]): void {
+  plugin(...fns: PluginConstructor[]): Schema {
     if (fns && Array.isArray(fns)) {
       for (const fn of fns) {
         fn(this);
       }
     }
+    return this;
+  }
+
+  pre(hook: 'validate' | 'save' | 'remove', handler): Schema {
+    if (this.preHooks[hook] === undefined) {
+      this.preHooks[hook] = [];
+    }
+    this.preHooks[hook].push(handler);
+    return this;
+  }
+
+  post(hook: 'validate' | 'save' | 'remove', handler): Schema {
+    if (this.postHooks[hook] === undefined) {
+      this.postHooks[hook] = [];
+    }
+    this.postHooks[hook].push(handler);
+    return this;
   }
 }
