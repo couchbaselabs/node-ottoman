@@ -16,8 +16,15 @@ export interface CoreTypeOptions {
   validator?: ValidatorOption | ValidatorFunction;
 }
 
-export abstract class CoreType {
-  protected constructor(public name: string, public options?: CoreTypeOptions, public typeName?: string) {
+export interface IOttomanType {
+  name: string;
+  validate(value: unknown): Promise<string[]>;
+  isEmpty(value: unknown): boolean;
+  buildDefault(): unknown;
+}
+
+export abstract class CoreType implements IOttomanType {
+  protected constructor(public name: string, public nativeType: unknown, public options?: CoreTypeOptions) {
     this._checkIntegrity();
   }
   get required(): boolean | RequiredOption | RequiredFunction {
@@ -41,7 +48,7 @@ export abstract class CoreType {
    * @param {String|Date|Number} value
    * @return {String[]}
    */
-  validate(value: unknown): string[] {
+  async validate(value: unknown): Promise<string[]> {
     let errors: string[] = [];
     /// Check type integrity if is not empty
     if (!this.isEmpty(value)) {
@@ -55,7 +62,8 @@ export abstract class CoreType {
       const _validator = typeof this.validator === 'function' ? this.validator(value) : this.validator;
       errors = [...errors, ...applyValidator(value, _validator)];
     }
-    errors = [...errors, ...this.applyValidations(value)];
+    const result = await this.applyValidations(value);
+    errors = [...errors, ...result];
 
     return errors.filter((val) => ![, null, ''].includes(val));
   }
@@ -68,7 +76,7 @@ export abstract class CoreType {
     }
   }
 
-  abstract applyValidations(value): string[];
+  abstract applyValidations(value): Promise<string[]>;
 
   abstract isEmpty(value: unknown): boolean;
 
@@ -77,13 +85,13 @@ export abstract class CoreType {
       if (this.default !== undefined) {
         throw new BuildSchemaError(`Property ${this.name} cannot be both auto and have a default.`);
       }
-      if (this.auto === 'uuid' && this.typeName !== 'String') {
+      if (this.auto === 'uuid' && this.nativeType !== String) {
         throw new BuildSchemaError('Automatic uuid properties must be string typed.');
       }
     }
   }
 
   checkType(value: unknown): string[] {
-    return validateType(value, this.typeName, this.name);
+    return validateType(value, this.nativeType, this.name);
   }
 }

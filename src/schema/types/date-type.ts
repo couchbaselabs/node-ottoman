@@ -7,7 +7,7 @@ interface DateTypeOptions {
 }
 class DateType extends CoreType {
   constructor(name: string, options?: DateTypeOptions & CoreTypeOptions) {
-    super(name, options, 'Date');
+    super(name, Date, options);
   }
 
   get min(): Date | DateOption | DateFunction | undefined {
@@ -30,7 +30,7 @@ class DateType extends CoreType {
     return !(result instanceof Date) ? new Date(String(result)) : (result as Date);
   }
 
-  applyValidations(value: Date): string[] {
+  async applyValidations(value: Date): Promise<string[]> {
     let errors: string[] = [];
     if (this.min !== undefined) {
       errors = [...errors, ...validateMinDate(value, typeof this.min === 'function' ? this.min() : this.min)];

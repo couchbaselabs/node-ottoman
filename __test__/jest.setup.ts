@@ -1,4 +1,4 @@
-import { closeConnection, connect } from '../lib/index';
+import { closeConnection, connect } from '../lib';
 import { connectUri } from './testData';
 beforeAll(async () => {
   connect(connectUri);

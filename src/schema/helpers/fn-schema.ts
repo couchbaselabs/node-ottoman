@@ -6,12 +6,12 @@ import {
   stringTypeFactory,
   arrayTypeFactory,
   objectTypeFactory,
+  modelTypeFactory,
 } from '../types';
 import { is, isTypeOf } from '../../utils/is-type';
 import { BuildSchemaError } from '../errors';
 import { Schema, SchemaDef, ModelObject } from '../schema';
-
-export const getType = (v) => ![, null].includes(v) && (v.name || v);
+import { isModel } from '../../utils/is-model';
 
 /**
  * Parse definition to get a schema instance
@@ -59,6 +59,11 @@ const _parseType = (value): Record<string, any> => {
   if (is(value, Object)) {
     if (typeof value.type !== 'undefined') {
       return value;
+    } else if (typeof value.ref !== 'undefined') {
+      return {
+        type: value.ref,
+        byRef: true,
+      };
     } else {
       const obj: GroupObject = {
         type: Object,
@@ -97,6 +102,8 @@ const _makeField = (name, opts, subOpts?): CoreType => {
       subFields.push(subField);
     }
     return objectTypeFactory(name, subFields);
+  } else if (isModel(opts.type)) {
+    return modelTypeFactory(name, opts.refBy || false);
   } else {
     throw new BuildSchemaError(`Invalid type specified in property "${name}"`);
   }
@@ -108,7 +115,7 @@ const _makeField = (name, opts, subOpts?): CoreType => {
  * @param schema Schema will be used to validate
  * @throws Error
  */
-export const validateSchema = (data: ModelObject, schema: Schema | SchemaDef): boolean => {
+export const validateSchema = async (data: ModelObject, schema: Schema | SchemaDef): Promise<boolean> => {
   const _schema = createSchema(schema);
   return _schema.validate(data);
 };

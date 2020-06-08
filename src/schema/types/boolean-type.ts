@@ -2,15 +2,11 @@ import { CoreType, CoreTypeOptions } from './core-type';
 
 export class BooleanType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions) {
-    super(name, options, 'Boolean');
+    super(name, Boolean, options);
   }
 
-  applyValidations(value: boolean): string[] {
-    const errors: string[] = [];
-    if (typeof value !== 'boolean') {
-      errors.push('Value must be boolean');
-    }
-    return errors;
+  async applyValidations(value: boolean): Promise<string[]> {
+    return [];
   }
 
   isEmpty(value: boolean | undefined): boolean {
