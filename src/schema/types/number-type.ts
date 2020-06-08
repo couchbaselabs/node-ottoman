@@ -9,7 +9,7 @@ interface NumberTypeOptions {
 
 class NumberType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & NumberTypeOptions) {
-    super(name, options, 'Number');
+    super(name, Number, options);
   }
 
   get max(): number | NumberFunction | MinmaxOption | undefined {
@@ -27,7 +27,7 @@ class NumberType extends CoreType {
     return typeof _options.intVal === 'undefined' ? false : _options.intVal;
   }
 
-  applyValidations(value: number): string[] {
+  async applyValidations(value: number): Promise<string[]> {
     const errors: string[] = [];
     if (this.intVal && value % 1 !== 0) {
       errors.push(`Property ${this.name} only allow Integer values`);

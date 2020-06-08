@@ -1,5 +1,6 @@
 import { CoreType, CoreTypeOptions } from './core-type';
 import { generateUUID } from '../../utils/generate-uuid';
+import { Schema } from '../schema';
 
 type FunctionsString = () => string[];
 
@@ -9,7 +10,7 @@ interface StringTypeOptions {
 
 export class StringType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & StringTypeOptions) {
-    super(name, options, 'String');
+    super(name, String, options);
   }
 
   get enumValues(): unknown {
@@ -17,7 +18,7 @@ export class StringType extends CoreType {
     return _options.enum;
   }
 
-  applyValidations(value: string): string[] {
+  async applyValidations(value: string): Promise<string[]> {
     const errors: string[] = [];
     if (typeof this.enumValues !== 'undefined') {
       const _enumValues = typeof this.enumValues === 'function' ? this.enumValues() : this.enumValues;
@@ -37,5 +38,7 @@ export class StringType extends CoreType {
 
   isEmpty = (value: string): boolean => [, '', null].includes(value);
 }
+
+Schema.Types.String = StringType;
 
 export const stringTypeFactory = (key: string, opts: StringTypeOptions & CoreTypeOptions) => new StringType(key, opts);

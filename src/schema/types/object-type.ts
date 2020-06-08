@@ -4,14 +4,15 @@ type Group = Record<string, any>;
 
 class ObjectType extends CoreType {
   constructor(name: string, public fields: CoreType[]) {
-    super(name, {}, 'Object');
+    super(name, Object);
   }
 
-  applyValidations(value: Group): string[] {
+  async applyValidations(value: Group): Promise<string[]> {
     let errors: string[] = [];
-    this.fields.forEach((fi) => {
-      errors = [...errors, ...fi.validate(value[fi.name])];
-    });
+    for (const fi of this.fields) {
+      const result = await fi.validate(value[fi.name]);
+      errors = [...errors, ...result];
+    }
     return errors;
   }
 

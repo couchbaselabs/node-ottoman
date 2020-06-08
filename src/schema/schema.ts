@@ -1,4 +1,4 @@
-import { CoreType } from './types';
+import { IOttomanType } from './types';
 import { isMetadataKey } from '../utils/is-metadata';
 import { ValidationError } from './errors';
 
@@ -7,6 +7,7 @@ export type ModelObject = Record<string, any>;
 export type PluginConstructor = (Schema) => void;
 
 export class Schema {
+  static Types: any = {};
   /**
    * Name of id field
    */
@@ -31,7 +32,7 @@ export class Schema {
    *  const schema = new Schema([new StringType('name')]);
    * ```
    */
-  constructor(private fields: CoreType[]) {
+  constructor(private fields: IOttomanType[]) {
     this._id = '_id';
   }
   /**
@@ -47,13 +48,14 @@ export class Schema {
    * ```
    * > true
    */
-  validate(object: ModelObject): boolean {
+  async validate(object: ModelObject): Promise<boolean> {
     let errors: string[] = [];
     for (const key in this.fields) {
       const type = this.fields[key];
       if (!isMetadataKey(type.name)) {
         const value = object[type.name];
-        errors = [...errors, ...type.validate(value)];
+        const result = await type.validate(value);
+        errors = [...errors, ...result];
       }
     }
 

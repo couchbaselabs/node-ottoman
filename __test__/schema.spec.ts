@@ -1,6 +1,7 @@
 import { validateSchema, createSchema, applyDefaultValue, ValidationError, BuildSchemaError } from '../lib';
 import { applyValidator } from '../lib/schema/helpers';
 import { Schema } from '../lib/schema/schema';
+import { model } from '../lib';
 
 describe('Schema Helpers', () => {
   test('should return empty array when validator is undefined', () => {
@@ -84,7 +85,8 @@ describe('Schema Types', () => {
     expect(validateSchema(data, schema)).toBeTruthy();
   });
 
-  test('should throw an error when it does not have value on require property.', () => {
+  test('should throw an error when it does not have value on require property.', async () => {
+    expect.assertions(2);
     const personSchema = {
       name: { type: String, required: true },
       hasChild: { type: Boolean, required: true },
@@ -92,10 +94,18 @@ describe('Schema Types', () => {
     const personData = {
       name: '',
     };
-    expect(() => validateSchema(personData, personSchema)).toThrow(ValidationError);
+    try {
+      await validateSchema(personData, personSchema);
+    } catch (e) {
+      expect(e).toBeInstanceOf(ValidationError);
+    }
 
     const schemaWithFunction = { name: { type: String, required: () => true } };
-    expect(() => validateSchema(personData, schemaWithFunction)).toThrow(ValidationError);
+    try {
+      await validateSchema(personData, schemaWithFunction);
+    } catch (e) {
+      expect(e).toBeInstanceOf(ValidationError);
+    }
   });
 
   test('should applied correctly default values', () => {
@@ -118,7 +128,8 @@ describe('Schema Types', () => {
     expect(hasChild).toBeTruthy();
   });
 
-  test('should throw an Error when validator fails', () => {
+  test('should throw an Error when validator fails', async () => {
+    expect.assertions(2);
     const validatorJohnName = (v) => {
       if (v !== 'John') {
         return 'Only John is allowed';
@@ -132,7 +143,11 @@ describe('Schema Types', () => {
     const data = {
       firstName: 'Peter',
     };
-    expect(() => validateSchema(data, schema)).toThrow(ValidationError);
+    try {
+      await validateSchema(data, schema);
+    } catch (e) {
+      expect(e).toBeInstanceOf(ValidationError);
+    }
 
     const schemaWithRegex = {
       firstName: {
@@ -143,7 +158,11 @@ describe('Schema Types', () => {
         },
       },
     };
-    expect(() => validateSchema(data, schemaWithRegex)).toThrow(ValidationError);
+    try {
+      await validateSchema(data, schemaWithRegex);
+    } catch (e) {
+      expect(e).toBeInstanceOf(ValidationError);
+    }
   });
 
   test('should return same schema when is passed to create', () => {
@@ -176,10 +195,15 @@ describe('Schema String Type', () => {
     expect(createSchema(schema)).toBeDefined();
   });
 
-  test('should throw an error when field is an enum string and value is not contained', () => {
+  test('should throw an error when field is an enum string and value is not contained', async () => {
+    expect.assertions(1);
     const schema = { color: { type: String, enum: ['Blue', 'Green', 'Yellow'] } };
     const data = { color: 'Black' };
-    expect(() => validateSchema(data, schema)).toThrow(ValidationError);
+    try {
+      await validateSchema(data, schema);
+    } catch (e) {
+      expect(e).toBeInstanceOf(ValidationError);
+    }
   });
   test('should return true when field is an enum string and value is contained', () => {
     const schema = { color: { type: String, enum: ['Blue', 'Green', 'Yellow'] } };
@@ -201,54 +225,84 @@ describe('Schema Boolean Type', () => {
   });
 });
 describe('Schema Number Type', () => {
-  test('should throw an Error when value is less than min', () => {
+  test('should throw an Error when value is less than min', async () => {
+    expect.assertions(3);
     const data = {
       age: 23,
     };
     const schemaWithObject = {
-      age: { type: Number, min: { val: 30, message: 'Only 30 or less years' } },
+      age: { type: Number, min: { val: 30, message: 'Only 30 or more years' } },
     };
-    expect(() => validateSchema(data, schemaWithObject)).toThrow(new ValidationError('Only 30 or less years'));
-
-    const validator1 = () => {
-      return { val: 30, message: 'Only 30 or less years' };
-    };
-    const schemaWithFunctionObj = { age: { type: Number, min: validator1 } };
-    expect(() => validateSchema(data, schemaWithFunctionObj)).toThrow(new ValidationError('Only 30 or less years'));
-
-    const validator2 = () => 30;
-    const schemaWithFunctionNum = { age: { type: Number, min: validator2 } };
-    expect(() => validateSchema(data, schemaWithFunctionNum)).toThrow(new ValidationError('23 is less than 30'));
-  });
-
-  test('should throw an Error when value is more than max', () => {
-    const data = {
-      age: 35,
-    };
-    const schemaWithObject = {
-      age: { type: Number, max: { val: 30, message: 'Only 30 or more years' } },
-    };
-    expect(() => validateSchema(data, schemaWithObject)).toThrow(new ValidationError('Only 30 or more years'));
+    try {
+      await validateSchema(data, schemaWithObject);
+    } catch (e) {
+      expect(e).toEqual(new ValidationError('Only 30 or more years'));
+    }
 
     const validator1 = () => {
       return { val: 30, message: 'Only 30 or more years' };
     };
-    const schemaWithFunctionObj = { age: { type: Number, max: validator1 } };
-    expect(() => validateSchema(data, schemaWithFunctionObj)).toThrow(new ValidationError('Only 30 or more years'));
+    const schemaWithFunctionObj = { age: { type: Number, min: validator1 } };
+
+    try {
+      await validateSchema(data, schemaWithFunctionObj);
+    } catch (e) {
+      expect(e).toEqual(new ValidationError('Only 30 or more years'));
+    }
 
     const validator2 = () => 30;
-    const schemaWithFunctionNum = { age: { type: Number, max: validator2 } };
-    expect(() => validateSchema(data, schemaWithFunctionNum)).toThrow(new ValidationError('35 is more than 30'));
+    const schemaWithFunctionNum = { age: { type: Number, min: validator2 } };
+    try {
+      await validateSchema(data, schemaWithFunctionNum);
+    } catch (e) {
+      expect(e).toEqual(new ValidationError('23 is less than 30'));
+    }
   });
 
-  test('should throw an Error when value is not integer', () => {
+  test('should throw an Error when value is more than max', async () => {
+    expect.assertions(3);
+    const data = {
+      age: 35,
+    };
+    const schemaWithObject = {
+      age: { type: Number, max: { val: 30, message: 'Only 30 or less years' } },
+    };
+    try {
+      await validateSchema(data, schemaWithObject);
+    } catch (e) {
+      expect(e).toEqual(new ValidationError('Only 30 or less years'));
+    }
+    const validator1 = () => {
+      return { val: 30, message: 'Only 30 or less years' };
+    };
+    const schemaWithFunctionObj = { age: { type: Number, max: validator1 } };
+    try {
+      await validateSchema(data, schemaWithFunctionObj);
+    } catch (e) {
+      expect(e).toEqual(new ValidationError('Only 30 or less years'));
+    }
+    const validator2 = () => 30;
+    const schemaWithFunctionNum = { age: { type: Number, max: validator2 } };
+    try {
+      await validateSchema(data, schemaWithFunctionNum);
+    } catch (e) {
+      expect(e).toEqual(new ValidationError('35 is more than 30'));
+    }
+  });
+
+  test('should throw an Error when value is not integer', async () => {
+    expect.assertions(1);
     const data = {
       age: 35.6,
     };
     const schema = {
       age: { type: Number, intVal: true },
     };
-    expect(() => validateSchema(data, schema)).toThrow(new ValidationError('Property age only allow Integer values'));
+    try {
+      await validateSchema(data, schema);
+    } catch (e) {
+      expect(e).toEqual(new ValidationError('Property age only allow Integer values'));
+    }
   });
 
   test('should return true when value is allow by schema def', () => {
@@ -314,19 +368,44 @@ describe('Schema Date Types', () => {
     });
   });
 
-  const validationsFailAssertions = (data, schema1, schema2, schema3, schema4, schema5, opts) => {
-    expect(() => validateSchema(data, schema1)).toThrow(ValidationError);
-    expect(() => validateSchema(data, schema2)).toThrow(ValidationError);
-    expect(() => validateSchema(data, schema3)).toThrow(ValidationError);
-    expect(() => validateSchema(data, schema4)).toThrow(new ValidationError(opts.message));
-    expect(() => validateSchema(data, schema5)).toThrow(new ValidationError(opts.message));
+  const validationsFailAssertions = async (data, schema1, schema2, schema3, schema4, schema5, opts) => {
+    try {
+      await validateSchema(data, schema1);
+    } catch (e) {
+      expect(e).toBeInstanceOf(ValidationError);
+    }
+
+    try {
+      await validateSchema(data, schema2);
+    } catch (e) {
+      expect(e).toBeInstanceOf(ValidationError);
+    }
+
+    try {
+      await validateSchema(data, schema3);
+    } catch (e) {
+      expect(e).toBeInstanceOf(ValidationError);
+    }
+
+    try {
+      await validateSchema(data, schema4);
+    } catch (e) {
+      expect(e).toEqual(new ValidationError(opts.message));
+    }
+
+    try {
+      await validateSchema(data, schema5);
+    } catch (e) {
+      expect(e).toEqual(new ValidationError(opts.message));
+    }
   };
-  const validationsSuccessAssertions = (data, schema1, schema2, schema3, schema4, schema5) => {
-    expect(validateSchema(data, schema1)).toBeTruthy();
-    expect(validateSchema(data, schema2)).toBeTruthy();
-    expect(validateSchema(data, schema3)).toBeTruthy();
-    expect(validateSchema(data, schema4)).toBeTruthy();
-    expect(validateSchema(data, schema5)).toBeTruthy();
+
+  const validationsSuccessAssertions = async (data, schema1, schema2, schema3, schema4, schema5) => {
+    expect(await validateSchema(data, schema1)).toBeTruthy();
+    expect(await validateSchema(data, schema2)).toBeTruthy();
+    expect(await validateSchema(data, schema3)).toBeTruthy();
+    expect(await validateSchema(data, schema4)).toBeTruthy();
+    expect(await validateSchema(data, schema5)).toBeTruthy();
   };
 
   describe('Min Validation', () => {
@@ -393,37 +472,47 @@ describe('Schema Array Types', () => {
   });
 
   describe('Array Type Validations', () => {
-    test('should return true when all items of array are valid', () => {
+    test('should return true when all items of array are valid', async () => {
       const schemaString = {
         names: [{ type: String, validator: { regexp: new RegExp('[a-zA-Z\\s]'), message: 'Only letters' } }],
       };
       const data = {
         names: ['John Due', 'Due John'],
       };
-      expect(validateSchema(data, schemaString)).toBeTruthy();
+      expect(await validateSchema(data, schemaString)).toBeTruthy();
       const schemaNumber = {
         amounts: [{ type: Number, max: { val: 10, message: 'Not valid value' } }],
       };
       const amountsData = {
         amounts: [2, 3, 4, 10],
       };
-      expect(validateSchema(amountsData, schemaNumber)).toBeTruthy();
+      expect(await validateSchema(amountsData, schemaNumber)).toBeTruthy();
     });
-    test('should throw error when any items of array are invalid', () => {
+    test('should throw error when any items of array are invalid', async () => {
       const schemaString = {
         names: [{ type: String, validator: { regexp: new RegExp('[a-zA-Z\\s]'), message: 'Only letters' } }],
       };
       const data = {
         names: ['John Due', 'Due John23', '32323'],
       };
-      expect(() => validateSchema(data, schemaString)).toThrow(new ValidationError('Only letters'));
+      try {
+        await validateSchema(data, schemaString);
+      } catch (e) {
+        expect(e).toEqual(new ValidationError('Only letters'));
+      }
+
       const schemaNumber = {
         amounts: [{ type: Number, max: { val: 10, message: 'Not valid value' } }],
       };
       const amountsData = {
         amounts: [20, 13, 54, 10],
       };
-      expect(() => validateSchema(amountsData, schemaNumber)).toThrow(new ValidationError('Not valid value'));
+
+      try {
+        await validateSchema(amountsData, schemaNumber);
+      } catch (e) {
+        expect(e).toEqual(new ValidationError('Not valid value'));
+      }
     });
   });
 });
@@ -439,5 +528,45 @@ describe('Schema Object Types', () => {
     const result = createSchema(schema);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Schema);
+  });
+});
+describe('Schema Model Ref Types', () => {
+  test('should create a schema when embed other model', () => {
+    const User = model('User', { name: String });
+    const schema = createSchema({ user: User });
+    expect(schema).toBeDefined();
+    expect(schema).toBeInstanceOf(Schema);
+  });
+
+  test('should create a schema when reference other model', () => {
+    const User = model('User', { name: String });
+    const schema = createSchema({ user: { ref: User } });
+    expect(schema).toBeDefined();
+    expect(schema).toBeInstanceOf(Schema);
+  });
+
+  test('should return true when validate schema with other model', async () => {
+    const User = model('User', { name: String });
+    const schema = createSchema({ user: { ref: User } });
+    const data = {
+      user: new User({ name: 'John Doe' }),
+    };
+    const result = await validateSchema(data, schema);
+    expect(result).toBeTruthy();
+  });
+
+  test('should throw error validation when validate schema with other model', async () => {
+    expect.assertions(2);
+    const User = model('User', { name: String });
+    const schema = createSchema({ user: { ref: User } });
+    const data = {
+      user: new User({ name: 35 }),
+    };
+    try {
+      await validateSchema(data, schema);
+    } catch (e) {
+      expect(e).toBeInstanceOf(ValidationError);
+      expect(e).toEqual(new ValidationError('Property name must be type String'));
+    }
   });
 });
