@@ -1,6 +1,4 @@
 import { hooks } from '../utils/hooks';
-import { validateSchema } from '..';
-import { store } from '../handler/store';
 import { remove } from '../handler/remove';
 
 /**
@@ -13,7 +11,7 @@ export const removeLifeCicle = ({ id, options, model: { schema, collection } }) 
   }
 
   const result = remove(id, collection, options);
-  
+
   if (schema.pre && schema.pre[hooks.REMOVE]) {
     schema.pre[hooks.REMOVE]();
   }

@@ -2,7 +2,7 @@ import { bucketName, connectionString, connectUri, password, username } from './
 import { model } from '../lib';
 import { isModel } from '../lib/utils/is-model';
 import { extractConnectionString } from '../lib/utils/extract-connection-string';
-import { is, isTypeOf } from '../src/utils/is-type';
+import { is } from '../src/utils/is-type';
 import { isMetadataKey } from '../src/utils/is-metadata';
 
 test('Build connection options from string', () => {

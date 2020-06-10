@@ -6,7 +6,11 @@ export class BooleanType extends CoreType {
   }
 
   applyValidations(value: boolean): string[] {
-    return [];
+    const errors: string[] = [];
+    if (typeof value !== 'boolean') {
+      errors.push('Value must be boolean');
+    }
+    return errors;
   }
 
   isEmpty(value: boolean | undefined): boolean {

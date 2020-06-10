@@ -1,9 +1,8 @@
 import { generateUUID } from '../utils/generate-uuid';
 import { extractDataFromModel } from '../utils/extract-data-from-model';
-import { remove } from '../handler/remove';
 import { storeLifeCycle } from './store-life-cycle';
 import { COLLECTION_KEY } from '../utils/constants';
-import {removeLifeCicle} from "./remove-life-cycle";
+import { removeLifeCicle } from './remove-life-cycle';
 
 /**
  * Constructor to build a model instance base on schema and options
@@ -21,7 +20,7 @@ export class Model {
   };
 
   constructor(data: any) {
-    for (let key in data) {
+    for (const key in data) {
       this[key] = data[key];
     }
   }
@@ -78,29 +77,29 @@ export class Model {
   /**
    * Find documents base on filter on the collection
    */
-  static find = (params): Promise<any> => Promise.resolve();
+  static find = (params): Promise<any> => Promise.resolve(params);
 
   /**
    * Add new document to collection
    */
-  static create = (data: any): Promise<any> => Promise.resolve();
+  static create = (data: any): Promise<any> => Promise.resolve(data);
 
   /**
    * Update document in the collection
    * Can update document partial or complete
    * id parameter will have more priority that data.id
    */
-  static update = (data: any, id?: string): Promise<any> => Promise.resolve();
+  static update = (data: any, id?: string): Promise<any> => Promise.resolve({ data, id });
 
   /**
    * Replace document in the collection
    * Will replace the entire document with the given data
    * id parameter will have more priority that data.id
    */
-  static replace = (data: any, id?: string): Promise<any> => Promise.resolve();
+  static replace = (data: any, id?: string): Promise<any> => Promise.resolve({ data, id });
 
   /**
    * Remove document in the collection with the provide id
    */
-  static remove = (id: string): Promise<any> => Promise.resolve();
+  static remove = (id: string): Promise<any> => Promise.resolve(id);
 }

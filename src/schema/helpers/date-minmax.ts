@@ -10,7 +10,7 @@ export const validateMinDate = (value: Date, min: Date | DateOption): string[] =
     ? [
         (min as DateOption).message !== undefined
           ? (min as DateOption).message
-          : `Cann't allow dates before ${_minDate.toISOString()}`,
+          : `Can't allow dates before ${_minDate.toISOString()}`,
       ]
     : [];
 };
@@ -21,7 +21,7 @@ export const validateMaxDate = (value: Date, max: Date | DateOption): string[] =
     ? [
         (max as DateOption).message !== undefined
           ? (max as DateOption).message
-          : `Cann't allow dates after ${_maxDate.toISOString()}`,
+          : `Can't allow dates after ${_maxDate.toISOString()}`,
       ]
     : [];
 };

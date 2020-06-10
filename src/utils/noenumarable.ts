@@ -1,9 +1,9 @@
 /**
  * Set a given property of the target to be no-enumerable
- * Will be no listed on Object.keys and will be exclude by spread operator
+ * Will not be listed on Object.keys and will be excluded by spread operator
  */
 export const nonenumerable = (target: any, propertyKey: string) => {
-  let descriptor = Object.getOwnPropertyDescriptor(target, propertyKey) || {};
+  const descriptor = Object.getOwnPropertyDescriptor(target, propertyKey) || {};
   if (descriptor.enumerable !== false) {
     descriptor.enumerable = false;
     descriptor.writable = true;

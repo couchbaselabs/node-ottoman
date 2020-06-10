@@ -23,7 +23,7 @@
     "test": "jest",
     "test:dev": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint '*/**/*.ts' --quiet --fix",
+    "lint": "eslint 'src/**/*.ts' --quiet --fix",
     "docs": "rimraf docs && typedoc --theme vuepress --out docs && cp vuepress.config.js docs/.vuepress/config.js && vuepress build docs"
   },
   "engines": {

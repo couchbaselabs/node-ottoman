@@ -11,7 +11,7 @@ import { is, isTypeOf } from '../../utils/is-type';
 import { BuildSchemaError } from '../errors';
 import { Schema, SchemaDef, ModelObject } from '../schema';
 
-const getType = (v) => ![, null].includes(v) && (v.name || v);
+export const getType = (v) => ![, null].includes(v) && (v.name || v);
 
 /**
  * Parse definition to get a schema instance
@@ -36,7 +36,7 @@ export const createSchema = (obj: Schema | SchemaDef): Schema => {
   for (const _key of keys) {
     const opts = _parseType(obj[_key]);
     if (!opts.type) {
-      throw new BuildSchemaError(`Property ${_key} required type`);
+      throw new BuildSchemaError(`Property ${_key} is a required type`);
     }
 
     let subOpts: any = {};
