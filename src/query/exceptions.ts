@@ -11,7 +11,7 @@ export class WhereClauseException extends Error {
 }
 export class MultipleQueryTypesException extends Error {
   constructor(type1: string, type2: string) {
-    super(`You can't combine different query types (ex: an ${type1} with an ${type2})`);
+    super(`Cannot combine multiple query types (ex: ${type1} with ${type2}`);
   }
 }
 export class IndexQueryException extends Error {

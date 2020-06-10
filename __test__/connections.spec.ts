@@ -23,18 +23,18 @@ describe('Test connections', () => {
     expect(isModel(ModelDog)).toBe(true);
     conn3.close();
   });
-  
+
   test('Get default collection', () => {
     const conn2 = connect(connectUri);
-    const defaultCollection = conn2.getCollection()
+    const defaultCollection = conn2.getCollection();
     expect(defaultCollection._name).toBe('');
     conn2.close();
   });
-  
+
   test('Get collection by name', () => {
     const conn2 = connect(connectUri);
     const collectionName = 'test';
-    const testCollection = conn2.getCollection(collectionName)
+    const testCollection = conn2.getCollection(collectionName);
     expect(testCollection._name).toBe(collectionName);
     conn2.close();
   });

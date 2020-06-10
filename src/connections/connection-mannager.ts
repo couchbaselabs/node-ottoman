@@ -1,5 +1,5 @@
-import {createModel} from '../model/create-model';
-import {Model} from "../model/model";
+import { createModel } from '../model/create-model';
+import { Model } from '../model/model';
 
 /**
  * Define Couchbase connection class
@@ -12,7 +12,7 @@ export class ConnectionManager {
    * Store intance to a bucket
    */
   bucket;
-  
+
   /**
    * Dictionary for all models create on this connection
    */
@@ -21,14 +21,14 @@ export class ConnectionManager {
   constructor(public cluster, public bucketName: string, public couchbase) {
     this.bucket = cluster.bucket(bucketName);
   }
-  
+
   /**
    * Return a Model constructor from the given name
    */
   getModel(name): Model | undefined {
     return this.models[name];
   }
-  
+
   /**
    * Return a collection from the given collectionName in this bucket
    * Or default collection if collectionName is missing
@@ -36,7 +36,7 @@ export class ConnectionManager {
   getCollection(collectionName?) {
     return collectionName ? this.bucket.collection(collectionName) : this.bucket.defaultCollection();
   }
-  
+
   /**
    * Create a Model on this connection
    */
@@ -48,7 +48,7 @@ export class ConnectionManager {
     this.models[name] = ModelFactory;
     return ModelFactory;
   }
-  
+
   /**
    * Close connection
    */

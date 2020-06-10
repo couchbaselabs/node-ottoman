@@ -8,6 +8,6 @@ export const isModel = (model): boolean => {
   if (!model) {
     return false;
   }
-  const name = typeof model === 'function' ? model.name : model.constructor.name
+  const name = typeof model === 'function' ? model.name : model.constructor.name;
   return name === '__ModelFactory__';
-}
+};

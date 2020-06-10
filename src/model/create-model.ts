@@ -1,5 +1,4 @@
 import { find } from '../handler/find';
-import { remove } from '../handler/remove';
 import { Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
 import { COLLECTION_KEY, DEFAULT_ID_KEY } from '../utils/constants';

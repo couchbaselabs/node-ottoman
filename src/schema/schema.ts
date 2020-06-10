@@ -35,7 +35,7 @@ export class Schema {
     this._id = '_id';
   }
   /**
-   * Validate an model instance using definition of schema
+   * Validate a model instance using definition of schema
    * @method
    * @public
    *

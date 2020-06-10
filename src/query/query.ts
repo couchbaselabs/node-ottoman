@@ -13,7 +13,6 @@ import {
   IndexParamsOnExceptions,
   IndexQueryException,
   MultipleQueryTypesException,
-  SelectClauseException,
   SelectQueryException,
 } from './exceptions';
 import { buildIndexExpr, selectBuilder } from './helpers';
