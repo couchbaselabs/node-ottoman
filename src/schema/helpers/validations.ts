@@ -6,9 +6,12 @@ export interface RequiredOption {
 }
 export type RequiredFunction = () => boolean | RequiredOption;
 
-export const validateType = (value, type, name): string[] => {
+type Type = { name: string };
+
+export const validateType = (value: unknown, type: Type | string, name: string): string[] => {
   const result = is(value, type);
-  return !result ? [`Property ${name} must be type ${type.name || type}`] : [];
+  const _type = type as Type;
+  return !result ? [`Property ${name} must be type ${_type.name || type}`] : [];
 };
 
 export const validateRequire = (required: boolean | RequiredOption | RequiredFunction, name: string): string[] => {

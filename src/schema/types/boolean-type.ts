@@ -2,10 +2,10 @@ import { CoreType, CoreTypeOptions } from './core-type';
 
 export class BooleanType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions) {
-    super(name, Boolean, options);
+    super(name, Boolean.name, options);
   }
 
-  async applyValidations(value: boolean): Promise<string[]> {
+  async applyValidations(): Promise<string[]> {
     return [];
   }
 

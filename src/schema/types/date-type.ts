@@ -7,7 +7,7 @@ interface DateTypeOptions {
 }
 class DateType extends CoreType {
   constructor(name: string, options?: DateTypeOptions & CoreTypeOptions) {
-    super(name, Date, options);
+    super(name, Date.name, options);
   }
 
   get min(): Date | DateOption | DateFunction | undefined {
@@ -46,5 +46,5 @@ class DateType extends CoreType {
   }
 }
 
-export const dateTypeFactory = (name: string, options: DateTypeOptions & CoreTypeOptions): DateType =>
-  new DateType(name, options);
+export const dateTypeFactory = (name: string, opts: DateTypeOptions & CoreTypeOptions): DateType =>
+  new DateType(name, opts);

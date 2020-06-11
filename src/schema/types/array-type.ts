@@ -2,7 +2,7 @@ import { CoreType } from './core-type';
 
 class ArrayType extends CoreType {
   constructor(name: string, private itemType: CoreType) {
-    super(name, Array);
+    super(name, Array.name);
   }
 
   async applyValidations(value: unknown[]): Promise<string[]> {
@@ -27,4 +27,4 @@ class ArrayType extends CoreType {
   }
 }
 
-export const arrayTypeFactory = (name: string, item: CoreType) => new ArrayType(name, item);
+export const arrayTypeFactory = (name: string, item: CoreType): ArrayType => new ArrayType(name, item);

@@ -1,7 +1,6 @@
-import { validateSchema, createSchema, applyDefaultValue, ValidationError, BuildSchemaError } from '../lib';
-import { applyValidator } from '../lib/schema/helpers';
-import { Schema } from '../lib/schema/schema';
-import { model } from '../lib';
+import { validateSchema, createSchema, applyDefaultValue, ValidationError, BuildSchemaError } from '../src';
+import { applyValidator } from '../src/schema/helpers';
+import { Schema, ModelObject } from '../src/schema/schema';
 
 describe('Schema Helpers', () => {
   test('should return empty array when validator is undefined', () => {
@@ -26,13 +25,29 @@ describe('Schema Types', () => {
     expect(() => createSchema(schema)).toThrow(new BuildSchemaError('Invalid type specified in property "name"'));
   });
 
-  test('should throw an Error when defining auto value and default value', () => {
+  test('should throw an error when defining auto value and default value', () => {
     const schema = {
       firstName: { type: String, default: 'John', auto: 'uuid' },
     };
     expect(() => createSchema(schema)).toThrow(
       new BuildSchemaError('Property firstName cannot be both auto and have a default.'),
     );
+  });
+
+  test('should return field type instance when using a valid path value', () => {
+    const schema = createSchema({
+      firstName: { type: String },
+    });
+    const firstName = schema.path('firstName');
+    expect(firstName).toBeDefined();
+  });
+
+  test('should return undefined when using a not defined valid path value', () => {
+    const schema = createSchema({
+      firstName: { type: String },
+    });
+    const firstName = schema.path('lastName');
+    expect(firstName).toBeUndefined();
   });
 
   test('should return true when data is valid', () => {
@@ -128,7 +143,7 @@ describe('Schema Types', () => {
     expect(hasChild).toBeTruthy();
   });
 
-  test('should throw an Error when validator fails', async () => {
+  test('should throw an error when validator fails', async () => {
     expect.assertions(2);
     const validatorJohnName = (v) => {
       if (v !== 'John') {
@@ -177,11 +192,11 @@ describe('Schema Types', () => {
       age: { type: Number, intVal: true },
       amount: { min: 23, max: 24 },
     };
-    expect(() => createSchema(schema)).toThrow(new BuildSchemaError('Invalid type specified in property "min"'));
+    expect(() => createSchema(schema)).toThrow(new BuildSchemaError('Property min is a required type'));
   });
 });
 describe('Schema String Type', () => {
-  test('should throw an Error when defining auto uuid value and is not String type ', () => {
+  test('should throw an error when defining auto uuid value and is not String type ', () => {
     const schema = {
       firstName: { type: Boolean, auto: 'uuid' },
     };
@@ -217,7 +232,7 @@ describe('Schema String Type', () => {
   });
 });
 describe('Schema Boolean Type', () => {
-  test('should throw an Error when defining default value and auto value', () => {
+  test('should throw an error when defining default value and auto value', () => {
     const schema = {
       firstName: { type: Boolean, default: true, auto: () => false },
     };
@@ -225,7 +240,7 @@ describe('Schema Boolean Type', () => {
   });
 });
 describe('Schema Number Type', () => {
-  test('should throw an Error when value is less than min', async () => {
+  test('should throw an error when value is less than min', async () => {
     expect.assertions(3);
     const data = {
       age: 23,
@@ -259,7 +274,7 @@ describe('Schema Number Type', () => {
     }
   });
 
-  test('should throw an Error when value is more than max', async () => {
+  test('should throw an error when value is more than max', async () => {
     expect.assertions(3);
     const data = {
       age: 35,
@@ -290,7 +305,7 @@ describe('Schema Number Type', () => {
     }
   });
 
-  test('should throw an Error when value is not integer', async () => {
+  test('should throw an error when value is not integer', async () => {
     expect.assertions(1);
     const data = {
       age: 35.6,
@@ -335,7 +350,7 @@ describe('Schema Date Types', () => {
       birthday: new Date('2000-01-01'),
     };
     test('should return valid date after apply default values', () => {
-      const schema1 = { name: String, birthday: Date, createdAt: { type: Date, default: Date.now } };
+      const schema1: ModelObject = { name: String, birthday: Date, createdAt: { type: Date, default: Date.now } };
       const updateInstance1 = applyDefaultValue(modelInstance, schema1);
       expect(updateInstance1.createdAt).toBeDefined();
       expect(updateInstance1.createdAt).toBeInstanceOf(Date);
@@ -516,8 +531,8 @@ describe('Schema Array Types', () => {
     });
   });
 });
-describe('Schema Object Types', () => {
-  test('should create a valid schema when create schema object', () => {
+describe('Schema Embed Types', () => {
+  test('should create a valid schema when using embed schema def', () => {
     const schema = {
       address: {
         line: String,
@@ -529,27 +544,42 @@ describe('Schema Object Types', () => {
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Schema);
   });
+
+  test('should create a valid schema when using embed schema instance', () => {
+    const addressSchema = createSchema({
+      line: String,
+      line2: String,
+      postalCode: { type: String, validator: { regexp: new RegExp('\\d'), message: 'Not valid postal code' } },
+    });
+
+    const schema = {
+      address: addressSchema,
+    };
+    const result = createSchema(schema);
+    expect(result).toBeDefined();
+    expect(result).toBeInstanceOf(Schema);
+  });
 });
 describe('Schema Model Ref Types', () => {
-  test('should create a schema when embed other model', () => {
-    const User = model('User', { name: String });
-    const schema = createSchema({ user: User });
+  test('should create a schema when using ref to other schema', () => {
+    const userSchema = createSchema({ name: String });
+    const schema = createSchema({ user: { ref: userSchema } });
     expect(schema).toBeDefined();
     expect(schema).toBeInstanceOf(Schema);
   });
 
   test('should create a schema when reference other model', () => {
-    const User = model('User', { name: String });
-    const schema = createSchema({ user: { ref: User } });
+    const UserSchema = createSchema({ name: String });
+    const schema = createSchema({ user: { ref: UserSchema } });
     expect(schema).toBeDefined();
     expect(schema).toBeInstanceOf(Schema);
   });
 
   test('should return true when validate schema with other model', async () => {
-    const User = model('User', { name: String });
-    const schema = createSchema({ user: { ref: User } });
+    const UserSchema = createSchema({ name: String });
+    const schema = createSchema({ user: { ref: UserSchema } });
     const data = {
-      user: new User({ name: 'John Doe' }),
+      user: { name: 'John Doe' },
     };
     const result = await validateSchema(data, schema);
     expect(result).toBeTruthy();
@@ -557,16 +587,85 @@ describe('Schema Model Ref Types', () => {
 
   test('should throw error validation when validate schema with other model', async () => {
     expect.assertions(2);
-    const User = model('User', { name: String });
-    const schema = createSchema({ user: { ref: User } });
+    const UserSchema = createSchema({ name: String });
+    const schema = createSchema({ user: { ref: UserSchema } });
     const data = {
-      user: new User({ name: 35 }),
+      user: { name: 35 },
     };
     try {
       await validateSchema(data, schema);
     } catch (e) {
       expect(e).toBeInstanceOf(ValidationError);
       expect(e).toEqual(new ValidationError('Property name must be type String'));
+    }
+  });
+
+  test('should create a schema with array of references', () => {
+    const commentSchema = createSchema({
+      title: String,
+      description: String,
+      published: Boolean,
+    });
+    const postSchemaDef = {
+      postTitle: String,
+      comments: [{ ref: commentSchema }],
+    };
+
+    expect(createSchema(postSchemaDef)).toBeInstanceOf(Schema);
+  });
+
+  test('should return true when validate with schema with array of references', async () => {
+    expect.assertions(1);
+    const commentSchema = createSchema({
+      title: String,
+      description: String,
+      published: Boolean,
+    });
+    const postSchemaDef = createSchema({
+      postTitle: String,
+      comments: [{ ref: commentSchema }],
+    });
+    const data = {
+      postTitle: 'Test',
+      comments: [
+        {
+          title: 'I Like',
+          description: 'I like',
+          published: true,
+        },
+        '2132131323',
+      ],
+    };
+    expect(await validateSchema(data, postSchemaDef)).toBeTruthy();
+  });
+
+  test('should throw exception when validate with schema and bad array of references', async () => {
+    expect.assertions(1);
+    const commentSchema = createSchema({
+      title: String,
+      description: String,
+      published: Boolean,
+    });
+    const postSchemaDef = createSchema({
+      postTitle: String,
+      comments: [{ ref: commentSchema }],
+    });
+    const data = {
+      postTitle: 'Test',
+      comments: [
+        {
+          title: 34,
+          description: 'I like',
+          published: true,
+        },
+        '22132131323',
+      ],
+    };
+
+    try {
+      await validateSchema(data, postSchemaDef);
+    } catch (e) {
+      expect(e).toBeInstanceOf(ValidationError);
     }
   });
 });

@@ -9,7 +9,7 @@ interface NumberTypeOptions {
 
 class NumberType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & NumberTypeOptions) {
-    super(name, Number, options);
+    super(name, Number.name, options);
   }
 
   get max(): number | NumberFunction | MinmaxOption | undefined {
@@ -50,5 +50,5 @@ class NumberType extends CoreType {
   }
 }
 
-export const numberTypeFactory = (name: string, otps: CoreTypeOptions & NumberTypeOptions) =>
+export const numberTypeFactory = (name: string, otps: CoreTypeOptions & NumberTypeOptions): NumberType =>
   new NumberType(name, otps);
