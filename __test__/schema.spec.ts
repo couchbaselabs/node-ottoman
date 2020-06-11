@@ -22,7 +22,9 @@ describe('Schema Types', () => {
   class MocType {}
   test('should throw an error when defining in schema unsupported type.', () => {
     const schema = { name: MocType };
-    expect(() => createSchema(schema)).toThrow(new BuildSchemaError('Invalid type specified in property "name"'));
+    expect(() => createSchema(schema)).toThrow(
+      new BuildSchemaError('Unsupported type specified in the property "name"'),
+    );
   });
 
   test('should throw an error when defining auto value and default value', () => {
@@ -563,21 +565,21 @@ describe('Schema Embed Types', () => {
 describe('Schema Model Ref Types', () => {
   test('should create a schema when using ref to other schema', () => {
     const userSchema = createSchema({ name: String });
-    const schema = createSchema({ user: { ref: userSchema } });
+    const schema = createSchema({ user: { type: userSchema, ref: 'User' } });
     expect(schema).toBeDefined();
     expect(schema).toBeInstanceOf(Schema);
   });
 
   test('should create a schema when reference other model', () => {
     const UserSchema = createSchema({ name: String });
-    const schema = createSchema({ user: { ref: UserSchema } });
+    const schema = createSchema({ user: { type: UserSchema, ref: 'User' } });
     expect(schema).toBeDefined();
     expect(schema).toBeInstanceOf(Schema);
   });
 
   test('should return true when validate schema with other model', async () => {
     const UserSchema = createSchema({ name: String });
-    const schema = createSchema({ user: { ref: UserSchema } });
+    const schema = createSchema({ user: { type: UserSchema, ref: 'User' } });
     const data = {
       user: { name: 'John Doe' },
     };
@@ -588,7 +590,7 @@ describe('Schema Model Ref Types', () => {
   test('should throw error validation when validate schema with other model', async () => {
     expect.assertions(2);
     const UserSchema = createSchema({ name: String });
-    const schema = createSchema({ user: { ref: UserSchema } });
+    const schema = createSchema({ user: { type: UserSchema, ref: 'User' } });
     const data = {
       user: { name: 35 },
     };
@@ -608,7 +610,7 @@ describe('Schema Model Ref Types', () => {
     });
     const postSchemaDef = {
       postTitle: String,
-      comments: [{ ref: commentSchema }],
+      comments: [{ type: commentSchema, ref: 'Comment' }],
     };
 
     expect(createSchema(postSchemaDef)).toBeInstanceOf(Schema);
@@ -623,7 +625,7 @@ describe('Schema Model Ref Types', () => {
     });
     const postSchemaDef = createSchema({
       postTitle: String,
-      comments: [{ ref: commentSchema }],
+      comments: [{ type: commentSchema, ref: 'Comment' }],
     });
     const data = {
       postTitle: 'Test',
@@ -648,7 +650,7 @@ describe('Schema Model Ref Types', () => {
     });
     const postSchemaDef = createSchema({
       postTitle: String,
-      comments: [{ ref: commentSchema }],
+      comments: [{ type: commentSchema, ref: 'Comment' }],
     });
     const data = {
       postTitle: 'Test',

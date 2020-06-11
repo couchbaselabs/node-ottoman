@@ -54,15 +54,18 @@ const _parseType = (value, name: string): ParseResult => {
       options: value,
     };
   } else if (is(value, Object)) {
-    if (typeof value.type !== 'undefined') {
+    if (typeof value.ref !== 'undefined') {
+      return {
+        type: 'Reference',
+        options: {
+          schema: createSchema(value.type),
+          refModel: value.ref,
+        },
+      };
+    } else if (typeof value.type !== 'undefined') {
       return {
         type: value.type.name,
         options: value,
-      };
-    } else if (typeof value.ref !== 'undefined') {
-      return {
-        type: 'Reference',
-        options: value.ref,
       };
     } else {
       return {
