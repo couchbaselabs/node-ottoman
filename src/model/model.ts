@@ -99,7 +99,7 @@ export class Model {
   static replace = (data: any, id?: string): Promise<any> => Promise.resolve({ data, id });
 
   /**
-   * Remove document in the collection with the provide id
+   * Remove document in the collection with the provided id
    */
   static remove = (id: string): Promise<any> => Promise.resolve(id);
 }
