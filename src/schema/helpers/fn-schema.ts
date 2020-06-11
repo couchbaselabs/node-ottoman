@@ -1,24 +1,18 @@
-import {
-  booleanTypeFactory,
-  CoreType,
-  dateTypeFactory,
-  numberTypeFactory,
-  stringTypeFactory,
-  arrayTypeFactory,
-  objectTypeFactory,
-  modelTypeFactory,
-} from '../types';
-import { is, isTypeOf } from '../../utils/is-type';
+import { IOttomanType } from '../types';
+import { is } from '../../utils/is-type';
 import { BuildSchemaError } from '../errors';
-import { Schema, SchemaDef, ModelObject } from '../schema';
-import { isModel } from '../../utils/is-model';
+import { Schema, SchemaDef, ModelObject, FieldMap } from '../schema';
+import { Model } from '../../model/model';
 
+type ParseResult = {
+  [key in 'type' | 'options']: unknown;
+};
 /**
- * Parse definition to get a schema instance
+ * Parse the definition to get a schema instance, if the [[obj]] is a schema instance will be returned
  * @function
  * @public
  *
- * @param {Schema|Object} obj
+ * @param {Schema|Object} obj the definition or schema instance
  * @returns {Schema}
  * @throws {Error}
  *
@@ -31,91 +25,91 @@ export const createSchema = (obj: Schema | SchemaDef): Schema => {
   if (obj instanceof Schema) {
     return obj;
   }
-  const fields: CoreType[] = [];
+  const fields: FieldMap = {};
   const keys = Object.keys(obj);
   for (const _key of keys) {
-    const opts = _parseType(obj[_key]);
+    const opts = _parseType(obj[_key], _key);
     if (!opts.type) {
       throw new BuildSchemaError(`Property ${_key} is a required type`);
     }
 
-    let subOpts: any = {};
-    if (is(opts.type, Array)) {
-      subOpts = _parseType(opts.type[0]);
-      opts.type = Array;
-    }
-    fields.push(_makeField(_key, opts, subOpts));
+    fields[_key] = _makeField(_key, opts);
   }
-  fields.push(stringTypeFactory('_id', { auto: 'uuid' }));
+  fields['_id'] = _makeField('_id', { type: String.name, options: { auto: 'uuid' } });
   return new Schema(fields);
 };
 
-interface GroupObject {
-  type: unknown;
-  fields: any;
-}
-
-const _parseType = (value): Record<string, any> => {
-  if (is(value, Object)) {
+/**
+ * Parse the definition of a field in the schema to identify the type
+ * @function
+ * @private
+ * @param value that's going to parse
+ * @param name that identifies the field
+ * @throws BuildSchemaError
+ */
+const _parseType = (value, name: string): ParseResult => {
+  if (value instanceof Schema) {
+    return {
+      type: 'Embed',
+      options: value,
+    };
+  } else if (is(value, Object)) {
     if (typeof value.type !== 'undefined') {
-      return value;
+      return {
+        type: value.type.name,
+        options: value,
+      };
     } else if (typeof value.ref !== 'undefined') {
       return {
-        type: value.ref,
-        byRef: true,
+        type: 'Reference',
+        options: value.ref,
       };
     } else {
-      const obj: GroupObject = {
-        type: Object,
-        fields: {},
+      return {
+        type: 'Embed',
+        options: createSchema(value),
       };
-
-      for (const key of Object.keys(value)) {
-        const objDef = _parseType(value[key]);
-        obj.fields[key] = objDef;
-      }
-
-      return obj;
     }
-  } else if (value.name !== undefined || is(value, Array)) {
-    return { type: value };
+  } else if (is(value, Array)) {
+    const childType = _parseType(value[0], '');
+    if (!childType.type) {
+      throw new BuildSchemaError(`Property ${name}.0 is a required type`);
+    }
+    return {
+      type: Array.name,
+      options: _makeField('', childType),
+    };
+  } else if (value.name !== undefined) {
+    return {
+      type: value.name,
+      options: {},
+    };
   } else {
     return value;
   }
 };
 
-const _makeField = (name, opts, subOpts?): CoreType => {
-  if (isTypeOf(opts.type, String)) {
-    return stringTypeFactory(name, opts);
-  } else if (isTypeOf(opts.type, Boolean)) {
-    return booleanTypeFactory(name, opts);
-  } else if (isTypeOf(opts.type, Number)) {
-    return numberTypeFactory(name, opts);
-  } else if (isTypeOf(opts.type, Date)) {
-    return dateTypeFactory(name, opts);
-  } else if (isTypeOf(opts.type, Array)) {
-    return arrayTypeFactory(name, _makeField('', subOpts));
-  } else if (isTypeOf(opts.type, Object)) {
-    const subFields: CoreType[] = [];
-    for (const _name of Object.keys(opts.fields)) {
-      const subField = _makeField(_name, opts.fields[_name]);
-      subFields.push(subField);
-    }
-    return objectTypeFactory(name, subFields);
-  } else if (isModel(opts.type)) {
-    return modelTypeFactory(name, opts.refBy || false);
-  } else {
-    throw new BuildSchemaError(`Invalid type specified in property "${name}"`);
+/**
+ * Make a field using its definition, throw a [[BuildSchemaError]] if the type is not supported
+ * @private
+ * @param name of the field
+ * @param def result of parse the field schema
+ */
+const _makeField = (name: string, def: ParseResult): IOttomanType => {
+  const typeFactory = Schema.Types[String(def.type)];
+  if (typeFactory === undefined) {
+    throw new BuildSchemaError(`Unsupported type specified in the property "${name}"`);
   }
+  return typeFactory(name, def.options);
 };
 
 /**
  * Validate data using the schema definition
- * @param data Object with data to validate
- * @param schema Schema will be used to validate
- * @throws Error
+ * @param data that's going to validate
+ * @param schema that will be used to validate
+ * @throws BuildSchemaError, ValidationError
  */
-export const validateSchema = async (data: ModelObject, schema: Schema | SchemaDef): Promise<boolean> => {
+export const validateSchema = async (data: Model | ModelObject, schema: Schema | SchemaDef): Promise<boolean> => {
   const _schema = createSchema(schema);
   return _schema.validate(data);
 };

@@ -1,13 +1,34 @@
-import { IOttomanType } from './types';
+import {
+  arrayTypeFactory,
+  booleanTypeFactory,
+  dateTypeFactory,
+  embedTypeFactory,
+  IOttomanType,
+  numberTypeFactory,
+  referenceTypeFactory,
+  stringTypeFactory,
+} from './types';
 import { isMetadataKey } from '../utils/is-metadata';
 import { ValidationError } from './errors';
+import { Model } from '../model/model';
 
 export type SchemaDef = Record<string, any>;
-export type ModelObject = Record<string, any>;
+export type ModelObject = { [key: string]: unknown };
+export type FieldMap = { [key: string]: IOttomanType };
 export type PluginConstructor = (Schema) => void;
+export type FactoryFunction = (name, options) => IOttomanType;
+export type SupportType = { [key: string]: FactoryFunction };
 
 export class Schema {
-  static Types: any = {};
+  static Types: SupportType = {
+    String: stringTypeFactory,
+    Boolean: booleanTypeFactory,
+    Number: numberTypeFactory,
+    Date: dateTypeFactory,
+    Array: arrayTypeFactory,
+    Reference: referenceTypeFactory,
+    Embed: embedTypeFactory,
+  };
   /**
    * Name of id field
    */
@@ -32,7 +53,7 @@ export class Schema {
    *  const schema = new Schema([new StringType('name')]);
    * ```
    */
-  constructor(private fields: IOttomanType[]) {
+  constructor(private fields: FieldMap) {
     this._id = '_id';
   }
   /**
@@ -48,7 +69,7 @@ export class Schema {
    * ```
    * > true
    */
-  async validate(object: ModelObject): Promise<boolean> {
+  async validate(object: Model | ModelObject): Promise<boolean> {
     let errors: string[] = [];
     for (const key in this.fields) {
       const type = this.fields[key];
@@ -79,6 +100,10 @@ export class Schema {
       }
     }
     return obj;
+  }
+
+  path(path: string): IOttomanType | undefined {
+    return this.fields[path];
   }
 
   /**

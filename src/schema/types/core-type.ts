@@ -18,13 +18,14 @@ export interface CoreTypeOptions {
 
 export interface IOttomanType {
   name: string;
+  typeName: string;
   validate(value: unknown): Promise<string[]>;
   isEmpty(value: unknown): boolean;
   buildDefault(): unknown;
 }
 
 export abstract class CoreType implements IOttomanType {
-  protected constructor(public name: string, public nativeType: unknown, public options?: CoreTypeOptions) {
+  protected constructor(public name: string, public typeName: string, public options?: CoreTypeOptions) {
     this._checkIntegrity();
   }
   get required(): boolean | RequiredOption | RequiredFunction {
@@ -85,13 +86,13 @@ export abstract class CoreType implements IOttomanType {
       if (this.default !== undefined) {
         throw new BuildSchemaError(`Property ${this.name} cannot be both auto and have a default.`);
       }
-      if (this.auto === 'uuid' && this.nativeType !== String) {
+      if (this.auto === 'uuid' && this.typeName !== String.name) {
         throw new BuildSchemaError('Automatic uuid properties must be string typed.');
       }
     }
   }
 
   checkType(value: unknown): string[] {
-    return validateType(value, this.nativeType, this.name);
+    return validateType(value, this.typeName, this.name);
   }
 }

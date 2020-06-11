@@ -4,6 +4,4 @@
  * @param type
  */
 export const is = (val, type): boolean =>
-  ![, null].includes(val) && (val.name === type.name || val.constructor === type);
-
-export const isTypeOf = (val, type): boolean => ![, null].includes(val) && val.name === type.name;
+  ![, null].includes(val) && (val.name === type || val.constructor.name === type || val.constructor === type);
