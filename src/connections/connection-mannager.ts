@@ -9,12 +9,12 @@ import { Model } from '../model/model';
  */
 export class ConnectionManager {
   /**
-   * Store intance to a bucket
+   * Store instance to a bucket
    */
   bucket;
 
   /**
-   * Dictionary for all models create on this connection
+   * Dictionary for all models created on this connection
    */
   models = {};
 
