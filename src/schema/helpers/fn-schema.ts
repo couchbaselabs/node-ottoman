@@ -105,7 +105,7 @@ const _makeField = (name, opts, subOpts?): CoreType => {
 /**
  * Validate data using the schema definition
  * @param data Object with data to validate
- * @param schema Schema will be use to validate
+ * @param schema Schema will be used to validate
  * @throws Error
  */
 export const validateSchema = (data: ModelObject, schema: Schema | SchemaDef): boolean => {
@@ -116,7 +116,7 @@ export const validateSchema = (data: ModelObject, schema: Schema | SchemaDef): b
 /**
  * Apply default values defined on schema to an object instance
  * @param obj reference to object instance
- * @param schema definition will be use to determine default definitions
+ * @param schema definition will be used to determine default definitions
  *
  * @example
  * ```ts

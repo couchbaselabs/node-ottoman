@@ -54,7 +54,7 @@ export class Model {
   }
 
   /**
-   * Remove document from BD
+   * Remove document from bucket
    */
   remove(options = {}) {
     return removeLifeCicle({ id: this.getId(), options, model: this.$ });
@@ -75,7 +75,7 @@ export class Model {
   }
 
   /**
-   * Find documents base on filter on the collection
+   * Find documents based on filter of the collection
    */
   static find = (params): Promise<any> => Promise.resolve(params);
 
@@ -87,14 +87,14 @@ export class Model {
   /**
    * Update document in the collection
    * Can update document partial or complete
-   * id parameter will have more priority that data.id
+   * id parameter will have more priority than data.id
    */
   static update = (data: any, id?: string): Promise<any> => Promise.resolve({ data, id });
 
   /**
    * Replace document in the collection
    * Will replace the entire document with the given data
-   * id parameter will have more priority that data.id
+   * id parameter will have more priority than data.id
    */
   static replace = (data: any, id?: string): Promise<any> => Promise.resolve({ data, id });
 
