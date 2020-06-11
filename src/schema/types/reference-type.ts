@@ -2,8 +2,13 @@ import { CoreType } from './core-type';
 import { Schema } from '../schema';
 import { validateSchema } from '../helpers';
 
+interface ReferenceOptions {
+  schema: Schema;
+  refModel: string;
+}
+
 class ReferenceType extends CoreType {
-  constructor(name: string, public schema: Schema) {
+  constructor(name: string, public schema: Schema, public refModel: string) {
     super(name, 'Reference');
   }
 
@@ -24,4 +29,5 @@ class ReferenceType extends CoreType {
   }
 }
 
-export const referenceTypeFactory = (name: string, schema: Schema): ReferenceType => new ReferenceType(name, schema);
+export const referenceTypeFactory = (name: string, opts: ReferenceOptions): ReferenceType =>
+  new ReferenceType(name, opts.schema, opts.refModel);
