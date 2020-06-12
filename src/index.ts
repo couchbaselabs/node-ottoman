@@ -1,4 +1,5 @@
 export { connect, getCollection, closeConnection, model } from './connections/connection-handler';
+export { Model } from './model/model';
 export { validateSchema, applyDefaultValue, createSchema, ValidationError, BuildSchemaError } from './schema';
 export {
   ReturnResultDict,
@@ -18,3 +19,4 @@ export {
   ILetExpr,
   SortType,
 } from './query';
+export { SearchConsistency } from './utils/search-conscistency';

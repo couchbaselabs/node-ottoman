@@ -1,5 +1,5 @@
-import { model } from '../lib';
-import { DocumentNotFoundError } from 'couchbase';
+import { model, createSchema } from '../lib';
+import { isDocumentNotFoundError } from '../lib/utils/is-not-found';
 
 const accessDoc = {
   type: 'airlineR',
@@ -33,40 +33,40 @@ describe('Test Document Access Functions', () => {
   test('UserModel.create Creating a document', async () => {
     const UserModel = model('User', schema);
     const result = await UserModel.create(accessDoc);
-    UserModel.update({ name: 'Updated' }, result._id);
+    UserModel.update({ name: 'Updated' }, result.id);
     expect(result.token).toBeDefined();
   });
 
   test('UserModel.findById Get a document', async () => {
     const UserModel = model('User', schema);
     const result = await UserModel.create(accessDoc);
-    const user = await UserModel.getById(result._id);
+    const user = await UserModel.findById(result.id);
     expect(user.name).toBeDefined();
   });
   test('UserModel.findById expect to fail', async () => {
     const UserModel = model('User', schema);
     const key = 'not-found';
     try {
-      await UserModel.getById(key);
+      await UserModel.findById(key);
       throw new Error('Fail');
     } catch (e) {
-      expect(e).toBeInstanceOf(DocumentNotFoundError);
+      expect(isDocumentNotFoundError(e)).toBe(true);
     }
   });
 
-  test('UserModel.update Update a document', async () => {
+  test('UserModel.update -> Update a document', async () => {
     const UserModel = model('User', schema);
     const result = await UserModel.create(accessDoc);
-    await UserModel.update(updateDoc, result._id);
-    const user = await UserModel.getById(result._id);
+    await UserModel.update(updateDoc, result.id);
+    const user = await UserModel.findById(result.id);
     expect(user.isActive).toBe(true);
   });
 
   test('UserModel.replace Replace a document', async () => {
     const UserModel = model('User', schema);
     const result = await UserModel.create(accessDoc);
-    await UserModel.replace(replaceDoc, result._id);
-    const user = await UserModel.getById(result._id);
+    await UserModel.replace(replaceDoc, result.id);
+    const user = await UserModel.findById(result.id);
     expect(user.type).toBe('airlineZ Replace');
   });
 
@@ -76,7 +76,7 @@ describe('Test Document Access Functions', () => {
     const result = await user.save();
     expect(result.token).toBeDefined();
     user.name = 'Instance Edited';
-    user._id = result._id;
+    user.id = result.id;
     const update = await user.save();
     expect(update.token).toBeDefined();
   });
@@ -85,27 +85,39 @@ describe('Test Document Access Functions', () => {
     const UserModel = model('User', schema);
     const user = new UserModel(accessDoc2);
     const result = await user.save();
-    expect(result._id).toBeDefined();
-    user._id = result._id;
+    expect(result.id).toBeDefined();
+    user.id = result.id;
     const removed = await user.remove();
     expect(removed).toBeDefined();
   });
 
   test('Remove saved document from Model Constructor', async () => {
-    const UserModel = model('User', schema);
+    const UserSchema = createSchema(schema);
+    const UserModel = model('User', UserSchema);
     const user = new UserModel(accessDoc2);
     const result = await user.save();
-    expect(result._id).toBeDefined();
-    user._id = result._id;
-    const removed = await UserModel.remove(result._id);
+    expect(result.id).toBeDefined();
+    user.id = result.id;
+    const removed = await UserModel.remove(result.id);
     expect(removed).toBeDefined();
   });
 
-  test('Insert multiple document', async () => {
-    const UserModel = model('User', schema);
-    const result = await UserModel.insertMany([accessDoc, accessDoc]);
-    expect(result).toEqual(
-      expect.arrayContaining([expect.objectContaining({ cas: expect.anything(), token: expect.anything() })]),
-    );
+  test('Test Schema Methods', async () => {
+    const UserSchema = createSchema(schema);
+    UserSchema.methods.getType = function () {
+      return `method: getType -> ${this.type}`;
+    };
+    const UserModel = model('User', UserSchema);
+    const user = new UserModel(accessDoc2);
+    expect(user.getType()).toBe(`method: getType -> ${accessDoc2.type}`);
+  });
+
+  test('Test Schema Statics', async () => {
+    const UserSchema = createSchema(schema);
+    UserSchema.statics.getCats = function () {
+      return 'static: getCats';
+    };
+    const UserModel = model('User', UserSchema);
+    expect(UserModel.getCats()).toBe('static: getCats');
   });
 });

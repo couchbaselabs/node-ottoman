@@ -11,6 +11,7 @@ import {
 import { isMetadataKey } from '../utils/is-metadata';
 import { ValidationError } from './errors';
 import { Model } from '../model/model';
+import { SchemaIndex } from '../model/index/types/index.types';
 
 export type SchemaDef = Record<string, any>;
 export type ModelObject = { [key: string]: unknown };
@@ -38,6 +39,7 @@ export class Schema {
   methods = {};
   preHooks = {};
   postHooks = {};
+  index: SchemaIndex = {};
 
   /**
    * @summary Create an instance of Schema
@@ -53,7 +55,7 @@ export class Schema {
    *  const schema = new Schema([new StringType('name')]);
    * ```
    */
-  constructor(private fields: FieldMap) {
+  constructor(public fields: FieldMap) {
     this._id = '_id';
   }
   /**

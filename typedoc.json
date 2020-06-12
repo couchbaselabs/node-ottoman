@@ -1,0 +1,8 @@
+{
+  "mode": "file",
+  "out": "docs",
+  "excludePrivate": true,
+  "disableSources": true,
+  "theme": "vuepress",
+  "excludeNotExported": true
+}

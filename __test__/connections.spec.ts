@@ -17,17 +17,16 @@ describe('Test connections', () => {
       username,
     });
     expect(conn3.bucket).toBeDefined();
-
     conn3.model('Dog', { name: String });
     const ModelDog = conn3.getModel('Dog');
-    expect(isModel(ModelDog)).toBe(true);
     conn3.close();
+    expect(isModel(ModelDog)).toBe(true);
   });
 
   test('Get default collection', () => {
     const conn2 = connect(connectUri);
     const defaultCollection = conn2.getCollection();
-    expect(defaultCollection._name).toBe('');
+    expect(defaultCollection._name).toBe('_default');
     conn2.close();
   });
 

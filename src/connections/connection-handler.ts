@@ -13,6 +13,10 @@ export interface ConnectOptions {
  * Store default connection
  */
 export let __conn: ConnectionManager;
+export const __connections: ConnectionManager[] = [];
+
+export const getDefaultConnection = (): ConnectionManager => __conn;
+export const getConnections = (): ConnectionManager[] => __connections;
 
 /**
  * Connect to Couchbase server
@@ -28,7 +32,21 @@ export const connect = (connectOptions: ConnectOptions | string) => {
   if (!__conn) {
     __conn = connection;
   }
+  __connections.push(connection);
   return connection;
+};
+
+/**
+ * Allow connecting from env variable OTTOMAN_CONNECTION_STRING if it's provided.
+ */
+const connectFromEnvVariables = (modelName: string) => {
+  const connString = process.env.OTTOMAN_CONNECTION_STRING || '';
+  if (connString) {
+    connect(connString);
+    console.log(`Database connect from process.env.OTTOMAN_CONNECTION_STRING`);
+  } else {
+    throw new Error(`There isn't a connection available to create Model ${modelName}`);
+  }
 };
 
 /**
@@ -40,11 +58,12 @@ export const getCollection = (collectionName?: string) => __conn.getCollection(c
 /**
  * Create model from given name from default connection
  */
-export const model = (name: string, schema) => __conn.model(name, schema);
-
-/**
- * isModel
- */
+export const model = (name: string, schema) => {
+  if (!__conn) {
+    connectFromEnvVariables(name);
+  }
+  return __conn.model(name, schema);
+};
 
 /**
  * Close Couchbase connection

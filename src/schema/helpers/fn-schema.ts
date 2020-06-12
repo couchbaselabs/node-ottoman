@@ -3,6 +3,7 @@ import { is } from '../../utils/is-type';
 import { BuildSchemaError } from '../errors';
 import { Schema, SchemaDef, ModelObject, FieldMap } from '../schema';
 import { Model } from '../../model/model';
+import { getGlobalPlugins } from '../../plugins/global-plugin-handler';
 
 type ParseResult = {
   [key in 'type' | 'options']: unknown;
@@ -36,7 +37,9 @@ export const createSchema = (obj: Schema | SchemaDef): Schema => {
     fields[_key] = _makeField(_key, opts);
   }
   fields['_id'] = _makeField('_id', { type: String.name, options: { auto: 'uuid' } });
-  return new Schema(fields);
+  const schema = new Schema(fields);
+  schema.plugin(...getGlobalPlugins());
+  return schema;
 };
 
 /**
