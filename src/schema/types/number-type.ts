@@ -28,8 +28,9 @@ class NumberType extends CoreType {
     return typeof _options.intVal === 'undefined' ? false : _options.intVal;
   }
 
-  cast(value: unknown): number {
+  cast(value: unknown) {
     const _value = Number(super.cast(value));
+    if (this.isEmpty(value)) return _value;
     let errors: string[] = [];
 
     if (isNaN(_value)) {

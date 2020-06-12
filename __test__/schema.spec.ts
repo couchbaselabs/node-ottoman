@@ -594,3 +594,59 @@ describe('Schema Add Custom Types', () => {
     }
   });
 });
+describe('Schema Combine Some Types', () => {
+  const CardSchema = createSchema({
+    number: String,
+    zipCode: String,
+  });
+
+  const CatSchema = createSchema({
+    name: String,
+    age: Number,
+  });
+  test('should return a valid object when some non required schema properties are missing', () => {
+    const UserSchema = createSchema({
+      type: String,
+      isActive: Boolean,
+      name: String,
+      settings: {
+        ttl: { type: Number },
+        email: String,
+      },
+      card: { type: CardSchema, ref: 'Card' },
+      cat: { type: CatSchema, ref: 'Cat' },
+    });
+
+    const data = {
+      name: 'george',
+      settings: {
+        email: 'george@gmail.com',
+      },
+    };
+
+    expect(castSchema(data, UserSchema)).toEqual(data);
+  });
+
+  test('should throw an error when some required schema properties are missing', () => {
+    const UserSchema = createSchema({
+      type: { type: String, required: true },
+      isActive: Boolean,
+      name: String,
+      settings: {
+        ttl: { type: Number },
+        email: String,
+      },
+      card: { type: CardSchema, ref: 'Card' },
+      cat: { type: CatSchema, ref: 'Cat' },
+    });
+
+    const data = {
+      name: 'george',
+      settings: {
+        email: 'george@gmail.com',
+      },
+    };
+
+    expect(() => castSchema(data, UserSchema)).toThrow(ValidationError);
+  });
+});
