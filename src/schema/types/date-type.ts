@@ -31,8 +31,9 @@ class DateType extends CoreType {
     const result = super.buildDefault();
     return !(result instanceof Date) ? new Date(String(result)) : (result as Date);
   }
-  cast(value: unknown): Date {
+  cast(value: unknown) {
     value = super.cast(value);
+    if (this.isEmpty(value)) return value;
     const _value = is(value, Date)
       ? (value as Date)
       : is(value, String)

@@ -14,7 +14,8 @@ class ReferenceType extends CoreType {
     super(name, 'Reference');
   }
 
-  cast(value: unknown): ModelObject | string {
+  cast(value: unknown) {
+    if (this.isEmpty(value)) return value;
     if (is(value, String)) {
       return String(value);
     }

@@ -7,7 +7,8 @@ class ArrayType extends CoreType {
     super(name, Array.name);
   }
 
-  cast(value: unknown): unknown[] {
+  cast(value: unknown) {
+    if (this.isEmpty(value)) return value;
     if (!is(value, Array)) {
       throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
     }

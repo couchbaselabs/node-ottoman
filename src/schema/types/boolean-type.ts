@@ -7,8 +7,9 @@ export class BooleanType extends CoreType {
     super(name, Boolean.name, options);
   }
 
-  cast(value: unknown): boolean {
+  cast(value: unknown) {
     value = super.cast(value);
+    if (value === undefined || value === null) return value;
     if (is(value, Object)) {
       throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
     }
