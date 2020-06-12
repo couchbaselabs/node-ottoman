@@ -1,7 +1,6 @@
 export const pathToN1QL = (path) => {
   const fields: string[] = [];
   for (let k = 0; k < path.length; ++k) {
-    console.log(fields);
     if (path[k].operation === 'member') {
       if (path[k].expression.type !== 'identifier') {
         throw new Error('Unexpected member expression type.');

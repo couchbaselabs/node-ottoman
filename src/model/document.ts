@@ -82,9 +82,7 @@ export abstract class Document<T> {
    */
   _depopulate(fieldName) {
     const populateMetadataKey = `$__${fieldName}`;
-    console.log(populateMetadataKey);
     const data = this[populateMetadataKey];
-    console.log(data);
     if (data && data.ref) {
       this[fieldName] = data.ref;
       delete this[`$__${fieldName}`];
