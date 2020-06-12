@@ -1,6 +1,7 @@
 import {
   arrayTypeFactory,
   booleanTypeFactory,
+  CoreType,
   dateTypeFactory,
   embedTypeFactory,
   IOttomanType,
@@ -72,13 +73,16 @@ export class Schema {
    * > true
    */
   async validate(object: Model | ModelObject): Promise<boolean> {
-    let errors: string[] = [];
+    const errors: string[] = [];
     for (const key in this.fields) {
       const type = this.fields[key];
       if (!isMetadataKey(type.name)) {
-        const value = object[type.name];
-        const result = await type.validate(value);
-        errors = [...errors, ...result];
+        try {
+          const value = object[type.name];
+          type.cast(value);
+        } catch (e) {
+          errors.push(e.message);
+        }
       }
     }
 
@@ -86,6 +90,26 @@ export class Schema {
       throw new ValidationError(errors.join(', '));
     }
     return true;
+  }
+
+  cast(object: Model | ModelObject): Model | ModelObject {
+    const errors: string[] = [];
+    for (const key in this.fields) {
+      const type = this.fields[key];
+      if (!isMetadataKey(type.name)) {
+        try {
+          const value = object[type.name];
+          object[type.name] = type.cast(value);
+        } catch (e) {
+          errors.push(e.message);
+        }
+      }
+    }
+
+    if (errors.length > 0) {
+      throw new ValidationError(errors.join(', '));
+    }
+    return object;
   }
 
   /**
@@ -97,7 +121,7 @@ export class Schema {
   applyDefaultsToObject(obj: ModelObject): ModelObject {
     for (const key in this.fields) {
       const field = this.fields[key];
-      if (field.isEmpty(obj[field.name])) {
+      if (typeof obj[field.name] === 'undefined' && field instanceof CoreType) {
         obj[field.name] = field.buildDefault();
       }
     }

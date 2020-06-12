@@ -1,16 +1,22 @@
 import { CoreType, CoreTypeOptions } from './core-type';
+import { is } from '../../utils/is-type';
+import { ValidationError } from '../errors';
 
 export class BooleanType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions) {
     super(name, Boolean.name, options);
   }
 
-  async applyValidations(): Promise<string[]> {
-    return [];
+  cast(value: unknown): boolean {
+    value = super.cast(value);
+    if (is(value, Object)) {
+      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
+    }
+    return Boolean(value);
   }
 
-  isEmpty(value: boolean | undefined): boolean {
-    return value === undefined;
+  isEmpty(value: boolean): boolean {
+    return value === undefined || value === null;
   }
 }
 

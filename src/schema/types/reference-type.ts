@@ -1,6 +1,8 @@
 import { CoreType } from './core-type';
-import { Schema } from '../schema';
-import { validateSchema } from '../helpers';
+import { ModelObject, Schema } from '../schema';
+import { is } from '../../utils/is-type';
+import { isModel } from '../../utils/is-model';
+import { ValidationError } from '../errors';
 
 interface ReferenceOptions {
   schema: Schema;
@@ -12,20 +14,16 @@ class ReferenceType extends CoreType {
     super(name, 'Reference');
   }
 
-  async applyValidations(value): Promise<string[]> {
-    if (typeof value === 'string') {
-      return [];
+  cast(value: unknown): ModelObject | string {
+    if (is(value, String)) {
+      return String(value);
     }
-    await validateSchema(value, this.schema);
-    return [];
-  }
-
-  isEmpty(): boolean {
-    return false;
-  }
-
-  checkType(): string[] {
-    return [];
+    if (!is(value, Object) && !isModel(value)) {
+      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
+    }
+    const _value = value as ModelObject;
+    this.schema.cast(_value);
+    return _value;
   }
 }
 

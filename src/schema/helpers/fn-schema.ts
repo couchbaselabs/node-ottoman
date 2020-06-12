@@ -1,7 +1,7 @@
 import { IOttomanType } from '../types';
 import { is } from '../../utils/is-type';
 import { BuildSchemaError } from '../errors';
-import { Schema, SchemaDef, ModelObject, FieldMap } from '../schema';
+import { Schema, SchemaDef, ModelObject, FieldMap, FactoryFunction } from '../schema';
 import { Model } from '../../model/model';
 import { getGlobalPlugins } from '../../plugins/global-plugin-handler';
 
@@ -108,16 +108,15 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
   }
   return typeFactory(name, def.options);
 };
-
 /**
  * Validate data using the schema definition
  * @param data that's going to validate
  * @param schema that will be used to validate
  * @throws BuildSchemaError, ValidationError
  */
-export const validateSchema = async (data: Model | ModelObject, schema: Schema | SchemaDef): Promise<boolean> => {
+export const castSchema = (data: Model | ModelObject, schema: Schema | SchemaDef): Model | ModelObject => {
   const _schema = createSchema(schema);
-  return _schema.validate(data);
+  return _schema.cast(data);
 };
 
 /**
@@ -136,4 +135,11 @@ export const validateSchema = async (data: Model | ModelObject, schema: Schema |
 export const applyDefaultValue = (obj: ModelObject, schema: Schema | SchemaDef): ModelObject => {
   const _schema = createSchema(schema);
   return _schema.applyDefaultsToObject(obj);
+};
+
+export const registerType = (name: string, factory: FactoryFunction): void => {
+  if (Schema.Types[name] !== undefined) {
+    throw new Error('A type with this name has already been registered');
+  }
+  Schema.Types[name] = factory;
 };

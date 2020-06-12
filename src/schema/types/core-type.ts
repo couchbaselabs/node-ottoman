@@ -1,13 +1,11 @@
-import {
-  ValidatorOption,
-  ValidatorFunction,
-  applyValidator,
-  validateRequire,
-  validateType,
-  RequiredFunction,
-  RequiredOption,
-} from '../helpers';
-import { BuildSchemaError } from '../errors';
+import { ValidatorOption, ValidatorFunction, applyValidator } from '../helpers';
+import { BuildSchemaError, ValidationError } from '../errors';
+
+export interface RequiredOption {
+  val: boolean;
+  message: string;
+}
+export type RequiredFunction = () => boolean | RequiredOption;
 
 export interface CoreTypeOptions {
   required?: boolean | RequiredOption | RequiredFunction;
@@ -19,9 +17,7 @@ export interface CoreTypeOptions {
 export interface IOttomanType {
   name: string;
   typeName: string;
-  validate(value: unknown): Promise<string[]>;
-  isEmpty(value: unknown): boolean;
-  buildDefault(): unknown;
+  cast(value: unknown): unknown;
 }
 
 export abstract class CoreType implements IOttomanType {
@@ -43,32 +39,6 @@ export abstract class CoreType implements IOttomanType {
   get default(): unknown {
     return this.options?.default;
   }
-
-  /***
-   * First check types and later apply specific validation of the type
-   * @param {String|Date|Number} value
-   * @return {String[]}
-   */
-  async validate(value: unknown): Promise<string[]> {
-    let errors: string[] = [];
-    /// Check type integrity if is not empty
-    if (!this.isEmpty(value)) {
-      errors = [...errors, ...this.checkType(value)];
-    }
-    ///Checking required data
-    if (this.isEmpty(value)) {
-      errors = [...errors, ...validateRequire(this.required, this.name)];
-    }
-    if (this.validator !== undefined) {
-      const _validator = typeof this.validator === 'function' ? this.validator(value) : this.validator;
-      errors = [...errors, ...applyValidator(value, _validator)];
-    }
-    const result = await this.applyValidations(value);
-    errors = [...errors, ...result];
-
-    return errors.filter((val) => ![, null, ''].includes(val));
-  }
-
   buildDefault(): unknown {
     if (typeof this.default === 'function') {
       return this.default();
@@ -76,10 +46,6 @@ export abstract class CoreType implements IOttomanType {
       return this.default;
     }
   }
-
-  abstract applyValidations(value): Promise<string[]>;
-
-  abstract isEmpty(value: unknown): boolean;
 
   private _checkIntegrity() {
     if (this.auto !== undefined) {
@@ -92,7 +58,33 @@ export abstract class CoreType implements IOttomanType {
     }
   }
 
-  checkType(value: unknown): string[] {
-    return validateType(value, this.typeName, this.name);
+  cast(value: unknown): unknown {
+    if (this.isEmpty(value)) {
+      const _required = this.checkRequired() || '';
+      if (_required.length > 0) {
+        throw new ValidationError(_required);
+      }
+    }
+    return value;
+  }
+
+  checkRequired(): string | void {
+    const _required = (typeof this.required === 'function' ? this.required() : this.required) as RequiredOption;
+    if (typeof _required.val !== 'undefined' && _required.val) {
+      return _required.message;
+    } else if (!!_required) {
+      return `Property ${this.name} is required`;
+    }
+  }
+
+  checkValidator(value: unknown): string | void {
+    const _validator = (typeof this.validator === 'function'
+      ? this.validator(value)
+      : this.validator) as ValidatorOption;
+    return applyValidator(value, _validator);
+  }
+
+  isEmpty(value: unknown): boolean {
+    return value === undefined || value === null;
   }
 }

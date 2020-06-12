@@ -1,5 +1,7 @@
 import { CoreType, CoreTypeOptions } from './core-type';
 import { generateUUID } from '../../utils/generate-uuid';
+import { is } from '../../utils/is-type';
+import { ValidationError } from '../errors';
 
 type FunctionsString = () => string[];
 
@@ -17,17 +19,6 @@ export class StringType extends CoreType {
     return _options.enum;
   }
 
-  async applyValidations(value: string): Promise<string[]> {
-    const errors: string[] = [];
-    if (typeof this.enumValues !== 'undefined') {
-      const _enumValues = typeof this.enumValues === 'function' ? this.enumValues() : this.enumValues;
-      if (!_enumValues.includes(value)) {
-        errors.push(`Property ${this.name} value must be ${_enumValues.join(',')}`);
-      }
-    }
-    return errors;
-  }
-
   buildDefault(): string {
     if (this.auto === 'uuid') {
       return generateUUID();
@@ -35,7 +26,37 @@ export class StringType extends CoreType {
     return String(super.buildDefault());
   }
 
-  isEmpty = (value: string): boolean => [, '', null].includes(value);
+  cast(value: unknown): string | null | undefined {
+    value = super.cast(value);
+    let errors: string[] = [];
+    if (is(value, Object)) {
+      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
+    }
+    if (value === null || value === undefined) {
+      return value;
+    }
+    const _value = String(value);
+    errors.push(this._checkEnum(_value) || '');
+    errors.push(this.checkValidator(_value) || '');
+    errors = errors.filter((e) => e !== '');
+    if (errors.length > 0) {
+      throw new ValidationError(errors.join('\n'));
+    }
+    return _value;
+  }
+
+  private _checkEnum(value: string): string | void {
+    if (typeof this.enumValues !== 'undefined') {
+      const _enumValues = typeof this.enumValues === 'function' ? this.enumValues() : this.enumValues;
+      if (!_enumValues.includes(value)) {
+        return `Property ${this.name} value must be ${_enumValues.join(',')}`;
+      }
+    }
+  }
+
+  isEmpty(value: string): boolean {
+    return [, null, ''].includes(value);
+  }
 }
 
 export const stringTypeFactory = (key: string, opts: StringTypeOptions & CoreTypeOptions): StringType =>
