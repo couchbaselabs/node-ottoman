@@ -1,29 +1,22 @@
-import { CoreType } from './core-type';
+import { CoreType, IOttomanType } from './core-type';
+import { is } from '../../utils/is-type';
+import { ValidationError } from '../errors';
 
 class ArrayType extends CoreType {
-  constructor(name: string, private itemType: CoreType) {
+  constructor(name: string, private itemType: IOttomanType) {
     super(name, Array.name);
   }
 
-  async applyValidations(value: unknown[]): Promise<string[]> {
-    let errors: string[] = [];
-    for (const item of value) {
-      const result = await this.itemType.validate(item);
-      errors = [...errors, ...result];
+  cast(value: unknown): unknown[] {
+    if (!is(value, Array)) {
+      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
     }
-    return errors.filter((it, i) => errors.indexOf(it) === i);
-  }
-
-  isEmpty(value: unknown[]): boolean {
-    return value === undefined || value.length < 1;
-  }
-
-  checkType(value: unknown[]): string[] {
-    let errors: string[] = [];
-    value.forEach((item) => {
-      errors = [...errors, ...this.itemType.checkType(item)];
-    });
-    return errors;
+    const _value = value as unknown[];
+    const _valueResult: unknown[] = [];
+    for (const key in _value) {
+      _valueResult.push(this.itemType.cast(_value[key]));
+    }
+    return _valueResult;
   }
 }
 

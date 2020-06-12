@@ -1,5 +1,7 @@
 import { CoreType, CoreTypeOptions } from './core-type';
 import { DateFunction, DateOption, validateMaxDate, validateMinDate } from '../helpers';
+import { is } from '../../utils/is-type';
+import { ValidationError } from '../errors';
 
 interface DateTypeOptions {
   min?: Date | DateOption | DateFunction | string;
@@ -29,20 +31,42 @@ class DateType extends CoreType {
     const result = super.buildDefault();
     return !(result instanceof Date) ? new Date(String(result)) : (result as Date);
   }
-
-  async applyValidations(value: Date): Promise<string[]> {
+  cast(value: unknown): Date {
+    value = super.cast(value);
+    const _value = is(value, Date)
+      ? (value as Date)
+      : is(value, String)
+      ? new Date(String(value))
+      : is(value, Number)
+      ? new Date(Number(value))
+      : undefined;
+    if (_value === undefined) {
+      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
+    }
     let errors: string[] = [];
-    if (this.min !== undefined) {
-      errors = [...errors, ...validateMinDate(value, typeof this.min === 'function' ? this.min() : this.min)];
+    errors.push(this._checkMinDate(_value));
+    errors.push(this._checkMaxDate(_value));
+    errors = errors.filter((e) => e !== '');
+    if (errors.length > 0) {
+      throw new ValidationError(errors.join('\n'));
     }
-    if (this.max !== undefined) {
-      errors = [...errors, ...validateMaxDate(value, typeof this.max === 'function' ? this.max() : this.max)];
-    }
-    return errors;
+    return _value;
   }
 
-  isEmpty(value: Date): boolean {
-    return value === undefined;
+  private _checkMinDate(val: Date): string {
+    const _min = typeof this.min === 'function' ? this.min() : this.min;
+    if (_min === undefined) {
+      return '';
+    }
+    return validateMinDate(val, _min) || '';
+  }
+
+  private _checkMaxDate(val: Date): string {
+    const _max = typeof this.max === 'function' ? this.max() : this.max;
+    if (_max === undefined) {
+      return '';
+    }
+    return validateMaxDate(val, _max) || '';
   }
 }
 

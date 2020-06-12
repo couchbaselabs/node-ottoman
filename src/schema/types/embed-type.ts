@@ -1,19 +1,21 @@
 import { CoreType } from './core-type';
 import { Schema, ModelObject } from '../schema';
-import { validateSchema } from '../helpers';
+import { isModel } from '../../utils/is-model';
+import { is } from '../../utils/is-type';
+import { ValidationError } from '../errors';
+import { Model } from '../../model/model';
 
 class EmbedType extends CoreType {
   constructor(name: string, public schema: Schema) {
     super(name, 'Embed');
   }
 
-  async applyValidations(value: ModelObject): Promise<string[]> {
-    await validateSchema(value, this.schema);
-    return [];
-  }
-
-  isEmpty(): boolean {
-    return false;
+  cast(value: unknown): ModelObject | Model {
+    if (!is(value, Object) && !isModel(value)) {
+      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
+    }
+    const _value = value as ModelObject | Model;
+    return this.schema.cast(_value);
   }
 }
 

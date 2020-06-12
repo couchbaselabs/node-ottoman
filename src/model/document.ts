@@ -1,7 +1,7 @@
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
 import { COLLECTION_KEY } from '../utils/constants';
-import { validateSchema } from '../schema/helpers';
+import { castSchema } from '../schema/helpers';
 import { ModelMetadata } from './interfaces/model-metadata';
 import { getModelMetadata } from './utils/model.utils';
 import { storeLifeCycle } from './utils/store-life-cycle';
@@ -111,7 +111,7 @@ export abstract class Document<T> {
    * Run schema validations over current document
    */
   _validate() {
-    return validateSchema(this, this.$.schema);
+    return castSchema(this, this.$.schema);
   }
 
   /**

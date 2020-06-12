@@ -1,5 +1,6 @@
 import { CoreType, CoreTypeOptions } from './core-type';
 import { MinmaxOption, NumberFunction, validateMaxLimit, validateMinLimit } from '../helpers';
+import { ValidationError } from '../errors';
 
 interface NumberTypeOptions {
   intVal?: boolean;
@@ -27,26 +28,35 @@ class NumberType extends CoreType {
     return typeof _options.intVal === 'undefined' ? false : _options.intVal;
   }
 
-  async applyValidations(value: number): Promise<string[]> {
-    const errors: string[] = [];
-    if (this.intVal && value % 1 !== 0) {
+  cast(value: unknown): number {
+    const _value = Number(super.cast(value));
+    let errors: string[] = [];
+
+    if (isNaN(_value)) {
+      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
+    }
+
+    if (this.intVal && _value % 1 !== 0) {
       errors.push(`Property ${this.name} only allow Integer values`);
     }
+
+    errors.push(this._checkMin(_value));
+    errors.push(this._checkMax(_value));
+    errors = errors.filter((e) => e !== '');
+    if (errors.length > 0) {
+      throw new ValidationError(errors.join('\n'));
+    }
+
+    return _value;
+  }
+  private _checkMin(val: number): string {
     const _min = typeof this.min === 'function' ? this.min() : this.min;
-    const _minResult = validateMinLimit(value, _min);
-    if (typeof _minResult === 'string') {
-      errors.push(_minResult);
-    }
-    const _max = typeof this.max === 'function' ? this.max() : this.max;
-    const _maxResult = validateMaxLimit(value, _max);
-    if (typeof _maxResult === 'string') {
-      errors.push(_maxResult);
-    }
-    return errors;
+    return validateMinLimit(val, _min) || '';
   }
 
-  isEmpty(value: number) {
-    return typeof value === 'undefined';
+  private _checkMax(val: number): string {
+    const _max = typeof this.max === 'function' ? this.max() : this.max;
+    return validateMaxLimit(val, _max) || '';
   }
 }
 

@@ -1,6 +1,6 @@
 import { HOOKS } from '../../utils/hooks';
 import { execHooks } from '../hooks/exec-hooks';
-import { validateSchema } from '../../schema/helpers';
+import { castSchema } from '../../schema/helpers';
 import { store } from '../../handler/store';
 
 /**
@@ -8,10 +8,10 @@ import { store } from '../../handler/store';
  * @ignore
  */
 export const storeLifeCycle = async ({ key, data, options, model: { schema, collection, ID_KEY } }) => {
-  const document = data;
+  let document = data;
   await execHooks(schema, 'preHooks', HOOKS.VALIDATE, document);
 
-  validateSchema(document, schema);
+  document = castSchema(document, schema);
 
   await execHooks(schema, 'postHooks', HOOKS.VALIDATE, document);
 

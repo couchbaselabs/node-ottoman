@@ -10,17 +10,15 @@ export interface ValidatorOption {
 
 export type ValidatorFunction = (value: unknown) => string | ValidatorOption;
 
-export const applyValidator = (val: unknown, validator: ValidatorOption | string | undefined): string[] => {
-  const _errors: string[] = [];
+export const applyValidator = (val: unknown, validator: ValidatorOption | string | undefined): string | void => {
   if (validator !== undefined) {
     const _validator = validator as ValidatorOption;
     if (_validator.regexp !== undefined) {
       if (!_validator.regexp.test(String(val))) {
-        _errors.push(_validator.message);
+        return _validator.message;
       }
     } else if (typeof validator === 'string') {
-      _errors.push(String(_validator));
+      return String(_validator);
     }
   }
-  return _errors;
 };
