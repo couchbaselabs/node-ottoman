@@ -4,8 +4,10 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Introduction
+Ottoman is an ODM built for Couchbase and Node.js.
+
 Ottoman's goal is to provide a better development experience while using Couchbase,
-bringing to developers a reliable tool to build easy-to-design, maintain and scale systems.
+bringing to developers a reliable tool to build systems that are easy-to-design, to  maintain and to scale.
 
 #### Getting started
 
@@ -20,45 +22,45 @@ user.save().then(() => console.log('Nice Job!'));
 ```
 
 #### Ottoman v2 main goals
-- [x] Start migration from v1 to v2
-- [ ] Add support to Couchbase SDK 3
-- [ ] Add typescript support
-- [ ] Update Documentation and Examples
+
+- Add support to Couchbase SDK 3
+
+
+- Add typescript support
+
+
+- Update Documentation and Examples
  
 ...and many more, new features coming soon.
 
 ## Documentation
 
-To check out [examples](https://github.com/couchbaselabs/node-ottoman/blob/master/docs/first-app.md) and docs, visit [ottomanjs.com](http://ottomanjs.com).
+To check out `examples` and docs, visit [ottomanjs.com](http://ottomanjs.com).
 
 ## Questions
 
-For questions and support please use [the official forum](https://github.com/couchbaselabs/node-ottoman) or [contact community](http://couchbase.com/communities/nodejs). 
+For questions and support please use [the official forum](https://forums.couchbase.com/) or [contact community](http://couchbase.com/communities/nodejs). 
 
 ## Issues
 
-Please make sure to read the [Issue Reporting Checklist](https://github.com/couchbaselabs/node-ottoman) before opening an issue.
+Please make sure to read the [Issue Reporting Checklist](http://issues.couchbase.com/) before opening an issue.
  
 ## Changelog
 
-Detailed changes for each release are documented in the [release notes](https://github.com/couchbaselabs/node-ottoman).
+Detailed changes for each release are documented in the [release notes](https://github.com/couchbaselabs/node-ottoman/releases).
 
 ## Stay In Touch
 
-- [Twitter](https://github.com/couchbaselabs/node-ottoman)
-- [Blog](https://github.com/couchbaselabs/node-ottoman)
+- [Blog](https://blog.couchbase.com/?s=ottoman)
 
 ## Contribution
 
-Please make sure to read the [Contributing Guide](https://github.com/couchbaselabs/node-ottoman) before making a pull request. 
+Please make sure to read the `Contributing Guide` before making a pull request. 
 Thank you to all the people who already contributed to Couchbase Ottoman!
 
 #### Development Guide
 
-1. Install and run couchbase sandbox
-```
-$ docker run -t --name couchbase-sandbox -p 8091-8094:8091-8094 -p 11210:11210 couchbase/server-sandbox:6.5.0
-```
+1. [Install Couchbase Server Using Docker](https://docs.couchbase.com/server/current/install/getting-started-docker.html).
 
 2. Get repo and install dependencies 
 ```

@@ -10,4 +10,14 @@ export const COLLECTION_KEY = '_type';
  * This key will store the value of the key,
  * key -> document, document._id === key
  */
-export const DEFAULT_ID_KEY = '_id';
+export const DEFAULT_ID_KEY = 'id';
+
+/**
+ * Default scope name
+ */
+export const DEFAULT_SCOPE = '_default';
+
+/**
+ * Default collection name
+ */
+export const DEFAULT_COLLECTION = '_default';

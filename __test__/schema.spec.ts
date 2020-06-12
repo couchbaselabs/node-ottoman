@@ -1,6 +1,6 @@
-import { validateSchema, createSchema, applyDefaultValue, ValidationError, BuildSchemaError } from '../src';
-import { applyValidator } from '../src/schema/helpers';
-import { Schema, ModelObject } from '../src/schema/schema';
+import { validateSchema, createSchema, applyDefaultValue, ValidationError, BuildSchemaError } from '../lib';
+import { applyValidator } from '../lib/schema/helpers';
+import { Schema, ModelObject } from '../lib/schema/schema';
 
 describe('Schema Helpers', () => {
   test('should return empty array when validator is undefined', () => {

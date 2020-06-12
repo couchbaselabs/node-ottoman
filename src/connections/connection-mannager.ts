@@ -1,11 +1,11 @@
 import { createModel } from '../model/create-model';
-import { Model } from '../model/model';
+import { DEFAULT_COLLECTION, DEFAULT_SCOPE } from '../utils/constants';
+import { Schema } from '../schema/schema';
 
 /**
- * Define Couchbase connection class
- * Allow create a connection instance
- * Provide functions to work with the cluster and bucket on current connection
- * Support multiple instance
+ * Create a connection instance,
+ * Provide functions to work with cluster, bucket, collection on the current connection,
+ * support multiple instances.
  */
 export class ConnectionManager {
   /**
@@ -14,18 +14,39 @@ export class ConnectionManager {
   bucket;
 
   /**
-   * Dictionary for all models created on this connection
+   * @ignore
+   */
+  collectionManager;
+
+  /**
+   * @ignore
+   */
+  queryIndexManager;
+
+  /**
+   * Dictionary for all models register on this connection.
    */
   models = {};
 
   constructor(public cluster, public bucketName: string, public couchbase) {
     this.bucket = cluster.bucket(bucketName);
+    this.collectionManager = this.bucket.collections();
+    this.queryIndexManager = this.cluster.queryIndexes();
+  }
+
+  /**
+   * Create a Model on this connection.
+   */
+  model(name: string, schema: Schema | Record<string, unknown>, options?) {
+    const ModelFactory = createModel({ name, schemaDraft: schema, options, connection: this });
+    this.models[name] = ModelFactory;
+    return ModelFactory;
   }
 
   /**
    * Return a Model constructor from the given name
    */
-  getModel(name): Model | undefined {
+  getModel(name: string) {
     return this.models[name];
   }
 
@@ -33,24 +54,12 @@ export class ConnectionManager {
    * Return a collection from the given collectionName in this bucket
    * Or default collection if collectionName is missing
    */
-  getCollection(collectionName?) {
-    return collectionName ? this.bucket.collection(collectionName) : this.bucket.defaultCollection();
+  getCollection(collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) {
+    return this.bucket.scope(scopeName).collection(collectionName);
   }
 
   /**
-   * Create a Model on this connection
-   */
-  model(name, schema?, options?) {
-    // if (this.models[name]) {
-    //   throw new Error(`Model with name ${name}, already exist`);
-    // }
-    const ModelFactory = createModel({ name, schema, options, connection: this });
-    this.models[name] = ModelFactory;
-    return ModelFactory;
-  }
-
-  /**
-   * Close connection
+   * Close current connection
    */
   close() {
     this.cluster.close();

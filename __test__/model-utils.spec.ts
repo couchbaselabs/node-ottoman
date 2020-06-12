@@ -5,13 +5,13 @@ describe('Test Model utilities methods', () => {
     const Cat = model('Cat', { name: String });
     const catObject = { name: 'figaro' };
     const cat = new Cat(catObject);
-    expect(cat.toCoo()).toStrictEqual(catObject);
+    expect(cat.toObject()).toStrictEqual(catObject);
   });
 
   test('model.toJson', () => {
     const Cat = model('Cat', { name: String });
     const catObject = { name: 'figaro' };
     const cat = new Cat(catObject);
-    expect(cat.toJSON()).toBe(JSON.stringify(catObject));
+    expect(JSON.stringify(cat)).toBe(JSON.stringify(catObject));
   });
 });

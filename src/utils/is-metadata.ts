@@ -2,4 +2,6 @@
  * Checking if key is metadata
  * @param key
  */
-export const isMetadataKey = (key: string): boolean => key === 'id' || key === '__collection';
+import { COLLECTION_KEY, DEFAULT_ID_KEY } from './constants';
+
+export const isMetadataKey = (key: string): boolean => key === DEFAULT_ID_KEY || key === COLLECTION_KEY;

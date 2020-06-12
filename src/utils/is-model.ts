@@ -1,13 +1,13 @@
 /**
  * Determine if a given parameter is
- * a Model constructor
- * or a Model instance
+ * a Model
+ * or a document build with a Model
  */
+import { Model } from '../model/model';
 
 export const isModel = (model): boolean => {
   if (!model) {
     return false;
   }
-  const name = typeof model === 'function' ? model.name : model.constructor.name;
-  return name === '__ModelFactory__';
+  return model instanceof Model || model.prototype instanceof Model;
 };
