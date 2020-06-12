@@ -5,7 +5,6 @@ export const extractIndexFieldNames = (gsi: { fields: string[] }) => {
   const fieldNames: string[] = [];
   for (let j = 0; j < gsi.fields.length; ++j) {
     const path = jpParse(gsi.fields[j]);
-    console.log(path);
     let wildCardAt = -1;
     for (let k = 0; k < path.length; ++k) {
       if (path[k].operation === 'subscript' && path[k].expression.type === 'wildcard') {

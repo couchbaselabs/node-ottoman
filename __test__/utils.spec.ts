@@ -2,8 +2,9 @@ import { bucketName, connectionString, connectUri, password, username } from './
 import { model } from '../lib';
 import { isModel } from '../lib/utils/is-model';
 import { extractConnectionString } from '../lib/utils/extract-connection-string';
-import { is } from '../src/utils/is-type';
-import { isMetadataKey } from '../src/utils/is-metadata';
+import { is } from '../lib/utils/is-type';
+import { isMetadataKey } from '../lib/utils/is-metadata';
+import { COLLECTION_KEY } from '../lib/utils/constants';
 
 test('Build connection options from string', () => {
   const result = extractConnectionString(connectUri);
@@ -76,7 +77,7 @@ describe('Is operator', () => {
 describe('Metadata', () => {
   test('should return true when a key is a metadata key', () => {
     expect(isMetadataKey('id')).toBeTruthy();
-    expect(isMetadataKey('__collection')).toBeTruthy();
+    expect(isMetadataKey(COLLECTION_KEY)).toBeTruthy();
   });
   test("should return false when a key isn't a metadata key", () => {
     expect(isMetadataKey('name')).toBeFalsy();
