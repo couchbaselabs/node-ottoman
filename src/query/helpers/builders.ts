@@ -23,6 +23,20 @@ import {
 import { QueryOperatorNotFoundException, SelectClauseException, WhereClauseException } from '../exceptions';
 
 // select expressions functions
+/**
+ * Build a SELECT N1QL query from user-specified parameters.
+ * {@link https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/select-syntax.html}
+ * @param collection Collection name
+ * @param select SELECT Clause param
+ * @param letExpr LET Clause param
+ * @param where WHERE Clause param
+ * @param orderBy ORDER BY Clause param
+ * @param limit LIMIT Clause param
+ * @param offset OFFSET Clause param
+ * @param useExpr USE Clause param
+ *
+ * @return N1QL SELECT Query
+ * */
 export const selectBuilder = (
   collection: string,
   select: ISelectType[] | string,
@@ -32,7 +46,7 @@ export const selectBuilder = (
   limit?: number,
   offset?: number,
   useExpr?: string[],
-) => {
+): string => {
   try {
     let expr = '';
     if (typeof select === 'string') {
@@ -50,10 +64,16 @@ export const selectBuilder = (
   }
 };
 
+/**
+ * @ignore
+ * */
 const _buildAS = (c: ISelectAggType | IField) => {
   return c.hasOwnProperty('as') ? ` AS ${c['as']}` : '';
 };
 
+/**
+ * @ignore
+ * */
 const _buildField = (clause: IField | string) => {
   if (clause.hasOwnProperty('name')) {
     return `\`${clause['name']}\`${_buildAS(clause as IField)}`;
@@ -61,6 +81,13 @@ const _buildField = (clause: IField | string) => {
   return clause;
 };
 
+/**
+ * Recursive function to create N1QL queries.
+ * @param n1ql N1QL Query String
+ * @param clause SELECT Clause param
+ *
+ * @return N1QL SELECT Query
+ * */
 export const buildSelectExpr = (n1ql: string, clause: ISelectType) => {
   try {
     if (clause.hasOwnProperty('$field')) {
@@ -86,6 +113,9 @@ export const buildSelectExpr = (n1ql: string, clause: ISelectType) => {
   }
 };
 
+/**
+ * @ignore
+ * */
 const _buildAggDictExpr = (clause: ISelectAggType, key: string) => {
   if (AggDict.hasOwnProperty(key)) {
     if (clause[key].hasOwnProperty('ro')) {
@@ -95,12 +125,18 @@ const _buildAggDictExpr = (clause: ISelectAggType, key: string) => {
   return '';
 };
 
+/**
+ * @ignore
+ * */
 const _buildLetExpr = (letExpr: ILetExpr[] | undefined) => {
   return Array.isArray(letExpr)
     ? ` LET ${letExpr.map((value: ILetExpr) => `${value.key} = ${value.value}`).join(',')}`
     : '';
 };
 
+/**
+ * @ignore
+ * */
 const _buildOrderByExpr = (orderExpr: Record<string, SortType> | undefined) => {
   return !!orderExpr
     ? ` ORDER BY ${Object.keys(orderExpr)
@@ -109,14 +145,23 @@ const _buildOrderByExpr = (orderExpr: Record<string, SortType> | undefined) => {
     : '';
 };
 
+/**
+ * @ignore
+ * */
 const _buildLimitExpr = (limit: number | undefined) => {
   return Number.isInteger(limit) ? ` LIMIT ${limit}` : '';
 };
 
+/**
+ * @ignore
+ * */
 const _buildOffsetExpr = (offset: number | undefined) => {
   return Number.isInteger(offset) ? ` OFFSET ${offset}` : '';
 };
 
+/**
+ * @ignore
+ * */
 const _buildUseKeysExpr = (useKeys: string[] | undefined) => {
   return Array.isArray(useKeys) ? ` USE KEYS [${useKeys.map((value: string) => `'${value}'`).join(',')}]` : '';
 };
@@ -125,10 +170,23 @@ const _buildUseKeysExpr = (useKeys: string[] | undefined) => {
 
 // where expressions functions
 
+/**
+ * Create WHERE N1QL Expressions.
+ * {@link https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/where.html}
+ * @param clause WHERE Clause param
+ * @return N1QL WHERE Expression
+ * */
 export const buildWhereExpr = (clause: LogicalWhereExpr | undefined) => {
   return clause ? ` WHERE ${buildWhereClauseExpr('', clause)}` : '';
 };
 
+/**
+ * Recursive function to create WHERE N1QL Expressions.
+ * @param n1ql N1QL Query String
+ * @param clause WHERE Clause param
+ *
+ * @return N1QL WHERE Expression
+ * */
 export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr) => {
   try {
     if (!clause.hasOwnProperty('$and') && !clause.hasOwnProperty('$or') && !clause.hasOwnProperty('$not')) {
@@ -156,6 +214,9 @@ export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr) => 
   }
 };
 
+/**
+ * @ignore
+ * */
 const _buildFieldClauseExpr = (field: Record<string, string | number | boolean | ComparisonWhereExpr>) => {
   try {
     const expr = Object.keys(field).map((value: string) => {
@@ -181,6 +242,9 @@ const _buildFieldClauseExpr = (field: Record<string, string | number | boolean |
   }
 };
 
+/**
+ * @ignore
+ * */
 const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWhereExpr) => {
   try {
     const expr = Object.keys(comparison)
@@ -215,6 +279,18 @@ const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWh
 
 // index expressions functions
 
+/**
+ * Build a INDEX N1QL query from user-specified parameters.
+ * {@link https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/createindex.html}
+ * @param collection Collection name
+ * @param type INDEX clause types can be 'CREATE' | 'BUILD' | 'DROP' | 'CREATE PRIMARY'
+ * @param on ON Clause param
+ * @param where WHERE Clause param
+ * @param usingGSI use a Global Secondary Index(GSI).
+ * @param withExpr WITH Clause param
+ *
+ * @return N1QL INDEX Query
+ * */
 export const buildIndexExpr = (
   collection: string,
   type: IndexType,
@@ -233,6 +309,9 @@ export const buildIndexExpr = (
   }
 };
 
+/**
+ * @ignore
+ * */
 const buildOnExpr = (on: IIndexOnParams[]) => {
   return on
     .map((value: IIndexOnParams) => {
@@ -241,6 +320,9 @@ const buildOnExpr = (on: IIndexOnParams[]) => {
     .join(',');
 };
 
+/**
+ * @ignore
+ * */
 const buildOnSortExpr = (onExpr?: IIndexOnParams) => {
   if (onExpr && onExpr.hasOwnProperty('sort')) {
     return `['${onExpr.sort}']`;
@@ -248,6 +330,9 @@ const buildOnSortExpr = (onExpr?: IIndexOnParams) => {
   return '';
 };
 
+/**
+ * @ignore
+ * */
 const buildWithExpr = (withExpr?: IIndexWithParams) => {
   if (withExpr) {
     const resultExpr = Object.keys(withExpr)
@@ -268,12 +353,18 @@ const buildWithExpr = (withExpr?: IIndexWithParams) => {
   return '';
 };
 
+/**
+ * @ignore
+ * */
 const buildWithNodesExpr = (withNodesExpr?: string[]) => {
   if (withNodesExpr) {
     return `'nodes': ${arrayStringToStringSingleQuote(withNodesExpr)}`;
   }
 };
 
+/**
+ * @ignore
+ * */
 const arrayStringToStringSingleQuote = (array: string[]) => {
   return `[${array
     .map((value: string) => {

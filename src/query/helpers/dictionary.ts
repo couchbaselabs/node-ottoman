@@ -9,6 +9,9 @@ import {
   ReturnResultType,
 } from '../interface';
 
+/**
+ * Dictionary for handling aggregation functions.
+ * */
 export const AggDict: Record<AggType, string> = {
   $arrayAgg: 'ARRAY_AGG',
   $avg: 'AVG',
@@ -29,10 +32,19 @@ export const AggDict: Record<AggType, string> = {
   $varSamp: 'VAR_SAMP',
 };
 
+/**
+ * Dictionary for handling result expressions RAW | ELEMENT | VALUE
+ * */
 export const ResultExprDict: Record<ResultExprType, string> = { $raw: 'RAW', $element: 'ELEMENT', $value: 'VALUE' };
 
+/**
+ * Dictionary for handling result expressions ALL | DISTINCT
+ * */
 export const ReturnResultDict: Record<ReturnResultType, string> = { $all: 'ALL', $distinct: 'DISTINCT' };
 
+/**
+ * Dictionary for handling Boolean comparison operators
+ * */
 export const ComparisonEmptyOperatorDict: Record<ComparisonEmptyOperatorType, string> = {
   $isNull: 'IS NULL',
   $isNotNull: 'IS NOT NULL',
@@ -42,6 +54,9 @@ export const ComparisonEmptyOperatorDict: Record<ComparisonEmptyOperatorType, st
   $isNotValued: 'IS NOT VALUED',
 };
 
+/**
+ * Dictionary for handling Numeric comparison operators
+ * */
 export const ComparisonSingleOperatorDict: Record<ComparisonSingleOperatorType, string> = {
   $eq: '=',
   $neq: '!=',
@@ -51,16 +66,25 @@ export const ComparisonSingleOperatorDict: Record<ComparisonSingleOperatorType, 
   $lte: '<=',
 };
 
+/**
+ * Dictionary for handling String comparison operators
+ * */
 export const ComparisonSingleStringOperatorDict: Record<ComparisonSingleStringOperatorType, string> = {
   $like: 'LIKE',
   $notLike: 'NOT LIKE',
 };
 
+/**
+ * Dictionary for handling Range comparison operators
+ * */
 export const ComparisonMultipleOperatorDict: Record<ComparisonMultipleOperatorType, string> = {
   $btw: 'BETWEEN',
   $notBtw: 'NOT BETWEEN',
 };
 
+/**
+ * Dictionary for handling logical operators
+ * */
 export const LogicalOperatorDict: Record<LogicalOperatorType, string> = {
   $and: 'AND',
   $or: 'OR',
