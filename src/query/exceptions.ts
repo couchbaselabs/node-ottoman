@@ -1,5 +1,6 @@
 export class SelectClauseException extends Error {
   constructor() {
+    // todo update message
     super('The SELECT clause does not have a proper structure');
   }
 }
