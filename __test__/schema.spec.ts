@@ -35,7 +35,7 @@ describe('Schema Types', () => {
       firstName: { type: String, default: 'John', auto: 'uuid' },
     };
     expect(() => createSchema(schema)).toThrow(
-      new BuildSchemaError('Property firstName cannot be both auto and have a default.'),
+      new BuildSchemaError('Auto and default cannot be used at the same time, in property firstName.'),
     );
   });
 
@@ -488,7 +488,7 @@ describe('Schema Model Ref Types', () => {
     const data = {
       user: { name: { age: 35 } },
     };
-    expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property name must be type String'));
+    expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property name must be of type String'));
   });
 
   test('should create a schema with array of references', () => {

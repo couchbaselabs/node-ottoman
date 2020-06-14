@@ -1,14 +1,14 @@
 # Query Builder
 
-[Query Builder](/classes/query.html) is a flexible tool that is used to create N1QL queries specifying parameters and methods. Query Builder lets you: create queries of unlimited length and complexity without the need to know the syntax of N1QL Query.
+[Query Builder](/classes/query.html) is a flexible tool designed to create N1QL queries by specifying parameters and methods. Query Builder lets you: create queries of unlimited length and complexity without the need to know the syntax of N1QL Queries.
 
-## How to use.
+## Using the Query Builder.
 
-There are 3 ways to use the Query Builder: with parameters, using access function or with both
+There are 3 ways to use the Query Builder: by using  parameters, by using access functions or by combining both.
 
-### Build Query with parameters
+### Build a Query by using parameters
 
-To create queries using parameters it is necessary to define in the query constructor the [**parameters**](/interfaces/iconditionexpr.html#hierarchy) of the query and the **name** of the collection.
+To create queries by using parameters it is mandatory to define in the query constructor the [**parameters**](/interfaces/iconditionexpr.html#hierarchy) of the query and the **name** of the collection.
 
 ```ts
 const params = {
@@ -50,7 +50,9 @@ console.log(query);
 
 > SELECT COUNT(\`ottoman\`) AS odm,MAX(\`amount\`) FROM \`collection-name\` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) ORDER BY size = 'DESC' LIMIT 10 OFFSET 1
 
-### Build Query with access function
+### Build a query by using access functions
+
+Creating queries by using the access function is very similar to create them with parameters. The difference is that the parameters are not passed directly to the constructor, instead, they are passed using the different functions available in the Query Class.
 
 ```ts
 const select = [
@@ -98,7 +100,7 @@ console.log(query);
 
 > SELECT COUNT(\`ottoman\`) AS odm,MAX(\`amount\`) FROM \`collection-name\` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) ORDER BY size = 'DESC' LIMIT 10 OFFSET 1
 
-### Build Query with parameters and function parameters
+### Build a query by using parameters and function parameters
 
 ```ts
 const select = [{ $field: 'address' }];
@@ -110,7 +112,7 @@ console.log(query);
 
 ## N1QL SELECT clause structure
 
-To know the syntax of a SELECT clause you can see this [link](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/select-syntax.html).
+The syntax of a SELECT clause in n1ql is documented here [link](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/select-syntax.html).
 
 Available Result Expression Arguments:
 
@@ -148,7 +150,7 @@ Available Aggregation Functions:
 
 ## N1QL WHERE clause structure
 
-To know the syntax of a WHERE clause you can see this [link](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/where.html).
+The syntax of a WHERE clause in n1ql is documented here [link](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/where.html).
 
 Available Comparison Operators:
 
