@@ -42,7 +42,7 @@ class DateType extends CoreType {
       ? new Date(Number(value))
       : undefined;
     if (_value === undefined) {
-      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
+      throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
     let errors: string[] = [];
     errors.push(this._checkMinDate(_value));

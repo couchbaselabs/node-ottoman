@@ -34,7 +34,7 @@ class NumberType extends CoreType {
     let errors: string[] = [];
 
     if (isNaN(_value)) {
-      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
+      throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
 
     if (this.intVal && _value % 1 !== 0) {

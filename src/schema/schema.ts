@@ -60,7 +60,7 @@ export class Schema {
     this._id = '_id';
   }
   /**
-   * Validate a model instance using definition of schema
+   * Validate a model instance using the definition of the schema
    * @method
    * @public
    *
@@ -133,7 +133,7 @@ export class Schema {
   }
 
   /**
-   * Allow to apply plugins to extend schema and model features.
+   * Allow to apply plugins, to extend schema and model features.
    */
   plugin(...fns: PluginConstructor[]): Schema {
     if (fns && Array.isArray(fns)) {

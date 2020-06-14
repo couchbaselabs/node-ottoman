@@ -30,7 +30,7 @@ export class StringType extends CoreType {
     value = super.cast(value);
     let errors: string[] = [];
     if (is(value, Object)) {
-      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
+      throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
     if (value === null || value === undefined) {
       return value;

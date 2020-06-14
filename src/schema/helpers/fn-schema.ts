@@ -110,7 +110,7 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
 };
 /**
  * Validate data using the schema definition
- * @param data that's going to validate
+ * @param data that's going to be validated
  * @param schema that will be used to validate
  * @throws BuildSchemaError, ValidationError
  */
