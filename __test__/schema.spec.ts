@@ -2,33 +2,35 @@ import { createSchema, applyDefaultValue, castSchema, ValidationError, BuildSche
 import { applyValidator, registerType } from '../lib/schema/helpers';
 import { Schema, ModelObject } from '../lib/schema/schema';
 import { IOttomanType } from '../lib/schema/types';
+import { isOttomanType } from '../lib/schema/helpers';
 
 describe('Schema Helpers', () => {
   test('should return empty array when validator is undefined', () => {
     expect(applyValidator('Sample value', undefined)).toBeUndefined();
   });
-  test('should return empty array when validator is a ValidatorOption and is valid', () => {
+  test('should void return when using ValidatorOption in the validator and value is valid', () => {
     expect(applyValidator('Sample value', { message: 'Only letters', regexp: new RegExp('\\w') })).toBeUndefined();
   });
-  test("should return array when validator is a ValidatorOption and isn't valid", () => {
+  test("should return a message when using ValidatorOption in the validator and value isn't valid", () => {
     expect(applyValidator('Sample value', { message: 'Only numbers', regexp: new RegExp('\\d') })).toEqual(
       'Only numbers',
     );
   });
-  test('should return array when validator is a String result of function validator called', () => {
-    expect(applyValidator('Sample value', 'Not allow value')).toEqual('Not allow value');
+  test('should return a message when receiving as result of validator function a String', () => {
+    const validator = () => 'Value not allowed';
+    expect(applyValidator('Sample value', validator())).toEqual('Value not allowed');
   });
 });
 describe('Schema Types', () => {
   class MocType {}
-  test('should throw an error when defining in schema unsupported type.', () => {
+  test('should throw an error when defining in schema the unsupported type.', () => {
     const schema = { name: MocType };
     expect(() => createSchema(schema)).toThrow(
       new BuildSchemaError('Unsupported type specified in the property "name"'),
     );
   });
 
-  test('should throw an error when defining auto value and default value', () => {
+  test('should throw an error when defining auto value and default value on the same field', () => {
     const schema = {
       firstName: { type: String, default: 'John', auto: 'uuid' },
     };
@@ -37,15 +39,16 @@ describe('Schema Types', () => {
     );
   });
 
-  test('should return field type instance when using a valid path value', () => {
+  test('should return instance of IOttomanType when using a valid path value', () => {
     const schema = createSchema({
       firstName: { type: String },
     });
     const firstName = schema.path('firstName');
     expect(firstName).toBeDefined();
+    expect(isOttomanType(firstName)).toBeTruthy();
   });
 
-  test('should return undefined when using a not defined valid path value', () => {
+  test('should return undefined when using a non-existent path value', () => {
     const schema = createSchema({
       firstName: { type: String },
     });
@@ -53,7 +56,7 @@ describe('Schema Types', () => {
     expect(firstName).toBeUndefined();
   });
 
-  test('should return true when data is valid', () => {
+  test('should return the data according to the type defined in the schema when they are valid.', () => {
     const schema = {
       firstName: String,
       lastName: {
@@ -76,23 +79,17 @@ describe('Schema Types', () => {
       experience: 3,
     };
     expect(castSchema(data, schema)).toEqual(data);
-  });
 
-  test('should return true when data with metadata is valid', () => {
-    const schema = {
-      firstName: String,
-      lastName: {
-        type: String,
-        validator: {
-          message: 'Only letters',
-          regexp: new RegExp('\\w'),
-        },
-      },
-      hasChild: Boolean,
-      age: { type: Number, required: true },
-      experience: { type: Number, min: { val: 2, message: 'Min allow is two' }, max: 4 },
+    const dataUnCasted = {
+      firstName: 'John',
+      lastName: 'Doe',
+      hasChild: true,
+      age: '23',
+      experience: '3',
     };
-    const data = {
+    expect(castSchema(dataUnCasted, schema)).toEqual(data);
+
+    const dataWithMetadata = {
       firstName: 'John',
       lastName: 'Doe',
       hasChild: true,
@@ -100,20 +97,7 @@ describe('Schema Types', () => {
       experience: 3,
       id: 233,
     };
-    expect(castSchema(data, schema)).toEqual(data);
-  });
-
-  test('should throw an error when it does not have value on require property.', () => {
-    const personSchema = {
-      name: { type: String, required: true },
-      hasChild: { type: Boolean, required: true },
-    };
-    const personData = {
-      name: '',
-    };
-    expect(() => castSchema(personData, personSchema)).toThrow(ValidationError);
-    const schemaWithFunction = { name: { type: String, required: () => true } };
-    expect(() => castSchema(personData, schemaWithFunction)).toThrow(ValidationError);
+    expect(castSchema(dataWithMetadata, schema)).toEqual(dataWithMetadata);
   });
 
   test('should applied correctly default values', () => {
@@ -169,7 +153,7 @@ describe('Schema Types', () => {
     expect(createSchema(schema)).toBe(schema);
   });
 
-  test("should exception when is schema haven't property type", () => {
+  test('should exception when is schema have property without type', () => {
     const schema = {
       name: String,
       hasChild: Boolean,
