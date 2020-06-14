@@ -87,7 +87,9 @@ export class Query extends BaseQuery {
    */
   constructor(conditions: IConditionExpr, collection: string) {
     super(conditions, collection);
-    this.compileFromConditions(conditions);
+    if (conditions) {
+      this.compileFromConditions(conditions);
+    }
   }
 
   /**
@@ -329,25 +331,25 @@ export class Query extends BaseQuery {
   compileFromConditions(conditionals: IConditionExpr): void {
     Object.keys(conditionals).forEach((value: string) => {
       switch (value) {
-        case '$select':
+        case 'select':
           this.select(conditionals[value]);
           break;
-        case '$let':
+        case 'let':
           !!conditionals[value] && this.let(conditionals[value] as [ILetExpr]);
           break;
-        case '$where':
+        case 'where':
           !!conditionals[value] && this.where(conditionals[value] as LogicalWhereExpr);
           break;
-        case '$orderBy':
+        case 'orderBy':
           !!conditionals[value] && this.orderBy(conditionals[value] as Record<string, SortType>);
           break;
-        case '$limit':
+        case 'limit':
           !!conditionals[value] && this.limit(conditionals[value] as number);
           break;
-        case '$offset':
+        case 'offset':
           !!conditionals[value] && this.offset(conditionals[value] as number);
           break;
-        case '$use':
+        case 'use':
           !!conditionals[value] && this.useKeys(conditionals[value] as string[]);
           break;
       }

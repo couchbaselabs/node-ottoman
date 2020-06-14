@@ -283,4 +283,43 @@ describe('Test Query Types', () => {
 
     expect(query).toBe('DROP INDEX `travel-sample`.`travel_sample_id_test` USING GSI');
   });
+  test('Check Query Builder Query Params', async () => {
+    const params = {
+      select: [
+        {
+          $count: {
+            $field: {
+              name: 'ottoman',
+            },
+            as: 'odm',
+          },
+        },
+        {
+          $max: {
+            $field: 'count',
+          },
+        },
+      ],
+      let: [
+        { key: 'amount_val', value: 10 },
+        { key: 'size_val', value: 20 },
+      ],
+      where: {
+        $or: [{ price: { $gt: 'amount_val', $isNotNull: true } }, { auto: { $gt: 10 } }, { amount: 10 }],
+        $and: [
+          { price2: { $gt: 1.99, $isNotNull: true } },
+          { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
+        ],
+      },
+      orderBy: { size: 'DESC' },
+      limit: 10,
+      offset: 1,
+      use: ['airlineR_8093', 'airlineR_8094'],
+    };
+    const query = new Query(params, 'collection-name').build();
+
+    expect(query).toBe(
+      "SELECT COUNT(`ottoman`) AS odm,MAX(`count`) FROM `collection-name` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) ORDER BY size = 'DESC' LIMIT 10 OFFSET 1",
+    );
+  });
 });
