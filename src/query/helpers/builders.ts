@@ -56,9 +56,9 @@ export const selectBuilder = (
       expr = `${select.map((c) => buildSelectExpr('', c)).join(',')}`;
     }
 
-    return `SELECT ${expr} FROM \`${collection}\`${_buildLetExpr(letExpr)}${buildWhereExpr(where)}${_buildOrderByExpr(
-      orderBy,
-    )}${_buildLimitExpr(limit)}${_buildOffsetExpr(offset)}${_buildUseKeysExpr(useExpr)}`;
+    return `SELECT ${expr} FROM \`${collection}\`${_buildUseKeysExpr(useExpr)}${_buildLetExpr(letExpr)}${buildWhereExpr(
+      where,
+    )}${_buildOrderByExpr(orderBy)}${_buildLimitExpr(limit)}${_buildOffsetExpr(offset)}`;
   } catch {
     throw new SelectClauseException();
   }
@@ -78,7 +78,7 @@ const _buildField = (clause: IField | string) => {
   if (clause.hasOwnProperty('name')) {
     return `\`${clause['name']}\`${_buildAS(clause as IField)}`;
   }
-  return clause;
+  return `\`${clause}\``;
 };
 
 /**

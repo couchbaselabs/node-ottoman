@@ -188,13 +188,13 @@ export interface ILetExpr {
  * List of params to build a SELECT clause
  * */
 export interface IConditionExpr {
-  $select?: ISelectType[];
-  $let?: ILetExpr[];
-  $where?: LogicalWhereExpr;
-  $orderBy?: Record<string, SortType>;
-  $limit?: number;
-  $offset?: number;
-  $use?: string[];
+  select?: ISelectType[] | string;
+  let?: ILetExpr[];
+  where?: LogicalWhereExpr;
+  orderBy?: Record<string, SortType>;
+  limit?: number;
+  offset?: number;
+  use?: string[];
 }
 
 /**
