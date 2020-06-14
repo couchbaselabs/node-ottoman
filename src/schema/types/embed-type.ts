@@ -13,7 +13,7 @@ class EmbedType extends CoreType {
   cast(value: unknown) {
     if (this.isEmpty(value)) return value;
     if (!is(value, Object) && !isModel(value)) {
-      throw new ValidationError(`Property ${this.name} must be type ${this.typeName}`);
+      throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
     const _value = value as ModelObject | Model;
     return this.schema.cast(_value);

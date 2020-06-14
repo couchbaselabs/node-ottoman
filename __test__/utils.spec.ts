@@ -33,7 +33,7 @@ describe('isModel util function', () => {
 });
 
 describe('Is operator', () => {
-  test('should return true when value is type', () => {
+  test('should return true when the value is type', () => {
     /// String type
     expect(is('val', String)).toBeTruthy();
     expect(is(new String(''), String)).toBeTruthy();
@@ -45,7 +45,7 @@ describe('Is operator', () => {
     expect(is(0.23, Number)).toBeTruthy();
   });
 
-  test("should return false when value isn't type", () => {
+  test("should return false when the value isn't type", () => {
     /// String type
     expect(is(true, String)).toBeFalsy();
     expect(is(0.23, String)).toBeFalsy();
@@ -59,7 +59,7 @@ describe('Is operator', () => {
     expect(is(new String(''), Number)).toBeFalsy();
   });
 
-  test('should return false when value is undefined or null', () => {
+  test('should return false when the value is undefined or null', () => {
     /// String type
     expect(is(undefined, String)).toBeFalsy();
     expect(is(null, String)).toBeFalsy();
