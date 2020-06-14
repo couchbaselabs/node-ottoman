@@ -130,7 +130,7 @@ const _buildAggDictExpr = (clause: ISelectAggType, key: string) => {
  * */
 const _buildLetExpr = (letExpr: ILetExpr[] | undefined) => {
   return Array.isArray(letExpr)
-    ? ` LET ${letExpr.map((value: ILetExpr) => `${value.key} = ${value.value}`).join(',')}`
+    ? ` LET ${letExpr.map((value: ILetExpr) => `${value.key}=${value.value}`).join(',')}`
     : '';
 };
 
@@ -140,7 +140,7 @@ const _buildLetExpr = (letExpr: ILetExpr[] | undefined) => {
 const _buildOrderByExpr = (orderExpr: Record<string, SortType> | undefined) => {
   return !!orderExpr
     ? ` ORDER BY ${Object.keys(orderExpr)
-        .map((value: string) => `${value} = '${orderExpr[value]}'`)
+        .map((value: string) => `${value} ${orderExpr[value]}`)
         .join(',')}`
     : '';
 };
@@ -225,10 +225,10 @@ const _buildFieldClauseExpr = (field: Record<string, string | number | boolean |
       }
       if (!value.includes('$')) {
         if (typeof field[value] === 'string') {
-          return `${value} = '${field[value]}'`;
+          return `${value}='${field[value]}'`;
         }
         if (typeof field[value] === 'number' || typeof field[value] === 'boolean' || Array.isArray(field[value])) {
-          return `${value} = ${JSON.stringify(field[value])}`;
+          return `${value}=${JSON.stringify(field[value])}`;
         }
       }
       throw new QueryOperatorNotFoundException(value);
@@ -254,7 +254,7 @@ const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWh
             return `${fieldName} ${ComparisonEmptyOperatorDict[value]}`;
           }
           if (ComparisonSingleOperatorDict.hasOwnProperty(value)) {
-            return `${fieldName} ${ComparisonSingleOperatorDict[value]} ${comparison[value]}`;
+            return `${fieldName}${ComparisonSingleOperatorDict[value]}${comparison[value]}`;
           }
           if (ComparisonSingleStringOperatorDict.hasOwnProperty(value)) {
             return `${fieldName} ${ComparisonSingleStringOperatorDict[value]} '${comparison[value]}'`;

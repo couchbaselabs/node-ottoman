@@ -43,7 +43,7 @@ describe('Test Query Types', () => {
   });
 
   test('Check query builder.', async () => {
-    const conditional = [
+    const select = [
       {
         $raw: {
           $count: {
@@ -55,11 +55,11 @@ describe('Test Query Types', () => {
         },
       },
     ];
-    const query = new Query({}, 'travel-sample').select(conditional).build();
+    const query = new Query({}, 'travel-sample').select(select).build();
     expect(query).toBe('SELECT RAW COUNT(`ottoman`) AS odm FROM `travel-sample`');
   });
   test('Check query builder let function', async () => {
-    const conditional = [
+    const select = [
       {
         $raw: {
           $count: {
@@ -77,14 +77,12 @@ describe('Test Query Types', () => {
       { key: 'amount_val', value: 10 },
       { key: 'size_val', value: 20 },
     ];
-    const query = new Query({}, 'travel-sample').select(conditional).let(letExpr).build();
-    expect(query).toBe(
-      'SELECT RAW COUNT(DISTINCT `amount`) AS odm FROM `travel-sample` LET amount_val = 10,size_val = 20',
-    );
+    const query = new Query({}, 'travel-sample').select(select).let(letExpr).build();
+    expect(query).toBe('SELECT RAW COUNT(DISTINCT `amount`) AS odm FROM `travel-sample` LET amount_val=10,size_val=20');
   });
 
   test('Check query builder orderBy function', async () => {
-    const conditional = [
+    const select = [
       {
         $raw: {
           $field: {
@@ -95,12 +93,12 @@ describe('Test Query Types', () => {
     ];
 
     const sortExpr: Record<string, SortType> = { size: 'DESC' };
-    const query = new Query({}, 'travel-sample').select(conditional).orderBy(sortExpr).build();
-    expect(query).toBe(`SELECT RAW \`travel-sample\` FROM \`travel-sample\` ORDER BY size = 'DESC'`);
+    const query = new Query({}, 'travel-sample').select(select).orderBy(sortExpr).build();
+    expect(query).toBe(`SELECT RAW \`travel-sample\` FROM \`travel-sample\` ORDER BY size DESC`);
   });
 
   test('Check query builder limit function', async () => {
-    const conditional = [
+    const select = [
       {
         $raw: {
           $field: {
@@ -110,12 +108,12 @@ describe('Test Query Types', () => {
       },
     ];
 
-    const query = new Query({}, 'travel-sample').select(conditional).limit(1).build();
+    const query = new Query({}, 'travel-sample').select(select).limit(1).build();
     expect(query).toBe(`SELECT RAW \`travel-sample\` FROM \`travel-sample\` LIMIT 1`);
   });
 
   test('Check query builder limit function', async () => {
-    const conditional = [
+    const select = [
       {
         $raw: {
           $field: {
@@ -125,12 +123,12 @@ describe('Test Query Types', () => {
       },
     ];
 
-    const query = new Query({}, 'travel-sample').select(conditional).limit(10).offset(0).build();
+    const query = new Query({}, 'travel-sample').select(select).limit(10).offset(0).build();
     expect(query).toBe(`SELECT RAW \`travel-sample\` FROM \`travel-sample\` LIMIT 10 OFFSET 0`);
   });
 
   test('Check query builder useKeys function', async () => {
-    const conditional = [
+    const select = [
       {
         $field: {
           name: 'meta().id',
@@ -143,7 +141,7 @@ describe('Test Query Types', () => {
       },
     ];
 
-    const query = new Query({}, 'travel-sample').select(conditional).useKeys(['airlineR_8093']).build();
+    const query = new Query({}, 'travel-sample').select(select).useKeys(['airlineR_8093']).build();
     expect(query).toBe(`SELECT \`meta().id\`,\`travel-sample\` FROM \`travel-sample\` USE KEYS ['airlineR_8093']`);
   });
 
@@ -165,7 +163,7 @@ describe('Test Query Types', () => {
       ],
     };
     expect(buildWhereClauseExpr('', where)).toEqual(
-      "((price > 1.99 AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20'))",
+      "((price>1.99 AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id='20'))",
     );
   });
 
@@ -184,7 +182,7 @@ describe('Test Query Types', () => {
       ],
     };
     expect(buildWhereClauseExpr('', where)).toEqual(
-      "(NOT (price > 1.99 AND auto > 10 AND amount = 10 AND (type = 'hotel' OR type = 'landmark' OR NOT (price = 10))) AND id = 8000)",
+      "(NOT (price>1.99 AND auto>10 AND amount=10 AND (type='hotel' OR type='landmark' OR NOT (price=10))) AND id=8000)",
     );
   });
 
@@ -195,7 +193,7 @@ describe('Test Query Types', () => {
 
     const query = new Query({}, 'travel-sample').select().where(expr_where).limit(20).build();
     expect(query).toBe(
-      `SELECT * FROM \`travel-sample\` WHERE (address LIKE '%57-59%' OR free_breakfast = true) LIMIT 20`,
+      `SELECT * FROM \`travel-sample\` WHERE (address LIKE '%57-59%' OR free_breakfast=true) LIMIT 20`,
     );
   });
 
@@ -227,7 +225,7 @@ describe('Test Query Types', () => {
 
     const query = new Query({}, 'travel-sample').select().where(expr_where).limit(20).build();
     expect(query).toBe(
-      "SELECT * FROM `travel-sample` WHERE (address IS NULL OR free_breakfast IS MISSING OR free_breakfast IS NOT VALUED OR id = 8000 OR id != 9000 OR id > 7000 OR id >= 6999 OR id < 5000 OR id <= 4999) AND (address IS NOT NULL AND address IS NOT MISSING AND address IS VALUED) AND NOT (address LIKE '%59%' AND name NOT LIKE 'Otto%' AND (id BETWEEN 1 AND 2000 OR id NOT BETWEEN 2001 AND 8000) AND address LIKE '%20%') LIMIT 20",
+      "SELECT * FROM `travel-sample` WHERE (address IS NULL OR free_breakfast IS MISSING OR free_breakfast IS NOT VALUED OR id=8000 OR id!=9000 OR id>7000 OR id>=6999 OR id<5000 OR id<=4999) AND (address IS NOT NULL AND address IS NOT MISSING AND address IS VALUED) AND NOT (address LIKE '%59%' AND name NOT LIKE 'Otto%' AND (id BETWEEN 1 AND 2000 OR id NOT BETWEEN 2001 AND 8000) AND address LIKE '%20%') LIMIT 20",
     );
   });
 
@@ -319,7 +317,7 @@ describe('Test Query Types', () => {
     const query = new Query(params, 'collection-name').build();
 
     expect(query).toBe(
-      "SELECT COUNT(`ottoman`) AS odm,MAX(`count`) FROM `collection-name` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) ORDER BY size = 'DESC' LIMIT 10 OFFSET 1",
+      "SELECT COUNT(`ottoman`) AS odm,MAX(`count`) FROM `collection-name` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val=10,size_val=20 WHERE ((price>amount_val AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id='20')) ORDER BY size DESC LIMIT 10 OFFSET 1",
     );
   });
 });

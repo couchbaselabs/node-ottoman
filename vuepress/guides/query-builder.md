@@ -114,15 +114,15 @@ To know the syntax of a SELECT clause you can see this [link](https://docs.couch
 
 Available Result Expression Arguments:
 
-```
-| key  | value |
-|------|-------|
-| \$all | ALL   |
+
+| key         | value       |
+| ----------- | ----------- |
+| \$all       | ALL         |
 | \$distinct  | DISTINCT    |
-| \$raw | RAW   |
-| \$element | ELEMENT   |
-| \$value | VALUE   |
-```
+| \$raw       | RAW         |
+| \$element   | ELEMENT     |
+| \$value     | VALUE       |
+
 
 Available Aggregation Functions:
 
