@@ -38,7 +38,7 @@ class NumberType extends CoreType {
     }
 
     if (this.intVal && _value % 1 !== 0) {
-      errors.push(`Property ${this.name} only allow Integer values`);
+      errors.push(`Property ${this.name} only allows Integer values`);
     }
 
     errors.push(this._checkMin(_value));

@@ -50,7 +50,7 @@ export abstract class CoreType implements IOttomanType {
   private _checkIntegrity() {
     if (this.auto !== undefined) {
       if (this.default !== undefined) {
-        throw new BuildSchemaError(`Auto and default cannot be used at the same time, in property ${this.name}.`);
+        throw new BuildSchemaError(`Auto and default values cannot be used at the same time in property ${this.name}.`);
       }
       if (this.auto === 'uuid' && this.typeName !== String.name) {
         throw new BuildSchemaError('Automatic uuid properties must be string typed.');
