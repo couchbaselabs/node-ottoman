@@ -1,4 +1,4 @@
-import { ConnectionManager } from '../../connections/connection-mannager';
+import { ConnectionManager } from '../../connections/connection-manager';
 import { getDefaultConnection } from '../../connections/connection-handler';
 import { COLLECTION_KEY } from '../../utils/constants';
 import { getIndexes } from './index-manager';
