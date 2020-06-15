@@ -6,7 +6,7 @@ interface StoreOptions {
 
 /**
  *  Store a Document
- *  if cas value is defined document is updated, else it's inserted,
+ *  if cas value is defined then the document is updated, otherwise it is inserted,
  */
 export const store = (key, data, options: StoreOptions, collection, ID_KEY): Promise<any> => {
   let storePromise;

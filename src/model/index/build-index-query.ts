@@ -13,12 +13,12 @@ export const buildIndexQuery = (Model, fields, indexFnName, indexOptions = {}) =
     for (let i = 0; i < fields.length; i++) {
       const value = values[i];
       if (value instanceof FindOptions) {
-        throw new Error(`Function ${indexFnName} receive to few arguments`);
+        throw new Error(`Function ${indexFnName} received too few arguments`);
       }
       filter[fields[i]] = value;
     }
     return Model.find(filter, options);
   } else {
-    throw new Error(`Function ${indexFnName} receive to few arguments`);
+    throw new Error(`Function ${indexFnName} received too few arguments`);
   }
 };

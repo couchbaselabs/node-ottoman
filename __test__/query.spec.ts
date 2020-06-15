@@ -58,7 +58,7 @@ describe('Test Query Types', () => {
     const query = new Query({}, 'travel-sample').select(select).build();
     expect(query).toBe('SELECT RAW COUNT(`ottoman`) AS odm FROM `travel-sample`');
   });
-  test('Check query builder let function', async () => {
+  test('Check the let function of the query builder', async () => {
     const select = [
       {
         $raw: {
@@ -81,7 +81,7 @@ describe('Test Query Types', () => {
     expect(query).toBe('SELECT RAW COUNT(DISTINCT `amount`) AS odm FROM `travel-sample` LET amount_val=10,size_val=20');
   });
 
-  test('Check query builder orderBy function', async () => {
+  test('Check the orderBy function of the query builder', async () => {
     const select = [
       {
         $raw: {
@@ -97,7 +97,7 @@ describe('Test Query Types', () => {
     expect(query).toBe(`SELECT RAW \`travel-sample\` FROM \`travel-sample\` ORDER BY size DESC`);
   });
 
-  test('Check query builder limit function', async () => {
+  test('Check the limit function of the query builder', async () => {
     const select = [
       {
         $raw: {
@@ -112,7 +112,7 @@ describe('Test Query Types', () => {
     expect(query).toBe(`SELECT RAW \`travel-sample\` FROM \`travel-sample\` LIMIT 1`);
   });
 
-  test('Check query builder limit function', async () => {
+  test('Check the limit function of the query builder', async () => {
     const select = [
       {
         $raw: {
@@ -127,7 +127,7 @@ describe('Test Query Types', () => {
     expect(query).toBe(`SELECT RAW \`travel-sample\` FROM \`travel-sample\` LIMIT 10 OFFSET 0`);
   });
 
-  test('Check query builder useKeys function', async () => {
+  test('Check the useKeys function of the query builder', async () => {
     const select = [
       {
         $field: {
@@ -145,7 +145,7 @@ describe('Test Query Types', () => {
     expect(query).toBe(`SELECT \`meta().id\`,\`travel-sample\` FROM \`travel-sample\` USE KEYS ['airlineR_8093']`);
   });
 
-  test('Check WHERE operator not found exception', async () => {
+  test('Check the exception WHERE operator not found', async () => {
     const expr_where = {
       $nill: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }, { free_lunch: [1] }],
     };
@@ -186,7 +186,7 @@ describe('Test Query Types', () => {
     );
   });
 
-  test('Check query builder WHERE clause function', async () => {
+  test('Check the WHERE clause function of the query builder', async () => {
     const expr_where = {
       $or: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }],
     };
@@ -197,7 +197,7 @@ describe('Test Query Types', () => {
     );
   });
 
-  test('Test all Where clause parameters', async () => {
+  test('Test all the parameters of the WHERE clause', async () => {
     const expr_where = {
       $or: [
         { address: { $isNull: true } },
@@ -229,7 +229,7 @@ describe('Test Query Types', () => {
     );
   });
 
-  test('Check INDEX parameters clause', async () => {
+  test('Check the parameters of the INDEX clause', async () => {
     const expr_where = { 'travel-sample.callsign': { $like: '%57-59%' } };
 
     const on = [{ name: 'travel-sample.callsing', sort: 'ASC' }];
@@ -247,7 +247,7 @@ describe('Test Query Types', () => {
     );
   });
 
-  test('Check Query Builder INDEX clause', async () => {
+  test('Check the INDEX clause of the query builder', async () => {
     const expr_where = { 'travel-sample.callsign': { $like: '%57-59%' } };
 
     const on = [{ name: 'travel-sample.callsing', sort: 'ASC' }];
@@ -276,12 +276,12 @@ describe('Test Query Types', () => {
     expect(run).toThrow(MultipleQueryTypesException);
   });
 
-  test('Check Query Builder DROP INDEX clause', async () => {
+  test('Check the DROP INDEX clause of the query builder', async () => {
     const query = new Query({}, 'travel-sample').index('DROP', 'travel_sample_id_test').usingGSI().build();
 
     expect(query).toBe('DROP INDEX `travel-sample`.`travel_sample_id_test` USING GSI');
   });
-  test('Check Query Builder Query Params', async () => {
+  test('Check the query parameters of the query builder', async () => {
     const params = {
       select: [
         {

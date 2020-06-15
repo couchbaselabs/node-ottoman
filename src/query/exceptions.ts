@@ -1,13 +1,13 @@
 export class SelectClauseException extends Error {
   constructor() {
     // todo update message
-    super('The SELECT clause does not have a proper structure');
+    super('The SELECT clause does not have the proper structure');
   }
 }
 
 export class WhereClauseException extends Error {
   constructor() {
-    super('The WHERE clause does not have a proper structure');
+    super('The WHERE clause does not have the proper structure');
   }
 }
 export class MultipleQueryTypesException extends Error {

@@ -2,7 +2,7 @@ import { pipe } from '../../utils/pipe';
 
 /**
  * Allow to execute hooks in chain,
- * passing previous result value to next hooks.
+ * passing previous result value to the next hook.
  */
 export const execHooks = async (schema, hookType: 'preHooks' | 'postHooks', hookAction, document?) => {
   if (schema[hookType] && schema[hookType][hookAction]) {

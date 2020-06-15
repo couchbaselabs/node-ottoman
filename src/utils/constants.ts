@@ -1,6 +1,6 @@
 // to keep compatibility with v1
 /**
- * Default value to metadata key, to keep collection tracking
+ * Default value for metadata key, to keep collection tracking
  * eg. This model new Model('User', schema, options), will generate documents -> document._type = 'User'
  */
 export const COLLECTION_KEY = '_type';

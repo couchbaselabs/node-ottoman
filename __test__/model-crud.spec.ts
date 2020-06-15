@@ -70,7 +70,7 @@ describe('Test Document Access Functions', () => {
     expect(user.type).toBe('airlineZ Replace');
   });
 
-  test('Document.save Saving a document and updating', async () => {
+  test('Document.save Save and update a document', async () => {
     const UserModel = model('User', schema);
     const user = new UserModel(accessDoc2);
     const result = await user.save();

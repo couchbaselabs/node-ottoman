@@ -166,9 +166,9 @@ const _buildUseKeysExpr = (useKeys: string[] | undefined) => {
   return Array.isArray(useKeys) ? ` USE KEYS [${useKeys.map((value: string) => `'${value}'`).join(',')}]` : '';
 };
 
-// end select expressions functions
+// end select expression functions
 
-// where expressions functions
+// where expression functions
 
 /**
  * Create WHERE N1QL Expressions.
@@ -275,9 +275,9 @@ const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWh
   }
 };
 
-// end where expressions functions
+// end where expression functions
 
-// index expressions functions
+// index expression functions
 
 /**
  * Build a INDEX N1QL query from user-specified parameters.
@@ -344,7 +344,7 @@ const buildWithExpr = (withExpr?: IIndexWithParams) => {
           case 'num_replica':
             return `'${value}': ${withExpr[value]}`;
           default:
-            throw new Error('The WITH clause has incorrect syntax');
+            throw new Error('The WITH clause has an incorrect syntax');
         }
       })
       .join(',');
@@ -373,4 +373,4 @@ const arrayStringToStringSingleQuote = (array: string[]) => {
     .join(',')}]`;
 };
 
-// end index expressions functions
+// end index expression functions

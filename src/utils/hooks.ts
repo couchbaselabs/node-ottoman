@@ -1,5 +1,5 @@
 /**
- * Hooks availables
+ * Hooks available
  * 'validate' | 'save' | 'remove'
  */
 export const HOOKS = Object.freeze({
