@@ -1,6 +1,6 @@
 import couchbase from 'couchbase';
 import { extractConnectionString } from '../utils/extract-connection-string';
-import { ConnectionManager } from './connection-mannager';
+import { ConnectionManager } from './connection-manager';
 
 export interface ConnectOptions {
   connectionString: string;
