@@ -5,7 +5,7 @@ import { castSchema } from '../schema/helpers';
 import { ModelMetadata } from './interfaces/model-metadata';
 import { getModelMetadata } from './utils/model.utils';
 import { storeLifeCycle } from './utils/store-life-cycle';
-import { removeLifeCicle } from './utils/remove-life-cycle';
+import { removeLifeCycle } from './utils/remove-life-cycle';
 
 export abstract class Document<T> {
   /**
@@ -48,10 +48,10 @@ export abstract class Document<T> {
   }
 
   /**
-   * Remove document from BD
+   * Remove document from DB
    */
   remove(options = {}) {
-    return removeLifeCicle({ id: this._getId(), options, model: this.$ });
+    return removeLifeCycle({ id: this._getId(), options, model: this.$ });
   }
 
   /**

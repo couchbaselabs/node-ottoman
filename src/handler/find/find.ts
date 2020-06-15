@@ -9,7 +9,7 @@ import { ModelMetadata } from '../../model/interfaces/model-metadata';
 
 /**
  * Find documents
- * Allow to use some filters and useful options
+ * Allow to use some filters and other useful options
  * @ignore
  */
 export const find = (metadata: ModelMetadata) => async (filter: any = {}, options: FindOptions = {}) => {
@@ -26,7 +26,7 @@ export const find = (metadata: ModelMetadata) => async (filter: any = {}, option
     [COLLECTION_KEY as string]: collectionName,
   };
 
-  // Building query
+  // Building the query
   let query = new Query({}, bucketName).select(selectFields.join(', ')).where(expr_where);
   query = query.limit(limit || 50);
   if (skip) {

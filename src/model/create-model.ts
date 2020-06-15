@@ -11,7 +11,7 @@ import { FindByIdOptions } from '../handler/find/find-by-id-options';
 import { buildIndexQuery } from './index/build-index-query';
 import { registerIndex } from './index/index-manager';
 import { setModelMetadata } from './utils/model.utils';
-import { removeLifeCicle } from './utils/remove-life-cycle';
+import { removeLifeCycle } from './utils/remove-life-cycle';
 
 /**
  * @ignore
@@ -37,7 +37,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
 
   setModelMetadata(ModelFactory, metadata);
 
-  // Adding dynamic statics methods
+  // Adding dynamic static methods
   for (const key in schema?.statics) {
     ModelFactory[key] = schema?.statics[key];
   }
@@ -51,7 +51,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
       indexName = indexName.replace(/-/g, '_');
       // Register access method e.g FindByName
       ModelFactory[key] = buildIndexQuery(ModelFactory, fields, key, options);
-      // Register index to later sync with DB server
+      // Register index to sync later with the server
       registerIndex(indexName, fields, name);
     }
   }
@@ -116,7 +116,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
     };
 
     static remove = (id: string, options = {}) => {
-      return removeLifeCicle({ id, options, model: { schema, collection } });
+      return removeLifeCycle({ id, options, model: { schema, collection } });
     };
 
     static fromData(data: Record<string, any>): _Model<any> {

@@ -1,7 +1,7 @@
 import { Document } from './document';
 /**
- * Constructor to build a model instance base on schema and options
- * Provide methods to handle documents of the current collection on DB
+ * Constructor to build a model instance based on schema and other options
+ * Provide methods to handle documents of the current collection in the database
  */
 export abstract class Model<T = any> extends Document<T> {
   /**

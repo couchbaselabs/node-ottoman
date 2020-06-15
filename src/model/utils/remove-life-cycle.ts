@@ -6,7 +6,7 @@ import { remove } from '../../handler/remove';
  * Remove lifecycle including hooks
  * @ignore
  */
-export const removeLifeCicle = async ({ id, options, model: { schema, collection } }) => {
+export const removeLifeCycle = async ({ id, options, model: { schema, collection } }) => {
   await execHooks(schema, 'preHooks', HOOKS.REMOVE);
 
   const result = await remove(id, collection, options);

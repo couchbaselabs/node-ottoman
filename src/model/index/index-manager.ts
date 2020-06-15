@@ -1,27 +1,27 @@
 /**
- * Store all indexes
+ * Stores all indexes
  */
 const __indexes: Record<any, { fields: string[]; modelName: string }> = {};
 
 /**
- * Receive an index name and return if it's already registered
+ * Receives an index name and return if it is already registered
  */
 export const hasIndex = (indexName: string): boolean => !!__indexes[indexName];
 
 /**
- * Return all indexes
+ * Returns all indexes
  */
 export const getIndexes = () => __indexes;
 
 /**
- * Register a new index
+ * Registers a new index
  */
 export const registerIndex = (indexName: string, fields, modelName) => {
   __indexes[indexName] = { fields, modelName };
 };
 
 /**
- * Remove an existing index
+ * Removes an existing index
  */
 export const removeIndex = (indexName: string) => {
   delete __indexes[indexName];

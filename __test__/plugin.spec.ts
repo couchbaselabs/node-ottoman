@@ -13,7 +13,7 @@ const schema = {
 };
 
 describe('Test plugin', () => {
-  test('Test global and local plugin on same schema', async () => {
+  test('Test global and local plugins on the same schema', async () => {
     const pluginLog3 = (schema) => {
       schema.methods.log3 = function () {
         return `log from global plugin ${this.type}`;

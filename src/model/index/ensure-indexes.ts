@@ -6,8 +6,8 @@ import { extractIndexFieldNames } from './extract-index-field-names';
 
 /**
  * Create the register index in the Database Server.
- * in Adition 1 index will be create as primary for the bucketName
- * and others more by every Ottoman model.
+ * in addition one index will be created as primary for the bucketName
+ * and one more for every Ottoman model.
  */
 export const ensureIndexes = async (connection?: ConnectionManager) => {
   const __indexes = getIndexes();
@@ -29,7 +29,7 @@ export const ensureIndexes = async (connection?: ConnectionManager) => {
     indexesToBuild.push(ottomanType);
   }
 
-  // Create secondary indexes declare in the schema
+  // Create secondary indexes declared in the schema
   async function* asyncIndexesQuery() {
     for (const indexName in __indexes) {
       const indexNameSanitized = indexName.replace(/[\\$]/g, '__').replace('[*]', '-ALL').replace(/(::)/g, '-');
@@ -37,7 +37,7 @@ export const ensureIndexes = async (connection?: ConnectionManager) => {
         const index = __indexes[indexName];
         const fieldNames = extractIndexFieldNames(index);
         indexesToBuild.push(indexNameSanitized);
-        yield cluster.query(queryBuildIndexDefered(bucketName, indexNameSanitized, fieldNames, index.modelName));
+        yield cluster.query(queryBuildIndexDeferred(bucketName, indexNameSanitized, fieldNames, index.modelName));
       }
     }
   }
@@ -48,7 +48,7 @@ export const ensureIndexes = async (connection?: ConnectionManager) => {
     }
   }
 
-  // All indexes were built deferred, so now kick off actual build.
+  // All indexes were built deferred, so now kick off the actual build.
   if (indexesToBuild.length > 0) {
     return await cluster.query(queryBuildIndexes(bucketName, indexesToBuild));
   }
@@ -63,14 +63,14 @@ const queryForIndexOttomanType = (bucketName): string =>
   `CREATE INDEX \`Ottoman${COLLECTION_KEY}\` ON \`${bucketName}\`(\`${COLLECTION_KEY}\`) USING GSI WITH {"defer_build": true}`;
 
 // Map createIndex across all individual n1ql model indexes.
-// concurrency: 1 is important to avoid overwhelming server.
+// concurrency: 1 is important to avoid overwhelming the server.
 // Promise.all turns the array into a single promise again.
-const queryBuildIndexDefered = (bucketName, indexName, fields, modelName) =>
+const queryBuildIndexDeferred = (bucketName, indexName, fields, modelName) =>
   `CREATE INDEX \`${indexName}\` ON \`${bucketName}\`(${fields.join(
     ',',
   )}) WHERE ${COLLECTION_KEY}="${modelName}" USING GSI WITH {"defer_build": true}`;
 
-// All indexes were built deferred, so now kick off actual build.
+// All indexes were built deferred, so now kick off the actual build.
 const queryBuildIndexes = (bucketName, indexesName: string[]) => {
   return `BUILD INDEX ON \`${bucketName}\`(${indexesName.map((idx) => `\`${idx}\``).join(',')}) USING GSI`;
 };

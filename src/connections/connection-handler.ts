@@ -56,7 +56,7 @@ const connectFromEnvVariables = (modelName: string) => {
 export const getCollection = (collectionName?: string) => __conn.getCollection(collectionName);
 
 /**
- * Create model from given name from default connection
+ * Create model from given name, from default connection
  */
 export const model = (name: string, schema) => {
   if (!__conn) {

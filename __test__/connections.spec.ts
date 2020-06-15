@@ -3,13 +3,13 @@ import { connectionString, username, connectUri, bucketName, password } from './
 import { isModel } from '../lib/utils/is-model';
 
 describe('Test connections', () => {
-  test('Multiples connections with string param', () => {
+  test('Multiple connections with string param', () => {
     const conn2 = connect(connectUri);
     expect(conn2.bucket).toBeDefined();
     conn2.close();
   });
 
-  test('Multiples connections with object param and get model from other connection', () => {
+  test('Multiple connections with object param', () => {
     const conn3 = connect({
       bucketName,
       password,

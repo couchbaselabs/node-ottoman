@@ -1,7 +1,7 @@
 /**
  * Determine if a given parameter is
  * a Model
- * or a document build with a Model
+ * or a document built with a Model
  */
 import { Model } from '../model/model';
 

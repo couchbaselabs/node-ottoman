@@ -323,7 +323,7 @@ export class Query extends BaseQuery {
   }
 
   /**
-   * Converts the conditionals parameter passed to the constructor to the properties of the N1QL Query.
+   * Converts the conditionals parameters passed to the constructor to the properties of the N1QL Query.
    * @method
    * @public
    *
