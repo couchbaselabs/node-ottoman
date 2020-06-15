@@ -30,7 +30,7 @@ class NumberType extends CoreType {
 
   cast(value: unknown) {
     const _value = Number(super.cast(value));
-    if (this.isEmpty(value)) return _value;
+    if (this.isEmpty(value)) return value;
     let errors: string[] = [];
 
     if (isNaN(_value)) {

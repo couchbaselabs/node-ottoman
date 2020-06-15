@@ -9,7 +9,7 @@ interface ReferenceOptions {
   refModel: string;
 }
 
-class ReferenceType extends CoreType {
+export class ReferenceType extends CoreType {
   constructor(name: string, public schema: Schema, public refModel: string) {
     super(name, 'Reference');
   }

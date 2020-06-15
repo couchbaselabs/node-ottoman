@@ -10,8 +10,8 @@ import {
   stringTypeFactory,
 } from './types';
 import { isMetadataKey } from '../utils/is-metadata';
-import { ValidationError } from './errors';
-import { Model } from '../model/model';
+import { BuildSchemaError, ValidationError } from './errors';
+import { Model } from '..';
 import { SchemaIndex } from '../model/index/types/index.types';
 
 export type SchemaDef = Record<string, any>;
@@ -60,38 +60,18 @@ export class Schema {
     this._id = '_id';
   }
   /**
-   * Validate a model instance using the definition of the schema
+   * Cast a model instance using the definition of the schema
    * @method
    * @public
    *
    * @example
    * ```ts
-   *   const schema = new Schema([new StringType('name')]);
-   *   const result = schema.validate({name: 'John Doe'});
+   *   const schema = new Schema([new StringType('name'), new NumberType('age')]);
+   *   const result = schema.cast({name: 'John Doe', age: '34'});
    *   console.log(result)
    * ```
-   * > true
+   * > {name: 'John Doe', age: 34}
    */
-  async validate(object: Model | ModelObject): Promise<boolean> {
-    const errors: string[] = [];
-    for (const key in this.fields) {
-      const type = this.fields[key];
-      if (!isMetadataKey(type.name)) {
-        try {
-          const value = object[type.name];
-          type.cast(value);
-        } catch (e) {
-          errors.push(e.message);
-        }
-      }
-    }
-
-    if (errors.length > 0) {
-      throw new ValidationError(errors.join(', '));
-    }
-    return true;
-  }
-
   cast(object: Model | ModelObject): Model | ModelObject {
     const errors: string[] = [];
     for (const key in this.fields) {
@@ -145,6 +125,7 @@ export class Schema {
   }
 
   pre(hook: 'validate' | 'save' | 'remove', handler): Schema {
+    this.checkHook(hook);
     if (this.preHooks[hook] === undefined) {
       this.preHooks[hook] = [];
     }
@@ -153,10 +134,16 @@ export class Schema {
   }
 
   post(hook: 'validate' | 'save' | 'remove', handler): Schema {
+    this.checkHook(hook);
     if (this.postHooks[hook] === undefined) {
       this.postHooks[hook] = [];
     }
     this.postHooks[hook].push(handler);
     return this;
+  }
+  private checkHook(hook: unknown): void {
+    if (!['validate', 'save', 'remove'].includes(String(hook))) {
+      throw new BuildSchemaError(`The hook ${hook} is not allowed`);
+    }
   }
 }
