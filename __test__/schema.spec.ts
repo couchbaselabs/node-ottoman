@@ -5,25 +5,25 @@ import { IOttomanType } from '../lib/schema/types';
 import { isOttomanType } from '../lib/schema/helpers';
 
 describe('Schema Helpers', () => {
-  test('should return empty array when validator is undefined', () => {
+  test('should return void when the validator is undefined', () => {
     expect(applyValidator('Sample value', undefined)).toBeUndefined();
   });
-  test('should void return when using ValidatorOption in the validator and value is valid', () => {
+  test('should return void when using ValidatorOption in the validator and the value is valid', () => {
     expect(applyValidator('Sample value', { message: 'Only letters', regexp: new RegExp('\\w') })).toBeUndefined();
   });
-  test("should return a message when using ValidatorOption in the validator and value isn't valid", () => {
+  test("should return a message when using ValidatorOption in the validator and the value isn't valid", () => {
     expect(applyValidator('Sample value', { message: 'Only numbers', regexp: new RegExp('\\d') })).toEqual(
       'Only numbers',
     );
   });
-  test('should return a message when receiving as result of validator function a String', () => {
+  test('should return a message when receiving a String as result of the validator function', () => {
     const validator = () => 'Value not allowed';
     expect(applyValidator('Sample value', validator())).toEqual('Value not allowed');
   });
 });
 describe('Schema Types', () => {
   class MocType {}
-  test('should throw an error when defining in schema the unsupported type.', () => {
+  test('should throw an error when defining the unsupported type in schema.', () => {
     const schema = { name: MocType };
     expect(() => createSchema(schema)).toThrow(
       new BuildSchemaError('Unsupported type specified in the property "name"'),
@@ -35,11 +35,11 @@ describe('Schema Types', () => {
       firstName: { type: String, default: 'John', auto: 'uuid' },
     };
     expect(() => createSchema(schema)).toThrow(
-      new BuildSchemaError('Auto and default cannot be used at the same time, in property firstName.'),
+      new BuildSchemaError('Auto and default values cannot be used at the same time in property firstName.'),
     );
   });
 
-  test('should return instance of IOttomanType when using a valid path value', () => {
+  test('should return an instance of IOttomanType when using a valid path value', () => {
     const schema = createSchema({
       firstName: { type: String },
     });
@@ -69,7 +69,7 @@ describe('Schema Types', () => {
       hasChild: Boolean,
       id: Number,
       age: { type: Number, required: true },
-      experience: { type: Number, min: { val: 2, message: 'Min allow is two' }, max: 4 },
+      experience: { type: Number, min: { val: 2, message: 'Min allowed is two' }, max: 4 },
     };
     const data = {
       firstName: 'John',
@@ -100,7 +100,7 @@ describe('Schema Types', () => {
     expect(castSchema(dataWithMetadata, schema)).toEqual(dataWithMetadata);
   });
 
-  test('should applied correctly default values', () => {
+  test('should apply correctly the default values', () => {
     const personSchema = {
       firstName: { type: String, default: 'John' },
       lastName: { type: String, default: () => 'Doe' },
@@ -120,7 +120,7 @@ describe('Schema Types', () => {
     expect(hasChild).toBeTruthy();
   });
 
-  test('should throw an error when validator fails', () => {
+  test('should throw an error when the validator fails', () => {
     const validatorJohnName = (v) => {
       if (v !== 'John') {
         return 'Only John is allowed';
@@ -148,12 +148,12 @@ describe('Schema Types', () => {
     expect(() => castSchema(data, schemaWithRegex)).toThrow(ValidationError);
   });
 
-  test('should return same schema when is passed to create', () => {
+  test('should return the same schema when it is passed to create', () => {
     const schema = createSchema({ name: String, hasChild: Boolean, age: { type: Number, intVal: true } });
     expect(createSchema(schema)).toBe(schema);
   });
 
-  test('should exception when is schema have property without type', () => {
+  test('should throw an exception when the schema has a property without type', () => {
     const schema = {
       name: String,
       hasChild: Boolean,
@@ -164,26 +164,26 @@ describe('Schema Types', () => {
   });
 });
 describe('Schema String Type', () => {
-  test('should throw an error when defining auto uuid value and is not String type ', () => {
+  test('should throw an error when defining auto uuid value and it is not a String type ', () => {
     const schema = {
       firstName: { type: Boolean, auto: 'uuid' },
     };
     expect(() => createSchema(schema)).toThrow(new BuildSchemaError('Automatic uuid properties must be string typed.'));
   });
 
-  test('should return schema instance when defining auto uuid value and is String type ', () => {
+  test('should return a schema instance when auto uuid value is defined and its type is String', () => {
     const schema = {
       firstName: { type: String, auto: 'uuid' },
     };
     expect(createSchema(schema)).toBeDefined();
   });
 
-  test('should throw an error when field is an enum string and value is not contained', () => {
+  test('should throw an error when the field is an enum string and the value is not contained', () => {
     const schema = { color: { type: String, enum: ['Blue', 'Green', 'Yellow'] } };
     const data = { color: 'Black' };
     expect(() => castSchema(data, schema)).toThrow(ValidationError);
   });
-  test('should return true when field is an enum string and value is contained', () => {
+  test('should return true when the field is an enum string and the value is contained', () => {
     const schema = { color: { type: String, enum: ['Blue', 'Green', 'Yellow'] } };
     const data = { color: 'Green' };
     expect(castSchema(data, schema)).toEqual(data);
@@ -206,52 +206,52 @@ describe('Schema Number Type', () => {
       age: 23,
     };
     const schemaWithObject = {
-      age: { type: Number, min: { val: 30, message: 'Only 30 or more years' } },
+      age: { type: Number, min: { val: 30, message: 'Only 30 or more years allowed' } },
     };
-    expect(() => castSchema(data, schemaWithObject)).toThrow(new ValidationError('Only 30 or more years'));
+    expect(() => castSchema(data, schemaWithObject)).toThrow(new ValidationError('Only 30 or more years allowed'));
 
     const validator1 = () => {
-      return { val: 30, message: 'Only 30 or more years' };
+      return { val: 30, message: 'Only 30 or more years allowed' };
     };
     const schemaWithFunctionObj = { age: { type: Number, min: validator1 } };
-    expect(() => castSchema(data, schemaWithFunctionObj)).toThrow(new ValidationError('Only 30 or more years'));
+    expect(() => castSchema(data, schemaWithFunctionObj)).toThrow(new ValidationError('Only 30 or more years allowed'));
 
     const validator2 = () => 30;
     const schemaWithFunctionNum = { age: { type: Number, min: validator2 } };
     expect(() => castSchema(data, schemaWithFunctionNum)).toThrow(new ValidationError('23 is less than 30'));
   });
 
-  test('should throw an error when value is more than max', () => {
+  test('should throw an error when the value is more than max', () => {
     const data = {
       age: 35,
     };
     const schemaWithObject = {
-      age: { type: Number, max: { val: 30, message: 'Only 30 or less years' } },
+      age: { type: Number, max: { val: 30, message: 'Only 30 or less years allowed' } },
     };
-    expect(() => castSchema(data, schemaWithObject)).toThrow(new ValidationError('Only 30 or less years'));
+    expect(() => castSchema(data, schemaWithObject)).toThrow(new ValidationError('Only 30 or less years allowed'));
 
     const validator1 = () => {
-      return { val: 30, message: 'Only 30 or less years' };
+      return { val: 30, message: 'Only 30 or less years allowed' };
     };
     const schemaWithFunctionObj = { age: { type: Number, max: validator1 } };
-    expect(() => castSchema(data, schemaWithFunctionObj)).toThrow(new ValidationError('Only 30 or less years'));
+    expect(() => castSchema(data, schemaWithFunctionObj)).toThrow(new ValidationError('Only 30 or less years allowed'));
 
     const validator2 = () => 30;
     const schemaWithFunctionNum = { age: { type: Number, max: validator2 } };
     expect(() => castSchema(data, schemaWithFunctionNum)).toThrow(new ValidationError('35 is more than 30'));
   });
 
-  test('should throw an error when value is not integer', () => {
+  test('should throw an error when the value is not an integer', () => {
     const data = {
       age: 35.6,
     };
     const schema = {
       age: { type: Number, intVal: true },
     };
-    expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property age only allow Integer values'));
+    expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property age only allows Integer values'));
   });
 
-  test('should return true when value is allow by schema def', () => {
+  test('should return true when the value is allowed by schema def', () => {
     const dataInteger = {
       age: 35,
     };
@@ -280,7 +280,7 @@ describe('Schema Date Types', () => {
       name: 'John Doe',
       birthday: new Date('2000-01-01'),
     };
-    test('should return valid date after apply default values', () => {
+    test('should return a valid date after applying default values', () => {
       const schema1: ModelObject = { name: String, birthday: Date, createdAt: { type: Date, default: Date.now } };
       const updateInstance1 = applyDefaultValue(modelInstance, schema1);
       expect(updateInstance1.createdAt).toBeDefined();
@@ -306,7 +306,7 @@ describe('Schema Date Types', () => {
       expect(updateInstance4.createdAt).toBeInstanceOf(Date);
     });
 
-    test('should not change the current value after apply default values', () => {
+    test('should not change the current value after applying default values', () => {
       const schema = { name: String, birthday: { type: Date, default: Date.now } };
       const updateInstance = applyDefaultValue(modelInstance, schema);
       expect(updateInstance.birthday).toBeDefined();
@@ -335,18 +335,18 @@ describe('Schema Date Types', () => {
     const schema1 = { name: String, birthday: { type: Date, min: '1999-12-31' } };
     const schema2 = { name: String, birthday: { type: Date, min: _minDate } };
     const schema3 = { name: String, birthday: { type: Date, min: () => _minDate } };
-    const opts = { val: _minDate, message: 'Date not valid' };
+    const opts = { val: _minDate, message: 'Invalid Date' };
     const schema4 = { name: String, birthday: { type: Date, min: opts } };
     const schema5 = { name: String, birthday: { type: Date, min: () => opts } };
 
-    test('should return true when apply min validation with valid data', () => {
+    test('should return true when applying min validation with valid data', () => {
       const data = {
         name: 'John Doe',
         birthday: new Date('2000-01-01'),
       };
       validationsSuccessAssertions(data, schema1, schema2, schema3, schema4, schema5);
     });
-    test('should throw validation error when min value date is not correctly', () => {
+    test('should throw a validation error when min value date is not set correctly', () => {
       const data = {
         name: 'John Doe',
         birthday: new Date('1990-01-01'),
@@ -360,11 +360,11 @@ describe('Schema Date Types', () => {
     const schema1 = { name: String, birthday: { type: Date, max: '2000-12-31' } };
     const schema2 = { name: String, birthday: { type: Date, max: _maxDate } };
     const schema3 = { name: String, birthday: { type: Date, max: () => _maxDate } };
-    const opts = { val: _maxDate, message: 'Date not valid' };
+    const opts = { val: _maxDate, message: 'Invalid Date' };
     const schema4 = { name: String, birthday: { type: Date, max: opts } };
     const schema5 = { name: String, birthday: { type: Date, max: () => opts } };
 
-    test('should return true when apply max validation with valid data', () => {
+    test('should return true when applying max validation with valid data', () => {
       const data = {
         name: 'John Doe',
         birthday: new Date('2000-01-01'),
@@ -372,7 +372,7 @@ describe('Schema Date Types', () => {
       validationsSuccessAssertions(data, schema1, schema2, schema3, schema4, schema5);
     });
 
-    test('should throw validation error when max value date is not correctly', () => {
+    test('should throw a validation error when max value date is not correctly', () => {
       const data = {
         name: 'John Doe',
         birthday: new Date('2001-01-01'),
@@ -382,7 +382,7 @@ describe('Schema Date Types', () => {
   });
 });
 describe('Schema Array Types', () => {
-  test('should create successfully array of a type', () => {
+  test('should create successfully an array of a type', () => {
     const schemaString = {
       names: [String],
     };
@@ -394,48 +394,48 @@ describe('Schema Array Types', () => {
   });
 
   describe('Array Type Validations', () => {
-    test('should return true when all items of array are valid', () => {
+    test('should return true when all items of the array are valid', () => {
       const schemaString = {
-        names: [{ type: String, validator: { regexp: new RegExp('[a-zA-Z\\s]'), message: 'Only letters' } }],
+        names: [{ type: String, validator: { regexp: new RegExp('[a-zA-Z\\s]'), message: 'Only letters allowed' } }],
       };
       const data = {
         names: ['John Due', 'Due John'],
       };
       expect(castSchema(data, schemaString)).toEqual(data);
       const schemaNumber = {
-        amounts: [{ type: Number, max: { val: 10, message: 'Not valid value' } }],
+        amounts: [{ type: Number, max: { val: 10, message: 'Not a valid value' } }],
       };
       const amountsData = {
         amounts: [2, 3, 4, 10],
       };
       expect(castSchema(amountsData, schemaNumber)).toEqual(amountsData);
     });
-    test('should throw error when any items of array are invalid', () => {
+    test('should throw an error when any items of the array are invalid', () => {
       const schemaString = {
-        names: [{ type: String, validator: { regexp: new RegExp('[a-zA-Z\\s]'), message: 'Only letters' } }],
+        names: [{ type: String, validator: { regexp: new RegExp('[a-zA-Z\\s]'), message: 'Only letters allowed' } }],
       };
       const data = {
         names: ['John Due', 'Due John23', '32323'],
       };
-      expect(() => castSchema(data, schemaString)).toThrow(new ValidationError('Only letters'));
+      expect(() => castSchema(data, schemaString)).toThrow(new ValidationError('Only letters allowed'));
 
       const schemaNumber = {
-        amounts: [{ type: Number, max: { val: 10, message: 'Not valid value' } }],
+        amounts: [{ type: Number, max: { val: 10, message: 'Not a valid value' } }],
       };
       const amountsData = {
         amounts: [20, 13, 54, 10],
       };
-      expect(() => castSchema(amountsData, schemaNumber)).toThrow(new ValidationError('Not valid value'));
+      expect(() => castSchema(amountsData, schemaNumber)).toThrow(new ValidationError('Not a valid value'));
     });
   });
 });
 describe('Schema Embed Types', () => {
-  test('should create a valid schema when using embed schema def', () => {
+  test('should create a valid schema when using embedded schema def', () => {
     const schema = {
       address: {
         line: String,
         line2: String,
-        postalCode: { type: String, validator: { regexp: new RegExp('\\d'), message: 'Not valid postal code' } },
+        postalCode: { type: String, validator: { regexp: new RegExp('\\d'), message: 'Invalid postal code' } },
       },
     };
     const result = createSchema(schema);
@@ -443,11 +443,11 @@ describe('Schema Embed Types', () => {
     expect(result).toBeInstanceOf(Schema);
   });
 
-  test('should create a valid schema when using embed schema instance', () => {
+  test('should create a valid schema when using embedded schema instance', () => {
     const addressSchema = createSchema({
       line: String,
       line2: String,
-      postalCode: { type: String, validator: { regexp: new RegExp('\\d'), message: 'Not valid postal code' } },
+      postalCode: { type: String, validator: { regexp: new RegExp('\\d'), message: 'Invalid postal code' } },
     });
 
     const schema = {
@@ -459,21 +459,21 @@ describe('Schema Embed Types', () => {
   });
 });
 describe('Schema Model Ref Types', () => {
-  test('should create a schema when using ref to other schema', () => {
+  test('should create a schema when using ref to another schema', () => {
     const userSchema = createSchema({ name: String });
     const schema = createSchema({ user: { type: userSchema, ref: 'User' } });
     expect(schema).toBeDefined();
     expect(schema).toBeInstanceOf(Schema);
   });
 
-  test('should create a schema when reference other model', () => {
+  test('should create a schema when referenced from other model', () => {
     const UserSchema = createSchema({ name: String });
     const schema = createSchema({ user: { type: UserSchema, ref: 'User' } });
     expect(schema).toBeDefined();
     expect(schema).toBeInstanceOf(Schema);
   });
 
-  test('should return true when validate schema with other model', () => {
+  test('should return true when validates schema with another model', () => {
     const UserSchema = createSchema({ name: String });
     const schema = createSchema({ user: { type: UserSchema, ref: 'User' } });
     const data = {
@@ -482,7 +482,7 @@ describe('Schema Model Ref Types', () => {
     expect(castSchema(data, schema)).toEqual(data);
   });
 
-  test('should throw error validation when validate schema with other model', () => {
+  test('should throw an error validation when validates schema with another model', () => {
     const UserSchema = createSchema({ name: String });
     const schema = createSchema({ user: { type: UserSchema, ref: 'User' } });
     const data = {
@@ -491,7 +491,7 @@ describe('Schema Model Ref Types', () => {
     expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property name must be of type String'));
   });
 
-  test('should create a schema with array of references', () => {
+  test('should create a schema with an array of references', () => {
     const commentSchema = createSchema({
       title: String,
       description: String,
@@ -505,7 +505,7 @@ describe('Schema Model Ref Types', () => {
     expect(createSchema(postSchemaDef)).toBeInstanceOf(Schema);
   });
 
-  test('should return true when validate with schema with array of references', () => {
+  test('should return true when validates the schema with the array of references', () => {
     const commentSchema = createSchema({
       title: String,
       description: String,
@@ -528,7 +528,7 @@ describe('Schema Model Ref Types', () => {
     };
     expect(castSchema(data, postSchemaDef)).toEqual(data);
   });
-  test('should throw exception when validate with schema and bad array of references', () => {
+  test('should throw an exception when validated with schema and a bad array of references', () => {
     const commentSchema = createSchema({
       title: String,
       description: String,
@@ -569,7 +569,7 @@ describe('Schema Add Custom Types', () => {
     expect(a.path('age')).toBeInstanceOf(Int8);
   });
 
-  test('should throw an error when try of register custom type already registered', () => {
+  test('should throw an error when trying to register a custom type already registered', () => {
     expect.assertions(1);
     try {
       registerType(Int8.name, (fieldName) => new Int8(fieldName));
@@ -588,7 +588,7 @@ describe('Schema Combine Some Types', () => {
     name: String,
     age: Number,
   });
-  test('should return a valid object when some non required schema properties are missing', () => {
+  test('should return a valid object when some non-required schema properties are missing', () => {
     const UserSchema = createSchema({
       type: String,
       isActive: Boolean,
