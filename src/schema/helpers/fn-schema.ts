@@ -2,7 +2,7 @@ import { IOttomanType } from '../types';
 import { is } from '../../utils/is-type';
 import { BuildSchemaError } from '../errors';
 import { Schema, SchemaDef, ModelObject, FieldMap, FactoryFunction } from '../schema';
-import { Model } from '../../model/model';
+import { Model } from '../..';
 import { getGlobalPlugins } from '../../plugins/global-plugin-handler';
 
 type ParseResult = {
@@ -29,7 +29,7 @@ export const createSchema = (obj: Schema | SchemaDef): Schema => {
   const fields: FieldMap = {};
   const keys = Object.keys(obj);
   for (const _key of keys) {
-    const opts = _parseType(obj[_key], _key);
+    const opts = _parseType(obj[_key]);
     if (!opts.type) {
       throw new BuildSchemaError(`Property ${_key} is a required type`);
     }
@@ -47,10 +47,9 @@ export const createSchema = (obj: Schema | SchemaDef): Schema => {
  * @function
  * @private
  * @param value that's going to parse
- * @param name that identifies the field
  * @throws BuildSchemaError
  */
-const _parseType = (value, name: string): ParseResult => {
+const _parseType = (value): ParseResult => {
   if (value instanceof Schema) {
     return {
       type: 'Embed',
@@ -77,10 +76,7 @@ const _parseType = (value, name: string): ParseResult => {
       };
     }
   } else if (is(value, Array)) {
-    const childType = _parseType(value[0], '');
-    if (!childType.type) {
-      throw new BuildSchemaError(`Property ${name}.0 is a required type`);
-    }
+    const childType = _parseType(value[0]);
     return {
       type: Array.name,
       options: _makeField('', childType),
