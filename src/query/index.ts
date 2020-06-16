@@ -9,3 +9,4 @@ export {
 } from './exceptions';
 export { Query } from './query';
 export * from './interface';
+export { parseStringSelectExpr } from './utils';

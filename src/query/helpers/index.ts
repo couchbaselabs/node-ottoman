@@ -1,2 +1,2 @@
-export { selectBuilder, buildSelectExpr, buildWhereClauseExpr, buildIndexExpr } from './builders';
+export { selectBuilder, buildSelectExpr, buildWhereClauseExpr, buildIndexExpr, buildSelectArrayExpr } from './builders';
 export { AggDict, ResultExprDict, ReturnResultDict } from './dictionary';

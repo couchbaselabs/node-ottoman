@@ -12,6 +12,8 @@ import { buildIndexQuery } from './index/build-index-query';
 import { registerIndex } from './index/index-manager';
 import { setModelMetadata } from './utils/model.utils';
 import { removeLifeCycle } from './utils/remove-life-cycle';
+import { LogicalWhereExpr, SortType } from '../query/interface';
+import { IFindOptions } from '../handler/find/find-options';
 
 /**
  * @ignore
@@ -84,7 +86,25 @@ export const _buildModel = (metadata: ModelMetadata) => {
       }
     }
 
-    static find = find(metadata);
+    static find = (filter: LogicalWhereExpr = {}, options: IFindOptions = {}) => {
+      return find(metadata)(filter, options);
+    };
+
+    static count = async (
+      filter: LogicalWhereExpr = {},
+      options: { sort?: Record<string, SortType>; limit?: number; skip?: number } = {},
+    ) => {
+      const response = await find(metadata)(filter, {
+        ...options,
+        select: 'RAW COUNT(*) as count',
+        noCollection: true,
+        noId: true,
+      });
+      if (response.hasOwnProperty('rows') && response.rows.length > 0) {
+        return response.rows[0];
+      }
+      throw new Error('The query did not return results.');
+    };
 
     static findById = async (key: string, options: FindByIdOptions = {}) => {
       const findOptions = options;
