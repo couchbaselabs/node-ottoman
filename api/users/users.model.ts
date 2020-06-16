@@ -1,8 +1,8 @@
-import { createSchema, model } from '../../src';
+import { Schema, model } from '../../lib';
 import { CardSchema } from '../cards/cards.model';
 import { CatSchema } from '../cats/cats.model';
 
-const UserSchema = createSchema({
+const UserSchema = new Schema({
   type: String,
   isActive: Boolean,
   name: String,

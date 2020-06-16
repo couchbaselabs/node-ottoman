@@ -1,4 +1,4 @@
-import { createSchema, model } from '../lib';
+import { Schema, model } from '../lib';
 const accessDoc2 = {
   type: 'hooks',
   isActive: false,
@@ -12,7 +12,7 @@ const schema = {
 };
 
 test('Hook.pre.save', async () => {
-  const UserSchema = createSchema(schema);
+  const UserSchema = new Schema(schema);
   UserSchema.pre('save', (document) => {
     document.name = 'async pre save';
   });

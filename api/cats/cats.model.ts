@@ -1,7 +1,6 @@
-import { createSchema } from '../../src/schema/helpers';
-import { model } from '../../src';
+import { Schema, model } from '../../lib';
 
-export const CatSchema = createSchema({
+export const CatSchema = new Schema({
   name: String,
   age: Number,
 });

@@ -1,4 +1,4 @@
-import { model, createSchema } from '../lib';
+import { model, Schema } from '../lib';
 import { isDocumentNotFoundError } from '../lib/utils/is-not-found';
 
 const accessDoc = {
@@ -92,7 +92,7 @@ describe('Test Document Access Functions', () => {
   });
 
   test('Remove saved document from Model Constructor', async () => {
-    const UserSchema = createSchema(schema);
+    const UserSchema = new Schema(schema);
     const UserModel = model('User', UserSchema);
     const user = new UserModel(accessDoc2);
     const result = await user.save();
@@ -103,7 +103,7 @@ describe('Test Document Access Functions', () => {
   });
 
   test('Test Schema Methods', async () => {
-    const UserSchema = createSchema(schema);
+    const UserSchema = new Schema(schema);
     UserSchema.methods.getType = function () {
       return `method: getType -> ${this.type}`;
     };
@@ -113,7 +113,7 @@ describe('Test Document Access Functions', () => {
   });
 
   test('Test Schema Statics', async () => {
-    const UserSchema = createSchema(schema);
+    const UserSchema = new Schema(schema);
     UserSchema.statics.getCats = function () {
       return 'static: getCats';
     };

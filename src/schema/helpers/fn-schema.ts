@@ -3,28 +3,27 @@ import { is } from '../../utils/is-type';
 import { BuildSchemaError } from '../errors';
 import { Schema, SchemaDef, ModelObject, FieldMap, FactoryFunction } from '../schema';
 import { Model } from '../..';
-import { getGlobalPlugins } from '../../plugins/global-plugin-handler';
 
 type ParseResult = {
   [key in 'type' | 'options']: unknown;
 };
 /**
- * Parse the definition to get a schema instance, if the [[obj]] is a schema instance will be returned
+ * Build the fields using definition, if the [[obj]] is a schema instance will be taken the fields
  * @function
  * @public
  *
  * @param {Schema|Object} obj the definition or schema instance
- * @returns {Schema}
+ * @returns {FieldMap}
  * @throws {Error}
  *
  * @example
  *  ```ts
- *    const schema = createSchema({name: String, hasChild: {type: Boolean, default: true}});
+ *    const fields = buildFields({name: String, hasChild: {type: Boolean, default: true}});
  *  ```
  */
-export const createSchema = (obj: Schema | SchemaDef): Schema => {
+export const buildFields = (obj: Schema | SchemaDef): FieldMap => {
   if (obj instanceof Schema) {
-    return obj;
+    return obj.fields;
   }
   const fields: FieldMap = {};
   const keys = Object.keys(obj);
@@ -37,16 +36,14 @@ export const createSchema = (obj: Schema | SchemaDef): Schema => {
     fields[_key] = _makeField(_key, opts);
   }
   fields['_id'] = _makeField('_id', { type: String.name, options: { auto: 'uuid' } });
-  const schema = new Schema(fields);
-  schema.plugin(...getGlobalPlugins());
-  return schema;
+  return fields;
 };
 
 /**
  * Parse the definition of a field in the schema to identify the type
  * @function
  * @private
- * @param value that's going to parse
+ * @param value that is going to parsed
  * @throws BuildSchemaError
  */
 const _parseType = (value): ParseResult => {
@@ -60,7 +57,7 @@ const _parseType = (value): ParseResult => {
       return {
         type: 'Reference',
         options: {
-          schema: createSchema(value.type),
+          schema: new Schema(value.type),
           refModel: value.ref,
         },
       };
@@ -72,7 +69,7 @@ const _parseType = (value): ParseResult => {
     } else {
       return {
         type: 'Embed',
-        options: createSchema(value),
+        options: new Schema(value),
       };
     }
   } else if (is(value, Array)) {
@@ -111,7 +108,7 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
  * @throws BuildSchemaError, ValidationError
  */
 export const castSchema = (data: Model | ModelObject, schema: Schema | SchemaDef): Model | ModelObject => {
-  const _schema = createSchema(schema);
+  const _schema = new Schema(schema);
   return _schema.cast(data);
 };
 
@@ -129,10 +126,20 @@ export const castSchema = (data: Model | ModelObject, schema: Schema | SchemaDef
  * ```
  */
 export const applyDefaultValue = (obj: ModelObject, schema: Schema | SchemaDef): ModelObject => {
-  const _schema = createSchema(schema);
+  const _schema = new Schema(schema);
   return _schema.applyDefaultsToObject(obj);
 };
-
+/**
+ * Register a custom type to Schema supports type.
+ * @function
+ * @param name
+ * @param factory
+ * @throws Error
+ * @example
+ *  ```ts
+ *    registerType(Int8.name, (fieldName, opts) => new Int8(fieldName, opts.required));
+ *  ```
+ */
 export const registerType = (name: string, factory: FactoryFunction): void => {
   if (Schema.Types[name] !== undefined) {
     throw new Error('A type with this name has already been registered');

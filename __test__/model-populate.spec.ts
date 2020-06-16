@@ -1,4 +1,4 @@
-import { model, createSchema } from '../lib';
+import { model, Schema } from '../lib';
 
 const cardInfo = {
   cardNumber: '4242 4242 4242 4242',
@@ -22,12 +22,12 @@ const populateDoc = {
   name: 'pop & cat',
 };
 
-const CardSchema = createSchema({
+const CardSchema = new Schema({
   number: String,
   zipCode: String,
 });
 
-const CatSchema = createSchema({
+const CatSchema = new Schema({
   name: String,
   age: Number,
 });
@@ -35,7 +35,7 @@ const CatSchema = createSchema({
 describe('Test populate feature', () => {
   test('populate card data', async () => {
     const Card = model('Card', CardSchema);
-    const schema = createSchema({
+    const schema = new Schema({
       type: String,
       isActive: Boolean,
       name: String,
@@ -54,7 +54,7 @@ describe('Test populate feature', () => {
   test('populate Card and Cat references', async () => {
     const Card = model('Card', CardSchema);
     const Cat = model('Cat', CatSchema);
-    const schema = createSchema({
+    const schema = new Schema({
       type: String,
       isActive: Boolean,
       name: String,

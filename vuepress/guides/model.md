@@ -9,7 +9,7 @@ Models are responsible for creating and reading documents from the underlying Co
 When you call ottoman.model() on a schema, Ottoman compiles a model for you.
 
 ```javascript
-const schema = createSchema({name: String, age: Number})
+const schema = new Schema({name: String, age: Number})
 const User = model('User', schema);
 ```
 The first argument is the name of the collection your model is for. for the example above, the `model` User is for the **User** collection in the database.

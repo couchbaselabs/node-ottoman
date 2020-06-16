@@ -1,7 +1,7 @@
 import { Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
 import { COLLECTION_KEY, DEFAULT_ID_KEY, DEFAULT_SCOPE } from '../utils/constants';
-import { createSchema } from '../schema/helpers';
+import { Schema } from '../schema';
 import { extractSelect } from '../utils/query/extract-select';
 import { find } from '../handler/find/find';
 import { indexFieldsName } from './index/index-field-names';
@@ -19,7 +19,7 @@ import { IFindOptions } from '../handler/find/find-options';
  * @ignore
  */
 export const createModel = ({ name, schemaDraft, options, connection }: CreateModel) => {
-  const schema = createSchema(schemaDraft);
+  const schema = new Schema(schemaDraft);
 
   const ID_KEY = options && options.id ? options.id : DEFAULT_ID_KEY;
   const scope = options && options.scope ? options.scope : DEFAULT_SCOPE;
