@@ -9,7 +9,7 @@ Schema maps to a Couchbase collection and defines the shape of the documents wit
 Everything in Ottoman starts with a Schema. 
 
 ```javascript
-const blogSchema = new createSchema({
+const blogSchema = new Schema({
   title:  String, // String is shorthand for {type: String}
   author: String,
   body:   String,
@@ -64,7 +64,7 @@ We may also define our own custom document instance methods.
 
 ```javascript
 // define a schema
-const animalSchema = createSchema({ name: String, type: String });
+const animalSchema = new Schema({ name: String, type: String });
 
 // assign a function to the "methods" object of our animalSchema
 animalSchema.methods.findSimilarTypes = function() {

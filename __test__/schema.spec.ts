@@ -1,4 +1,4 @@
-import { createSchema, applyDefaultValue, castSchema, ValidationError, BuildSchemaError } from '../lib';
+import { applyDefaultValue, castSchema, ValidationError, BuildSchemaError } from '../lib';
 import { applyValidator, registerType } from '../lib/schema/helpers';
 import { Schema, ModelObject } from '../lib/schema/schema';
 import { IOttomanType } from '../lib/schema/types';
@@ -25,20 +25,18 @@ describe('Schema Types', () => {
   class MocType {}
   test('should throw an error when defining the unsupported type in schema.', () => {
     const schema = { name: MocType };
-    expect(() => createSchema(schema)).toThrow(
-      new BuildSchemaError('Unsupported type specified in the property "name"'),
-    );
+    expect(() => new Schema(schema)).toThrow(new BuildSchemaError('Unsupported type specified in the property "name"'));
   });
   test('should throw an error when defining auto value and default value on the same field', () => {
     const schema = {
       firstName: { type: String, default: 'John', auto: 'uuid' },
     };
-    expect(() => createSchema(schema)).toThrow(
+    expect(() => new Schema(schema)).toThrow(
       new BuildSchemaError('Auto and default values cannot be used at the same time in property firstName.'),
     );
   });
   test('should return an instance of IOttomanType when using a valid path value', () => {
-    const schema = createSchema({
+    const schema = new Schema({
       firstName: { type: String },
     });
     const firstName = schema.path('firstName');
@@ -46,7 +44,7 @@ describe('Schema Types', () => {
     expect(isOttomanType(firstName)).toBeTruthy();
   });
   test('should return undefined when using a non-existent path value', () => {
-    const schema = createSchema({
+    const schema = new Schema({
       firstName: { type: String },
     });
     const firstName = schema.path('lastName');
@@ -142,8 +140,8 @@ describe('Schema Types', () => {
     expect(() => castSchema(data, schemaWithRegex)).toThrow(ValidationError);
   });
   test('should return the same schema when it is passed to create', () => {
-    const schema = createSchema({ name: String, hasChild: Boolean, age: { type: Number, intVal: true } });
-    expect(createSchema(schema)).toBe(schema);
+    const schema = new Schema({ name: String, hasChild: Boolean, age: { type: Number, intVal: true } });
+    expect(new Schema(schema)).toStrictEqual(schema);
   });
   test('should throw an exception when the schema has a property without type', () => {
     const schema = {
@@ -152,23 +150,21 @@ describe('Schema Types', () => {
       age: { type: Number, intVal: true },
       amount: { min: 23, max: 24 },
     };
-    expect(() => createSchema(schema)).toThrow(new BuildSchemaError('Property min is a required type'));
+    expect(() => new Schema(schema)).toThrow(new BuildSchemaError('Property min is a required type'));
   });
   describe('Schema String Type', () => {
     test('should throw an error when defining auto uuid value and it is not a String type ', () => {
       const schema = {
         firstName: { type: Boolean, auto: 'uuid' },
       };
-      expect(() => createSchema(schema)).toThrow(
-        new BuildSchemaError('Automatic uuid properties must be string typed.'),
-      );
+      expect(() => new Schema(schema)).toThrow(new BuildSchemaError('Automatic uuid properties must be string typed.'));
     });
 
     test('should return a schema instance when auto uuid value is defined and its type is String', () => {
       const schema = {
         firstName: { type: String, auto: 'uuid' },
       };
-      expect(createSchema(schema)).toBeDefined();
+      expect(new Schema(schema)).toBeDefined();
     });
 
     test('should throw an error when the field is an enum string and the value is not contained', () => {
@@ -190,7 +186,7 @@ describe('Schema Types', () => {
       const schema = {
         hasFirstName: { type: Boolean, default: true, auto: () => false },
       };
-      expect(() => createSchema(schema)).toThrow(BuildSchemaError);
+      expect(() => new Schema(schema)).toThrow(BuildSchemaError);
     });
     test('should throw an error when the boolean property is not boolean', () => {
       const schema = {
@@ -429,18 +425,18 @@ describe('Schema Types', () => {
       const schemaString = {
         names: [String],
       };
-      expect(createSchema(schemaString)).toBeDefined();
+      expect(new Schema(schemaString)).toBeDefined();
       const schemaBoolean = {
         names: [Boolean],
       };
-      expect(createSchema(schemaBoolean)).toBeDefined();
+      expect(new Schema(schemaBoolean)).toBeDefined();
     });
     test('should throw an error when the array property first item has not the type', () => {
       const schema = {
         names: [{ required: true }],
         amount: Number,
       };
-      expect(() => createSchema(schema)).toThrow(BuildSchemaError);
+      expect(() => new Schema(schema)).toThrow(BuildSchemaError);
     });
     describe('Array Type Validations', () => {
       test('should cast to same object when all items of the array are valid', () => {
@@ -510,13 +506,13 @@ describe('Schema Types', () => {
           postalCode: { type: String, validator: { regexp: new RegExp('\\d'), message: 'Invalid postal code' } },
         },
       };
-      const result = createSchema(schema);
+      const result = new Schema(schema);
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(Schema);
     });
 
     test('should create a valid schema when using embedded schema instance', () => {
-      const addressSchema = createSchema({
+      const addressSchema = new Schema({
         line: String,
         line2: String,
         postalCode: { type: String, validator: { regexp: new RegExp('\\d'), message: 'Invalid postal code' } },
@@ -525,7 +521,7 @@ describe('Schema Types', () => {
       const schema = {
         address: addressSchema,
       };
-      const result = createSchema(schema);
+      const result = new Schema(schema);
       expect(result).toBeDefined();
       expect(result).toBeInstanceOf(Schema);
     });
@@ -561,35 +557,35 @@ describe('Schema Types', () => {
   });
   describe('Schema Model Ref Types', () => {
     test('should create a schema when using ref to another schema', () => {
-      const userSchema = createSchema({ name: String });
-      const schema = createSchema({ user: { type: userSchema, ref: 'User' } });
+      const userSchema = new Schema({ name: String });
+      const schema = new Schema({ user: { type: userSchema, ref: 'User' } });
       expect(schema).toBeDefined();
       expect(schema).toBeInstanceOf(Schema);
     });
     test('should create a schema when referenced from other model', () => {
-      const UserSchema = createSchema({ name: String });
-      const schema = createSchema({ user: { type: UserSchema, ref: 'User' } });
+      const UserSchema = new Schema({ name: String });
+      const schema = new Schema({ user: { type: UserSchema, ref: 'User' } });
       expect(schema).toBeDefined();
       expect(schema).toBeInstanceOf(Schema);
     });
     test('should return true when validates schema with another model', () => {
-      const UserSchema = createSchema({ name: String });
-      const schema = createSchema({ user: { type: UserSchema, ref: 'User' } });
+      const UserSchema = new Schema({ name: String });
+      const schema = new Schema({ user: { type: UserSchema, ref: 'User' } });
       const data = {
         user: { name: 'John Doe' },
       };
       expect(castSchema(data, schema)).toEqual(data);
     });
     test('should throw an error validation when validates schema with another model', () => {
-      const UserSchema = createSchema({ name: String });
-      const schema = createSchema({ user: { type: UserSchema, ref: 'User' } });
+      const UserSchema = new Schema({ name: String });
+      const schema = new Schema({ user: { type: UserSchema, ref: 'User' } });
       const data = {
         user: { name: { age: 35 } },
       };
       expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property name must be of type String'));
     });
     test('should create a schema with an array of references', () => {
-      const commentSchema = createSchema({
+      const commentSchema = new Schema({
         title: String,
         description: String,
         published: Boolean,
@@ -599,15 +595,15 @@ describe('Schema Types', () => {
         comments: [{ type: commentSchema, ref: 'Comment' }],
       };
 
-      expect(createSchema(postSchemaDef)).toBeInstanceOf(Schema);
+      expect(new Schema(postSchemaDef)).toBeInstanceOf(Schema);
     });
     test('should return true when validates the schema with the array of references', () => {
-      const commentSchema = createSchema({
+      const commentSchema = new Schema({
         title: String,
         description: String,
         published: Boolean,
       });
-      const postSchemaDef = createSchema({
+      const postSchemaDef = new Schema({
         postTitle: String,
         comments: [{ type: commentSchema, ref: 'Comment' }],
       });
@@ -625,12 +621,12 @@ describe('Schema Types', () => {
       expect(castSchema(data, postSchemaDef)).toEqual(data);
     });
     test('should throw an error when validated with schema and a bad array of references', () => {
-      const commentSchema = createSchema({
+      const commentSchema = new Schema({
         title: String,
         description: String,
         published: Boolean,
       });
-      const postSchemaDef = createSchema({
+      const postSchemaDef = new Schema({
         postTitle: String,
         comments: [{ type: commentSchema, ref: 'Comment' }],
       });
@@ -648,8 +644,8 @@ describe('Schema Types', () => {
       expect(() => castSchema(data, postSchemaDef)).toThrow(ValidationError);
     });
     test('should throw an error when the ref property is not ref', () => {
-      const UserSchema = createSchema({ name: String });
-      const schema = createSchema({ user: { type: UserSchema, ref: 'User' } });
+      const UserSchema = new Schema({ name: String });
+      const schema = new Schema({ user: { type: UserSchema, ref: 'User' } });
       const data = {
         user: 34,
       };
@@ -668,7 +664,7 @@ describe('Schema Types', () => {
     registerType(Int8.name, (fieldName) => new Int8(fieldName));
     test('should create a valid schema when using custom type', () => {
       const def = { age: Int8 };
-      const a = createSchema(def);
+      const a = new Schema(def);
       expect(a).toBeInstanceOf(Schema);
       expect(a.path('age')).toBeInstanceOf(Int8);
     });
@@ -683,17 +679,17 @@ describe('Schema Types', () => {
     });
   });
   describe('Schema Combine Some Types', () => {
-    const CardSchema = createSchema({
+    const CardSchema = new Schema({
       number: String,
       zipCode: String,
     });
 
-    const CatSchema = createSchema({
+    const CatSchema = new Schema({
       name: String,
       age: Number,
     });
     test('should return a valid object when some non-required schema properties are missing', () => {
-      const UserSchema = createSchema({
+      const UserSchema = new Schema({
         type: String,
         isActive: Boolean,
         name: String,
@@ -716,7 +712,7 @@ describe('Schema Types', () => {
     });
 
     test('should throw an error when some required schema properties are missing', () => {
-      const UserSchema = createSchema({
+      const UserSchema = new Schema({
         type: { type: String, required: true },
         isActive: Boolean,
         name: String,
@@ -737,7 +733,7 @@ describe('Schema Types', () => {
 
       expect(() => castSchema(data, UserSchema)).toThrow(ValidationError);
 
-      const UserSchema2 = createSchema({
+      const UserSchema2 = new Schema({
         type: { type: String, required: { val: true, message: 'Required!' } },
         isActive: Boolean,
         name: String,
@@ -753,7 +749,7 @@ describe('Schema Types', () => {
   });
 });
 describe('Schema', () => {
-  const schema = createSchema({ name: String });
+  const schema = new Schema({ name: String });
   describe('Pre-Hooks', () => {
     test('should add pre-hooks to action validate', () => {
       schema.pre('validate', () => console.log('Yes'));

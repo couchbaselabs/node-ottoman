@@ -1,4 +1,4 @@
-import { createSchema, model } from '../lib';
+import { Schema, model } from '../lib';
 import { registerGlobalPlugin } from '../lib/plugins/global-plugin-handler';
 const accessDoc2 = {
   type: 'hooks',
@@ -21,7 +21,7 @@ describe('Test plugin', () => {
     };
     registerGlobalPlugin(pluginLog3);
 
-    const UserSchema = createSchema(schema);
+    const UserSchema = new Schema(schema);
 
     const pluginLog2 = (schema) => {
       schema.methods.log2 = function () {

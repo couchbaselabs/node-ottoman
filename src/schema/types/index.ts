@@ -5,4 +5,4 @@ export { numberTypeFactory } from './number-type';
 export { dateTypeFactory } from './date-type';
 export { arrayTypeFactory } from './array-type';
 export { embedTypeFactory } from './embed-type';
-export { referenceTypeFactory } from './reference-type';
+export { referenceTypeFactory, ReferenceType } from './reference-type';

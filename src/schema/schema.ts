@@ -13,6 +13,8 @@ import { isMetadataKey } from '../utils/is-metadata';
 import { BuildSchemaError, ValidationError } from './errors';
 import { Model } from '..';
 import { SchemaIndex } from '../model/index/types/index.types';
+import { getGlobalPlugins } from '../plugins/global-plugin-handler';
+import { buildFields } from './helpers';
 
 export type SchemaDef = Record<string, any>;
 export type ModelObject = { [key: string]: unknown };
@@ -31,16 +33,12 @@ export class Schema {
     Reference: referenceTypeFactory,
     Embed: embedTypeFactory,
   };
-  /**
-   * Name of id field
-   */
-  private _id: string;
-
   statics = {};
   methods = {};
   preHooks = {};
   postHooks = {};
   index: SchemaIndex = {};
+  public fields: FieldMap;
 
   /**
    * @summary Create an instance of Schema
@@ -48,7 +46,7 @@ export class Schema {
    * @class
    * @public
    *
-   * @param fields in definitions of Schema
+   * @param obj in definitions of Schema
    * @returns Schema
    *
    * @example
@@ -56,8 +54,9 @@ export class Schema {
    *  const schema = new Schema([new StringType('name')]);
    * ```
    */
-  constructor(public fields: FieldMap) {
-    this._id = '_id';
+  constructor(obj: SchemaDef | Schema) {
+    this.fields = buildFields(obj);
+    this.plugin(...getGlobalPlugins());
   }
   /**
    * Cast a model instance using the definition of the schema
@@ -125,7 +124,7 @@ export class Schema {
   }
 
   pre(hook: 'validate' | 'save' | 'remove', handler): Schema {
-    this.checkHook(hook);
+    Schema.checkHook(hook);
     if (this.preHooks[hook] === undefined) {
       this.preHooks[hook] = [];
     }
@@ -134,14 +133,14 @@ export class Schema {
   }
 
   post(hook: 'validate' | 'save' | 'remove', handler): Schema {
-    this.checkHook(hook);
+    Schema.checkHook(hook);
     if (this.postHooks[hook] === undefined) {
       this.postHooks[hook] = [];
     }
     this.postHooks[hook].push(handler);
     return this;
   }
-  private checkHook(hook: unknown): void {
+  private static checkHook(hook: unknown): void {
     if (!['validate', 'save', 'remove'].includes(String(hook))) {
       throw new BuildSchemaError(`The hook ${hook} is not allowed`);
     }

@@ -1,7 +1,6 @@
-import { createSchema } from '../../src/schema/helpers';
-import { model } from '../../src';
+import { Schema, model } from '../../lib';
 
-export const CardSchema = createSchema({
+export const CardSchema = new Schema({
   number: String,
   zipCode: String,
 });
