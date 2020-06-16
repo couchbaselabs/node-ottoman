@@ -18,5 +18,6 @@ export {
   Query,
   ILetExpr,
   SortType,
+  parseStringSelectExpr,
 } from './query';
 export { SearchConsistency } from './utils/search-conscistency';

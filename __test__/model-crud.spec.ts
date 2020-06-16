@@ -120,4 +120,11 @@ describe('Test Document Access Functions', () => {
     const UserModel = model('User', UserSchema);
     expect(UserModel.getCats()).toBe('static: getCats');
   });
+
+  test('UserModel count items', async () => {
+    const UserModel = model('User', schema);
+    await UserModel.create(accessDoc);
+    const count = await UserModel.count();
+    expect(count).toBeGreaterThan(0);
+  });
 });

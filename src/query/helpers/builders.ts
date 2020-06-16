@@ -53,7 +53,7 @@ export const selectBuilder = (
       expr = select;
     }
     if (Array.isArray(select)) {
-      expr = `${select.map((c) => buildSelectExpr('', c)).join(',')}`;
+      expr = buildSelectArrayExpr(select);
     }
 
     return `SELECT ${expr} FROM \`${collection}\`${_buildUseKeysExpr(useExpr)}${_buildLetExpr(letExpr)}${buildWhereExpr(
@@ -82,13 +82,23 @@ const _buildField = (clause: IField | string) => {
 };
 
 /**
+ * Create N1QL queries from select array params
+ * @param clause SELECT Clause param
+ *
+ * @return N1QL SELECT Query
+ * */
+export const buildSelectArrayExpr = (clause: ISelectType[]): string => {
+  return `${clause.map((c) => buildSelectExpr('', c)).join(',')}`;
+};
+
+/**
  * Recursive function to create N1QL queries.
  * @param n1ql N1QL Query String
  * @param clause SELECT Clause param
  *
  * @return N1QL SELECT Query
  * */
-export const buildSelectExpr = (n1ql: string, clause: ISelectType) => {
+export const buildSelectExpr = (n1ql: string, clause: ISelectType): string => {
   try {
     if (clause.hasOwnProperty('$field')) {
       return _buildField(clause['$field']);
@@ -176,7 +186,7 @@ const _buildUseKeysExpr = (useKeys: string[] | undefined) => {
  * @param clause WHERE Clause param
  * @return N1QL WHERE Expression
  * */
-export const buildWhereExpr = (clause: LogicalWhereExpr | undefined) => {
+export const buildWhereExpr = (clause: LogicalWhereExpr | undefined): string => {
   return clause ? ` WHERE ${buildWhereClauseExpr('', clause)}` : '';
 };
 
@@ -187,7 +197,7 @@ export const buildWhereExpr = (clause: LogicalWhereExpr | undefined) => {
  *
  * @return N1QL WHERE Expression
  * */
-export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr) => {
+export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr): string => {
   try {
     if (!clause.hasOwnProperty('$and') && !clause.hasOwnProperty('$or') && !clause.hasOwnProperty('$not')) {
       return _buildFieldClauseExpr(clause as Record<string, string | number | boolean | ComparisonWhereExpr>);
@@ -299,7 +309,7 @@ export const buildIndexExpr = (
   where?: LogicalWhereExpr,
   usingGSI?: boolean,
   withExpr?: IIndexWithParams,
-) => {
+): string => {
   if (['BUILD', 'CREATE', 'CREATE PRIMARY'].includes(type) && on) {
     return `${type} INDEX \`${name}\` ON \`${collection}\`(${buildOnExpr(on)})${buildWhereExpr(where)} ${
       usingGSI ? 'USING GSI' : ''
