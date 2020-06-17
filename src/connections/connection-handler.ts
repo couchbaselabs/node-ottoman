@@ -58,11 +58,11 @@ export const getCollection = (collectionName?: string) => __conn.getCollection(c
 /**
  * Create model from given name, from default connection
  */
-export const model = (name: string, schema) => {
+export const model = (name: string, schema, options?) => {
   if (!__conn) {
     connectFromEnvVariables(name);
   }
-  return __conn.model(name, schema);
+  return __conn.model(name, schema, options);
 };
 
 /**

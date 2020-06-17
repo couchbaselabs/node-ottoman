@@ -1,11 +1,14 @@
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
-import { COLLECTION_KEY } from '../utils/constants';
+import { COLLECTION_KEY, DEFAULT_POPULATE_MAX_DEEP, SCOPE_KEY } from '../utils/constants';
 import { castSchema } from '../schema/helpers';
 import { ModelMetadata } from './interfaces/model-metadata';
 import { getModelMetadata } from './utils/model.utils';
 import { storeLifeCycle } from './utils/store-life-cycle';
-import { removeLifeCycle } from './utils/remove-life-cycle';
+import { removeLifeCicle } from './utils/remove-life-cycle';
+import { arrayDiff } from './utils/array-diff';
+import { getModelRefKeys } from './utils/get-model-ref-keys';
+import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
 
 export abstract class Document<T> {
   /**
@@ -35,45 +38,79 @@ export abstract class Document<T> {
     const data = extractDataFromModel(this);
     const options: any = {};
     let id = this._getId();
+    const prefix = `${this.$.scopeName}${this.$.collectionName}`;
+    const newRefKeys = getModelRefKeys(data, prefix);
+    const refKeys: { add: string[]; remove: string[] } = {
+      add: [],
+      remove: [],
+    };
     if (!id) {
       id = generateUUID();
+      refKeys.add = newRefKeys;
     } else {
-      const { cas } = await this.$.collection.get(id);
+      const { cas, value: oldData } = await this.$.collection.get(id);
+      const oldRefKeys = getModelRefKeys(oldData, prefix);
+      refKeys.add = arrayDiff(newRefKeys, oldRefKeys);
+      refKeys.remove = arrayDiff(oldRefKeys, newRefKeys);
       if (cas) {
         options.cas = cas;
       }
     }
-    const addedMetadata = { ...data, [COLLECTION_KEY]: this.$.collectionName };
-    return storeLifeCycle({ key: id, data: addedMetadata, options, model: this.$ });
+    const addedMetadata = { ...data, [COLLECTION_KEY]: this.$.collectionName, [SCOPE_KEY]: this.$.scopeName };
+    const metadata = this.$;
+    return storeLifeCycle({ key: id, data: addedMetadata, options, metadata, refKeys });
   }
 
   /**
    * Remove document from DB
    */
   remove(options = {}) {
-    return removeLifeCycle({ id: this._getId(), options, model: this.$ });
+    const data = extractDataFromModel(this);
+    const prefix = `${this.$.scopeName}${this.$.collectionName}`;
+    const metadata = this.$;
+    const refKeys = {
+      add: [],
+      remove: getModelRefKeys(data, prefix),
+    };
+    return removeLifeCicle({ id: this._getId(), options, metadata, refKeys });
   }
 
   /**
    * Allow to load document references
    */
-  async _populate(fieldName) {
-    // const field = this.$.schema.getField(fieldName);
-    const ref = this[fieldName];
-    if (typeof ref === 'string') {
-      const collectionName = this.$.collectionName;
-      const { findById } = this.$.connection.getModel(collectionName);
-      const document = await findById(ref);
-      this[fieldName] = document;
-      const populateMetadataKey = `$__${fieldName}`;
-      Object.defineProperty(this, populateMetadataKey, {
-        enumerable: false,
-        value: {
-          ref,
-          document,
-        },
-      });
+  async _populate(fieldsName, deep = DEFAULT_POPULATE_MAX_DEEP) {
+    let fieldsToPopulate;
+    if (fieldsName && fieldsName !== '*') {
+      fieldsToPopulate = extractSchemaReferencesFromGivenFields(fieldsName, this.$.schema);
+    } else {
+      fieldsToPopulate = extractSchemaReferencesFields(this.$.schema);
     }
+    for (const fieldName in fieldsToPopulate) {
+      const field = fieldsToPopulate[fieldName];
+      const modelName = (field as any).refModel;
+      if (modelName) {
+        const ref = this[fieldName];
+        const refFields = Array.isArray(ref) ? ref : [ref];
+        for (let i = 0; i < refFields.length; i++) {
+          const refField = refFields[i];
+          if (typeof refField === 'string' && modelName) {
+            const { findById } = this.$.connection.getModel(modelName);
+            const populated = await findById(refField);
+            const currentDeep = deep - 1;
+            if (currentDeep > 0) {
+              await populated._populate('*', currentDeep);
+            }
+            refFields[i] = populated;
+          }
+        }
+        if (Array.isArray(ref)) {
+          this[fieldName] = refFields;
+        } else {
+          this[fieldName] = refFields[0];
+        }
+      }
+    }
+    return this;
   }
 
   /**
@@ -81,12 +118,19 @@ export abstract class Document<T> {
    * Switch back document reference
    */
   _depopulate(fieldName) {
-    const populateMetadataKey = `$__${fieldName}`;
-    const data = this[populateMetadataKey];
-    if (data && data.ref) {
-      this[fieldName] = data.ref;
-      delete this[`$__${fieldName}`];
+    const data = this[fieldName];
+    if (typeof data === 'string') {
+      if (data && data[this.$.ID_KEY]) {
+        this[fieldName] = data[this.$.ID_KEY];
+      }
+    } else if (Array.isArray(data)) {
+      for (let field of data) {
+        if (field && field[this.$.ID_KEY]) {
+          field = field[this.$.ID_KEY];
+        }
+      }
     }
+
     return this;
   }
 
@@ -94,8 +138,14 @@ export abstract class Document<T> {
    * Allow to know if a document field is populated
    */
   _populated(fieldName: string): boolean {
-    const data = this[`_${fieldName}`];
-    return !!(data && data.document);
+    let data = this[fieldName];
+    data = Array.isArray(data) ? data : [data];
+    for (const field of data) {
+      if (!(field && field[this.$.ID_KEY])) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**

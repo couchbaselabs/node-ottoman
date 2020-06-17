@@ -1,25 +1,26 @@
 import { Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
 import { COLLECTION_KEY, DEFAULT_ID_KEY, DEFAULT_SCOPE } from '../utils/constants';
-import { Schema } from '../schema';
 import { extractSelect } from '../utils/query/extract-select';
 import { find } from '../handler/find/find';
-import { indexFieldsName } from './index/index-field-names';
 import { CreateModel } from './interfaces/create-model.interface';
 import { ModelMetadata } from './interfaces/model-metadata';
 import { FindByIdOptions } from '../handler/find/find-by-id-options';
-import { buildIndexQuery } from './index/build-index-query';
-import { registerIndex } from './index/index-manager';
+import { registerIndex, registerRefdocIndex, registerViewIndex } from './index/index-manager';
 import { setModelMetadata } from './utils/model.utils';
-import { removeLifeCycle } from './utils/remove-life-cycle';
+import { buildViewIndexQuery } from './index/view/build-view-index-query';
+import { buildIndexQuery } from './index/n1ql/build-index-query';
+import { indexFieldsName } from './index/helpers/index-field-names';
+import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
 import { LogicalWhereExpr, SortType } from '../query/interface';
+import { Schema } from '../schema/schema';
 import { IFindOptions } from '../handler/find/find-options';
 
 /**
  * @ignore
  */
 export const createModel = ({ name, schemaDraft, options, connection }: CreateModel) => {
-  const schema = new Schema(schemaDraft);
+  const schema = schemaDraft instanceof Schema ? schemaDraft : new Schema(schemaDraft);
 
   const ID_KEY = options && options.id ? options.id : DEFAULT_ID_KEY;
   const scope = options && options.scope ? options.scope : DEFAULT_SCOPE;
@@ -47,14 +48,32 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
   // Adding indexes
   for (const key in schema?.index) {
     if (schema.index.hasOwnProperty(key)) {
-      const { by, options } = schema.index[key];
+      const { by, options, type } = schema.index[key];
       const fields = Array.isArray(by) ? by : [by];
-      let indexName = `${connection.bucketName}_${scope}_${name}${indexFieldsName(fields)}`;
+      let indexName = `${connection.bucketName}_${scope}_${name}$${indexFieldsName(fields)}`;
       indexName = indexName.replace(/-/g, '_');
-      // Register access method e.g FindByName
-      ModelFactory[key] = buildIndexQuery(ModelFactory, fields, key, options);
-      // Register index to sync later with the server
-      registerIndex(indexName, fields, name);
+      switch (type) {
+        case 'n1ql':
+          // Register access method e.g FindByName
+          ModelFactory[key] = buildIndexQuery(ModelFactory, fields, key, options);
+          // Register index to sync later with the server
+          registerIndex(indexName, fields, name);
+          break;
+        case 'view':
+        case undefined:
+          indexName = key;
+          const ddocName = `${scope}${name}`;
+          ModelFactory[key] = buildViewIndexQuery(connection, ddocName, indexName, fields);
+          registerViewIndex(ddocName, indexName, fields, name);
+          break;
+        case 'refdoc':
+          const prefix = `${scope}${name}`;
+          ModelFactory[key] = buildViewRefdoc(metadata, ModelFactory, fields, prefix);
+          registerRefdocIndex(fields, prefix);
+          break;
+        default:
+          throw new Error(`Unexpected index type in index ${key}`);
+      }
     }
   }
 
@@ -135,8 +154,10 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return instance.save();
     };
 
-    static remove = (id: string, options = {}) => {
-      return removeLifeCycle({ id, options, model: { schema, collection } });
+    static remove = (id: string) => {
+      const instance = new _Model({ ...{ [ID_KEY]: id, [COLLECTION_KEY]: collectionName } });
+      return instance.remove();
+      // return removeLifeCicle({ id, options, model: { schema, collection } });
     };
 
     static fromData(data: Record<string, any>): _Model<any> {

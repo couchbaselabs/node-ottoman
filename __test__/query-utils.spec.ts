@@ -1,4 +1,4 @@
-import { parseStringSelectExpr, getProjectionFields, Query } from '../lib';
+import { parseStringSelectExpr, getProjectionFields, Query, getCollectionKey } from '../lib';
 
 describe('Test Query Builder Utils', () => {
   test('Test convert select expression into Array of selection keys', async () => {
@@ -12,30 +12,32 @@ describe('Test Query Builder Utils', () => {
   test('Test get Projections fields with empty select', () => {
     const result = getProjectionFields('travel-sample', '');
     expect(result.fields).toStrictEqual([]);
-    expect(result.projection).toBe('`travel-sample`.*,_type,META().id as id');
+    expect(result.projection).toBe(`\`travel-sample\`.*,${getCollectionKey()},META().id as id`);
   });
 
   test('Test get Projections fields with select', () => {
     const result = getProjectionFields('travel-sample', 'address, type');
     expect(result.fields).toStrictEqual(['address', 'type']);
-    expect(result.projection).toBe('address, type,_type,META().id as id');
+    expect(result.projection).toBe(`address, type,${getCollectionKey()},META().id as id`);
   });
 
   test('Test get Projections fields with array select', () => {
     const result = getProjectionFields('travel-sample', ['address', 'type']);
     expect(result.fields).toStrictEqual(['address', 'type']);
-    expect(result.projection).toBe('address,type,_type,META().id as id');
+    expect(result.projection).toBe(`address,type,${getCollectionKey()},META().id as id`);
   });
 
   test('Test get Projections fields with expression select', () => {
     const result = getProjectionFields('travel-sample', [{ $field: 'address' }, { $field: 'type' }]);
     expect(result.fields).toStrictEqual(['address', 'type']);
-    expect(result.projection).toBe('`address`,`type`,_type,META().id as id');
+    expect(result.projection).toBe(`\`address\`,\`type\`,${getCollectionKey()},META().id as id`);
   });
 
   test('Test get Projections fields with select with Query Builder', () => {
     const result = getProjectionFields('travel-sample');
     const query = new Query({}, 'travel-sample').select(result.projection).limit(10).build();
-    expect(query).toBe('SELECT `travel-sample`.*,_type,META().id as id FROM `travel-sample` LIMIT 10');
+    expect(query).toBe(
+      `SELECT \`travel-sample\`.*,${getCollectionKey()},META().id as id FROM \`travel-sample\` LIMIT 10`,
+    );
   });
 });

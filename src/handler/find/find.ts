@@ -13,7 +13,7 @@ import { ModelMetadata } from '../../model/interfaces/model-metadata';
  * @ignore
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
-  const { skip, limit, sort, populate, select, noCollection, noId } = options;
+  const { skip, limit, sort, populate, select, noCollection, noId, populateMaxDeep } = options;
   const { connection, collectionName, collection } = metadata;
   const { bucketName, cluster } = connection;
   // Handling select
@@ -42,7 +42,7 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
       const populateFields = extractPopulate(populate);
       for (const toPopulate of populateFields) {
         if (canBePopulated(toPopulate, projectionFields.fields)) {
-          await execPopulation(r.rows, toPopulate, collection);
+          await execPopulation(r.rows, toPopulate, connection, collectionName, populateMaxDeep);
         }
       }
       return r;
