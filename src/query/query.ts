@@ -110,11 +110,9 @@ export class Query extends BaseQuery {
       this.queryType = 'SELECT';
       if (!value) {
         this.selectExpr = '*';
-      }
-      if (typeof value === 'string') {
+      } else if (typeof value === 'string') {
         this.selectExpr = value;
-      }
-      if (typeof value === 'object') {
+      } else if (typeof value === 'object') {
         this.selectExpr = [...(this.selectExpr || []), ...value] as ISelectType[];
       }
 

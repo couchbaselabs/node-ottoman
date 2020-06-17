@@ -87,7 +87,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
     }
 
     static find = (filter: LogicalWhereExpr = {}, options: IFindOptions = {}) => {
-      return find(metadata)(filter, options);
+      return find(metadata)(filter, { ...options, ...{ noCollection: false, noId: false } });
     };
 
     static count = async (

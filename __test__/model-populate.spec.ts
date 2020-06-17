@@ -68,7 +68,7 @@ describe('Test populate feature', () => {
     user.card = cardCreated.id;
     user.cat = catCreated.id;
     await user.save();
-    const result = await User.find({ name: user.name }, { select: 'cat, card', limit: 1, populate: ['cat', 'card'] });
+    const result = await User.find({ name: user.name }, { limit: 1, populate: ['cat', 'card'], select: 'cat, card' });
     expect(result).toBeDefined();
   });
 });

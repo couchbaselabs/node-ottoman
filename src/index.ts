@@ -20,4 +20,5 @@ export {
   SortType,
   parseStringSelectExpr,
 } from './query';
+export { getProjectionFields } from './utils/query/extract-select';
 export { SearchConsistency } from './utils/search-conscistency';

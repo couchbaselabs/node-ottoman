@@ -17,7 +17,7 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   const { connection, collectionName, collection } = metadata;
   const { bucketName, cluster } = connection;
   // Handling select
-  const projectionFields = getProjectionFields(select, { noId: noId, noCollection: noCollection });
+  const projectionFields = getProjectionFields(collection, select, { noId: noId, noCollection: noCollection });
 
   // Handling conditions
   const expr_where = {
