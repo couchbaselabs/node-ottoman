@@ -1,0 +1,203 @@
+swagger: "2.0"
+info:
+  description: "This is a sample server Travel-Sample"
+  version: "1.0.0"
+  title: "Swagger Travel-Sample"
+host: "localhost:4500"
+basePath: "/"
+tags:
+- name: "airport"
+  description: "Everything about your Airports"
+schemes:
+- "http"
+paths:
+  /airports:
+    post:
+      tags:
+      - "airport"
+      summary: "Add a new airport to the travel-sample bucket"
+      description: ""
+      operationId: "addAirport"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Airport object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/Airport"
+      responses:
+        "400":
+          description: "Invalid input"
+    get:
+      tags:
+      - "airport"
+      summary: "List of airport"
+      description: ""
+      operationId: "listAirport"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ListAirportsResponse"
+        "400":
+          description: "Invalid username/password supplied"
+    
+  /airports/{id}:
+    put:
+      tags:
+      - "airport"
+      summary: "Replace an existing airport"
+      description: ""
+      operationId: "replaceAirport"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of airport to replace"
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "body"
+        description: "Airport object that needs to be replaced"
+        required: true
+        schema:
+          $ref: "#/definitions/Airport"
+      responses:
+        "400":
+          description: "InvalidValidation exception"
+        "404":
+          description: "document not found"
+        "500":
+          description: "Server fails"
+    patch:
+      tags:
+      - "airport"
+      summary: "Update an existing airport"
+      description: ""
+      operationId: "updateAirport"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of airport to replace"
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "body"
+        description: "Airport object that needs to be replaced"
+        required: true
+        schema:
+          $ref: "#/definitions/Airport"
+      responses:
+        "400":
+          description: "InvalidValidation exception"
+        "404":
+          description: "document not found"
+        "500":
+          description: "Server fails"
+    get:
+      tags:
+      - "airport"
+      summary: "Find airport by ID"
+      description: "Returns a single airport"
+      operationId: "getAirportById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of airport to return"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Airport"
+        "404":
+          description: "document not found"
+    delete:
+      tags:
+      - "airport"
+      summary: "Deletes a airport"
+      description: ""
+      operationId: "deleteAirport"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Airport id to delete"
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        "404":
+          description: "document not found"
+definitions:
+  Geolocation:
+    type: "object"
+    properties:
+      alt:
+        type: "number"
+        example: 12
+      lat:
+        type: "number"
+        example: 50.962097
+      lon:
+        type: "number"
+        example: 1.954764
+  Airport:
+    type: "object"
+    required:
+    - "airportname"
+    - "city"
+    - "country"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      airportname:
+        type: "string"
+        example: "Calais Dunkerque"
+      city:
+        type: "string"
+        example: "Calais"
+      country:
+        type: "string"
+        example: "France"
+      tz:
+        type: "string"
+        example: "Europe/Paris"
+      icao: 
+        type: "string"
+        example: "LFAC"
+      faa:
+        type: "string"
+        example: "CQF"
+      geo:
+        $ref: "#/definitions/Geolocation"
+  ListAirportsResponse:
+    type: "object"
+    properties:
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/Airport"
+      count:
+        type: "number"
