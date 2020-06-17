@@ -1,19 +1,20 @@
 /**
  * Populate a given field through an array with references.
  */
-export const execPopulation = (rows, toPopulate: string, collection): Promise<any[]> => {
+
+export const execPopulation = (rows, toPopulate: string, connection, modelName: string, deep?): Promise<any[]> => {
   const promises: Promise<any>[] = [];
-  for (const row of rows) {
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
     if (row[toPopulate]) {
-      promises.push(collection.get(row[toPopulate]));
-    } else {
-      promises.push(Promise.resolve(null));
+      const Model = connection.getModel(modelName);
+      const document = new Model(row);
+      promises.push(
+        document._populate(toPopulate, deep).then((populated) => {
+          rows[i] = populated;
+        }),
+      );
     }
   }
-  return Promise.all(promises).then((refDocs) => {
-    for (let i = 0; i < refDocs.length; i++) {
-      rows[i][toPopulate] = refDocs[i].value || null;
-    }
-    return rows;
-  });
+  return Promise.all(promises);
 };

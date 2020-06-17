@@ -88,7 +88,7 @@ describe('Test Document Access Functions', () => {
     expect(result.id).toBeDefined();
     user.id = result.id;
     const removed = await user.remove();
-    expect(removed).toBeDefined();
+    expect(removed.cas).toBeDefined();
   });
 
   test('Remove saved document from Model Constructor', async () => {
@@ -99,7 +99,7 @@ describe('Test Document Access Functions', () => {
     expect(result.id).toBeDefined();
     user.id = result.id;
     const removed = await UserModel.remove(result.id);
-    expect(removed).toBeDefined();
+    expect(removed.cas).toBeDefined();
   });
 
   test('Test Schema Methods', async () => {

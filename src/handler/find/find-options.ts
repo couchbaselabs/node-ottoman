@@ -5,6 +5,7 @@ export class FindOptions {
   limit?: number;
   sort?: Record<string, SortType>;
   populate?: string | string[];
+  populateMaxDeep?: number;
   select?: ISelectType[] | string | string[];
   noId?: boolean;
   noCollection?: boolean;

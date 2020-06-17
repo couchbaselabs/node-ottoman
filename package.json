@@ -25,11 +25,12 @@
     "docs:generate": "rimraf docs && typedoc",
     "docs:build": "cp -r .vuepress/* docs/.vuepress && cp -r vuepress/* docs/ && vuepress build docs",
     "docs:serve": "yarn docs && serve docs/.vuepress/dist",
-    "is:ready": "yarn lint && yarn build:test",
+    "is:ready": "yarn lint && yarn build && yarn test:ready",
     "lint": "eslint --ignore-pattern '/lib/' '*/**/*.ts' --quiet --fix",
     "test": "jest --clearCache && jest -i",
+    "test:coverage": "jest --coverage",
     "test:dev": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:ready": "jest --clearCache && jest -i --coverage"
   },
   "engines": {
     "node": ">=8.0.0"

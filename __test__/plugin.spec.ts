@@ -31,7 +31,6 @@ describe('Test plugin', () => {
 
     UserSchema.plugin(pluginLog2);
     UserSchema.index.findByName = { by: 'name' };
-
     const UserModel = model('User', UserSchema);
 
     const user = new UserModel(accessDoc2);

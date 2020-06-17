@@ -1,6 +1,6 @@
 import { createModel } from '../model/create-model';
 import { DEFAULT_COLLECTION, DEFAULT_SCOPE } from '../utils/constants';
-import { Schema } from '../schema/schema';
+import { Schema } from '../schema';
 
 /**
  * Create a connection instance,
@@ -24,6 +24,11 @@ export class ConnectionManager {
   queryIndexManager;
 
   /**
+   * @ignore
+   */
+  viewIndexManager;
+
+  /**
    * Dictionary for all models register on this connection.
    */
   models = {};
@@ -31,6 +36,7 @@ export class ConnectionManager {
   constructor(public cluster, public bucketName: string, public couchbase) {
     this.bucket = cluster.bucket(bucketName);
     this.collectionManager = this.bucket.collections();
+    this.viewIndexManager = this.bucket.viewIndexes();
     this.queryIndexManager = this.cluster.queryIndexes();
   }
 

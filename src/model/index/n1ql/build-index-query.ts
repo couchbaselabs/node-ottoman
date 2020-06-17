@@ -1,7 +1,7 @@
-import { FindOptions } from '../../handler/find/find-options';
+import { FindOptions } from '../../../handler/find/find-options';
 
 /**
- * Index function factory
+ * View index function factory
  */
 export const buildIndexQuery = (Model, fields, indexFnName, indexOptions = {}) => (...values: any[]) => {
   if (values.length >= fields.length) {

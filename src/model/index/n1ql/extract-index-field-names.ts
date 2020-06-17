@@ -1,5 +1,5 @@
-import { jpParse } from '../../utils/jp-parse';
-import { pathToN1QL } from '../../utils/path-to-n1ql';
+import { jpParse } from '../../../utils/jp-parse';
+import { pathToN1QL } from '../../../utils/path-to-n1ql';
 
 export const extractIndexFieldNames = (gsi: { fields: string[] }) => {
   const fieldNames: string[] = [];
