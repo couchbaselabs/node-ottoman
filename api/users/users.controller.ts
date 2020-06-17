@@ -1,43 +1,48 @@
 import express from 'express';
 import { UserModel } from './users.model';
-import { FindOptions } from '../../src/handler/find/find-options';
+import { FindOptions } from '../../lib/handler/find/find-options';
+import { makeResponse } from '../shared/make.response';
+
 const router = express();
 
 router.get('/', async (req, res) => {
-  const users = await UserModel.find();
-  res.json(users);
+  await makeResponse(res, () => UserModel.find());
 });
 
 router.get('/byEmail/:email', async (req, res) => {
-  const options = new FindOptions({ select: 'name settings', limit: 2 });
-  const users = await UserModel.findByEmail(req.params.email, options);
-  res.json(users);
+  await makeResponse(res, () => {
+    const options = new FindOptions({ select: 'name settings', limit: 2 });
+    return UserModel.findByEmail(req.params.email, options);
+  });
 });
 
 router.get('/:id', async (req, res) => {
-  const users = await UserModel.findById(req.params.id, { select: 'settings' });
-  res.json(users);
+  await makeResponse(res, () => UserModel.findById(req.params.id, { select: 'settings' }));
 });
 
 router.post('/', async (req, res) => {
-  const user = new UserModel(req.body);
-  const result = await user.save();
-  res.json(result);
+  await makeResponse(res, () => {
+    const user = new UserModel(req.body);
+    return user.save();
+  });
 });
 
 router.patch('/:id', async (req, res) => {
-  const result = await UserModel.update(req.body, req.params.id);
-  res.json(result);
+  await makeResponse(res, () => {
+    return UserModel.update(req.body, req.params.id);
+  });
 });
 
 router.put('/:id', async (req, res) => {
-  const result = await UserModel.replace(req.body, req.params.id);
-  res.json(result);
+  await makeResponse(res, () => {
+    return UserModel.replace(req.body, req.params.id);
+  });
 });
 
 router.delete('/:id', async (req, res) => {
-  const result = await UserModel.remove(req.params.id);
-  res.json(result);
+  await makeResponse(res, () => {
+    return UserModel.remove(req.params.id);
+  });
 });
 
 export const UserRoutes = router;

@@ -20,7 +20,7 @@
     "build:test": "yarn build && yarn test",
     "commit": "git-cz",
     "dev": "tsc --watch --incremental",
-    "dev:api": "OTTOMAN_CONNECTION_STRING='couchbase://localhost/travel-sample@admin:password' ts-node-dev --respawn api/index.ts",
+    "dev:api": "OTTOMAN_CONNECTION_STRING='couchbase://localhost:8091/travel-sample@admin:password' ts-node-dev --respawn api/index.ts",
     "docs": "yarn docs:generate && yarn docs:build",
     "docs:generate": "rimraf docs && typedoc",
     "docs:build": "cp -r .vuepress/* docs/.vuepress && cp -r vuepress/* docs/ && vuepress build docs",
@@ -73,7 +73,9 @@
   "dependencies": {
     "couchbase": "^3.0.2",
     "jsonpath": "^1.0.2",
-    "uuid": "^8.1.0"
+    "swagger-ui-express": "^4.1.4",
+    "uuid": "^8.1.0",
+    "yamljs": "^0.3.0"
   },
   "repository": {
     "type": "git",
