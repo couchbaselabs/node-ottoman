@@ -7,6 +7,7 @@ import { Model } from '../..';
 type ParseResult = {
   [key in 'type' | 'options']: unknown;
 };
+
 /**
  * Build the fields using definition, if the [[obj]] is a schema instance will be taken the fields
  * @function
@@ -28,11 +29,11 @@ export const buildFields = (obj: Schema | SchemaDef): FieldMap => {
   const fields: FieldMap = {};
   const keys = Object.keys(obj);
   for (const _key of keys) {
-    const opts = _parseType(obj[_key]);
+    const opts =
+      obj[_key] !== undefined && obj[_key] !== null ? _parseType(obj[_key]) : ({ type: false } as ParseResult);
     if (!opts.type) {
       throw new BuildSchemaError(`Property ${_key} is a required type`);
     }
-
     fields[_key] = _makeField(_key, opts);
   }
   fields['_id'] = _makeField('_id', { type: String.name, options: { auto: 'uuid' } });
