@@ -151,6 +151,20 @@ describe('Schema Types', () => {
       amount: { min: 23, max: 24 },
     };
     expect(() => new Schema(schema)).toThrow(new BuildSchemaError('Property min is a required type'));
+
+    const schemaWithNull = {
+      name: String,
+      hasChild: Boolean,
+      amount: null,
+    };
+    expect(() => new Schema(schemaWithNull)).toThrow(new BuildSchemaError('Property amount is a required type'));
+
+    const schemaWithUndefined = {
+      name: String,
+      hasChild: Boolean,
+      amount: undefined,
+    };
+    expect(() => new Schema(schemaWithUndefined)).toThrow(new BuildSchemaError('Property amount is a required type'));
   });
   describe('Schema String Type', () => {
     test('should throw an error when defining auto uuid value and it is not a String type ', () => {
