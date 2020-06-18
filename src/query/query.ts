@@ -9,12 +9,7 @@ import {
   LogicalWhereExpr,
   SortType,
 } from './interface/query-types';
-import {
-  IndexParamsOnExceptions,
-  IndexQueryException,
-  MultipleQueryTypesException,
-  SelectQueryException,
-} from './exceptions';
+import { IndexParamsOnExceptions, IndexParamsUsingGSIExceptions, MultipleQueryTypesException } from './exceptions';
 import { buildIndexExpr, selectBuilder } from './helpers';
 
 export class Query extends BaseQuery {
@@ -186,7 +181,7 @@ export class Query extends BaseQuery {
       this.indexUsingGSI = true;
       return this;
     }
-    throw new IndexParamsOnExceptions(['CREATE', 'CREATE PRIMARY', 'BUILD']);
+    throw new IndexParamsUsingGSIExceptions(['CREATE', 'CREATE PRIMARY', 'BUILD']);
   }
 
   /**
@@ -389,7 +384,6 @@ export class Query extends BaseQuery {
             );
         }
 
-        throw new IndexQueryException();
       case 'SELECT':
         if (this.selectExpr) {
           return selectBuilder(
@@ -403,7 +397,6 @@ export class Query extends BaseQuery {
             this.useKeysExpr,
           );
         }
-        throw new SelectQueryException();
     }
     return '';
   }

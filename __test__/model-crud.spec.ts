@@ -1,4 +1,4 @@
-import { model, Schema } from '../lib';
+import { model, Schema, ensureIndexes } from '../lib';
 import { isDocumentNotFoundError } from '../lib/utils/is-not-found';
 
 const accessDoc = {
@@ -30,6 +30,10 @@ const schema = {
 };
 
 describe('Test Document Access Functions', () => {
+  beforeEach(async () => {
+    await ensureIndexes();
+  });
+
   test('UserModel.create Creating a document', async () => {
     const UserModel = model('User', schema);
     const result = await UserModel.create(accessDoc);
@@ -126,5 +130,11 @@ describe('Test Document Access Functions', () => {
     await UserModel.create(accessDoc);
     const count = await UserModel.count();
     expect(count).toBeGreaterThan(0);
+  });
+
+  test('UserModel find items without params', async () => {
+    const UserModel = model('User', schema);
+    const result = await UserModel.find();
+    expect(result.rows).toBeDefined();
   });
 });

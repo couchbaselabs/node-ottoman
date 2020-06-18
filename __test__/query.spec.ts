@@ -1,18 +1,27 @@
 import {
+  buildIndexExpr,
   buildSelectExpr,
   buildWhereClauseExpr,
-  SelectClauseException,
-  buildIndexExpr,
-  QueryOperatorNotFoundException,
+  ILetExpr,
+  IndexParamsOnExceptions,
   MultipleQueryTypesException,
   Query,
-  ILetExpr,
+  QueryOperatorNotFoundException,
+  SelectClauseException,
   SortType,
+  WhereClauseException,
+  IndexParamsUsingGSIExceptions,
+  ISelectType,
+  selectBuilder,
+  LogicalWhereExpr,
+  IIndexOnParams,
+  IIndexWithParams,
+  IConditionExpr,
 } from '../lib';
 
 describe('Test Query Types', () => {
   test('Check select clause parameter types', async () => {
-    const dist = {
+    const dist: ISelectType = {
       $distinct: {
         $raw: {
           $count: {
@@ -28,7 +37,7 @@ describe('Test Query Types', () => {
     expect(buildSelectExpr('', dist)).toEqual('DISTINCT RAW COUNT(`ottoman`) AS odm');
   });
   test('Verify the exception throwing, if there is an error in the SELECT expression.', async () => {
-    const dist = {
+    const dist: ISelectType = {
       $raw1: {
         $count: {
           $field: {
@@ -43,7 +52,7 @@ describe('Test Query Types', () => {
   });
 
   test('Check query builder.', async () => {
-    const select = [
+    const select: ISelectType[] = [
       {
         $raw: {
           $count: {
@@ -59,7 +68,7 @@ describe('Test Query Types', () => {
     expect(query).toBe('SELECT RAW COUNT(`ottoman`) AS odm FROM `travel-sample`');
   });
   test('Check the let function of the query builder', async () => {
-    const select = [
+    const select: ISelectType[] = [
       {
         $raw: {
           $count: {
@@ -82,7 +91,7 @@ describe('Test Query Types', () => {
   });
 
   test('Check the orderBy function of the query builder', async () => {
-    const select = [
+    const select: ISelectType[] = [
       {
         $raw: {
           $field: {
@@ -98,7 +107,7 @@ describe('Test Query Types', () => {
   });
 
   test('Check the limit function of the query builder', async () => {
-    const select = [
+    const select: ISelectType[] = [
       {
         $raw: {
           $field: {
@@ -113,7 +122,7 @@ describe('Test Query Types', () => {
   });
 
   test('Check the limit function of the query builder', async () => {
-    const select = [
+    const select: ISelectType[] = [
       {
         $raw: {
           $field: {
@@ -128,7 +137,7 @@ describe('Test Query Types', () => {
   });
 
   test('Check the useKeys function of the query builder', async () => {
-    const select = [
+    const select: ISelectType[] = [
       {
         $field: {
           name: 'meta().id',
@@ -145,6 +154,22 @@ describe('Test Query Types', () => {
     expect(query).toBe(`SELECT \`meta().id\`,\`travel-sample\` FROM \`travel-sample\` USE KEYS ['airlineR_8093']`);
   });
 
+  test('Check the exception SelectClauseException in selectBuilder', async () => {
+    const run = () => selectBuilder('travel-sample', {}, [], { $not: {} });
+    expect(run).toThrow(SelectClauseException);
+  });
+
+  test('Check the clause WITH with incorrect syntax', async () => {
+    const run = () =>
+      new Query({}, 'travel-sample')
+        .index('CREATE', 'travel_sample_index')
+        .on([{ name: 'address' }])
+        .with({ nodes1: [] })
+        .build();
+
+    expect(run).toThrow('The WITH clause has an incorrect syntax');
+  });
+
   test('Check the exception WHERE operator not found', async () => {
     const expr_where = {
       $nill: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }, { free_lunch: [1] }],
@@ -154,8 +179,17 @@ describe('Test Query Types', () => {
     expect(run).toThrow(QueryOperatorNotFoundException);
   });
 
+  test('Check the exception WHERE', async () => {
+    const expr_where = {
+      $not: { address: { $like: '%57-59%' }, free_breakfast: true, free_lunch: [1] },
+    };
+
+    const run = () => buildWhereClauseExpr('', expr_where);
+    expect(run).toThrow(WhereClauseException);
+  });
+
   test('Check WHERE clause parameter types', async () => {
-    const where = {
+    const where: LogicalWhereExpr = {
       $or: [{ price: { $gt: 1.99, $isNotNull: true } }, { auto: { $gt: 10 } }, { amount: 10 }],
       $and: [
         { price2: { $gt: 1.99, $isNotNull: true } },
@@ -168,7 +202,7 @@ describe('Test Query Types', () => {
   });
 
   test('Check WHERE NOT operator', async () => {
-    const where = {
+    const where: LogicalWhereExpr = {
       $and: [
         {
           $not: [
@@ -187,7 +221,7 @@ describe('Test Query Types', () => {
   });
 
   test('Check the WHERE clause function of the query builder', async () => {
-    const expr_where = {
+    const expr_where: LogicalWhereExpr = {
       $or: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }],
     };
 
@@ -198,7 +232,7 @@ describe('Test Query Types', () => {
   });
 
   test('Test all the parameters of the WHERE clause', async () => {
-    const expr_where = {
+    const expr_where: LogicalWhereExpr = {
       $or: [
         { address: { $isNull: true } },
         { free_breakfast: { $isMissing: true } },
@@ -230,11 +264,11 @@ describe('Test Query Types', () => {
   });
 
   test('Check the parameters of the INDEX clause', async () => {
-    const expr_where = { 'travel-sample.callsign': { $like: '%57-59%' } };
+    const expr_where: LogicalWhereExpr = { 'travel-sample.callsign': { $like: '%57-59%' } };
 
-    const on = [{ name: 'travel-sample.callsing', sort: 'ASC' }];
+    const on: IIndexOnParams[] = [{ name: 'travel-sample.callsing', sort: 'ASC' }];
 
-    const withExpr = {
+    const withExpr: IIndexWithParams = {
       nodes: ['192.168.1.1:8078', '192.168.1.1:8079'],
       defer_build: true,
       num_replica: 2,
@@ -248,11 +282,11 @@ describe('Test Query Types', () => {
   });
 
   test('Check the INDEX clause of the query builder', async () => {
-    const expr_where = { 'travel-sample.callsign': { $like: '%57-59%' } };
+    const expr_where: LogicalWhereExpr = { 'travel-sample.callsign': { $like: '%57-59%' } };
 
-    const on = [{ name: 'travel-sample.callsing', sort: 'ASC' }];
+    const on: IIndexOnParams[] = [{ name: 'travel-sample.callsing' }];
 
-    const withExpr = {
+    const withExpr: IIndexWithParams = {
       nodes: ['192.168.1.1:8078', '192.168.1.1:8079'],
       defer_build: true,
       num_replica: 2,
@@ -267,11 +301,11 @@ describe('Test Query Types', () => {
       .build();
 
     expect(query).toBe(
-      "CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`['ASC']) WHERE travel-sample.callsign LIKE '%57-59%' USING GSI WITH {'nodes': ['192.168.1.1:8078','192.168.1.1:8079'],'defer_build': true,'num_replica': 2}",
+      "CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`) WHERE travel-sample.callsign LIKE '%57-59%' USING GSI WITH {'nodes': ['192.168.1.1:8078','192.168.1.1:8079'],'defer_build': true,'num_replica': 2}",
     );
   });
 
-  test('Check Multiple Query Exceptions', () => {
+  test('Check Multiple Query Exceptions with select', () => {
     const run = () => new Query({}, 'travel-sample').index('travel_index', 'CREATE').select('*');
     expect(run).toThrow(MultipleQueryTypesException);
   });
@@ -281,8 +315,46 @@ describe('Test Query Types', () => {
 
     expect(query).toBe('DROP INDEX `travel-sample`.`travel_sample_id_test` USING GSI');
   });
+
+  test('Check the exception Index Params On Exception', async () => {
+    const run = () => new Query({}, 'travel-sample').select().on([{ name: 'test', sort: 'DESC' }]);
+    expect(run).toThrow(IndexParamsOnExceptions);
+  });
+
+  test('Check the exception Invalid index name', async () => {
+    const run = () => new Query({}, 'travel-sample').index('CREATE', 'index-*&');
+    expect(run).toThrow(
+      'Valid GSI index names can contain any of the following characters: A-Z a-z 0-9 # _, and must start with a letter, [A-Z a-z]',
+    );
+  });
+  test('Check Multiple Query Exceptions with index', () => {
+    const run = () => new Query({}, 'travel-sample').select('*').index('travel_index', 'CREATE');
+    expect(run).toThrow(MultipleQueryTypesException);
+  });
+
+  test('Check the exception IndexParamsUsingGSIExceptions', () => {
+    const run = () => new Query({}, 'travel-sample').select('*').usingGSI();
+    expect(run).toThrow(IndexParamsUsingGSIExceptions);
+  });
+
+  test('Check the exception WITH clause', () => {
+    const run = () => new Query({}, 'travel-sample').select('*').with({ nodes: [] });
+    expect(run).toThrow('The WITH clause is only available for Indexes');
+  });
+
+  test('Check Query Builder build without params', () => {
+    expect(new Query({}, 'travel-sample').build()).toBe('');
+  });
+
+  test('Check collections and conditions values in query class', () => {
+    const query = new Query({ select: [{ $field: 'address' }] }, 'travel-sample');
+
+    expect(query.conditions).toStrictEqual({ select: [{ $field: 'address' }] });
+    expect(query.collection).toStrictEqual('travel-sample');
+  });
+
   test('Check the query parameters of the query builder', async () => {
-    const params = {
+    const params: IConditionExpr = {
       select: [
         {
           $count: {

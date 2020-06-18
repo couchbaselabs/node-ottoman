@@ -15,16 +15,6 @@ export class MultipleQueryTypesException extends Error {
     super(`Cannot combine multiple query types (ex: ${type1} with ${type2}`);
   }
 }
-export class IndexQueryException extends Error {
-  constructor() {
-    super(`Syntax error in INDEX clause`);
-  }
-}
-export class SelectQueryException extends Error {
-  constructor() {
-    super(`Syntax error in SELECT clause`);
-  }
-}
 
 export class QueryOperatorNotFoundException extends Error {
   constructor(operator: string) {
@@ -35,5 +25,11 @@ export class QueryOperatorNotFoundException extends Error {
 export class IndexParamsOnExceptions extends Error {
   constructor(clause: string[]) {
     super(`The ON parameter can only be applied in the following clauses: ${JSON.stringify(clause)}`);
+  }
+}
+
+export class IndexParamsUsingGSIExceptions extends Error {
+  constructor(clause: string[]) {
+    super(`The USING GSI parameter can only be applied in the following clauses: ${JSON.stringify(clause)}`);
   }
 }
