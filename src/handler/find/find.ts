@@ -14,10 +14,10 @@ import { ModelMetadata } from '../../model/interfaces/model-metadata';
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
   const { skip, limit, sort, populate, select, noCollection, noId, populateMaxDeep } = options;
-  const { connection, collectionName, collection } = metadata;
+  const { connection, collectionName } = metadata;
   const { bucketName, cluster } = connection;
   // Handling select
-  const projectionFields = getProjectionFields(collection, select, { noId: noId, noCollection: noCollection });
+  const projectionFields = getProjectionFields(bucketName, select, { noId: noId, noCollection: noCollection });
 
   // Handling conditions
   const expr_where = {

@@ -9,6 +9,14 @@ describe('Test Query Builder Utils', () => {
     expect(result).toStrictEqual(['addr', 'address']);
   });
 
+  test('Test convert simple string select into Array of selection keys', async () => {
+    const expr = 'address';
+
+    const result = parseStringSelectExpr(expr);
+
+    expect(result).toStrictEqual(['address']);
+  });
+
   test('Test get Projections fields with empty select', () => {
     const result = getProjectionFields('travel-sample', '');
     expect(result.fields).toStrictEqual([]);

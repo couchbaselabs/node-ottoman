@@ -1,12 +1,39 @@
-export * from './helpers';
+export {
+  selectBuilder,
+  buildSelectExpr,
+  buildWhereClauseExpr,
+  buildIndexExpr,
+  buildSelectArrayExpr,
+  AggDict,
+  ResultExprDict,
+  ReturnResultDict,
+} from './helpers';
 export {
   SelectClauseException,
   MultipleQueryTypesException,
-  IndexQueryException,
-  SelectQueryException,
   WhereClauseException,
   QueryOperatorNotFoundException,
+  IndexParamsUsingGSIExceptions,
 } from './exceptions';
 export { Query } from './query';
-export * from './interface';
+export {
+  ILetExpr,
+  SortType,
+  ISelectType,
+  LogicalWhereExpr,
+  ComparisonWhereExpr,
+  IField,
+  IIndexOnParams,
+  IIndexWithParams,
+  IndexType,
+  ISelectAggType,
+  AggType,
+  ComparisonEmptyOperatorType,
+  ComparisonMultipleOperatorType,
+  ComparisonSingleStringOperatorType,
+  ComparisonSingleOperatorType,
+  LogicalOperatorType,
+  ResultExprType,
+  ReturnResultType,
+} from './interface';
 export { parseStringSelectExpr } from './utils';

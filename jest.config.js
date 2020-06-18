@@ -3,4 +3,5 @@ module.exports = {
   testEnvironment: 'node',
   setupFilesAfterEnv: ['./__test__/jest.setup.ts'],
   collectCoverageFrom: ['lib/**/*.js'],
+  testTimeout: 10000,
 };
