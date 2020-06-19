@@ -1,15 +1,18 @@
 import express from 'express';
 import { AirportModel } from './airports.model';
 import { makeResponse } from '../shared/make.response';
+import { FindOptions } from '../../lib/handler/find/find-options';
+
 const router = express();
 
 router.get('/', async (req, res) => {
   await makeResponse(res, async () => {
-    const result = await AirportModel.find();
-    const { rows: airports, count } = result;
+    const options = new FindOptions({ limit: Number(req.query.limit || 50), skip: Number(req.query.skip || 0) });
+    const filter = req.query.search ? { airportname: { $like: `%${req.query.search}%` } } : {};
+    const result = await AirportModel.find(filter, options);
+    const { rows: items } = result;
     return {
-      items: airports,
-      count,
+      items,
     };
   });
 });

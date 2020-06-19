@@ -11,4 +11,6 @@ const AirportSchema = new Schema({
   tz: { type: String, required: true },
 });
 
+AirportSchema.index.findByName = { by: 'name', type: 'n1ql' };
+
 export const AirportModel = model('airport', AirportSchema);

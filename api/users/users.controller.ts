@@ -1,9 +1,45 @@
 import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { UserModel } from './users.model';
 import { makeResponse } from '../shared/make.response';
 import { FindOptions } from '../../src/handler/find/find-options';
 import { isDocumentNotFoundError } from '../../src/utils/is-not-found';
 const router = express();
+const authRouter = express();
+
+authRouter.post('/login', async (req, res) => {
+  await makeResponse(res, async () => {
+    const { username, password } = req.body;
+    const { rows: result } = await UserModel.findByName(username, { select: '`password`' });
+    const user = result[0];
+    if (bcrypt.compareSync(password, user.password)) {
+      const token = jwt.sign({ user }, 'ottoman.js', {
+        expiresIn: '24h',
+      });
+
+      // eslint-disable-next-line no-unused-vars
+      const { password: pwd, ...userWithoutPass } = user;
+
+      res.json({
+        user: userWithoutPass,
+        token,
+      });
+    } else {
+      res.status(401).json({
+        message: 'Unauthenticated',
+      });
+    }
+  });
+});
+
+authRouter.post('/register', async (req, res) => {
+  await makeResponse(res, () => {
+    req.body.password = bcrypt.hashSync(req.body.password, 10);
+    const user = new UserModel(req.body);
+    return user.save();
+  });
+});
 
 router.get('/', async (req, res) => {
   await makeResponse(res, () => UserModel.find());
@@ -47,13 +83,6 @@ router.get('/:id', async (req, res) => {
   await makeResponse(res, () => UserModel.findById(req.params.id, { select: 'settings' }));
 });
 
-router.post('/', async (req, res) => {
-  await makeResponse(res, () => {
-    const user = new UserModel(req.body);
-    return user.save();
-  });
-});
-
 router.patch('/:id', async (req, res) => {
   await makeResponse(res, () => {
     return UserModel.update(req.body, req.params.id);
@@ -73,3 +102,4 @@ router.delete('/:id', async (req, res) => {
 });
 
 export const UserRoutes = router;
+export const AuthRoutes = authRouter;

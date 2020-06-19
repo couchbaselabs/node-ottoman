@@ -2,7 +2,7 @@ export { connect, getCollection, closeConnection, model } from './connections/co
 export { Model } from './model/model';
 export { ensureIndexes } from './model/index/ensure-indexes';
 export { globalConfig, getCollectionKey, getScopeKey } from './utils/constants';
-export { castSchema, applyDefaultValue, Schema, ValidationError, BuildSchemaError } from './schema';
+export { castSchema, applyDefaultValue, registerType, Schema, ValidationError, BuildSchemaError } from './schema';
 export {
   ReturnResultDict,
   ResultExprDict,

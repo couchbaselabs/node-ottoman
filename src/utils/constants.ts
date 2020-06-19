@@ -16,7 +16,7 @@ export const getScopeKey = (): string => SCOPE_KEY;
  * Default value for metadata key, to keep collection tracking
  * eg. This model new Model('User', schema, options), will generate documents -> document._type = 'User'
  */
-export let COLLECTION_KEY = '_type';
+export let COLLECTION_KEY = 'type';
 
 /**
  * Default value to metadata key, to keep scope tracking
