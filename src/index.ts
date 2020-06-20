@@ -3,6 +3,8 @@ export { Model } from './model/model';
 export { ensureIndexes } from './model/index/ensure-indexes';
 export { globalConfig, getCollectionKey, getScopeKey } from './utils/constants';
 export { castSchema, applyDefaultValue, registerType, Schema, ValidationError, BuildSchemaError } from './schema';
+export { FindByIdOptions, FindOptions } from './handler';
+export * from './utils';
 export {
   ReturnResultDict,
   ResultExprDict,

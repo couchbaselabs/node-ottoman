@@ -1,8 +1,18 @@
-import { Schema, model } from '../lib';
+import { Schema, model, isDocumentNotFoundError } from '../lib';
 const accessDoc2 = {
   type: 'hooks',
   isActive: false,
   name: 'Ottoman Hooks',
+};
+
+const removeDoc = {
+  isActive: true,
+  name: 'Remove',
+};
+
+const validateDoc = {
+  isActive: true,
+  name: 'Validate Doc',
 };
 
 const schema = {
@@ -21,4 +31,80 @@ test('Hook.pre.save', async () => {
   const result = await UserModel.create(accessDoc2);
   const userSaved = await UserModel.findById(result.id);
   expect(userSaved.name).toBe('async pre save');
+});
+
+test('Hook.post.save', async () => {
+  const UserSchema = new Schema(schema);
+  UserSchema.post('save', ({ document, result }) => {
+    document.name = 'async post save';
+    result.document = document;
+  });
+
+  const UserModel = model('User', UserSchema);
+  const result = await UserModel.create(accessDoc2);
+  expect(result.document).toBeDefined();
+  expect(result.document.name).toBe('async post save');
+});
+
+test('Hook update', async () => {
+  const UserSchema = new Schema(schema);
+  UserSchema.pre('update', (document) => {
+    document.name = 'async pre update';
+  });
+
+  UserSchema.post('update', ({ document, result }) => {
+    result.document = document;
+  });
+
+  const UserModel = model('User', UserSchema);
+  const user = new UserModel(accessDoc2);
+  await user.save();
+  expect(user.id).toBeDefined();
+  expect(user.name).toBe(accessDoc2.name);
+  const updateResult = await user.save();
+  expect(user.name).toBe('async pre update');
+  const userUpdated = await UserModel.findById(user.id);
+  expect(userUpdated.name).toBe('async pre update');
+  expect(updateResult.document).toBeDefined();
+  expect(updateResult.document.name).toBe('async pre update');
+});
+
+test('Hook.pre.remove function', async () => {
+  const UserSchema = new Schema(schema);
+
+  UserSchema.pre('remove', (document) => {
+    document.name = 'async pre remove';
+  });
+
+  const UserModel = model('User', UserSchema);
+  const user = new UserModel(removeDoc);
+  await user.save();
+  const userSaved = await UserModel.findById(user.id);
+  expect(userSaved.id).toBeDefined();
+  await user.remove();
+  expect(user.name).toBe('async pre remove');
+  try {
+    await UserModel.findById(user.id);
+  } catch (e) {
+    expect(isDocumentNotFoundError(e)).toBe(true);
+  }
+});
+
+test('Hook.pre.validate function', async () => {
+  const UserSchema = new Schema(schema);
+
+  UserSchema.pre('validate', (document) => {
+    if (document.name === validateDoc.name) {
+      const message = `Username '${validateDoc.name}' not allowed`;
+      throw new Error(message);
+    }
+  });
+
+  const UserModel = model('User', UserSchema);
+  const user = new UserModel(validateDoc);
+  try {
+    await user.save();
+  } catch (e) {
+    expect(e.message).toBe(`Username '${validateDoc.name}' not allowed`);
+  }
 });

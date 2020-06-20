@@ -1,15 +1,16 @@
 import { HOOKS } from '../../utils/hooks';
 import { execHooks } from '../hooks/exec-hooks';
-import { remove } from '../../handler/remove';
+import { remove } from '../../handler';
 import { updateRefdocIndexes } from './update-refdoc-indexes';
 
 /**
  * Remove lifecycle including hooks
  * @ignore
  */
-export const removeLifeCicle = async ({ id, options, metadata, refKeys }) => {
+export const removeLifeCicle = async ({ id, options, metadata, refKeys, data }) => {
   const { schema, collection } = metadata;
-  await execHooks(schema, 'preHooks', HOOKS.REMOVE);
+  const document = data;
+  await execHooks(schema, 'preHooks', HOOKS.REMOVE, document);
 
   const result = await remove(id, collection, options);
 
@@ -17,7 +18,7 @@ export const removeLifeCicle = async ({ id, options, metadata, refKeys }) => {
   refKeys.add = [];
   updateRefdocIndexes(refKeys, null, collection);
 
-  await execHooks(schema, 'preHooks', HOOKS.REMOVE);
+  await execHooks(schema, 'preHooks', HOOKS.REMOVE, { document, result });
 
-  return result;
+  return { result, document };
 };

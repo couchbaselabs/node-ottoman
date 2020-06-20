@@ -1,4 +1,4 @@
-import { model, Schema } from '../lib';
+import { model, Schema, FindByIdOptions, FindOptions } from '../lib';
 
 const cardInfo = {
   cardNumber: '4242 4242 4242 4242',
@@ -118,10 +118,13 @@ describe('Test populate feature', () => {
       }, 2000);
     });
     await delay;
-    const result = await User.find(
-      { name: user.name },
-      { select: 'name, cats, card', limit: 5, populate: ['cats', 'card'], populateMaxDeep: 2 },
-    );
+    const options = new FindOptions({
+      select: 'name, cats, card',
+      limit: 5,
+      populate: ['cats', 'card'],
+      populateMaxDeep: 2,
+    });
+    const result = await User.find({ name: user.name }, options);
     expect(result.rows.length).toBeGreaterThanOrEqual(1);
     const item = result.rows[0];
     expect(item.card.cardNumber).toBe(cardInfoWithIssue.cardNumber);
@@ -155,7 +158,12 @@ describe('Test populate feature', () => {
     user.cats = [catCreated.id, catCreated2.id];
     const saved = await user.save();
 
-    const result = await User.findById(saved.id);
+    const options = new FindByIdOptions({ select: 'card, cats, name' });
+    expect(options.select).toBe('card, cats, name');
+    const result = await User.findById(saved.id, options);
+    expect(result.name).toBeDefined();
+    expect(result.card).toBeDefined();
+    expect(result.cats).toBeDefined();
     await result._populate('*', 2);
     expect(result.card.cardNumber).toBe('4242 4242 4242 4242');
     expect(result.card.issues[0].title).toBe('stolen card');

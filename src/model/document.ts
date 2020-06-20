@@ -58,13 +58,18 @@ export abstract class Document<T> {
     }
     const addedMetadata = { ...data, [COLLECTION_KEY]: this.$.collectionName, [SCOPE_KEY]: this.$.scopeName };
     const metadata = this.$;
-    return storeLifeCycle({ key: id, data: addedMetadata, options, metadata, refKeys });
+    const { result, document } = await storeLifeCycle({ key: id, data: addedMetadata, options, metadata, refKeys });
+    if (!document[this.$.ID_KEY]) {
+      document[this.$.ID_KEY] = id;
+    }
+    this._applyData(document);
+    return result;
   }
 
   /**
    * Remove document from DB
    */
-  remove(options = {}) {
+  async remove(options = {}) {
     const data = extractDataFromModel(this);
     const prefix = `${this.$.scopeName}${this.$.collectionName}`;
     const metadata = this.$;
@@ -72,7 +77,10 @@ export abstract class Document<T> {
       add: [],
       remove: getModelRefKeys(data, prefix),
     };
-    return removeLifeCicle({ id: this._getId(), options, metadata, refKeys });
+    const id = this._getId();
+    const { result, document } = await removeLifeCicle({ id, options, metadata, refKeys, data });
+    this._applyData(document);
+    return result;
   }
 
   /**
@@ -117,20 +125,28 @@ export abstract class Document<T> {
    * Revert population
    * Switch back document reference
    */
-  _depopulate(fieldName) {
-    const data = this[fieldName];
-    if (typeof data === 'string') {
-      if (data && data[this.$.ID_KEY]) {
-        this[fieldName] = data[this.$.ID_KEY];
-      }
-    } else if (Array.isArray(data)) {
-      for (let field of data) {
-        if (field && field[this.$.ID_KEY]) {
-          field = field[this.$.ID_KEY];
+  _depopulate(fieldsName) {
+    let fieldsToPopulate;
+    if (fieldsName) {
+      fieldsToPopulate = extractSchemaReferencesFromGivenFields(fieldsName, this.$.schema);
+    } else {
+      fieldsToPopulate = extractSchemaReferencesFields(this.$.schema);
+    }
+    for (const fieldName in fieldsToPopulate) {
+      const data = this[fieldName];
+      if (Array.isArray(data)) {
+        for (let i = 0; i < data.length; i++) {
+          const field = data[i];
+          if (field && field[this.$.ID_KEY]) {
+            data[i] = field[this.$.ID_KEY];
+          }
+        }
+      } else if (typeof data === 'object') {
+        if (data && data[this.$.ID_KEY]) {
+          this[fieldName] = data[this.$.ID_KEY];
         }
       }
     }
-
     return this;
   }
 

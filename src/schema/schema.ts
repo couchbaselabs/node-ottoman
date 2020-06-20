@@ -15,6 +15,7 @@ import { Model } from '..';
 import { SchemaIndex } from '../model/index/types/index.types';
 import { getGlobalPlugins } from '../plugins/global-plugin-handler';
 import { buildFields } from './helpers';
+import { HOOKS } from '../utils/hooks';
 
 export type SchemaDef = Record<string, any>;
 export type ModelObject = { [key: string]: unknown };
@@ -123,7 +124,7 @@ export class Schema {
     return this;
   }
 
-  pre(hook: 'validate' | 'save' | 'remove', handler): Schema {
+  pre(hook: HOOKS, handler): Schema {
     Schema.checkHook(hook);
     if (this.preHooks[hook] === undefined) {
       this.preHooks[hook] = [];
@@ -132,7 +133,7 @@ export class Schema {
     return this;
   }
 
-  post(hook: 'validate' | 'save' | 'remove', handler): Schema {
+  post(hook: HOOKS, handler): Schema {
     Schema.checkHook(hook);
     if (this.postHooks[hook] === undefined) {
       this.postHooks[hook] = [];
@@ -140,8 +141,8 @@ export class Schema {
     this.postHooks[hook].push(handler);
     return this;
   }
-  private static checkHook(hook: unknown): void {
-    if (!['validate', 'save', 'remove'].includes(String(hook))) {
+  private static checkHook(hook: HOOKS): void {
+    if (!Object.values(HOOKS).includes(hook)) {
       throw new BuildSchemaError(`The hook ${hook} is not allowed`);
     }
   }

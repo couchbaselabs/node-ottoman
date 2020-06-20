@@ -1,7 +1,7 @@
 import { HOOKS } from '../../utils/hooks';
 import { execHooks } from '../hooks/exec-hooks';
 import { castSchema } from '../../schema/helpers';
-import { store } from '../../handler/store';
+import { store } from '../../handler';
 import { updateRefdocIndexes } from './update-refdoc-indexes';
 
 /**
@@ -17,14 +17,22 @@ export const storeLifeCycle = async ({ key, data, options, metadata, refKeys }) 
 
   await execHooks(schema, 'postHooks', HOOKS.VALIDATE, document);
 
-  await execHooks(schema, 'preHooks', HOOKS.SAVE, document);
+  if (options.cas) {
+    await execHooks(schema, 'preHooks', HOOKS.UPDATE, document);
+  } else {
+    await execHooks(schema, 'preHooks', HOOKS.SAVE, document);
+  }
 
-  const result = store(key, document, options, collection, ID_KEY);
+  const result = await store(key, document, options, collection, ID_KEY);
 
   // After store document update index refdocs
   updateRefdocIndexes(refKeys, key, collection);
 
-  await execHooks(schema, 'postHooks', HOOKS.SAVE, document);
+  if (options.cas) {
+    await execHooks(schema, 'postHooks', HOOKS.UPDATE, { document, result });
+  } else {
+    await execHooks(schema, 'postHooks', HOOKS.SAVE, { document, result });
+  }
 
-  return result;
+  return { result, document };
 };
