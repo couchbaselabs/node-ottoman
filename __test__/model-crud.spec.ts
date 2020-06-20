@@ -47,6 +47,7 @@ describe('Test Document Access Functions', () => {
     const user = await UserModel.findById(result.id);
     expect(user.name).toBeDefined();
   });
+
   test('UserModel.findById expect to fail', async () => {
     const UserModel = model('User', schema);
     const key = 'not-found';
@@ -78,7 +79,7 @@ describe('Test Document Access Functions', () => {
     const UserModel = model('User', schema);
     const user = new UserModel(accessDoc2);
     const result = await user.save();
-    expect(result.token).toBeDefined();
+    expect(user.id).toBeDefined();
     user.name = 'Instance Edited';
     user.id = result.id;
     const update = await user.save();
@@ -88,9 +89,8 @@ describe('Test Document Access Functions', () => {
   test('Remove saved document from Model instance', async () => {
     const UserModel = model('User', schema);
     const user = new UserModel(accessDoc2);
-    const result = await user.save();
-    expect(result.id).toBeDefined();
-    user.id = result.id;
+    await user.save();
+    expect(user.id).toBeDefined();
     const removed = await user.remove();
     expect(removed.cas).toBeDefined();
   });
@@ -104,6 +104,26 @@ describe('Test Document Access Functions', () => {
     user.id = result.id;
     const removed = await UserModel.remove(result.id);
     expect(removed.cas).toBeDefined();
+  });
+
+  test('document.remove function', async () => {
+    const removeDoc = {
+      isActive: true,
+      name: 'Crud Remove',
+    };
+    const UserSchema = new Schema(schema);
+
+    const UserModel = model('User', UserSchema);
+    const user = new UserModel(removeDoc);
+    await user.save();
+    const userSaved = await UserModel.findById(user.id);
+    expect(userSaved.id).toBeDefined();
+    await user.remove();
+    try {
+      await UserModel.findById(user.id);
+    } catch (e) {
+      expect(isDocumentNotFoundError(e)).toBe(true);
+    }
   });
 
   test('Test Schema Methods', async () => {

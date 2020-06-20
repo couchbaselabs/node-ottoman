@@ -1,9 +1,10 @@
 /**
  * Hooks available
- * 'validate' | 'save' | 'remove'
+ * 'validate' | 'save' | 'update' | 'remove'
  */
-export const HOOKS = Object.freeze({
-  VALIDATE: 'validate',
-  SAVE: 'save',
-  REMOVE: 'remove',
-});
+export enum HOOKS {
+  VALIDATE = 'validate',
+  SAVE = 'save',
+  UPDATE = 'update',
+  REMOVE = 'remove',
+}

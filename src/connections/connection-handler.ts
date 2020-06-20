@@ -24,10 +24,7 @@ export const getConnections = (): ConnectionManager[] => __connections;
 export const connect = (connectOptions: ConnectOptions | string) => {
   const { connectionString, password, username, bucketName } =
     typeof connectOptions === 'object' ? connectOptions : extractConnectionString(connectOptions);
-  const cluster = new couchbase.Cluster(connectionString, {
-    username,
-    password,
-  });
+  const cluster = new couchbase.Cluster(connectionString, { username, password });
   const connection = new ConnectionManager(cluster, bucketName, couchbase);
   if (!__conn) {
     __conn = connection;

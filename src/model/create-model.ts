@@ -13,7 +13,7 @@ import { buildIndexQuery } from './index/n1ql/build-index-query';
 import { indexFieldsName } from './index/helpers/index-field-names';
 import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
 import { LogicalWhereExpr, SortType } from '../query/interface';
-import { Schema } from '../schema/schema';
+import { Schema } from '../schema';
 import { IFindOptions } from '../handler/find/find-options';
 
 /**
@@ -24,11 +24,12 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
 
   const ID_KEY = options && options.id ? options.id : DEFAULT_ID_KEY;
   const scope = options && options.scope ? options.scope : DEFAULT_SCOPE;
-  const collection = connection.getCollection(name, scope);
+  const collectionName = options && options.collectionName ? options.collectionName : name;
+  const collection = connection.getCollection(collectionName, scope);
 
   const metadata: ModelMetadata = {
     modelName: name,
-    collectionName: name,
+    collectionName: collectionName,
     scopeName: scope,
     collection,
     schema,
@@ -109,6 +110,8 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return find(metadata)(filter, { ...options, ...{ noCollection: false, noId: false } });
     };
 
+    static collection = collection;
+
     static count = async (
       filter: LogicalWhereExpr = {},
       options: { sort?: Record<string, SortType>; limit?: number; skip?: number } = {},
@@ -157,7 +160,6 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static remove = (id: string) => {
       const instance = new _Model({ ...{ [ID_KEY]: id, [COLLECTION_KEY]: collectionName } });
       return instance.remove();
-      // return removeLifeCicle({ id, options, model: { schema, collection } });
     };
 
     static fromData(data: Record<string, any>): _Model<any> {

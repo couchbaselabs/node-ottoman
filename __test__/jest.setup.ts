@@ -1,4 +1,4 @@
-import { closeConnection, connect, globalConfig } from '../lib';
+import { closeConnection, connect, globalConfig, ensureIndexes } from '../lib';
 import { connectUri } from './testData';
 beforeAll(async () => {
   globalConfig({
@@ -7,6 +7,7 @@ beforeAll(async () => {
     populateMaxDeep: 1,
   });
   connect(connectUri);
+  await ensureIndexes();
 });
 
 afterAll(async () => {
