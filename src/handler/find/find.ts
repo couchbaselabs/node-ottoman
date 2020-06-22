@@ -9,7 +9,7 @@ import { ModelMetadata } from '../../model/interfaces/model-metadata';
 
 /**
  * Find documents
- * Allow to use some filters and other useful options
+ * Allows to use some filters and other useful options
  * @ignore
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {

@@ -34,7 +34,7 @@ export const connect = (connectOptions: ConnectOptions | string) => {
 };
 
 /**
- * Allow connecting from env variable OTTOMAN_CONNECTION_STRING if it's provided.
+ * Allow connecting from env variable OTTOMAN_CONNECTION_STRING if provided.
  */
 const connectFromEnvVariables = (modelName: string) => {
   const connString = process.env.OTTOMAN_CONNECTION_STRING || '';
@@ -53,7 +53,7 @@ const connectFromEnvVariables = (modelName: string) => {
 export const getCollection = (collectionName?: string) => __conn.getCollection(collectionName);
 
 /**
- * Create model from given name, from default connection
+ * Create a model from a given name, from default connection
  */
 export const model = (name: string, schema, options?) => {
   if (!__conn) {

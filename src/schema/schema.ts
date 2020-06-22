@@ -47,7 +47,7 @@ export class Schema {
    * @class
    * @public
    *
-   * @param obj in definitions of Schema
+   * @param obj defined in the Schema
    * @returns Schema
    *
    * @example

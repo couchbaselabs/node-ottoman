@@ -125,7 +125,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
         return response.rows[0];
       }
-      throw new Error('The query did not return results.');
+      throw new Error('The query did not return any results.');
     };
 
     static findById = async (key: string, options: FindByIdOptions = {}) => {
