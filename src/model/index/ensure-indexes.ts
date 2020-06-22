@@ -4,7 +4,7 @@ import { ensureViewIndexes } from './view/ensure-view-indexes';
 import { ensureN1qlIndexes } from './n1ql/ensure-n1ql-indexes';
 
 /**
- * Ensure all indexes are create on DB Server
+ * Ensure that all indexes are created in the server
  */
 export const ensureIndexes = async (connection?: ConnectionManager) => {
   const currentConnection = connection || getDefaultConnection();

@@ -1,7 +1,7 @@
 const replaceList = ['ALL', 'DISTINCT', 'RAW', 'ELEMENT', 'VALUE'];
 
 /**
- * Convert select expression into Array of selection keys
+ * Convert select expression into an Array of selection keys
  * */
 export const parseStringSelectExpr = (expr: string): string[] => {
   if (expr.indexOf(',') === -1 && expr.indexOf(' as ') === -1) {

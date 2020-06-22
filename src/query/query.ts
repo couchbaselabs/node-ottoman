@@ -88,7 +88,7 @@ export class Query extends BaseQuery {
   }
 
   /**
-   * Add result selectors to SELECT clause.
+   * Add results selectors to SELECT clause.
    * @method
    * @public
    *
@@ -316,7 +316,7 @@ export class Query extends BaseQuery {
   }
 
   /**
-   * Converts the conditionals parameters passed to the constructor to the properties of the N1QL Query.
+   * Converts the conditional parameters passed to the constructor to the properties of the N1QL Query.
    * @method
    * @public
    *

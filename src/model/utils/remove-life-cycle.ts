@@ -7,7 +7,7 @@ import { updateRefdocIndexes } from './update-refdoc-indexes';
  * Remove lifecycle including hooks
  * @ignore
  */
-export const removeLifeCicle = async ({ id, options, metadata, refKeys, data }) => {
+export const removeLifeCycle = async ({ id, options, metadata, refKeys, data }) => {
   const { schema, collection } = metadata;
   const document = data;
   await execHooks(schema, 'preHooks', HOOKS.REMOVE, document);

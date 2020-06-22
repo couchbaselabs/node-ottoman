@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: "This is a sample server Travel-Sample"
+  description: "This is a sample server for Travel-Sample"
   version: "1.0.0"
   title: "Swagger Travel-Sample"
 host: "localhost:4500"
@@ -29,7 +29,7 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "Airport object that needs to be added"
+        description: "Airport object that should be added"
         required: true
         schema:
           $ref: "#/definitions/Airport"
@@ -39,7 +39,7 @@ paths:
     get:
       tags:
       - "airport"
-      summary: "List of airport"
+      summary: "List of airports"
       description: ""
       operationId: "listAirport"
       produces:
@@ -59,12 +59,12 @@ paths:
         type: "string"
       responses:
         "200":
-          description: "successful operation"
+          description: "Operation completed successfully"
           schema:
             $ref: "#/definitions/ListAirportsResponse"
         "400":
           description: "Invalid username/password supplied"
-    
+
   /airports/{id}:
     put:
       tags:
@@ -79,13 +79,13 @@ paths:
       parameters:
       - name: "id"
         in: "path"
-        description: "ID of airport to replace"
+        description: "ID of the airport to be replaced"
         required: true
         type: "string"
         format: "uuid"
       - in: "body"
         name: "body"
-        description: "Airport object that needs to be replaced"
+        description: "Airport object that should be replaced"
         required: true
         schema:
           $ref: "#/definitions/Airport"
@@ -93,9 +93,9 @@ paths:
         "400":
           description: "InvalidValidation exception"
         "404":
-          description: "document not found"
+          description: "Document not found"
         "500":
-          description: "Server fails"
+          description: "Internal Server Error"
     patch:
       tags:
       - "airport"
@@ -109,13 +109,13 @@ paths:
       parameters:
       - name: "id"
         in: "path"
-        description: "ID of airport to replace"
+        description: "ID of the airport to be replaced"
         required: true
         type: "string"
         format: "uuid"
       - in: "body"
         name: "body"
-        description: "Airport object that needs to be replaced"
+        description: "Airport object that should be replaced"
         required: true
         schema:
           $ref: "#/definitions/Airport"
@@ -123,9 +123,9 @@ paths:
         "400":
           description: "InvalidValidation exception"
         "404":
-          description: "document not found"
+          description: "Document not found"
         "500":
-          description: "Server fails"
+          description: "Internal Server Error"
     get:
       tags:
       - "airport"
@@ -137,17 +137,17 @@ paths:
       parameters:
       - name: "id"
         in: "path"
-        description: "ID of airport to return"
+        description: "ID of the airport be to returned"
         required: true
         type: "string"
         format: "uuid"
       responses:
         "200":
-          description: "successful operation"
+          description: "Operation completed successfully"
           schema:
             $ref: "#/definitions/Airport"
         "404":
-          description: "document not found"
+          description: "Document not found"
     delete:
       tags:
       - "airport"
@@ -159,13 +159,13 @@ paths:
       parameters:
       - name: "id"
         in: "path"
-        description: "Airport id to delete"
+        description: "Airport id to be deleted"
         required: true
         type: "string"
         format: "uuid"
       responses:
         "404":
-          description: "document not found"
+          description: "Document not found"
   /hotels:
     post:
       tags:
@@ -180,7 +180,7 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "Hotel object that needs to be added"
+          description: "Hotel object that should be added"
           required: true
           schema:
             $ref: "#/definitions/Hotel"
@@ -190,7 +190,7 @@ paths:
     get:
       tags:
         - "hotels"
-      summary: "List of hotel"
+      summary: "List of hotels"
       description: ""
       operationId: "listHotel"
       produces:
@@ -210,7 +210,7 @@ paths:
         type: "string"
       responses:
         "200":
-          description: "successful operation"
+          description: "Operation completed successfully"
           schema:
             $ref: "#/definitions/ListHotelsResponse"
         "400":
@@ -219,9 +219,9 @@ paths:
     put:
       tags:
         - "hotels"
-      summary: "Replace an existing airport"
+      summary: "Replace an existing hotel"
       description: ""
-      operationId: "replaceAirport"
+      operationId: "replaceHotel"
       consumes:
         - "application/json"
       produces:
@@ -229,13 +229,13 @@ paths:
       parameters:
       - name: "id"
         in: "path"
-        description: "ID of airport to replace"
+        description: "ID of the hotel to be replaced"
         required: true
         type: "string"
         format: "uuid"
       - in: "body"
         name: "body"
-        description: "Airport object that needs to be replaced"
+        description: "Hotel object that should to be replaced"
         required: true
         schema:
           $ref: "#/definitions/Hotel"
@@ -243,9 +243,9 @@ paths:
         "400":
           description: "InvalidValidation exception"
         "404":
-          description: "document not found"
+          description: "Document not found"
         "500":
-          description: "Server fails"
+          description: "Internal Server Error"
     patch:
       tags:
         - "hotels"
@@ -259,13 +259,13 @@ paths:
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of hotel to replace"
+          description: "ID of the hotel to be replaced"
           required: true
           type: "string"
           format: "uuid"
         - in: "body"
           name: "body"
-          description: "Hotel object that needs to be replaced"
+          description: "Hotel object that should to be replaced"
           required: true
           schema:
             $ref: "#/definitions/Hotel"
@@ -273,9 +273,9 @@ paths:
         "400":
           description: "InvalidValidation exception"
         "404":
-          description: "document not found"
+          description: "Document not found"
         "500":
-          description: "Server fails"
+          description: "Internal Server Error"
     get:
       tags:
         - "hotels"
@@ -287,17 +287,17 @@ paths:
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of hotel to return"
+          description: "ID of the hotel to be returned"
           required: true
           type: "string"
           format: "uuid"
       responses:
         "200":
-          description: "successful operation"
+          description: "Operation completed successfully"
           schema:
             $ref: "#/definitions/Hotel"
         "404":
-          description: "document not found"
+          description: "Document not found"
     delete:
       tags:
         - "hotels"
@@ -309,18 +309,18 @@ paths:
       parameters:
         - name: "id"
           in: "path"
-          description: "Hotel id to delete"
+          description: "Hotel id to be deleted"
           required: true
           type: "string"
           format: "uuid"
       responses:
         "404":
-          description: "document not found"
+          description: "Document not found"
   /flightPaths:
     post:
       tags:
         - "flights"
-      summary: "Add a new hotel to the travel-sample bucket"
+      summary: "Add a new Flight Path to the travel-sample bucket"
       description: ""
       operationId: "addFlightPaths"
       consumes:
@@ -330,7 +330,7 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "Flight object that needs to be added"
+          description: "Flight Path object that needs to be added"
           required: true
           schema:
             $ref: "#/definitions/Route"
@@ -340,9 +340,9 @@ paths:
     get:
       tags:
         - "flights"
-      summary: "List of flight"
+      summary: "List of flight paths"
       description: ""
-      operationId: "listHotel"
+      operationId: "listFlights"
       produces:
         - "application/json"
       parameters:
@@ -364,7 +364,7 @@ paths:
           type: "string"
       responses:
         "200":
-          description: "successful operation"
+          description: "Operation completed successfully"
           schema:
             $ref: "#/definitions/ListFlightResponse"
         "400":
@@ -383,13 +383,13 @@ paths:
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of flight to replace"
+          description: "ID of the flight to be replaced"
           required: true
           type: "string"
           format: "uuid"
         - in: "body"
           name: "body"
-          description: "Flight object that needs to be replaced"
+          description: "Flight object that should be replaced"
           required: true
           schema:
             $ref: "#/definitions/Route"
@@ -397,9 +397,9 @@ paths:
         "400":
           description: "InvalidValidation exception"
         "404":
-          description: "document not found"
+          description: "Document not found"
         "500":
-          description: "Server fails"
+          description: "Internal Server Error"
     patch:
       tags:
         - "flights"
@@ -413,13 +413,13 @@ paths:
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of flight to replace"
+          description: "ID of the flight to be replaced"
           required: true
           type: "string"
           format: "uuid"
         - in: "body"
           name: "body"
-          description: "Flight object that needs to be replaced"
+          description: "Flight object that should be replaced"
           required: true
           schema:
             $ref: "#/definitions/Route"
@@ -427,9 +427,9 @@ paths:
         "400":
           description: "InvalidValidation exception"
         "404":
-          description: "document not found"
+          description: "Document not found"
         "500":
-          description: "Server fails"
+          description: "Internal Server Error"
     get:
       tags:
         - "flights"
@@ -441,20 +441,20 @@ paths:
       parameters:
         - name: "id"
           in: "path"
-          description: "ID of flight to return"
+          description: "ID of the flight to be returned"
           required: true
           type: "string"
           format: "uuid"
       responses:
         "200":
-          description: "successful operation"
+          description: "operation completed successfully"
           schema:
             $ref: "#/definitions/Route"
         "404":
-          description: "document not found"
+          description: "Document not found"
     delete:
       tags:
-        - "hotels"
+        - "flights"
       summary: "Deletes a flight"
       description: ""
       operationId: "deleteFlight"
@@ -463,13 +463,13 @@ paths:
       parameters:
         - name: "id"
           in: "path"
-          description: "Flight id to delete"
+          description: "Flight id to be deleted"
           required: true
           type: "string"
           format: "uuid"
       responses:
         "404":
-          description: "document not found"
+          description: "Document not found"
 definitions:
   Geolocation:
     type: "object"
@@ -508,7 +508,7 @@ definitions:
       tz:
         type: "string"
         example: "Europe/Paris"
-      icao: 
+      icao:
         type: "string"
         example: "LFAC"
       faa:
@@ -549,7 +549,7 @@ definitions:
   Hotel:
     type: "object"
     properties:
-      address: 
+      address:
         type: "string"
         example: "580 Beach St"
       alias:

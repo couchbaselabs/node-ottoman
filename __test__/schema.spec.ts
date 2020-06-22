@@ -402,7 +402,7 @@ describe('Schema Types', () => {
         validationsSuccessAssertions(data, schema1, schema2, schema3, schema4, schema5);
       });
 
-      test('should throw a validation error when max value date is not correctly', () => {
+      test('should throw a validation error when max value date is not correctly set', () => {
         const data = {
           name: 'John Doe',
           birthday: new Date('2001-01-01'),
@@ -410,7 +410,7 @@ describe('Schema Types', () => {
         validationsFailAssertions(data, schema1, schema2, schema3, schema4, schema5, opts);
       });
     });
-    test('should cast to same object when the date property is empty', () => {
+    test('should cast to the same object when the date property is empty', () => {
       const schema = {
         birthday: Date,
         name: String,
@@ -421,7 +421,7 @@ describe('Schema Types', () => {
 
       expect(castSchema(data, schema)).toEqual(data);
     });
-    test('should throw an error when the date property is not date', () => {
+    test('should throw an error when the date property is not a date', () => {
       const schema = {
         birthday: Date,
         name: String,
@@ -435,7 +435,7 @@ describe('Schema Types', () => {
     });
   });
   describe('Schema Array Types', () => {
-    test('should create successfully an array of a type', () => {
+    test('should create successfully an array of the defined type', () => {
       const schemaString = {
         names: [String],
       };
@@ -445,7 +445,7 @@ describe('Schema Types', () => {
       };
       expect(new Schema(schemaBoolean)).toBeDefined();
     });
-    test('should throw an error when the array property first item has not the type', () => {
+    test('should throw an error when the array property first item has not the right type', () => {
       const schema = {
         names: [{ required: true }],
         amount: Number,
@@ -453,7 +453,7 @@ describe('Schema Types', () => {
       expect(() => new Schema(schema)).toThrow(BuildSchemaError);
     });
     describe('Array Type Validations', () => {
-      test('should cast to same object when all items of the array are valid', () => {
+      test('should cast to the same object when all items of the array are valid', () => {
         const schemaString = {
           names: [{ type: String, validator: { regexp: new RegExp('[a-zA-Z\\s]'), message: 'Only letters allowed' } }],
         };
@@ -469,7 +469,7 @@ describe('Schema Types', () => {
         };
         expect(castSchema(amountsData, schemaNumber)).toEqual(amountsData);
       });
-      test('should throw an error when any items of the array are invalid', () => {
+      test('should throw an error when an item of the array is invalid', () => {
         const schemaString = {
           names: [{ type: String, validator: { regexp: new RegExp('[a-zA-Z\\s]'), message: 'Only letters allowed' } }],
         };
@@ -486,7 +486,7 @@ describe('Schema Types', () => {
         };
         expect(() => castSchema(amountsData, schemaNumber)).toThrow(new ValidationError('Not a valid value'));
       });
-      test('should cast to same object when array property is empty', () => {
+      test('should cast to the same object when array property is empty', () => {
         const schema = {
           names: [String],
           amount: Number,
@@ -497,7 +497,7 @@ describe('Schema Types', () => {
 
         expect(castSchema(data, schema)).toEqual(data);
       });
-      test('should throw an error when the array property is not array', () => {
+      test('should throw an error when the array property is not an array', () => {
         const schema = {
           names: [String],
           amount: Number,
@@ -512,7 +512,7 @@ describe('Schema Types', () => {
     });
   });
   describe('Schema Embed Types', () => {
-    test('should create a valid schema when using embedded schema def', () => {
+    test('should create a valid schema when using an embedded schema def', () => {
       const schema = {
         address: {
           line: String,
@@ -525,7 +525,7 @@ describe('Schema Types', () => {
       expect(result).toBeInstanceOf(Schema);
     });
 
-    test('should create a valid schema when using embedded schema instance', () => {
+    test('should create a valid schema when using an embedded schema instance', () => {
       const addressSchema = new Schema({
         line: String,
         line2: String,
@@ -540,7 +540,7 @@ describe('Schema Types', () => {
       expect(result).toBeInstanceOf(Schema);
     });
 
-    test('should cast to same object when the embed property is empty', () => {
+    test('should cast to the same object when the embedded property is empty', () => {
       const schema = {
         birthday: Date,
         names: {
@@ -554,7 +554,7 @@ describe('Schema Types', () => {
 
       expect(castSchema(data, schema)).toEqual(data);
     });
-    test('should throw an error when the embed property is not embed', () => {
+    test('should throw an error when the embedded property is not embedded', () => {
       const schema = {
         birthday: Date,
         names: {
@@ -570,7 +570,7 @@ describe('Schema Types', () => {
     });
   });
   describe('Schema Model Ref Types', () => {
-    test('should create a schema when using ref to another schema', () => {
+    test('should create a schema when using a ref to another schema', () => {
       const userSchema = new Schema({ name: String });
       const schema = new Schema({ user: { type: userSchema, ref: 'User' } });
       expect(schema).toBeDefined();
@@ -582,7 +582,7 @@ describe('Schema Types', () => {
       expect(schema).toBeDefined();
       expect(schema).toBeInstanceOf(Schema);
     });
-    test('should return true when validates schema with another model', () => {
+    test('should return true when validating schema with another model', () => {
       const UserSchema = new Schema({ name: String });
       const schema = new Schema({ user: { type: UserSchema, ref: 'User' } });
       const data = {
@@ -590,7 +590,7 @@ describe('Schema Types', () => {
       };
       expect(castSchema(data, schema)).toEqual(data);
     });
-    test('should throw an error validation when validates schema with another model', () => {
+    test('should throw an error validation when validating schema with another model', () => {
       const UserSchema = new Schema({ name: String });
       const schema = new Schema({ user: { type: UserSchema, ref: 'User' } });
       const data = {
@@ -611,7 +611,7 @@ describe('Schema Types', () => {
 
       expect(new Schema(postSchemaDef)).toBeInstanceOf(Schema);
     });
-    test('should return true when validates the schema with the array of references', () => {
+    test('should return true when validating the schema with the array of references', () => {
       const commentSchema = new Schema({
         title: String,
         description: String,

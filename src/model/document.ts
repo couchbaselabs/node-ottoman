@@ -5,7 +5,7 @@ import { castSchema } from '../schema/helpers';
 import { ModelMetadata } from './interfaces/model-metadata';
 import { getModelMetadata } from './utils/model.utils';
 import { storeLifeCycle } from './utils/store-life-cycle';
-import { removeLifeCicle } from './utils/remove-life-cycle';
+import { removeLifeCycle } from './utils/remove-life-cycle';
 import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
 import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
@@ -78,7 +78,7 @@ export abstract class Document<T> {
       remove: getModelRefKeys(data, prefix),
     };
     const id = this._getId();
-    const { result, document } = await removeLifeCicle({ id, options, metadata, refKeys, data });
+    const { result, document } = await removeLifeCycle({ id, options, metadata, refKeys, data });
     this._applyData(document);
     return result;
   }
@@ -165,7 +165,7 @@ export abstract class Document<T> {
   }
 
   /**
-   * Allow easy apply data from object to current document.
+   * Allow to easyly apply data from object to current document.
    */
   _applyData(data) {
     for (const key in data) {

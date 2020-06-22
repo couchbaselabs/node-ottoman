@@ -170,7 +170,7 @@ describe('Test Query Types', () => {
     expect(run).toThrow('The WITH clause has an incorrect syntax');
   });
 
-  test('Check the exception WHERE operator not found', async () => {
+  test('Check the exception WHERE with an operator not found', async () => {
     const expr_where = {
       $nill: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }, { free_lunch: [1] }],
     };

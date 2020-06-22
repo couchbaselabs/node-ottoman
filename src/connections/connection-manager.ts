@@ -29,7 +29,7 @@ export class ConnectionManager {
   viewIndexManager;
 
   /**
-   * Dictionary for all models register on this connection.
+   * Dictionary for all models registered on this connection.
    */
   models = {};
 

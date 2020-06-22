@@ -25,7 +25,7 @@ export const storeLifeCycle = async ({ key, data, options, metadata, refKeys }) 
 
   const result = await store(key, document, options, collection, ID_KEY);
 
-  // After store document update index refdocs
+  // After storing the document update the index refdocs
   updateRefdocIndexes(refKeys, key, collection);
 
   if (options.cas) {

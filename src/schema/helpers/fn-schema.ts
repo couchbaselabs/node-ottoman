@@ -9,7 +9,7 @@ type ParseResult = {
 };
 
 /**
- * Build the fields using definition, if the [[obj]] is a schema instance will be taken the fields
+ * Build the fields using the given definition, if the [[obj]] is a schema instance, the data will be taken from the fields provided
  * @function
  * @public
  *
@@ -41,7 +41,7 @@ export const buildFields = (obj: Schema | SchemaDef): FieldMap => {
 };
 
 /**
- * Parse the definition of a field in the schema to identify the type
+ * Parse the definition of a field in the schema to identify its type
  * @function
  * @private
  * @param value that is going to parsed
@@ -93,7 +93,7 @@ const _parseType = (value): ParseResult => {
  * Make a field using its definition, throw a [[BuildSchemaError]] if the type is not supported
  * @private
  * @param name of the field
- * @param def result of parse the field schema
+ * @param def result of parsing the field schema
  */
 const _makeField = (name: string, def: ParseResult): IOttomanType => {
   const typeFactory = Schema.Types[String(def.type)];
@@ -104,7 +104,7 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
 };
 /**
  * Validate data using the schema definition
- * @param data that's going to be validated
+ * @param data that is going to be validated
  * @param schema that will be used to validate
  * @throws BuildSchemaError, ValidationError
  */
@@ -131,7 +131,7 @@ export const applyDefaultValue = (obj: ModelObject, schema: Schema | SchemaDef):
   return _schema.applyDefaultsToObject(obj);
 };
 /**
- * Register a custom type to Schema supports type.
+ * Register a custom type to Schema supported types.
  * @function
  * @param name
  * @param factory
