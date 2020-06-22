@@ -64,7 +64,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
         case undefined:
           indexName = key;
           const ddocName = `${scope}${name}`;
-          ModelFactory[key] = buildViewIndexQuery(connection, ddocName, indexName, fields);
+          ModelFactory[key] = buildViewIndexQuery(connection, ddocName, indexName, fields, ModelFactory);
           registerViewIndex(ddocName, indexName, fields, name);
           break;
         case 'refdoc':
