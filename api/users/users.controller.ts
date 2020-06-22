@@ -1,19 +1,17 @@
 import express from 'express';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserModel } from './users.model';
 import { makeResponse } from '../shared/make.response';
-import { FindOptions } from '../../src/handler/find/find-options';
-import { isDocumentNotFoundError } from '../../src/utils/is-not-found';
+import { FindOptions, isDocumentNotFoundError } from '../../lib';
 const router = express();
 const authRouter = express();
 
 authRouter.post('/login', async (req, res) => {
   await makeResponse(res, async () => {
-    const { username, password } = req.body;
-    const { rows: result } = await UserModel.findByName(username, { select: '`password`' });
+    const { name, password } = req.body;
+    const { rows: result } = await UserModel.findByName(name, { select: 'password' });
     const user = result[0];
-    if (bcrypt.compareSync(password, user.password)) {
+    if (user && user.comparePasswordSync(password)) {
       const token = jwt.sign({ user }, 'ottoman.js', {
         expiresIn: '24h',
       });
@@ -35,7 +33,6 @@ authRouter.post('/login', async (req, res) => {
 
 authRouter.post('/register', async (req, res) => {
   await makeResponse(res, () => {
-    req.body.password = bcrypt.hashSync(req.body.password, 10);
     const user = new UserModel(req.body);
     return user.save();
   });

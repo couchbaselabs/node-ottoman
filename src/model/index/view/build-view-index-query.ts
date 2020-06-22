@@ -1,9 +1,9 @@
-import { FindOptions } from '../../../handler/find/find-options';
+import { FindOptions } from '../../../handler';
 
 /**
  * Index function factory
  */
-export const buildViewIndexQuery = (connection, ddocName, indexName, fields) => (...values: any[]) => {
+export const buildViewIndexQuery = (connection, ddocName, indexName, fields, Model) => async (...values: any[]) => {
   if (values.length >= fields.length) {
     let options: any = {};
     if (values.length >= fields.length + 1) {
@@ -23,7 +23,13 @@ export const buildViewIndexQuery = (connection, ddocName, indexName, fields) => 
 
     options.key = key;
 
-    return connection.bucket.viewQuery(ddocName, indexName, options);
+    const result = await connection.bucket.viewQuery(ddocName, indexName, options);
+    const populatedResults: any[] = [];
+    for (const row of result.rows) {
+      const populatedDocument = await Model.findById(row.id, options);
+      populatedResults.push(populatedDocument);
+    }
+    return { rows: populatedResults, meta: result.meta };
   } else {
     throw new Error(`Function ${indexName} receive to few arguments`);
   }
