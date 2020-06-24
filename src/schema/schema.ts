@@ -22,7 +22,9 @@ export type ModelObject = { [key: string]: unknown };
 export type FieldMap = { [key: string]: IOttomanType };
 export type PluginConstructor = (Schema) => void;
 export type FactoryFunction = (name, options) => IOttomanType;
+export type CustomValidatorFunction = (value: unknown) => void;
 export type SupportType = { [key: string]: FactoryFunction };
+export type CustomValidations = { [key: string]: CustomValidatorFunction };
 
 export class Schema {
   static Types: SupportType = {
@@ -34,6 +36,7 @@ export class Schema {
     Reference: referenceTypeFactory,
     Embed: embedTypeFactory,
   };
+  static validators: CustomValidations = {};
   statics = {};
   methods = {};
   preHooks = {};

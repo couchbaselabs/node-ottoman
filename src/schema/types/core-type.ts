@@ -11,7 +11,7 @@ export interface CoreTypeOptions {
   required?: boolean | RequiredOption | RequiredFunction;
   default?: unknown;
   auto?: string;
-  validator?: ValidatorOption | ValidatorFunction;
+  validator?: ValidatorOption | ValidatorFunction | string;
 }
 
 export interface IOttomanType {
@@ -28,7 +28,7 @@ export abstract class CoreType implements IOttomanType {
     return this.options?.required || false;
   }
 
-  get validator(): ValidatorOption | ValidatorFunction | undefined {
+  get validator(): ValidatorOption | ValidatorFunction | string | undefined {
     return this.options?.validator;
   }
 
@@ -77,11 +77,8 @@ export abstract class CoreType implements IOttomanType {
     }
   }
 
-  checkValidator(value: unknown): string | void {
-    const _validator = (typeof this.validator === 'function'
-      ? this.validator(value)
-      : this.validator) as ValidatorOption;
-    return applyValidator(value, _validator);
+  checkValidator(value: unknown): void {
+    applyValidator(value, this.validator, this.name);
   }
 
   isEmpty(value: unknown): boolean {

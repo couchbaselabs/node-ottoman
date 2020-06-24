@@ -37,7 +37,7 @@ export class StringType extends CoreType {
     }
     const _value = String(value);
     errors.push(this._checkEnum(_value) || '');
-    errors.push(this.checkValidator(_value) || '');
+    this.checkValidator(_value);
     errors = errors.filter((e) => e !== '');
     if (errors.length > 0) {
       throw new ValidationError(errors.join('\n'));

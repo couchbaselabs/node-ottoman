@@ -22,6 +22,7 @@ export class ReferenceType extends CoreType {
     if (!is(value, Object) && !isModel(value)) {
       throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
+    this.checkValidator(value);
     const _value = value as ModelObject;
     this.schema.cast(_value);
     return _value;

@@ -14,6 +14,7 @@ class ArrayType extends CoreType {
     }
     const _value = value as unknown[];
     const _valueResult: unknown[] = [];
+    this.checkValidator(_value);
     for (const key in _value) {
       _valueResult.push(this.itemType.cast(_value[key]));
     }

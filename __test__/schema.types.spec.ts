@@ -96,7 +96,7 @@ describe('Schema Types', () => {
   test('should throw an error when the validator fails', () => {
     const validatorJohnName = (v) => {
       if (v !== 'John') {
-        return 'Only John is allowed';
+        throw new Error('Only John is allowed');
       }
     };
 
@@ -107,7 +107,7 @@ describe('Schema Types', () => {
     const data = {
       firstName: 'Peter',
     };
-    expect(() => castSchema(data, schema)).toThrow(ValidationError);
+    expect(() => castSchema(data, schema)).toThrow('Only John is allowed');
 
     const schemaWithRegex = {
       firstName: {

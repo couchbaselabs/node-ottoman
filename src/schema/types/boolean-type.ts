@@ -13,6 +13,7 @@ export class BooleanType extends CoreType {
     if (is(value, Object)) {
       throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
+    this.checkValidator(value);
     return Boolean(value);
   }
 

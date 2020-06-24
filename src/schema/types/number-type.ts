@@ -29,8 +29,9 @@ class NumberType extends CoreType {
   }
 
   cast(value: unknown) {
-    const _value = Number(super.cast(value));
+    value = super.cast(value);
     if (this.isEmpty(value)) return value;
+    const _value = Number(value);
     let errors: string[] = [];
 
     if (isNaN(_value)) {
@@ -40,7 +41,7 @@ class NumberType extends CoreType {
     if (this.intVal && _value % 1 !== 0) {
       errors.push(`Property ${this.name} only allows Integer values`);
     }
-
+    this.checkValidator(_value);
     errors.push(this._checkMin(_value));
     errors.push(this._checkMax(_value));
     errors = errors.filter((e) => e !== '');

@@ -44,6 +44,7 @@ class DateType extends CoreType {
     if (_value === undefined) {
       throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
+    this.checkValidator(_value);
     let errors: string[] = [];
     errors.push(this._checkMinDate(_value));
     errors.push(this._checkMaxDate(_value));

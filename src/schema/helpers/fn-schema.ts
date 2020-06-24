@@ -1,7 +1,7 @@
 import { IOttomanType } from '../types';
 import { is } from '../../utils/is-type';
 import { BuildSchemaError } from '../errors';
-import { Schema, SchemaDef, ModelObject, FieldMap, FactoryFunction } from '../schema';
+import { Schema, SchemaDef, ModelObject, FieldMap, FactoryFunction, CustomValidations } from '../schema';
 import { Model } from '../..';
 
 type ParseResult = {
@@ -146,4 +146,18 @@ export const registerType = (name: string, factory: FactoryFunction): void => {
     throw new Error('A type with this name has already been registered');
   }
   Schema.Types[name] = factory;
+};
+
+export const addValidators = (validators: CustomValidations) => {
+  if (typeof validators !== 'object') {
+    throw new BuildSchemaError('Validators must be an object.');
+  }
+
+  for (const prop in validators) {
+    const validator = validators[prop];
+    if (typeof validator !== 'function') {
+      throw new BuildSchemaError('Validator object properties must be functions.');
+    }
+    Schema.validators[prop] = validator;
+  }
 };
