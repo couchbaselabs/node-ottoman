@@ -19,6 +19,35 @@ If connecting fails on your machine, try using 127.0.0.1 instead of `localhost`.
 
 ![Connection Anatomy](./connection-anatomy.png)
 
+
+## Connection options  
+`connect` function also support a javascript object as parameter.
+```javascript
+import { connect } from 'ottoman';
+const connection = connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel-sample',
+    username: 'admin',
+    password: 'password'
+});
+```
+
+The availables options are:
+
+```typescript
+interface ConnectOptions {
+  connectionString: string;
+  username: string;
+  password: string;
+  bucketName: string;
+  clientCertificate?: string;
+  certificateChain?: string;
+  transcoder?: unknown;
+  logFunc?: unknown;
+}
+
+```
+
 ## Using default connection
 
 ```javascript

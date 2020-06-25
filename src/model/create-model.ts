@@ -1,6 +1,6 @@
 import { Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
-import { COLLECTION_KEY, DEFAULT_ID_KEY, DEFAULT_SCOPE } from '../utils/constants';
+import { COLLECTION_KEY, DEFAULT_ID_KEY, DEFAULT_SCOPE, SCOPE_KEY } from '../utils/constants';
 import { extractSelect } from '../utils/query/extract-select';
 import { find } from '../handler/find/find';
 import { CreateModel } from './interfaces/create-model.interface';
@@ -22,19 +22,23 @@ import { IFindOptions } from '../handler/find/find-options';
 export const createModel = ({ name, schemaDraft, options, connection }: CreateModel) => {
   const schema = schemaDraft instanceof Schema ? schemaDraft : new Schema(schemaDraft);
 
-  const ID_KEY = options && options.id ? options.id : DEFAULT_ID_KEY;
-  const scope = options && options.scope ? options.scope : DEFAULT_SCOPE;
+  const ID_KEY = options && options.idKey ? options.idKey : DEFAULT_ID_KEY;
+  const scopeName = options && options.scopeName ? options.scopeName : DEFAULT_SCOPE;
   const collectionName = options && options.collectionName ? options.collectionName : name;
-  const collection = connection.getCollection(collectionName, scope);
+  const scopeKey = options && options.scopeKey ? options.scopeKey : SCOPE_KEY;
+  const collectionKey = options && options.collectionKey ? options.collectionKey : COLLECTION_KEY;
+  const collection = connection.getCollection(collectionName, scopeName);
 
   const metadata: ModelMetadata = {
     modelName: name,
     collectionName: collectionName,
-    scopeName: scope,
+    scopeName,
     collection,
     schema,
     ID_KEY,
     connection,
+    scopeKey,
+    collectionKey,
   };
 
   const ModelFactory = _buildModel(metadata);
@@ -43,7 +47,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
 
   // Adding dynamic static methods
   for (const key in schema?.statics) {
-    ModelFactory[key] = schema?.statics[key];
+    ModelFactory[key] = schema?.statics[key].bind(ModelFactory);
   }
 
   // Adding indexes
@@ -51,24 +55,24 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
     if (schema.index.hasOwnProperty(key)) {
       const { by, options, type } = schema.index[key];
       const fields = Array.isArray(by) ? by : [by];
-      let indexName = `${connection.bucketName}_${scope}_${name}$${indexFieldsName(fields)}`;
+      let indexName = `${connection.bucketName}_${scopeName}_${collectionName}$${indexFieldsName(fields)}`;
       indexName = indexName.replace(/-/g, '_');
       switch (type) {
         case 'n1ql':
           // Register access method e.g FindByName
           ModelFactory[key] = buildIndexQuery(ModelFactory, fields, key, options);
           // Register index to sync later with the server
-          registerIndex(indexName, fields, name);
+          registerIndex(indexName, fields, collectionName);
           break;
         case 'view':
         case undefined:
           indexName = key;
-          const ddocName = `${scope}${name}`;
+          const ddocName = `${scopeName}${collectionName}`;
           ModelFactory[key] = buildViewIndexQuery(connection, ddocName, indexName, fields, ModelFactory);
-          registerViewIndex(ddocName, indexName, fields, name);
+          registerViewIndex(ddocName, indexName, fields, collectionName, collectionKey);
           break;
         case 'refdoc':
-          const prefix = `${scope}${name}`;
+          const prefix = `${scopeName}${collectionName}`;
           ModelFactory[key] = buildViewRefdoc(metadata, ModelFactory, fields, prefix);
           registerRefdocIndex(fields, prefix);
           break;
@@ -91,7 +95,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
 };
 
 export const _buildModel = (metadata: ModelMetadata) => {
-  const { schema, collection, ID_KEY, collectionName } = metadata;
+  const { schema, collection, ID_KEY, collectionName, collectionKey, scopeKey, scopeName } = metadata;
   return class _Model<T> extends Model<T> {
     constructor(data) {
       super(data);
@@ -146,19 +150,26 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static update = async (data, id?: string) => {
       const key = id || data[ID_KEY];
       const { value } = await collection.get(key);
-      const updated = { ...value, ...data, ...{ [ID_KEY]: key, [COLLECTION_KEY]: value[COLLECTION_KEY] } };
+      const updated = {
+        ...value,
+        ...data,
+        ...{ [ID_KEY]: key, [collectionKey]: value[collectionKey], [scopeKey]: value[scopeKey] },
+      };
       const instance = new _Model({ ...updated });
       return instance.save();
     };
 
     static replace = (data, id?) => {
       const key = id || data[ID_KEY];
-      const instance = new _Model({ ...data, ...{ [ID_KEY]: key, [COLLECTION_KEY]: collectionName } });
+      const instance = new _Model({
+        ...data,
+        ...{ [ID_KEY]: key, [collectionKey]: collectionName, [scopeKey]: scopeName },
+      });
       return instance.save();
     };
 
     static remove = (id: string) => {
-      const instance = new _Model({ ...{ [ID_KEY]: id, [COLLECTION_KEY]: collectionName } });
+      const instance = new _Model({ ...{ [ID_KEY]: id, [collectionKey]: collectionName, [scopeKey]: scopeName } });
       return instance.remove();
     };
 

@@ -7,6 +7,10 @@ export interface ConnectOptions {
   username: string;
   password: string;
   bucketName: string;
+  clientCertificate?: string;
+  certificateChain?: string;
+  transcoder?: unknown;
+  logFunc?: unknown;
 }
 
 /**

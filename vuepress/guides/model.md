@@ -6,7 +6,7 @@ Models are responsible for creating and reading documents from the underlying Co
 
 ## Compiling your first model
 
-When you call ottoman.model() on a schema, Ottoman compiles a model for you.
+When you call `model()` function on a schema, Ottoman compiles a model for you.
 
 ```javascript
 const schema = new Schema({name: String, age: Number})
@@ -15,8 +15,36 @@ const User = model('User', schema);
 The first argument is the name of the collection your model is for. for the example above, the `model` User is for the **User** collection in the database.
 
 ::: warning
-The model() function makes a copy of schema. Make sure that you've added everything you want to schema, including hooks, before calling model()!
+The `model()` function makes a copy of schema. Make sure that you've added everything you want to schema, including hooks, before calling model()!
 :::
+
+
+### Model Options
+
+You can pass a third argument to `model()` functions in order to setup your needs. 
+In the next example we will set the `collectionName` to be `users`. 
+
+
+```javascript
+const schema = new Schema({name: String, age: Number})
+const User = model('User', schema, {collectionName: 'users'});
+```
+
+::: tip
+By default ottoman will take the model name if `collectionName` isn't provided.
+:::
+
+The models options are:
+
+```typescript
+interface ModelOptions {
+  collectionName?: string;
+  scopeName?: string;
+  idKey?: string;
+  scopeKey?: string;
+  collectionKey?: string;
+}
+```
 
 
 ## Constructing Documents
@@ -45,11 +73,16 @@ Every model has an associated connection. When you use ottoman.model(), your mod
 ## Querying
 
 Finding documents is easy with Ottoman, empower by a built-in Query Builder. 
-Documents can be retreived using each models find, findById or where static methods.
+Documents can be retreived using each models `find`, `findById`, defined [indexes](/guides/schema.html#indexes) or where [static methods](/guides/schema.html#statics).
 
 ```javascript
 User.find({name: "Jane"})
 // will return a list of all users with the name "Jane"
+```
+
+```javascript
+User.findById('userId')
+// will return the user document with the current id.
 ```
 
 See the chapter on queries for more details on how to use the [Query](/guides/query-builder) api.
@@ -59,8 +92,7 @@ See the chapter on queries for more details on how to use the [Query](/guides/qu
 Models have static remove() function to remove documents matching the given filter.
 
 ```javascript
-User.remove({age: 29})
-// will remove all users with age equal to 29
+User.remove('userId')
 ```
 
 ## Updating 
@@ -71,9 +103,6 @@ See the [API](/classes/model) docs for more detail.
 User.update({age: 30}, 'userId')
 // update document with id equal to 'userId' with age 30.
 ```
-
-<i>If you want to update a single document in the db and return it to your application, use findOneAndUpdate instead.</i>
-
 
 ## Next Up
 

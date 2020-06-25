@@ -1,6 +1,6 @@
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
-import { COLLECTION_KEY, DEFAULT_POPULATE_MAX_DEEP, SCOPE_KEY } from '../utils/constants';
+import { DEFAULT_POPULATE_MAX_DEEP } from '../utils/constants';
 import { castSchema } from '../schema/helpers';
 import { ModelMetadata } from './interfaces/model-metadata';
 import { getModelMetadata } from './utils/model.utils';
@@ -35,10 +35,11 @@ export abstract class Document<T> {
    * Save or Update documents
    */
   async save() {
+    const { scopeName, scopeKey, collectionName, collectionKey, collection, ID_KEY } = this.$;
     const data = extractDataFromModel(this);
     const options: any = {};
     let id = this._getId();
-    const prefix = `${this.$.scopeName}${this.$.collectionName}`;
+    const prefix = `${scopeName}${collectionName}`;
     const newRefKeys = getModelRefKeys(data, prefix);
     const refKeys: { add: string[]; remove: string[] } = {
       add: [],
@@ -48,7 +49,7 @@ export abstract class Document<T> {
       id = generateUUID();
       refKeys.add = newRefKeys;
     } else {
-      const { cas, value: oldData } = await this.$.collection.get(id);
+      const { cas, value: oldData } = await collection.get(id);
       const oldRefKeys = getModelRefKeys(oldData, prefix);
       refKeys.add = arrayDiff(newRefKeys, oldRefKeys);
       refKeys.remove = arrayDiff(oldRefKeys, newRefKeys);
@@ -56,11 +57,11 @@ export abstract class Document<T> {
         options.cas = cas;
       }
     }
-    const addedMetadata = { ...data, [COLLECTION_KEY]: this.$.collectionName, [SCOPE_KEY]: this.$.scopeName };
+    const addedMetadata = { ...data, [collectionKey]: collectionName, [scopeKey]: scopeName };
     const metadata = this.$;
     const { result, document } = await storeLifeCycle({ key: id, data: addedMetadata, options, metadata, refKeys });
-    if (!document[this.$.ID_KEY]) {
-      document[this.$.ID_KEY] = id;
+    if (!document[ID_KEY]) {
+      document[ID_KEY] = id;
     }
     this._applyData(document);
     return result;

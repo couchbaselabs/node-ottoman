@@ -13,19 +13,10 @@ export class ConnectionManager {
    */
   bucket;
 
-  /**
-   * @ignore
-   */
   collectionManager;
 
-  /**
-   * @ignore
-   */
   queryIndexManager;
 
-  /**
-   * @ignore
-   */
   viewIndexManager;
 
   /**

@@ -28,8 +28,8 @@ export const registerIndex = (indexName: string, fields, modelName) => {
   __indexes[indexName] = { fields, modelName };
 };
 
-export const registerViewIndex = (ddocName: string, indexName: string, fields, modelName) => {
-  const map = buildMapViewIndexFn(modelName, fields);
+export const registerViewIndex = (ddocName: string, indexName: string, fields, collectionName, collectionKey) => {
+  const map = buildMapViewIndexFn(collectionKey, collectionName, fields);
   if (!__viewIndexes[ddocName]) {
     __viewIndexes[ddocName] = { views: {} };
   }
