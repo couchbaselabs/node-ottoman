@@ -2,8 +2,7 @@
  * Extract the values to be used on select clause.
  */
 import { COLLECTION_KEY, DEFAULT_ID_KEY } from '../constants';
-import { ISelectType } from '../../query/interface';
-import { buildSelectArrayExpr, parseStringSelectExpr } from '../../query';
+import { buildSelectArrayExpr, parseStringSelectExpr, ISelectType } from '../../query';
 
 export const extractSelect = (
   select: string | string[],

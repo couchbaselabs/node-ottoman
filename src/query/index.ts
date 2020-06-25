@@ -35,5 +35,5 @@ export {
   LogicalOperatorType,
   ResultExprType,
   ReturnResultType,
-} from './interface';
+} from './interface/query.types';
 export { parseStringSelectExpr } from './utils';

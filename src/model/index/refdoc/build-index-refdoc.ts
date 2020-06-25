@@ -1,5 +1,5 @@
 import { indexFieldsName } from '../helpers/index-field-names';
-import { ModelMetadata } from '../../interfaces/model-metadata';
+import { ModelMetadata } from '../../interfaces/model-metadata.interface';
 
 export const buildViewRefdoc = (metadata: ModelMetadata, Model, fields, prefix) => async (...values: any[]) => {
   const key = buildRefKey(fields, values, prefix);

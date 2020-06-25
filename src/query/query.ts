@@ -8,7 +8,7 @@ import {
   ISelectType,
   LogicalWhereExpr,
   SortType,
-} from './interface/query-types';
+} from './interface/query.types';
 import { IndexParamsOnExceptions, IndexParamsUsingGSIExceptions, MultipleQueryTypesException } from './exceptions';
 import { buildIndexExpr, selectBuilder } from './helpers';
 

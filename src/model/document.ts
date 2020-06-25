@@ -2,7 +2,7 @@ import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
 import { DEFAULT_POPULATE_MAX_DEEP } from '../utils/constants';
 import { castSchema } from '../schema/helpers';
-import { ModelMetadata } from './interfaces/model-metadata';
+import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { getModelMetadata } from './utils/model.utils';
 import { storeLifeCycle } from './utils/store-life-cycle';
 import { removeLifeCycle } from './utils/remove-life-cycle';

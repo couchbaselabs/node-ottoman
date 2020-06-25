@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import { UserRoutes, AuthRoutes } from './users/users.controller';
@@ -21,6 +21,15 @@ app.use('/hotels', jwtMiddleware, HotelRoutes);
 app.use('/flightPaths', jwtMiddleware, RouteRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(YAML.load('./api/swagger.yaml')));
+
+// Handle not found and catch exception layer
+app.use((req: Request, res: Response) => res.status(404).json({ error: 'Route Not Match' }));
+app.use((err: Error, req: Request, res: Response) => {
+  if (err.name === 'UnauthorizedError') {
+    return res.status(401).json({ error: 'Invalid token...' });
+  }
+  return res.status(500).json({ error: err.toString() });
+});
 
 ensureIndexes()
   .then(() => {

@@ -4,17 +4,16 @@ import { COLLECTION_KEY, DEFAULT_ID_KEY, DEFAULT_SCOPE, SCOPE_KEY } from '../uti
 import { extractSelect } from '../utils/query/extract-select';
 import { find } from '../handler/find/find';
 import { CreateModel } from './interfaces/create-model.interface';
-import { ModelMetadata } from './interfaces/model-metadata';
-import { FindByIdOptions } from '../handler/find/find-by-id-options';
+import { ModelMetadata } from './interfaces/model-metadata.interface';
+import { FindByIdOptions, IFindOptions } from '../handler/';
 import { registerIndex, registerRefdocIndex, registerViewIndex } from './index/index-manager';
 import { setModelMetadata } from './utils/model.utils';
 import { buildViewIndexQuery } from './index/view/build-view-index-query';
 import { buildIndexQuery } from './index/n1ql/build-index-query';
 import { indexFieldsName } from './index/helpers/index-field-names';
 import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
-import { LogicalWhereExpr, SortType } from '../query/interface';
+import { LogicalWhereExpr, SortType } from '../query';
 import { Schema } from '../schema';
-import { IFindOptions } from '../handler/find/find-options';
 
 /**
  * @ignore
@@ -69,7 +68,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
           indexName = key;
           const ddocName = `${scopeName}${collectionName}`;
           ModelFactory[key] = buildViewIndexQuery(connection, ddocName, indexName, fields, ModelFactory);
-          registerViewIndex(ddocName, indexName, fields, collectionName, collectionKey);
+          registerViewIndex(ddocName, indexName, fields, metadata);
           break;
         case 'refdoc':
           const prefix = `${scopeName}${collectionName}`;

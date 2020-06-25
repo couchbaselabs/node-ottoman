@@ -1,4 +1,5 @@
 import { model, Schema, FindByIdOptions, FindOptions } from '../lib';
+import { delay } from './testData';
 
 const cardInfo = {
   cardNumber: '4242 4242 4242 4242',
@@ -112,12 +113,8 @@ describe('Test populate feature', () => {
     user.cats = [catCreated.id, catCreated2.id];
 
     await user.save();
-    const delay = new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 2000);
-    });
-    await delay;
+
+    await delay(2000);
     const options = new FindOptions({
       select: 'name, cats, card',
       limit: 5,

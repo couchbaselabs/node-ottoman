@@ -9,7 +9,7 @@ import {
   ISelectType,
   LogicalWhereExpr,
   SortType,
-} from '../interface';
+} from '../interface/query.types';
 import {
   AggDict,
   ComparisonEmptyOperatorDict,

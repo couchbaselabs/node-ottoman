@@ -22,7 +22,6 @@ export const buildViewIndexQuery = (connection, ddocName, indexName, fields, Mod
     }
 
     options.key = key;
-
     const result = await connection.bucket.viewQuery(ddocName, indexName, options);
     const populatedResults: any[] = [];
     for (const row of result.rows) {

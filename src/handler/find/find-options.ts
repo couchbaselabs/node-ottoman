@@ -1,4 +1,4 @@
-import { ISelectType, SortType } from '../../query/interface';
+import { ISelectType, SortType } from '../../query';
 
 export class FindOptions {
   skip?: number;

@@ -7,7 +7,7 @@ import {
   LogicalOperatorType,
   ResultExprType,
   ReturnResultType,
-} from '../interface';
+} from '../interface/query.types';
 
 /**
  * Dictionary for handling aggregation functions.

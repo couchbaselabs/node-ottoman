@@ -1,11 +1,10 @@
-import { COLLECTION_KEY } from '../../utils/constants';
 import { LogicalWhereExpr, Query } from '../../query';
 import { FindOptions } from './find-options';
 import { execPopulation } from '../../utils/populate/exec-populate';
 import { getProjectionFields } from '../../utils/query/extract-select';
 import { canBePopulated } from '../../utils/populate/can-be-populated';
 import { extractPopulate } from '../../utils/query/extract-populate';
-import { ModelMetadata } from '../../model/interfaces/model-metadata';
+import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
 
 /**
  * Find documents
@@ -14,7 +13,7 @@ import { ModelMetadata } from '../../model/interfaces/model-metadata';
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
   const { skip, limit, sort, populate, select, noCollection, noId, populateMaxDeep } = options;
-  const { connection, collectionName } = metadata;
+  const { connection, collectionName, collectionKey, scopeKey, scopeName, modelName } = metadata;
   const { bucketName, cluster } = connection;
   // Handling select
   const projectionFields = getProjectionFields(bucketName, select, { noId: noId, noCollection: noCollection });
@@ -22,7 +21,8 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   // Handling conditions
   const expr_where = {
     ...filter,
-    [COLLECTION_KEY as string]: collectionName,
+    [scopeKey as string]: scopeName,
+    [collectionKey as string]: collectionName,
   };
 
   // Building the query
@@ -42,7 +42,7 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
       const populateFields = extractPopulate(populate);
       for (const toPopulate of populateFields) {
         if (canBePopulated(toPopulate, projectionFields.fields)) {
-          await execPopulation(r.rows, toPopulate, connection, collectionName, populateMaxDeep);
+          await execPopulation(r.rows, toPopulate, connection, modelName, populateMaxDeep);
         }
       }
       return r;
