@@ -1,17 +1,6 @@
 import { Schema } from '../schema';
 import { BuildSchemaError, ValidationError } from '../errors';
-
-export interface ValidatorOption {
-  regexp: RegExp;
-  message: string;
-}
-
-/**
- * Should return string[] with all errors detected
- * Should return ValidatorOption
- */
-
-export type ValidatorFunction = (value: unknown) => void;
+import { ValidatorFunction, ValidatorOption } from '../interfaces';
 
 export const applyValidator = (
   val: unknown,
@@ -39,11 +28,8 @@ export const applyValidator = (
           };
         }
     }
-    if (_validator === undefined) {
-      throw new BuildSchemaError(
-        'Validators must be a function or a string matching the name of a registered custom validator function.',
-      );
+    if (_validator !== undefined) {
+      _validator(val);
     }
-    _validator(val);
   }
 };

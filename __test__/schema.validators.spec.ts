@@ -1,4 +1,4 @@
-import { addValidators, castSchema, Schema } from '../lib';
+import { addValidators, castSchema, Schema, BuildSchemaError } from '../lib';
 
 describe('schema custom validators', () => {
   beforeAll(() => {
@@ -57,15 +57,22 @@ describe('schema custom validators', () => {
         validator: 'fake',
       },
     };
-    expect(() => castSchema({ name: 'John' }, new Schema(schemaDef))).toThrow(Error);
+    expect(() => castSchema({ name: 'John' }, schemaDef)).toThrow(
+      new Error('Validator fake for field name does not exist.'),
+    );
   });
-  test("should throw an error if validator isn't a string or function", () => {
-    const schemaDef = new Schema({
-      name: {
-        type: String,
-        validator: 1,
-      },
-    });
-    expect(() => castSchema({ name: 'John' }, schemaDef)).toBeTruthy();
+  test("should throw an errors if validators aren't object", () => {
+    expect(() => addValidators([])).toThrow(new BuildSchemaError('Validators must be an object.'));
+  });
+
+  test("should throw an errors if any validator aren't function", () => {
+    expect(() =>
+      addValidators({
+        name: (val) => {
+          console.log(val);
+        },
+        fails: 'Not valid',
+      }),
+    ).toThrow(new BuildSchemaError('Validator object properties must be functions.'));
   });
 });

@@ -1,7 +1,8 @@
-import { CoreType, CoreTypeOptions } from './core-type';
+import { CoreType } from './core-type';
 import { DateFunction, DateOption, validateMaxDate, validateMinDate } from '../helpers';
-import { is } from '../../utils/is-type';
 import { ValidationError } from '../errors';
+import { CoreTypeOptions } from '../interfaces';
+import { is } from '../../utils/is-type';
 
 interface DateTypeOptions {
   min?: Date | DateOption | DateFunction | string;
@@ -31,10 +32,14 @@ class DateType extends CoreType {
     const result = super.buildDefault();
     return !(result instanceof Date) ? new Date(String(result)) : (result as Date);
   }
-  cast(value: unknown) {
-    value = super.cast(value);
+  cast(value: unknown, strategy) {
+    value = super.cast(value, strategy);
     if (this.isEmpty(value)) return value;
-    const _value = is(value, Date)
+    const _value = this.isStrictStrategy(strategy)
+      ? is(value, Date)
+        ? (value as Date)
+        : undefined
+      : is(value, Date)
       ? (value as Date)
       : is(value, String)
       ? new Date(String(value))

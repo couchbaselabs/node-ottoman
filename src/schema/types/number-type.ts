@@ -1,6 +1,8 @@
-import { CoreType, CoreTypeOptions } from './core-type';
+import { CoreType } from './core-type';
 import { MinmaxOption, NumberFunction, validateMaxLimit, validateMinLimit } from '../helpers';
 import { ValidationError } from '../errors';
+import { CoreTypeOptions } from '../interfaces';
+import { is } from '../../utils/is-type';
 
 interface NumberTypeOptions {
   intVal?: boolean;
@@ -28,13 +30,13 @@ class NumberType extends CoreType {
     return typeof _options.intVal === 'undefined' ? false : _options.intVal;
   }
 
-  cast(value: unknown) {
-    value = super.cast(value);
+  cast(value: unknown, strategy) {
+    value = super.cast(value, strategy);
     if (this.isEmpty(value)) return value;
     const _value = Number(value);
     let errors: string[] = [];
-
-    if (isNaN(_value)) {
+    const _wrongType = this.isStrictStrategy(strategy) ? !is(value, Number) : isNaN(_value);
+    if (_wrongType) {
       throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
 

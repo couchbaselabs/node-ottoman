@@ -1,4 +1,4 @@
-export { CoreType, IOttomanType } from './core-type';
+export { CoreType } from './core-type';
 export { stringTypeFactory } from './string-type';
 export { booleanTypeFactory } from './boolean-type';
 export { numberTypeFactory } from './number-type';

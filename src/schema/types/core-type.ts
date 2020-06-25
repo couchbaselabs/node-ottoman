@@ -1,24 +1,14 @@
-import { ValidatorOption, ValidatorFunction, applyValidator } from '../helpers';
+import { applyValidator } from '../helpers';
 import { BuildSchemaError, ValidationError } from '../errors';
-
-export interface RequiredOption {
-  val: boolean;
-  message: string;
-}
-export type RequiredFunction = () => boolean | RequiredOption;
-
-export interface CoreTypeOptions {
-  required?: boolean | RequiredOption | RequiredFunction;
-  default?: unknown;
-  auto?: string;
-  validator?: ValidatorOption | ValidatorFunction | string;
-}
-
-export interface IOttomanType {
-  name: string;
-  typeName: string;
-  cast(value: unknown): unknown;
-}
+import {
+  CoreTypeOptions,
+  IOttomanType,
+  RequiredFunction,
+  RequiredOption,
+  ValidatorFunction,
+  ValidatorOption,
+} from '../interfaces';
+import { VALIDATION_STRATEGY } from '../../utils';
 
 export abstract class CoreType implements IOttomanType {
   protected constructor(public name: string, public typeName: string, public options?: CoreTypeOptions) {
@@ -58,7 +48,8 @@ export abstract class CoreType implements IOttomanType {
     }
   }
 
-  cast(value: unknown): unknown {
+  // eslint-disable-next-line no-unused-vars
+  cast(value: unknown, strategy: VALIDATION_STRATEGY): unknown {
     if (this.isEmpty(value)) {
       const _required = this.checkRequired() || '';
       if (_required.length > 0) {
@@ -83,5 +74,9 @@ export abstract class CoreType implements IOttomanType {
 
   isEmpty(value: unknown): boolean {
     return value === undefined || value === null;
+  }
+
+  isStrictStrategy(strategy: VALIDATION_STRATEGY): boolean {
+    return strategy == VALIDATION_STRATEGY.STRICT;
   }
 }

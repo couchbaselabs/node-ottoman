@@ -1,7 +1,8 @@
-import { CoreType, CoreTypeOptions } from './core-type';
+import { CoreType } from './core-type';
 import { generateUUID } from '../../utils/generate-uuid';
 import { is } from '../../utils/is-type';
 import { ValidationError } from '../errors';
+import { CoreTypeOptions } from '../interfaces';
 
 type FunctionsString = () => string[];
 
@@ -26,15 +27,16 @@ export class StringType extends CoreType {
     return String(super.buildDefault());
   }
 
-  cast(value: unknown): string | null | undefined {
-    value = super.cast(value);
-    let errors: string[] = [];
-    if (is(value, Object)) {
+  cast(value: unknown, strategy) {
+    super.cast(value, strategy);
+    const _wrongType = this.isStrictStrategy(strategy) ? !is(value, String) : is(value, Object);
+    if (_wrongType) {
       throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
     if (value === null || value === undefined) {
       return value;
     }
+    let errors: string[] = [];
     const _value = String(value);
     errors.push(this._checkEnum(_value) || '');
     this.checkValidator(_value);

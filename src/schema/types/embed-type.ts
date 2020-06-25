@@ -1,23 +1,23 @@
 import { CoreType } from './core-type';
-import { Schema, ModelObject } from '../schema';
+import { Schema } from '../schema';
 import { isModel } from '../../utils/is-model';
 import { is } from '../../utils/is-type';
 import { ValidationError } from '../errors';
-import { Model } from '../../model/model';
+import { CoreTypeOptions } from '../interfaces';
 
 class EmbedType extends CoreType {
-  constructor(name: string, public schema: Schema) {
-    super(name, 'Embed');
+  constructor(name: string, public schema: Schema, options?: CoreTypeOptions) {
+    super(name, 'Embed', options);
   }
 
-  cast(value: unknown) {
+  cast(value: unknown, strategy) {
+    value = super.cast(value, strategy);
     if (this.isEmpty(value)) return value;
     if (!is(value, Object) && !isModel(value)) {
       throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
     this.checkValidator(value);
-    const _value = value as ModelObject | Model;
-    return this.schema.cast(_value);
+    return this.schema.cast(value);
   }
 }
 

@@ -1,6 +1,97 @@
 import { applyDefaultValue, castSchema, ValidationError, BuildSchemaError } from '../lib';
 import { Schema } from '../lib/schema/schema';
 import { isOttomanType } from '../lib/schema/helpers';
+import { VALIDATION_STRATEGY } from '../lib/utils';
+
+const validData = {
+  firstName: 'John',
+  lastName: 'Doe',
+  hasChild: true,
+  age: 23,
+  experience: 3,
+};
+
+const dataUnCasted = {
+  firstName: 'John',
+  lastName: 'Doe',
+  hasChild: true,
+  age: '23',
+  experience: '3',
+};
+
+const schemaDef = {
+  firstName: String,
+  lastName: {
+    type: String,
+    validator: {
+      message: 'Only letters',
+      regexp: new RegExp('\\w'),
+    },
+  },
+  hasChild: Boolean,
+  id: Number,
+  age: { type: Number, required: true },
+  experience: { type: Number, min: { val: 2, message: 'Min allowed is two' }, max: 4 },
+};
+
+describe('Schema Types with Strict Strategy', () => {
+  const schemaOptions = {
+    validationStrategy: VALIDATION_STRATEGY.STRICT,
+  };
+  const schema = new Schema(schemaDef, schemaOptions);
+  test('should allow add the preHooks since schema constructor', () => {
+    const options = {
+      preHooks: {
+        validate: (document) => console.log(document),
+      },
+    };
+    expect(new Schema({ name: String }, options)).toBeInstanceOf(Schema);
+    const options2 = {
+      preHooks: {
+        validate: [(document) => console.log(document)],
+      },
+    };
+    expect(new Schema({ name: String }, options2)).toBeInstanceOf(Schema);
+  });
+  test('should throw an error if the preHooks since schema constructor is not valid', () => {
+    const options = {
+      preHooks: {
+        validate: 23,
+      },
+    };
+    let schema = new Schema({ name: String }, options);
+    expect(schema).toBeInstanceOf(Schema);
+    expect(schema.preHooks).toEqual({});
+    const options2 = {
+      preHooks: {
+        validate: [12],
+      },
+    };
+    schema = new Schema({ name: String }, options2);
+    expect(schema).toBeInstanceOf(Schema);
+    expect(schema.preHooks).toEqual({});
+  });
+  test('should allow add the postHooks since schema constructor', () => {
+    const options = {
+      postHooks: {
+        validate: (document) => console.log(document),
+      },
+    };
+    expect(new Schema({ name: String }, options)).toBeInstanceOf(Schema);
+    const options2 = {
+      postHooks: {
+        validate: [(document) => console.log(document)],
+      },
+    };
+    expect(new Schema({ name: String }, options2)).toBeInstanceOf(Schema);
+  });
+  test('should return the data according to the type defined in the schema when they are valid.', () => {
+    expect(castSchema(validData, schema)).toEqual(validData);
+  });
+  test('should throw an error when data are not exactly type.', () => {
+    expect(() => castSchema(dataUnCasted, schema)).toThrow(ValidationError);
+  });
+});
 
 describe('Schema Types', () => {
   class MocType {}
@@ -32,47 +123,9 @@ describe('Schema Types', () => {
     expect(firstName).toBeUndefined();
   });
   test('should return the data according to the type defined in the schema when they are valid.', () => {
-    const schema = {
-      firstName: String,
-      lastName: {
-        type: String,
-        validator: {
-          message: 'Only letters',
-          regexp: new RegExp('\\w'),
-        },
-      },
-      hasChild: Boolean,
-      id: Number,
-      age: { type: Number, required: true },
-      experience: { type: Number, min: { val: 2, message: 'Min allowed is two' }, max: 4 },
-    };
-    const data = {
-      firstName: 'John',
-      lastName: 'Doe',
-      hasChild: true,
-      age: 23,
-      experience: 3,
-    };
-    expect(castSchema(data, schema)).toEqual(data);
-
-    const dataUnCasted = {
-      firstName: 'John',
-      lastName: 'Doe',
-      hasChild: true,
-      age: '23',
-      experience: '3',
-    };
-    expect(castSchema(dataUnCasted, schema)).toEqual(data);
-
-    const dataWithMetadata = {
-      firstName: 'John',
-      lastName: 'Doe',
-      hasChild: true,
-      age: 23,
-      experience: 3,
-      id: 233,
-    };
-    expect(castSchema(dataWithMetadata, schema)).toEqual(dataWithMetadata);
+    const schema = new Schema(schemaDef);
+    expect(castSchema(validData, schema)).toEqual(validData);
+    expect(castSchema(dataUnCasted, schema)).toEqual(validData);
   });
   test('should apply correctly the default values', () => {
     const personSchema = {
