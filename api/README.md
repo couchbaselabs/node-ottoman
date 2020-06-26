@@ -56,66 +56,72 @@ import { GeolocationSchema } from '../shared/geolocation.model';
 Next a custom validator function is defined to make sure a phone number in the standard USA format is created.
 
 ```ts
-  addValidators({
-      PhoneValidator: (value) => {
-          const phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-          if(value && !value.match(phoneno)) {
-            throw new Error('Phone number is invalid.');
-          }
-      },
-   });
+addValidators({
+  PhoneValidator: (value) => {
+      const phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+      if(value && !value.match(phoneno)) {
+        throw new Error('Phone number is invalid.');
+      }
+  },
+});
 ```
 
 The model for the Hotels object is defined, using several of the built in types that Ottoman supports.   For additional reference, see http://www.ottomanjs.com.   Several indices are defined along with the model.  The indices are utilized as methods for each instance of the Hotel Object.  Ottoman supports complex data types, embedded references to other models, and customization.  
 
 ```ts
-    const ReviewSchema = new Schema({
-      author: String,
-      content: String,
-      date: Date,
-      ratings: {
-        Cleanliness: { type: Number, min: 1, max: 5 },
-        Overall: { type: Number, min: 1, max: 5 },
-        Rooms: { type: Number, min: 1, max: 5 },
-        Service: { type: Number, min: 1, max: 5 },
-        Value: { type: Number, min: 1, max: 5 },
-      },
-    });
-    
-    const HotelSchema = new Schema({
-      address: { type: String, required: true },
-      alias: String,
-      checkin: String,
-      checkout: String,
-      city: { type: String, required: true },
-      country: { type: String, required: true },
-      description: String,
-      directions: [String],
-      email: String,
-      fax: String,
-      free_breakfast: Boolean,
-      free_internet: Boolean,
-      free_parking: Boolean,
-      geo: GeolocationSchema,
-      name: { type: String, required: true },
-      pets_ok: Boolean,
-      phone: { type: String, validator: 'PhoneValidator' },
-      price: Number,
-      public_likes: [String],
-      reviews: [ReviewSchema],
-      state: String,
-      title: String,
-      tollfree: String,
-      url: LinkType,
-      vacancy: Boolean,
-    });
-    
-    HotelSchema.index.findByName = { by: 'name', type: 'n1ql' };
-    
-    export const HotelModel = model('hotel', HotelSchema);
+const ReviewSchema = new Schema({
+  author: String,
+  content: String,
+  date: Date,
+  ratings: {
+    Cleanliness: { type: Number, min: 1, max: 5 },
+    Overall: { type: Number, min: 1, max: 5 },
+    Rooms: { type: Number, min: 1, max: 5 },
+    Service: { type: Number, min: 1, max: 5 },
+    Value: { type: Number, min: 1, max: 5 },
+  },
+});
+
+const HotelSchema = new Schema({
+  address: { type: String, required: true },
+  alias: String,
+  checkin: String,
+  checkout: String,
+  city: { type: String, required: true },
+  country: { type: String, required: true },
+  description: String,
+  directions: [String],
+  email: String,
+  fax: String,
+  free_breakfast: Boolean,
+  free_internet: Boolean,
+  free_parking: Boolean,
+  geo: GeolocationSchema,
+  name: { type: String, required: true },
+  pets_ok: Boolean,
+  phone: { type: String, validator: 'PhoneValidator' },
+  price: Number,
+  public_likes: [String],
+  reviews: [ReviewSchema],
+  state: String,
+  title: String,
+  tollfree: String,
+  url: LinkType,
+  vacancy: Boolean,
+});
+
+HotelSchema.index.findByName = { by: 'name', type: 'n1ql' };
+
+export const HotelModel = model('hotel', HotelSchema);
 ```
 
-(Lino review this) In the Hotel model above, there are one explicit index defined. By default, if an index type is not specified Ottoman will select the fastest available index supported within the current Couchbase cluster. In addition to utilizing built in secondary index support within Couchbase, Ottoman can also utilize referential documents and maintain the referential integrity for updates and deletes. This is a powerful features that allows for blazingly fast lookups by a particular field. This type of index in Ottoman is useful for finding a particular object by a unique field such as customer id or email address in the example above. In addition to any explicit index, Ottoman also provides a generic find capability using the query api and N1QL. 
+In the Hotel model above, there are one explicit index defined. By default,
+if an index type is not specified Ottoman will select the fastest available index supported within the current Couchbase cluster.
+In addition to utilizing built in secondary index support within Couchbase, 
+Ottoman can also utilize referential documents and maintain the referential integrity for updates and deletes. 
+This is a powerful features that allows for blazingly fast lookups by a particular field. 
+This type of index in Ottoman is useful for finding a particular object by a unique field such as customer id or email address in the example above.
+In addition to any explicit index, Ottoman also provides a generic find capability using the query api and N1QL. 
 
 ### Airport Model
 
@@ -129,19 +135,19 @@ import { GeolocationSchema } from '../shared/geolocation.model';
 As in the Customer model example, the Bike object is defined with several different data types, embedded references to other Ottoman models and explicitly defined secondary indexes. 
 
 ```ts
-  const AirportSchema = new Schema({
-     airportname: { type: String, required: true },
-     city: { type: String, required: true },
-     country: { type: String, required: true },
-     faa: String,
-     geo: GeolocationSchema,
-     icao: String,
-     tz: { type: String, required: true },
-   });
-   
-  AirportSchema.index.findByName = { by: 'name', type: 'n1ql' };
-   
-  export const AirportModel = model('airport', AirportSchema);
+const AirportSchema = new Schema({
+ airportname: { type: String, required: true },
+ city: { type: String, required: true },
+ country: { type: String, required: true },
+ faa: String,
+ geo: GeolocationSchema,
+ icao: String,
+ tz: { type: String, required: true },
+});
+
+AirportSchema.index.findByName = { by: 'name', type: 'n1ql' };
+
+export const AirportModel = model('airport', AirportSchema);
 ```
 
 The index like in the hotel example are. 
@@ -155,49 +161,49 @@ Now that the models are defined above, the controller functionality is defined i
 The `index.ts` file is the entry point to the application and defines how the application will function. The code within the file is as follows:
 
 ```ts
-    import express, { Request, Response } from 'express';
-    import swaggerUi from 'swagger-ui-express';
-    import YAML from 'yamljs';
-    import { UserRoutes, AuthRoutes } from './users/users.controller';
-    import { ensureIndexes } from '../lib/model/index/ensure-indexes';
-    import { jwtMiddleware } from './shared/protected.router';
-    import { AirportRoutes } from './airports/airports.controller';
-    import { HotelRoutes } from './hotels/hotels.controller';
-    import { RouteRoutes } from './routes/routes.controller';
-    
-    const app = express();
-    
-    app.use(express.json());
-    app.get('/', (req, res) => {
-      res.send('index');
+import express, { Request, Response } from 'express';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import { UserRoutes, AuthRoutes } from './users/users.controller';
+import { ensureIndexes } from '../lib/model/index/ensure-indexes';
+import { jwtMiddleware } from './shared/protected.router';
+import { AirportRoutes } from './airports/airports.controller';
+import { HotelRoutes } from './hotels/hotels.controller';
+import { RouteRoutes } from './routes/routes.controller';
+
+const app = express();
+
+app.use(express.json());
+app.get('/', (req, res) => {
+  res.send('index');
+});
+app.use('/users', jwtMiddleware, UserRoutes);
+app.use('/user', AuthRoutes);
+app.use('/airports', jwtMiddleware, AirportRoutes);
+app.use('/hotels', jwtMiddleware, HotelRoutes);
+app.use('/flightPaths', jwtMiddleware, RouteRoutes);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(YAML.load('./api/swagger.yaml')));
+
+// Handle not found and catch exception layer
+app.use((req: Request, res: Response) => res.status(404).json({ error: 'Route Not Match' }));
+app.use((err: Error, req: Request, res: Response) => {
+  if (err.name === 'UnauthorizedError') {
+    return res.status(401).json({ error: 'Invalid token...' });
+  }
+  return res.status(500).json({ error: err.toString() });
+});
+
+ensureIndexes()
+  .then(() => {
+    console.log('All the indexes were registered');
+    const port = 4500;
+    app.listen(port, () => {
+      console.log(`API started at http://localhost:${port}`);
     });
-    app.use('/users', jwtMiddleware, UserRoutes);
-    app.use('/user', AuthRoutes);
-    app.use('/airports', jwtMiddleware, AirportRoutes);
-    app.use('/hotels', jwtMiddleware, HotelRoutes);
-    app.use('/flightPaths', jwtMiddleware, RouteRoutes);
-    
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(YAML.load('./api/swagger.yaml')));
-    
-    // Handle not found and catch exception layer
-    app.use((req: Request, res: Response) => res.status(404).json({ error: 'Route Not Match' }));
-    app.use((err: Error, req: Request, res: Response) => {
-      if (err.name === 'UnauthorizedError') {
-        return res.status(401).json({ error: 'Invalid token...' });
-      }
-      return res.status(500).json({ error: err.toString() });
-    });
-    
-    ensureIndexes()
-      .then(() => {
-        console.log('All the indexes were registered');
-        const port = 4500;
-        app.listen(port, () => {
-          console.log(`API started at http://localhost:${port}`);
-        });
-      })
-      .catch((e) => console.log(e));
-                      // ← express listen on port 3000
+  })
+  .catch((e) => console.log(e));
+// ← API started at http://localhost:4500
 ```
 
 #### Routes and Documentations

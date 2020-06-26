@@ -161,9 +161,14 @@ describe('Test populate feature', () => {
     expect(result.name).toBeDefined();
     expect(result.card).toBeDefined();
     expect(result.cats).toBeDefined();
+    expect(result.isActive).toBeUndefined();
+    expect(result._populated('card')).toBe(false);
     await result._populate('*', 2);
+    expect(result._populated('card')).toBe(true);
     expect(result.card.cardNumber).toBe('4242 4242 4242 4242');
     expect(result.card.issues[0].title).toBe('stolen card');
     expect(result.cats.length).toBe(2);
+    await result._depopulate('card');
+    expect(result._populated('card')).toBe(false);
   });
 });

@@ -1,14 +1,17 @@
-import { closeConnection, connect, globalConfig } from '../lib';
+import { connect, globalConfig, getConnections } from '../lib';
 import { connectUri } from './testData';
 beforeAll(async () => {
   globalConfig({
-    collectionKey: 'ottomanCollectionType',
-    scopeKey: 'ottomanScopeType',
+    collectionKey: '__type',
+    scopeKey: '__scope',
     populateMaxDeep: 1,
   });
   connect(connectUri);
 });
 
 afterAll(async () => {
-  closeConnection();
+  const connections = getConnections() || [];
+  for (const connection of connections) {
+    await connection.close();
+  }
 });

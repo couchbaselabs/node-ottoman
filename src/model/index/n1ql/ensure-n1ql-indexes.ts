@@ -4,6 +4,7 @@ import { COLLECTION_KEY, SCOPE_KEY } from '../../../utils/constants';
 import { ConnectionManager } from '../../../connections/connection-manager';
 import { getModelMetadata } from '../../utils/model.utils';
 import { ModelMetadata } from '../../interfaces/model-metadata.interface';
+import { isDebugMode } from '../../../utils/is-debug-mode';
 
 /**
  * Creates the register index in the Database Server.
@@ -45,7 +46,7 @@ export const ensureN1qlIndexes = async (connection: ConnectionManager) => {
   }
 
   for await (const index of asyncIndexesQuery()) {
-    if (process.env.DEBUG) {
+    if (isDebugMode()) {
       console.log(index);
     }
   }
