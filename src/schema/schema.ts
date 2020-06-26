@@ -11,7 +11,7 @@ import {
 import { isMetadataKey } from '../utils/is-metadata';
 import { BuildSchemaError, ValidationError } from './errors';
 import { VALIDATION_STRATEGY } from '..';
-import { SchemaIndex } from '../model/index/types/index.types';
+import { SchemaIndex, SchemaQuery } from '../model/index/types/index.types';
 import { getGlobalPlugins } from '../plugins/global-plugin-handler';
 import { buildFields } from './helpers';
 import { HOOKS } from '../utils/hooks';
@@ -42,6 +42,7 @@ export class Schema {
   preHooks = {};
   postHooks = {};
   index: SchemaIndex = {};
+  queries: SchemaQuery = {};
   validationStrategy: VALIDATION_STRATEGY;
   public fields: FieldMap;
 

@@ -94,7 +94,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
 };
 
 export const _buildModel = (metadata: ModelMetadata) => {
-  const { schema, collection, ID_KEY, collectionName, collectionKey, scopeKey, scopeName } = metadata;
+  const { schema, collection, ID_KEY, collectionName, collectionKey, scopeKey, scopeName, connection } = metadata;
   return class _Model<T> extends Model<T> {
     constructor(data) {
       super(data);
@@ -105,6 +105,23 @@ export const _buildModel = (metadata: ModelMetadata) => {
         for (const key in schema?.methods) {
           nonenumerable(this, key);
           this[key] = schema.methods[key];
+        }
+      }
+      // Adding queries index.
+      for (const key in schema?.queries) {
+        const { by, of } = schema.queries[key];
+        if (by && of) {
+          if (!connection.getModel(of)) {
+            throw new Error(`Collection ${of} does not exist.`);
+          }
+          let indexName = `${connection.bucketName}_${scopeName}_${of}$${indexFieldsName([by])}`;
+          indexName = indexName.replace(/-/g, '_');
+          nonenumerable(this, key);
+          this[key] = () => find({ ...metadata, collectionName: of })({ [by]: this._getId() });
+          // Register index to sync later with the server
+          registerIndex(indexName, [by], of);
+        } else {
+          throw new Error('The "by" and "of" properties are required to build the queries.');
         }
       }
     }

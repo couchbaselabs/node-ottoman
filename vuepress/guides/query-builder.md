@@ -4,7 +4,7 @@
 
 ## Using the Query Builder.
 
-There are 3 ways to use the Query Builder: by using  parameters, by using access functions or by combining both.
+There are 3 ways to use the Query Builder: by using parameters, by using access functions or by combining both.
 
 ### Build a Query by using parameters
 
@@ -110,21 +110,52 @@ console.log(query);
 
 > SELECT \`address\` FROM \`collection_name\` WHERE price > 5 LIMIT 10
 
+### Advanced example of using the WHERE clause
+
+```ts
+const where = {
+  $or: [
+    { address: { $isNull: true } },
+    { free_breakfast: { $isMissing: true } },
+    { free_breakfast: { $isNotValued: true } },
+    { id: { $eq: 8000 } },
+    { id: { $neq: 9000 } },
+    { id: { $gt: 7000 } },
+    { id: { $gte: 6999 } },
+    { id: { $lt: 5000 } },
+    { id: { $lte: 4999 } },
+  ],
+  $and: [{ address: { $isNotNull: true } }, { address: { $isNotMissing: true } }, { address: { $isValued: true } }],
+  $not: [
+    {
+      address: { $like: '%59%' },
+      name: { $notLike: 'Otto%' },
+      $or: [{ id: { $btw: [1, 2000] } }, { id: { $notBtw: [2001, 8000] } }],
+    },
+    {
+      address: { $like: '%20%' },
+    },
+  ],
+};
+const query = new Query({}, 'travel-sample').select().where(where).limit(20).build();
+console.log(query);
+```
+
+> SELECT * FROM `travel-sample` WHERE (address IS NULL OR free_breakfast IS MISSING OR free_breakfast IS NOT VALUED OR id=8000 OR id!=9000 OR id>7000 OR id>=6999 OR id<5000 OR id<=4999) AND (address IS NOT NULL AND address IS NOT MISSING AND address IS VALUED) AND NOT (address LIKE '%59%' AND name NOT LIKE 'Otto%' AND (id BETWEEN 1 AND 2000 OR id NOT BETWEEN 2001 AND 8000) AND address LIKE '%20%') LIMIT 20
+
 ## N1QL SELECT clause structure
 
 The syntax of a SELECT clause in n1ql is documented here [link](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/select-syntax.html).
 
 Available Result Expression Arguments:
 
-
-| key         | value       |
-| ----------- | ----------- |
-| \$all       | ALL         |
-| \$distinct  | DISTINCT    |
-| \$raw       | RAW         |
-| \$element   | ELEMENT     |
-| \$value     | VALUE       |
-
+| key        | value    |
+| ---------- | -------- |
+| \$all      | ALL      |
+| \$distinct | DISTINCT |
+| \$raw      | RAW      |
+| \$element  | ELEMENT  |
+| \$value    | VALUE    |
 
 Available Aggregation Functions:
 

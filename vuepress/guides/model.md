@@ -85,6 +85,18 @@ User.findById('userId')
 // will return the user document with the current id.
 ```
 
+### Advance use of filter parameter.
+```javascript
+const filter = {
+  $or: [{ price: { $gt: 'amount_val', $isNotNull: true } }, { auto: { $gt: 10 } }, { amount: 10 }],
+  $and: [
+    { price2: { $gt: 1.99, $isNotNull: true } },
+    { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
+  ],
+};
+User.find(filter)
+// Returns a list of the elements that match the applied filters.
+```
 See the chapter on queries for more details on how to use the [Query](/guides/query-builder) api.
 
 ## Deleting

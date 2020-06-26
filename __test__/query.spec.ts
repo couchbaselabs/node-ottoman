@@ -197,7 +197,7 @@ describe('Test Query Types', () => {
       ],
     };
     expect(buildWhereClauseExpr('', where)).toEqual(
-      "((price>1.99 AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id='20'))",
+      "((`price`>1.99 AND `price` IS NOT NULL) OR `auto`>10 OR `amount`=10) AND ((`price2`>1.99 AND `price2` IS NOT NULL) AND ((`price3`>1.99 AND `price3` IS NOT NULL) OR `id`='20'))",
     );
   });
 
@@ -216,7 +216,7 @@ describe('Test Query Types', () => {
       ],
     };
     expect(buildWhereClauseExpr('', where)).toEqual(
-      "(NOT (price>1.99 AND auto>10 AND amount=10 AND (type='hotel' OR type='landmark' OR NOT (price=10))) AND id=8000)",
+      "(NOT (`price`>1.99 AND `auto`>10 AND `amount`=10 AND (`type`='hotel' OR `type`='landmark' OR NOT (`price`=10))) AND `id`=8000)",
     );
   });
 
@@ -227,7 +227,7 @@ describe('Test Query Types', () => {
 
     const query = new Query({}, 'travel-sample').select().where(expr_where).limit(20).build();
     expect(query).toBe(
-      `SELECT * FROM \`travel-sample\` WHERE (address LIKE '%57-59%' OR free_breakfast=true) LIMIT 20`,
+      "SELECT * FROM `travel-sample` WHERE (`address` LIKE '%57-59%' OR `free_breakfast`=true) LIMIT 20",
     );
   });
 
@@ -259,7 +259,7 @@ describe('Test Query Types', () => {
 
     const query = new Query({}, 'travel-sample').select().where(expr_where).limit(20).build();
     expect(query).toBe(
-      "SELECT * FROM `travel-sample` WHERE (address IS NULL OR free_breakfast IS MISSING OR free_breakfast IS NOT VALUED OR id=8000 OR id!=9000 OR id>7000 OR id>=6999 OR id<5000 OR id<=4999) AND (address IS NOT NULL AND address IS NOT MISSING AND address IS VALUED) AND NOT (address LIKE '%59%' AND name NOT LIKE 'Otto%' AND (id BETWEEN 1 AND 2000 OR id NOT BETWEEN 2001 AND 8000) AND address LIKE '%20%') LIMIT 20",
+      "SELECT * FROM `travel-sample` WHERE (`address` IS NULL OR `free_breakfast` IS MISSING OR `free_breakfast` IS NOT VALUED OR `id`=8000 OR `id`!=9000 OR `id`>7000 OR `id`>=6999 OR `id`<5000 OR `id`<=4999) AND (`address` IS NOT NULL AND `address` IS NOT MISSING AND `address` IS VALUED) AND NOT (`address` LIKE '%59%' AND `name` NOT LIKE 'Otto%' AND (`id` BETWEEN 1 AND 2000 OR `id` NOT BETWEEN 2001 AND 8000) AND `address` LIKE '%20%') LIMIT 20",
     );
   });
 
@@ -277,7 +277,7 @@ describe('Test Query Types', () => {
     const index = buildIndexExpr('travel-sample', 'CREATE', 'travel_sample_id_test', on, expr_where, true, withExpr);
 
     expect(index).toBe(
-      "CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`['ASC']) WHERE travel-sample.callsign LIKE '%57-59%' USING GSI WITH {'nodes': ['192.168.1.1:8078','192.168.1.1:8079'],'defer_build': true,'num_replica': 2}",
+      "CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`['ASC']) WHERE `travel-sample.callsign` LIKE '%57-59%' USING GSI WITH {'nodes': ['192.168.1.1:8078','192.168.1.1:8079'],'defer_build': true,'num_replica': 2}",
     );
   });
 
@@ -301,7 +301,7 @@ describe('Test Query Types', () => {
       .build();
 
     expect(query).toBe(
-      "CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`) WHERE travel-sample.callsign LIKE '%57-59%' USING GSI WITH {'nodes': ['192.168.1.1:8078','192.168.1.1:8079'],'defer_build': true,'num_replica': 2}",
+      "CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`) WHERE `travel-sample.callsign` LIKE '%57-59%' USING GSI WITH {'nodes': ['192.168.1.1:8078','192.168.1.1:8079'],'defer_build': true,'num_replica': 2}",
     );
   });
 
@@ -389,7 +389,7 @@ describe('Test Query Types', () => {
     const query = new Query(params, 'collection-name').build();
 
     expect(query).toBe(
-      "SELECT COUNT(`ottoman`) AS odm,MAX(`count`) FROM `collection-name` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val=10,size_val=20 WHERE ((price>amount_val AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id='20')) ORDER BY size DESC LIMIT 10 OFFSET 1",
+      "SELECT COUNT(`ottoman`) AS odm,MAX(`count`) FROM `collection-name` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val=10,size_val=20 WHERE ((`price`>amount_val AND `price` IS NOT NULL) OR `auto`>10 OR `amount`=10) AND ((`price2`>1.99 AND `price2` IS NOT NULL) AND ((`price3`>1.99 AND `price3` IS NOT NULL) OR `id`='20')) ORDER BY size DESC LIMIT 10 OFFSET 1",
     );
   });
 });
