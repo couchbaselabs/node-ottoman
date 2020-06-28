@@ -27,6 +27,8 @@ export {
   MultipleQueryTypesException,
   WhereClauseException,
   QueryOperatorNotFoundException,
+  InWithinOperatorExceptions,
+  QueryGroupByParamsException,
   Query,
   ILetExpr,
   SortType,

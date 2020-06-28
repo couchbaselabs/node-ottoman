@@ -14,6 +14,8 @@ export {
   WhereClauseException,
   QueryOperatorNotFoundException,
   IndexParamsUsingGSIExceptions,
+  InWithinOperatorExceptions,
+  QueryGroupByParamsException,
 } from './exceptions';
 export { Query } from './query';
 export {

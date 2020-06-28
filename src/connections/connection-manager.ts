@@ -61,4 +61,11 @@ export class ConnectionManager {
   close() {
     this.cluster.close();
   }
+
+  /**
+   * Execute N1QL Query
+   */
+  query(query: string) {
+    return this.cluster.query(query);
+  }
 }

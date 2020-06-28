@@ -16,15 +16,9 @@ const params = {
     {
       $count: {
         $field: {
-          name: 'ottoman',
+          name: 'type',
         },
         as: 'odm',
-      },
-    },
-
-    {
-      $max: {
-        $field: 'amount',
       },
     },
   ],
@@ -38,17 +32,28 @@ const params = {
       { price2: { $gt: 1.99, $isNotNull: true } },
       { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
     ],
+    $any: {
+      $expr: [{ $in: { search_expr: 'search', target_expr: 'address' } }],
+      $satisfied: { address: '10' },
+    },
+    $in: { search_expr: 'search', target_expr: ['address'] },
   },
-  orderBy: { size: 'DESC' },
+  groupBy: [{ expr: 'type', as: 'sch' }],
+  letting: [
+    { key: 'amount_v2', value: 10 },
+    { key: 'size_v2', value: 20 },
+  ],
+  having: { type: { $like: '%hotel%' } },
+  orderBy: { type: 'DESC' },
   limit: 10,
   offset: 1,
   use: ['airlineR_8093', 'airlineR_8094'],
 };
-const query = new Query(params, 'collection-name').build();
+const query = new Query(params, 'travel-sample').build();
 console.log(query);
 ```
 
-> SELECT COUNT(\`ottoman\`) AS odm,MAX(\`amount\`) FROM \`collection-name\` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) ORDER BY size = 'DESC' LIMIT 10 OFFSET 1
+> SELECT COUNT(`type`) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((`price`>amount_val AND `price` IS NOT NULL) OR `auto`>10 OR `amount`=10) AND ((`price2`>1.99 AND `price2` IS NOT NULL) AND ((`price3`>1.99 AND `price3` IS NOT NULL) OR `id`="20")) AND ANY search IN address SATISFIES `address`="10" END AND search IN ["address"] GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING `type` LIKE "%hotel%" ORDER BY type DESC LIMIT 10 OFFSET 1
 
 ### Build a query by using access functions
 
@@ -59,7 +64,7 @@ const select = [
   {
     $count: {
       $field: {
-        name: 'ottoman',
+        name: 'type',
       },
       as: 'odm',
     },
@@ -81,7 +86,15 @@ const where = {
     { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
   ],
 };
-const orderBy = { size: 'DESC' };
+const groupBy = [{ expr: 'type', as: 'sch' }];
+const having = {
+  type: { $like: '%hotel%' },
+};
+const lettingExpr = [
+  { key: 'amount_v2', value: 10 },
+  { key: 'size_v2', value: 20 },
+];
+const orderBy = { type: 'DESC' };
 const limit = 10;
 const offset = 1;
 const useExpr = ['airlineR_8093', 'airlineR_8094'];
@@ -90,6 +103,9 @@ const query = new Query({}, 'collection-name')
   .select(select)
   .let(letExpr)
   .where(where)
+  .groupBy(groupBy)
+  .letting(lettingExpr)
+  .having(having)
   .orderBy(orderBy)
   .limit(limit)
   .offset(offset)
@@ -98,7 +114,7 @@ const query = new Query({}, 'collection-name')
 console.log(query);
 ```
 
-> SELECT COUNT(\`ottoman\`) AS odm,MAX(\`amount\`) FROM \`collection-name\` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) ORDER BY size = 'DESC' LIMIT 10 OFFSET 1
+> SELECT COUNT(\`type\`) AS odm,MAX(\`amount\`) FROM \`travel-sample\` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING \`type\` LIKE "%hotel%" ORDER BY type = 'DESC' LIMIT 10 OFFSET 1
 
 ### Build a query by using parameters and function parameters
 
@@ -145,7 +161,9 @@ console.log(query);
 
 ## N1QL SELECT clause structure
 
-The syntax of a SELECT clause in n1ql is documented here [link](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/select-syntax.html).
+See definition [here](/classes/query.html#select)
+
+The syntax of a SELECT clause in n1ql is documented [here](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/select-syntax.html).
 
 Available Result Expression Arguments:
 
@@ -181,7 +199,9 @@ Available Aggregation Functions:
 
 ## N1QL WHERE clause structure
 
-The syntax of a WHERE clause in n1ql is documented here [link](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/where.html).
+See definition [here](/classes/query.html#where)
+
+The syntax of a WHERE clause in n1ql is documented [here](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/where.html).
 
 Available Comparison Operators:
 
@@ -211,3 +231,25 @@ Available Logical operators:
 | \$and | AND   |
 | \$or  | OR    |
 | \$not | NOT   |
+
+Available COLLECTION operators:
+
+| key         | value     |
+| ----------- | --------- |
+| \$any       | ANY       |
+| \$every     | EVERY     |
+| \$within    | WITHIN    |
+| \$satisfies | SATISFIES |
+
+## N1QL JOIN clause structure (Currently the JOIN clause is only supported in string format.)
+
+See definition [here](/classes/query.html#plainJoin)
+
+The syntax of a JOIN clause in n1ql is documented [here](https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/join.html).
+
+
+## N1QL GROUP BY clause structure
+
+See definition [here](/classes/query.html#groupby)
+
+The syntax of a GROUP BY clause in n1ql is documented [here](https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/groupby.html).

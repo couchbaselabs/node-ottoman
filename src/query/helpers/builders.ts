@@ -1,6 +1,12 @@
 import {
+  CollectionExpressionType,
+  CollectionInWithinOperator,
+  CollectionInWithinOperatorType,
+  CollectionInWithinOperatorValue,
+  CollectionSelectOperator,
   ComparisonWhereExpr,
   IField,
+  IGroupBy,
   IIndexOnParams,
   IIndexWithParams,
   ILetExpr,
@@ -12,6 +18,9 @@ import {
 } from '../interface/query.types';
 import {
   AggDict,
+  CollectionInWithinOperatorDict,
+  CollectionSatisfiesOperatorDict,
+  CollectionSelectOperatorDict,
   ComparisonEmptyOperatorDict,
   ComparisonMultipleOperatorDict,
   ComparisonSingleOperatorDict,
@@ -20,7 +29,13 @@ import {
   ResultExprDict,
   ReturnResultDict,
 } from './dictionary';
-import { QueryOperatorNotFoundException, SelectClauseException, WhereClauseException } from '../exceptions';
+import {
+  InWithinOperatorExceptions,
+  QueryGroupByParamsException,
+  QueryOperatorNotFoundException,
+  SelectClauseException,
+  WhereClauseException,
+} from '../exceptions';
 
 // select expressions functions
 /**
@@ -46,6 +61,10 @@ export const selectBuilder = (
   limit?: number,
   offset?: number,
   useExpr?: string[],
+  groupByExpr?: IGroupBy[],
+  lettingExpr?: ILetExpr[],
+  havingExpr?: LogicalWhereExpr,
+  plainJoinExpr?: string,
 ): string => {
   try {
     let expr = '';
@@ -56,10 +75,17 @@ export const selectBuilder = (
       expr = buildSelectArrayExpr(select);
     }
 
-    return `SELECT ${expr} FROM \`${collection}\`${_buildUseKeysExpr(useExpr)}${_buildLetExpr(letExpr)}${buildWhereExpr(
-      where,
+    return `SELECT ${expr} FROM \`${collection}\`${plainJoinExpr ? ` ${plainJoinExpr} ` : ''}${_buildUseKeysExpr(
+      useExpr,
+    )}${_buildLetExpr(letExpr)}${buildWhereExpr(where)}${_buildGroupByExpr(
+      groupByExpr,
+      lettingExpr,
+      havingExpr,
     )}${_buildOrderByExpr(orderBy)}${_buildLimitExpr(limit)}${_buildOffsetExpr(offset)}`;
-  } catch {
+  } catch (exception) {
+    if (exception instanceof WhereClauseException) {
+      throw exception;
+    }
     throw new SelectClauseException();
   }
 };
@@ -138,9 +164,9 @@ const _buildAggDictExpr = (clause: ISelectAggType, key: string) => {
 /**
  * @ignore
  * */
-const _buildLetExpr = (letExpr: ILetExpr[] | undefined) => {
+const _buildLetExpr = (letExpr: ILetExpr[] | undefined, clause?: string) => {
   return Array.isArray(letExpr)
-    ? ` LET ${letExpr.map((value: ILetExpr) => `${value.key}=${value.value}`).join(',')}`
+    ? ` ${clause ? clause : 'LET'} ${letExpr.map((value: ILetExpr) => `${value.key}=${value.value}`).join(',')}`
     : '';
 };
 
@@ -173,10 +199,44 @@ const _buildOffsetExpr = (offset: number | undefined) => {
  * @ignore
  * */
 const _buildUseKeysExpr = (useKeys: string[] | undefined) => {
-  return Array.isArray(useKeys) ? ` USE KEYS [${useKeys.map((value: string) => `'${value}'`).join(',')}]` : '';
+  return Array.isArray(useKeys) ? ` USE KEYS ${stringifyValues(useKeys)}` : '';
 };
 
 // end select expression functions
+
+//group by expression functions
+/**
+ *@ignore
+ */
+const _buildGroupByExpr = (groupByExpr?: IGroupBy[], lettingExpr?: ILetExpr[], havingExpr?: LogicalWhereExpr) => {
+  try {
+    if ((lettingExpr || havingExpr) && !groupByExpr) {
+      throw new QueryGroupByParamsException();
+    }
+    if (!groupByExpr) {
+      return '';
+    }
+    return ` ${_buildGroupBy(groupByExpr)}${_buildLetExpr(lettingExpr, 'LETTING')}${buildWhereExpr(
+      havingExpr as LogicalWhereExpr,
+      'HAVING',
+    )}`;
+  } catch {
+    throw new QueryGroupByParamsException();
+  }
+};
+
+/**
+ *@ignore
+ */
+const _buildGroupBy = (groupByExpr: IGroupBy[]) => {
+  return `GROUP BY ${groupByExpr
+    .map((value: IGroupBy) => {
+      return `${value.expr}${value.as ? ` AS ${value.as}` : ''}`;
+    })
+    .join(',')}`;
+};
+
+//end group by expression functions
 
 // where expression functions
 
@@ -186,8 +246,23 @@ const _buildUseKeysExpr = (useKeys: string[] | undefined) => {
  * @param clause WHERE Clause param
  * @return N1QL WHERE Expression
  * */
-export const buildWhereExpr = (clause: LogicalWhereExpr | undefined): string => {
-  return clause ? ` WHERE ${buildWhereClauseExpr('', clause)}` : '';
+export const buildWhereExpr = (expr: LogicalWhereExpr | undefined, clause?: string): string => {
+  return expr ? ` ${clause ? clause : 'WHERE'} ${buildWhereClauseExpr('', expr)}` : '';
+};
+
+/**
+ * @ignore
+ *
+ **/
+export const verifyWhereObjectKey = (clause: LogicalWhereExpr) => {
+  let exist = false;
+  for (const key in clause) {
+    if (['$and', '$or', '$not', '$any', '$$every', '$in', '$within'].includes(key)) {
+      exist = true;
+      break;
+    }
+  }
+  return exist;
 };
 
 /**
@@ -199,12 +274,18 @@ export const buildWhereExpr = (clause: LogicalWhereExpr | undefined): string => 
  * */
 export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr): string => {
   try {
-    if (!clause.hasOwnProperty('$and') && !clause.hasOwnProperty('$or') && !clause.hasOwnProperty('$not')) {
+    if (!verifyWhereObjectKey(clause)) {
       return _buildFieldClauseExpr(clause as Record<string, string | number | boolean | ComparisonWhereExpr>);
     }
 
     return Object.keys(clause)
       .map((key) => {
+        if (CollectionSelectOperatorDict[key]) {
+          return `${_buildWhereCollectionExpr(key as CollectionSelectOperator, clause[key])}`;
+        }
+        if (CollectionInWithinOperatorDict[key]) {
+          return `${_buildCollectionInWithinOperator(key as CollectionInWithinOperator, clause[key])}`;
+        }
         if (Array.isArray(clause[key])) {
           const prefix = key === '$not' ? `${LogicalOperatorDict[key]} ` : '';
           const joinOp = key === '$not' ? ` AND ` : ` ${LogicalOperatorDict[key]} `;
@@ -217,7 +298,7 @@ export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr): st
       })
       .join(' AND ');
   } catch (exception) {
-    if (exception instanceof QueryOperatorNotFoundException) {
+    if (exception instanceof WhereClauseException) {
       throw exception;
     }
     throw new WhereClauseException();
@@ -235,17 +316,17 @@ const _buildFieldClauseExpr = (field: Record<string, string | number | boolean |
       }
       if (!value.includes('$')) {
         if (typeof field[value] === 'string') {
-          return `\`${value}\`='${field[value]}'`;
+          return `\`${value}\`=${stringifyValues(field[value])}`;
         }
         if (typeof field[value] === 'number' || typeof field[value] === 'boolean' || Array.isArray(field[value])) {
-          return `\`${value}\`=${JSON.stringify(field[value])}`;
+          return `\`${value}\`=${stringifyValues(field[value])}`;
         }
       }
       throw new QueryOperatorNotFoundException(value);
     });
     return expr.join(' AND ');
   } catch (exception) {
-    if (exception instanceof QueryOperatorNotFoundException) {
+    if (exception instanceof WhereClauseException) {
       throw exception;
     }
     throw new WhereClauseException();
@@ -267,7 +348,9 @@ const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWh
             return `\`${fieldName}\`${ComparisonSingleOperatorDict[value]}${comparison[value]}`;
           }
           if (ComparisonSingleStringOperatorDict.hasOwnProperty(value)) {
-            return `\`${fieldName}\` ${ComparisonSingleStringOperatorDict[value]} '${comparison[value]}'`;
+            return `\`${fieldName}\` ${ComparisonSingleStringOperatorDict[value]} ${stringifyValues(
+              comparison[value],
+            )}`;
           }
           if (ComparisonMultipleOperatorDict.hasOwnProperty(value) && Array.isArray(comparison[value])) {
             return `\`${fieldName}\` ${ComparisonMultipleOperatorDict[value]} ${comparison[value].join(' AND ')}`;
@@ -278,11 +361,53 @@ const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWh
       .join(` AND `);
     return Object.keys(comparison).length > 1 ? `(${expr})` : expr;
   } catch (exception) {
-    if (exception instanceof QueryOperatorNotFoundException) {
+    if (exception instanceof WhereClauseException) {
       throw exception;
     }
     throw new WhereClauseException();
   }
+};
+
+/**
+ * @ignore
+ * */
+const _buildCollectionInWithinOperator = (
+  op: CollectionInWithinOperator,
+  expr: CollectionInWithinOperatorValue,
+  excludeOperator?: boolean,
+): string => {
+  if (!op || !expr.target_expr || !expr.search_expr) {
+    throw new InWithinOperatorExceptions();
+  }
+  return `${expr.search_expr}${!excludeOperator && expr.$not ? ' NOT ' : ' '}${CollectionInWithinOperatorDict[op]} ${
+    excludeOperator ? expr.target_expr : stringifyValues(expr.target_expr)
+  }`;
+};
+
+const stringifyValues = (value: unknown) => {
+  return JSON.stringify(value).replace(/\\/gi, '');
+};
+
+/**
+ * @ignore
+ * */
+const _buildCollectionInWithIn = (collection: CollectionInWithinOperatorType) => {
+  const op = collection.$in ? '$in' : collection.$within ? '$within' : undefined;
+  if (!op) {
+    throw new Error(
+      'The Collection Operator needs to have the following clauses declared (IN | WITHIN) and SATISFIES.',
+    );
+  }
+  return `${_buildCollectionInWithinOperator(op, collection[op] as CollectionInWithinOperatorValue, true)}`;
+};
+
+/**
+ * @ignore
+ * */
+const _buildWhereCollectionExpr = (op: CollectionSelectOperator, expr: CollectionExpressionType) => {
+  return `${CollectionSelectOperatorDict[op]} ${expr.$expr.map((value) => _buildCollectionInWithIn(value)).join(',')} ${
+    CollectionSatisfiesOperatorDict['$satisfies']
+  } ${buildWhereClauseExpr('', expr.$satisfied)} END`;
 };
 
 // end where expression functions
@@ -335,7 +460,7 @@ const buildOnExpr = (on: IIndexOnParams[]) => {
  * */
 const buildOnSortExpr = (onExpr?: IIndexOnParams) => {
   if (onExpr && onExpr.hasOwnProperty('sort')) {
-    return `['${onExpr.sort}']`;
+    return `["${onExpr.sort}"]`;
   }
   return '';
 };
@@ -352,7 +477,7 @@ const buildWithExpr = (withExpr?: IIndexWithParams) => {
             return buildWithNodesExpr(withExpr[value]);
           case 'defer_build':
           case 'num_replica':
-            return `'${value}': ${withExpr[value]}`;
+            return `"${value}": ${withExpr[value]}`;
           default:
             throw new Error('The WITH clause has an incorrect syntax');
         }
@@ -368,19 +493,8 @@ const buildWithExpr = (withExpr?: IIndexWithParams) => {
  * */
 const buildWithNodesExpr = (withNodesExpr?: string[]) => {
   if (withNodesExpr) {
-    return `'nodes': ${arrayStringToStringSingleQuote(withNodesExpr)}`;
+    return `"nodes": ${stringifyValues(withNodesExpr)}`;
   }
-};
-
-/**
- * @ignore
- * */
-const arrayStringToStringSingleQuote = (array: string[]) => {
-  return `[${array
-    .map((value: string) => {
-      return `'${value}'`;
-    })
-    .join(',')}]`;
 };
 
 // end index expression functions

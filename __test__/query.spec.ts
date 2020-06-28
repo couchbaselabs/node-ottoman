@@ -5,19 +5,33 @@ import {
   ILetExpr,
   IndexParamsOnExceptions,
   MultipleQueryTypesException,
+  InWithinOperatorExceptions,
   Query,
   QueryOperatorNotFoundException,
   SelectClauseException,
   SortType,
   WhereClauseException,
   IndexParamsUsingGSIExceptions,
+  QueryGroupByParamsException,
   ISelectType,
   selectBuilder,
   LogicalWhereExpr,
   IIndexOnParams,
   IIndexWithParams,
   IConditionExpr,
+  connect,
 } from '../lib';
+import { connectionString, username, bucketName, password } from './testData';
+
+const testQuery = async (query: string) => {
+  const conn = connect({
+    bucketName,
+    password,
+    connectionString,
+    username,
+  });
+  return await conn.query(query);
+};
 
 describe('Test Query Types', () => {
   test('Check select clause parameter types', async () => {
@@ -34,7 +48,7 @@ describe('Test Query Types', () => {
       },
     };
 
-    expect(buildSelectExpr('', dist)).toEqual('DISTINCT RAW COUNT(`ottoman`) AS odm');
+    expect(buildSelectExpr('', dist)).toStrictEqual('DISTINCT RAW COUNT(`ottoman`) AS odm');
   });
   test('Verify the exception throwing, if there is an error in the SELECT expression.', async () => {
     const dist: ISelectType = {
@@ -64,8 +78,10 @@ describe('Test Query Types', () => {
         },
       },
     ];
-    const query = new Query({}, 'travel-sample').select(select).build();
-    expect(query).toBe('SELECT RAW COUNT(`ottoman`) AS odm FROM `travel-sample`');
+    const query = new Query({}, 'travel-sample').select(select).limit(1).build();
+    expect(query).toStrictEqual('SELECT RAW COUNT(`ottoman`) AS odm FROM `travel-sample` LIMIT 1');
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
   });
   test('Check the let function of the query builder', async () => {
     const select: ISelectType[] = [
@@ -86,8 +102,12 @@ describe('Test Query Types', () => {
       { key: 'amount_val', value: 10 },
       { key: 'size_val', value: 20 },
     ];
-    const query = new Query({}, 'travel-sample').select(select).let(letExpr).build();
-    expect(query).toBe('SELECT RAW COUNT(DISTINCT `amount`) AS odm FROM `travel-sample` LET amount_val=10,size_val=20');
+    const query = new Query({}, 'travel-sample').select(select).let(letExpr).limit(1).build();
+    expect(query).toStrictEqual(
+      'SELECT RAW COUNT(DISTINCT `amount`) AS odm FROM `travel-sample` LET amount_val=10,size_val=20 LIMIT 1',
+    );
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
   });
 
   test('Check the orderBy function of the query builder', async () => {
@@ -102,8 +122,10 @@ describe('Test Query Types', () => {
     ];
 
     const sortExpr: Record<string, SortType> = { size: 'DESC' };
-    const query = new Query({}, 'travel-sample').select(select).orderBy(sortExpr).build();
-    expect(query).toBe(`SELECT RAW \`travel-sample\` FROM \`travel-sample\` ORDER BY size DESC`);
+    const query = new Query({}, 'travel-sample').select(select).orderBy(sortExpr).limit(1).build();
+    expect(query).toStrictEqual('SELECT RAW `travel-sample` FROM `travel-sample` ORDER BY size DESC LIMIT 1');
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
   });
 
   test('Check the limit function of the query builder', async () => {
@@ -118,7 +140,9 @@ describe('Test Query Types', () => {
     ];
 
     const query = new Query({}, 'travel-sample').select(select).limit(1).build();
-    expect(query).toBe(`SELECT RAW \`travel-sample\` FROM \`travel-sample\` LIMIT 1`);
+    expect(query).toStrictEqual('SELECT RAW `travel-sample` FROM `travel-sample` LIMIT 1');
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
   });
 
   test('Check the limit function of the query builder', async () => {
@@ -133,7 +157,9 @@ describe('Test Query Types', () => {
     ];
 
     const query = new Query({}, 'travel-sample').select(select).limit(10).offset(0).build();
-    expect(query).toBe(`SELECT RAW \`travel-sample\` FROM \`travel-sample\` LIMIT 10 OFFSET 0`);
+    expect(query).toStrictEqual('SELECT RAW `travel-sample` FROM `travel-sample` LIMIT 10 OFFSET 0');
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
   });
 
   test('Check the useKeys function of the query builder', async () => {
@@ -150,13 +176,17 @@ describe('Test Query Types', () => {
       },
     ];
 
-    const query = new Query({}, 'travel-sample').select(select).useKeys(['airlineR_8093']).build();
-    expect(query).toBe(`SELECT \`meta().id\`,\`travel-sample\` FROM \`travel-sample\` USE KEYS ['airlineR_8093']`);
+    const query = new Query({}, 'travel-sample').select(select).useKeys(['airlineR_8093']).limit(1).build();
+    expect(query).toStrictEqual(
+      'SELECT `meta().id`,`travel-sample` FROM `travel-sample` USE KEYS ["airlineR_8093"] LIMIT 1',
+    );
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
   });
 
-  test('Check the exception SelectClauseException in selectBuilder', async () => {
+  test('Check the exception WhereClauseException in selectBuilder', async () => {
     const run = () => selectBuilder('travel-sample', {}, [], { $not: {} });
-    expect(run).toThrow(SelectClauseException);
+    expect(run).toThrow(WhereClauseException);
   });
 
   test('Check the clause WITH with incorrect syntax', async () => {
@@ -196,8 +226,8 @@ describe('Test Query Types', () => {
         { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
       ],
     };
-    expect(buildWhereClauseExpr('', where)).toEqual(
-      "((`price`>1.99 AND `price` IS NOT NULL) OR `auto`>10 OR `amount`=10) AND ((`price2`>1.99 AND `price2` IS NOT NULL) AND ((`price3`>1.99 AND `price3` IS NOT NULL) OR `id`='20'))",
+    expect(buildWhereClauseExpr('', where)).toStrictEqual(
+      '((`price`>1.99 AND `price` IS NOT NULL) OR `auto`>10 OR `amount`=10) AND ((`price2`>1.99 AND `price2` IS NOT NULL) AND ((`price3`>1.99 AND `price3` IS NOT NULL) OR `id`="20"))',
     );
   });
 
@@ -215,8 +245,8 @@ describe('Test Query Types', () => {
         { id: 8000 },
       ],
     };
-    expect(buildWhereClauseExpr('', where)).toEqual(
-      "(NOT (`price`>1.99 AND `auto`>10 AND `amount`=10 AND (`type`='hotel' OR `type`='landmark' OR NOT (`price`=10))) AND `id`=8000)",
+    expect(buildWhereClauseExpr('', where)).toStrictEqual(
+      '(NOT (`price`>1.99 AND `auto`>10 AND `amount`=10 AND (`type`="hotel" OR `type`="landmark" OR NOT (`price`=10))) AND `id`=8000)',
     );
   });
 
@@ -226,9 +256,11 @@ describe('Test Query Types', () => {
     };
 
     const query = new Query({}, 'travel-sample').select().where(expr_where).limit(20).build();
-    expect(query).toBe(
-      "SELECT * FROM `travel-sample` WHERE (`address` LIKE '%57-59%' OR `free_breakfast`=true) LIMIT 20",
+    expect(query).toStrictEqual(
+      'SELECT * FROM `travel-sample` WHERE (`address` LIKE "%57-59%" OR `free_breakfast`=true) LIMIT 20',
     );
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
   });
 
   test('Test all the parameters of the WHERE clause', async () => {
@@ -258,9 +290,11 @@ describe('Test Query Types', () => {
     };
 
     const query = new Query({}, 'travel-sample').select().where(expr_where).limit(20).build();
-    expect(query).toBe(
-      "SELECT * FROM `travel-sample` WHERE (`address` IS NULL OR `free_breakfast` IS MISSING OR `free_breakfast` IS NOT VALUED OR `id`=8000 OR `id`!=9000 OR `id`>7000 OR `id`>=6999 OR `id`<5000 OR `id`<=4999) AND (`address` IS NOT NULL AND `address` IS NOT MISSING AND `address` IS VALUED) AND NOT (`address` LIKE '%59%' AND `name` NOT LIKE 'Otto%' AND (`id` BETWEEN 1 AND 2000 OR `id` NOT BETWEEN 2001 AND 8000) AND `address` LIKE '%20%') LIMIT 20",
+    expect(query).toStrictEqual(
+      'SELECT * FROM `travel-sample` WHERE (`address` IS NULL OR `free_breakfast` IS MISSING OR `free_breakfast` IS NOT VALUED OR `id`=8000 OR `id`!=9000 OR `id`>7000 OR `id`>=6999 OR `id`<5000 OR `id`<=4999) AND (`address` IS NOT NULL AND `address` IS NOT MISSING AND `address` IS VALUED) AND NOT (`address` LIKE "%59%" AND `name` NOT LIKE "Otto%" AND (`id` BETWEEN 1 AND 2000 OR `id` NOT BETWEEN 2001 AND 8000) AND `address` LIKE "%20%") LIMIT 20',
     );
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
   });
 
   test('Check the parameters of the INDEX clause', async () => {
@@ -269,15 +303,15 @@ describe('Test Query Types', () => {
     const on: IIndexOnParams[] = [{ name: 'travel-sample.callsing', sort: 'ASC' }];
 
     const withExpr: IIndexWithParams = {
-      nodes: ['192.168.1.1:8078', '192.168.1.1:8079'],
+      nodes: [],
       defer_build: true,
-      num_replica: 2,
+      num_replica: 0,
     };
 
     const index = buildIndexExpr('travel-sample', 'CREATE', 'travel_sample_id_test', on, expr_where, true, withExpr);
 
-    expect(index).toBe(
-      "CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`['ASC']) WHERE `travel-sample.callsign` LIKE '%57-59%' USING GSI WITH {'nodes': ['192.168.1.1:8078','192.168.1.1:8079'],'defer_build': true,'num_replica': 2}",
+    expect(index).toStrictEqual(
+      'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`["ASC"]) WHERE `travel-sample.callsign` LIKE "%57-59%" USING GSI WITH {"nodes": [],"defer_build": true,"num_replica": 0}',
     );
   });
 
@@ -300,8 +334,8 @@ describe('Test Query Types', () => {
       .with(withExpr)
       .build();
 
-    expect(query).toBe(
-      "CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`) WHERE `travel-sample.callsign` LIKE '%57-59%' USING GSI WITH {'nodes': ['192.168.1.1:8078','192.168.1.1:8079'],'defer_build': true,'num_replica': 2}",
+    expect(query).toStrictEqual(
+      'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`) WHERE `travel-sample.callsign` LIKE "%57-59%" USING GSI WITH {"nodes": ["192.168.1.1:8078","192.168.1.1:8079"],"defer_build": true,"num_replica": 2}',
     );
   });
 
@@ -313,7 +347,7 @@ describe('Test Query Types', () => {
   test('Check the DROP INDEX clause of the query builder', async () => {
     const query = new Query({}, 'travel-sample').index('DROP', 'travel_sample_id_test').usingGSI().build();
 
-    expect(query).toBe('DROP INDEX `travel-sample`.`travel_sample_id_test` USING GSI');
+    expect(query).toStrictEqual('DROP INDEX `travel-sample`.`travel_sample_id_test` USING GSI');
   });
 
   test('Check the exception Index Params On Exception', async () => {
@@ -359,14 +393,9 @@ describe('Test Query Types', () => {
         {
           $count: {
             $field: {
-              name: 'ottoman',
+              name: 'type',
             },
             as: 'odm',
-          },
-        },
-        {
-          $max: {
-            $field: 'count',
           },
         },
       ],
@@ -381,15 +410,98 @@ describe('Test Query Types', () => {
           { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
         ],
       },
-      orderBy: { size: 'DESC' },
+      groupBy: [{ expr: 'type' }],
+      orderBy: { type: 'DESC' },
       limit: 10,
       offset: 1,
       use: ['airlineR_8093', 'airlineR_8094'],
     };
-    const query = new Query(params, 'collection-name').build();
+    const query = new Query(params, 'travel-sample').build();
 
-    expect(query).toBe(
-      "SELECT COUNT(`ottoman`) AS odm,MAX(`count`) FROM `collection-name` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val=10,size_val=20 WHERE ((`price`>amount_val AND `price` IS NOT NULL) OR `auto`>10 OR `amount`=10) AND ((`price2`>1.99 AND `price2` IS NOT NULL) AND ((`price3`>1.99 AND `price3` IS NOT NULL) OR `id`='20')) ORDER BY size DESC LIMIT 10 OFFSET 1",
+    expect(query).toStrictEqual(
+      'SELECT COUNT(`type`) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((`price`>amount_val AND `price` IS NOT NULL) OR `auto`>10 OR `amount`=10) AND ((`price2`>1.99 AND `price2` IS NOT NULL) AND ((`price3`>1.99 AND `price3` IS NOT NULL) OR `id`="20")) GROUP BY type ORDER BY type DESC LIMIT 10 OFFSET 1',
+    );
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
+  });
+
+  test('Test Collection Operator', async () => {
+    const where = {
+      $any: {
+        $expr: [{ $in: { search_expr: 'search', target_expr: 'address' } }],
+        $satisfied: { address: '10' },
+      },
+    };
+    const query = new Query('', 'travel-sample').select().where(where).limit(10).build();
+    expect(query).toStrictEqual(
+      'SELECT * FROM `travel-sample` WHERE ANY search IN address SATISFIES `address`="10" END LIMIT 10',
+    );
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
+  });
+
+  test('Test (IN|WITHIN) Operator', async () => {
+    const where = {
+      $in: { search_expr: 'search', target_expr: ['address'] },
+    };
+    const query = new Query('', 'travel-sample').select().where(where).limit(10).build();
+    expect(query).toStrictEqual('SELECT * FROM `travel-sample` WHERE search IN ["address"] LIMIT 10');
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
+  });
+
+  test('Test (IN|WITHIN) Operator Exception', () => {
+    const where = {
+      $in: { search_expr: 'search' },
+    };
+    const run = () => new Query('', 'travel-sample').select().where(where).limit(10).build();
+    expect(run).toThrow(InWithinOperatorExceptions);
+  });
+
+  test('Test GROUP BY clause', async () => {
+    const groupBy = [{ expr: 'type', as: 'sch' }];
+    const having = {
+      type: { $like: '%hotel%' },
+    };
+    const letExpr: ILetExpr[] = [
+      { key: 'amount_val', value: 10 },
+      { key: 'size_val', value: 20 },
+    ];
+    const query = new Query('', 'travel-sample')
+      .select([{ $count: { $field: 'type' } }])
+      .groupBy(groupBy)
+      .letting(letExpr)
+      .having(having)
+      .limit(10)
+      .build();
+    expect(query).toStrictEqual(
+      'SELECT COUNT(`type`) FROM `travel-sample` GROUP BY type AS sch LETTING amount_val=10,size_val=20 HAVING `type` LIKE "%hotel%" LIMIT 10',
+    );
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
+  });
+
+  test('Test GROUP BY Exception', () => {
+    const having = {
+      type: { $like: '%hotel%' },
+    };
+    const run = () =>
+      new Query('', 'travel-sample')
+        .select([{ $count: { $field: 'type' } }])
+        .having(having)
+        .limit(10)
+        .build();
+    expect(run).toThrow(QueryGroupByParamsException);
+  });
+
+  test('Test String JOIN clause', () => {
+    const query = new Query({}, 'beer-sample brewery');
+    const result = query
+      .select([{ $field: 'beer.name' }])
+      .plainJoin('JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_"))')
+      .build();
+    expect(result).toStrictEqual(
+      'SELECT `beer.name` FROM `beer-sample brewery` JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_")) ',
     );
   });
 });
