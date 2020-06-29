@@ -102,9 +102,9 @@ const _buildAS = (c: ISelectAggType | IField) => {
  * */
 const _buildField = (clause: IField | string) => {
   if (clause.hasOwnProperty('name')) {
-    return `\`${clause['name']}\`${_buildAS(clause as IField)}`;
+    return `${clause['name']}${_buildAS(clause as IField)}`;
   }
-  return `\`${clause}\``;
+  return `${clause}`;
 };
 
 /**
@@ -316,10 +316,10 @@ const _buildFieldClauseExpr = (field: Record<string, string | number | boolean |
       }
       if (!value.includes('$')) {
         if (typeof field[value] === 'string') {
-          return `\`${value}\`=${stringifyValues(field[value])}`;
+          return `${value}=${stringifyValues(field[value])}`;
         }
         if (typeof field[value] === 'number' || typeof field[value] === 'boolean' || Array.isArray(field[value])) {
-          return `\`${value}\`=${stringifyValues(field[value])}`;
+          return `${value}=${stringifyValues(field[value])}`;
         }
       }
       throw new QueryOperatorNotFoundException(value);
@@ -342,18 +342,16 @@ const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWh
       .map((value: string) => {
         if (!!comparison[value]) {
           if (ComparisonEmptyOperatorDict.hasOwnProperty(value)) {
-            return `\`${fieldName}\` ${ComparisonEmptyOperatorDict[value]}`;
+            return `${fieldName} ${ComparisonEmptyOperatorDict[value]}`;
           }
           if (ComparisonSingleOperatorDict.hasOwnProperty(value)) {
-            return `\`${fieldName}\`${ComparisonSingleOperatorDict[value]}${comparison[value]}`;
+            return `${fieldName}${ComparisonSingleOperatorDict[value]}${comparison[value]}`;
           }
           if (ComparisonSingleStringOperatorDict.hasOwnProperty(value)) {
-            return `\`${fieldName}\` ${ComparisonSingleStringOperatorDict[value]} ${stringifyValues(
-              comparison[value],
-            )}`;
+            return `${fieldName} ${ComparisonSingleStringOperatorDict[value]} ${stringifyValues(comparison[value])}`;
           }
           if (ComparisonMultipleOperatorDict.hasOwnProperty(value) && Array.isArray(comparison[value])) {
-            return `\`${fieldName}\` ${ComparisonMultipleOperatorDict[value]} ${comparison[value].join(' AND ')}`;
+            return `${fieldName} ${ComparisonMultipleOperatorDict[value]} ${comparison[value].join(' AND ')}`;
           }
         }
         throw new QueryOperatorNotFoundException(value);

@@ -158,6 +158,18 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return new _Model({ ...value, [ID_KEY]: key });
     };
 
+    static findOne = async (filter: LogicalWhereExpr = {}, options: { sort?: Record<string, SortType> } = {}) => {
+      const response = await find(metadata)(filter, {
+        ...options,
+        limit: 1,
+        select: `\`${connection.bucketName}\`.*`,
+      });
+      if (response.hasOwnProperty('rows') && response.rows.length > 0) {
+        return new _Model(response.rows[0]);
+      }
+      return null;
+    };
+
     static create = (data: Record<string, any>): Promise<any> => {
       const instance = new _Model({ ...data });
       return instance.save();

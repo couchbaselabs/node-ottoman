@@ -53,7 +53,7 @@ const query = new Query(params, 'travel-sample').build();
 console.log(query);
 ```
 
-> SELECT COUNT(`type`) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((`price`>amount_val AND `price` IS NOT NULL) OR `auto`>10 OR `amount`=10) AND ((`price2`>1.99 AND `price2` IS NOT NULL) AND ((`price3`>1.99 AND `price3` IS NOT NULL) OR `id`="20")) AND ANY search IN address SATISFIES `address`="10" END AND search IN ["address"] GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING `type` LIKE "%hotel%" ORDER BY type DESC LIMIT 10 OFFSET 1
+> SELECT COUNT(type) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((price>amount_val AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20")) AND ANY search IN address SATISFIES address="10" END AND search IN ["address"] GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING type LIKE "%hotel%" ORDER BY type DESC LIMIT 10 OFFSET 1
 
 ### Build a query by using access functions
 
@@ -114,17 +114,17 @@ const query = new Query({}, 'collection-name')
 console.log(query);
 ```
 
-> SELECT COUNT(\`type\`) AS odm,MAX(\`amount\`) FROM \`travel-sample\` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING \`type\` LIKE "%hotel%" ORDER BY type = 'DESC' LIMIT 10 OFFSET 1
+> SELECT COUNT(type) AS odm,MAX(amount) FROM \`travel-sample\` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING type LIKE "%hotel%" ORDER BY type = 'DESC' LIMIT 10 OFFSET 1
 
 ### Build a query by using parameters and function parameters
 
 ```ts
 const select = [{ $field: 'address' }];
-const query = new Query({ where: { price: { $gt: 5 } } }, 'collection_name').select(select).limit(10).build();
+const query = new Query({ where: { price: { $gt: 5 } } }, 'travel-sample').select(select).limit(10).build();
 console.log(query);
 ```
 
-> SELECT \`address\` FROM \`collection_name\` WHERE price > 5 LIMIT 10
+> SELECT address FROM \`travel-sample\` WHERE price > 5 LIMIT 10
 
 ### Advanced example of using the WHERE clause
 

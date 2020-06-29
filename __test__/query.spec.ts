@@ -48,7 +48,7 @@ describe('Test Query Types', () => {
       },
     };
 
-    expect(buildSelectExpr('', dist)).toStrictEqual('DISTINCT RAW COUNT(`ottoman`) AS odm');
+    expect(buildSelectExpr('', dist)).toStrictEqual('DISTINCT RAW COUNT(ottoman) AS odm');
   });
   test('Verify the exception throwing, if there is an error in the SELECT expression.', async () => {
     const dist: ISelectType = {
@@ -79,7 +79,7 @@ describe('Test Query Types', () => {
       },
     ];
     const query = new Query({}, 'travel-sample').select(select).limit(1).build();
-    expect(query).toStrictEqual('SELECT RAW COUNT(`ottoman`) AS odm FROM `travel-sample` LIMIT 1');
+    expect(query).toStrictEqual('SELECT RAW COUNT(ottoman) AS odm FROM `travel-sample` LIMIT 1');
     const execute = await testQuery(query);
     expect(execute.rows).toBeDefined();
   });
@@ -104,7 +104,7 @@ describe('Test Query Types', () => {
     ];
     const query = new Query({}, 'travel-sample').select(select).let(letExpr).limit(1).build();
     expect(query).toStrictEqual(
-      'SELECT RAW COUNT(DISTINCT `amount`) AS odm FROM `travel-sample` LET amount_val=10,size_val=20 LIMIT 1',
+      'SELECT RAW COUNT(DISTINCT amount) AS odm FROM `travel-sample` LET amount_val=10,size_val=20 LIMIT 1',
     );
     const execute = await testQuery(query);
     expect(execute.rows).toBeDefined();
@@ -115,7 +115,7 @@ describe('Test Query Types', () => {
       {
         $raw: {
           $field: {
-            name: 'travel-sample',
+            name: '`travel-sample`',
           },
         },
       },
@@ -133,7 +133,7 @@ describe('Test Query Types', () => {
       {
         $raw: {
           $field: {
-            name: 'travel-sample',
+            name: '`travel-sample`',
           },
         },
       },
@@ -150,7 +150,7 @@ describe('Test Query Types', () => {
       {
         $raw: {
           $field: {
-            name: 'travel-sample',
+            name: '`travel-sample`',
           },
         },
       },
@@ -171,14 +171,14 @@ describe('Test Query Types', () => {
       },
       {
         $field: {
-          name: 'travel-sample',
+          name: '`travel-sample`',
         },
       },
     ];
 
     const query = new Query({}, 'travel-sample').select(select).useKeys(['airlineR_8093']).limit(1).build();
     expect(query).toStrictEqual(
-      'SELECT `meta().id`,`travel-sample` FROM `travel-sample` USE KEYS ["airlineR_8093"] LIMIT 1',
+      'SELECT meta().id,`travel-sample` FROM `travel-sample` USE KEYS ["airlineR_8093"] LIMIT 1',
     );
     const execute = await testQuery(query);
     expect(execute.rows).toBeDefined();
@@ -227,7 +227,7 @@ describe('Test Query Types', () => {
       ],
     };
     expect(buildWhereClauseExpr('', where)).toStrictEqual(
-      '((`price`>1.99 AND `price` IS NOT NULL) OR `auto`>10 OR `amount`=10) AND ((`price2`>1.99 AND `price2` IS NOT NULL) AND ((`price3`>1.99 AND `price3` IS NOT NULL) OR `id`="20"))',
+      '((price>1.99 AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20"))',
     );
   });
 
@@ -246,7 +246,7 @@ describe('Test Query Types', () => {
       ],
     };
     expect(buildWhereClauseExpr('', where)).toStrictEqual(
-      '(NOT (`price`>1.99 AND `auto`>10 AND `amount`=10 AND (`type`="hotel" OR `type`="landmark" OR NOT (`price`=10))) AND `id`=8000)',
+      '(NOT (price>1.99 AND auto>10 AND amount=10 AND (type="hotel" OR type="landmark" OR NOT (price=10))) AND id=8000)',
     );
   });
 
@@ -257,7 +257,7 @@ describe('Test Query Types', () => {
 
     const query = new Query({}, 'travel-sample').select().where(expr_where).limit(20).build();
     expect(query).toStrictEqual(
-      'SELECT * FROM `travel-sample` WHERE (`address` LIKE "%57-59%" OR `free_breakfast`=true) LIMIT 20',
+      'SELECT * FROM `travel-sample` WHERE (address LIKE "%57-59%" OR free_breakfast=true) LIMIT 20',
     );
     const execute = await testQuery(query);
     expect(execute.rows).toBeDefined();
@@ -291,7 +291,7 @@ describe('Test Query Types', () => {
 
     const query = new Query({}, 'travel-sample').select().where(expr_where).limit(20).build();
     expect(query).toStrictEqual(
-      'SELECT * FROM `travel-sample` WHERE (`address` IS NULL OR `free_breakfast` IS MISSING OR `free_breakfast` IS NOT VALUED OR `id`=8000 OR `id`!=9000 OR `id`>7000 OR `id`>=6999 OR `id`<5000 OR `id`<=4999) AND (`address` IS NOT NULL AND `address` IS NOT MISSING AND `address` IS VALUED) AND NOT (`address` LIKE "%59%" AND `name` NOT LIKE "Otto%" AND (`id` BETWEEN 1 AND 2000 OR `id` NOT BETWEEN 2001 AND 8000) AND `address` LIKE "%20%") LIMIT 20',
+      'SELECT * FROM `travel-sample` WHERE (address IS NULL OR free_breakfast IS MISSING OR free_breakfast IS NOT VALUED OR id=8000 OR id!=9000 OR id>7000 OR id>=6999 OR id<5000 OR id<=4999) AND (address IS NOT NULL AND address IS NOT MISSING AND address IS VALUED) AND NOT (address LIKE "%59%" AND name NOT LIKE "Otto%" AND (id BETWEEN 1 AND 2000 OR id NOT BETWEEN 2001 AND 8000) AND address LIKE "%20%") LIMIT 20',
     );
     const execute = await testQuery(query);
     expect(execute.rows).toBeDefined();
@@ -311,7 +311,7 @@ describe('Test Query Types', () => {
     const index = buildIndexExpr('travel-sample', 'CREATE', 'travel_sample_id_test', on, expr_where, true, withExpr);
 
     expect(index).toStrictEqual(
-      'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`["ASC"]) WHERE `travel-sample.callsign` LIKE "%57-59%" USING GSI WITH {"nodes": [],"defer_build": true,"num_replica": 0}',
+      'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`["ASC"]) WHERE travel-sample.callsign LIKE "%57-59%" USING GSI WITH {"nodes": [],"defer_build": true,"num_replica": 0}',
     );
   });
 
@@ -335,7 +335,7 @@ describe('Test Query Types', () => {
       .build();
 
     expect(query).toStrictEqual(
-      'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`) WHERE `travel-sample.callsign` LIKE "%57-59%" USING GSI WITH {"nodes": ["192.168.1.1:8078","192.168.1.1:8079"],"defer_build": true,"num_replica": 2}',
+      'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`) WHERE travel-sample.callsign LIKE "%57-59%" USING GSI WITH {"nodes": ["192.168.1.1:8078","192.168.1.1:8079"],"defer_build": true,"num_replica": 2}',
     );
   });
 
@@ -412,14 +412,14 @@ describe('Test Query Types', () => {
       },
       groupBy: [{ expr: 'type' }],
       orderBy: { type: 'DESC' },
-      limit: 10,
+      limit: 5,
       offset: 1,
       use: ['airlineR_8093', 'airlineR_8094'],
     };
     const query = new Query(params, 'travel-sample').build();
 
     expect(query).toStrictEqual(
-      'SELECT COUNT(`type`) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((`price`>amount_val AND `price` IS NOT NULL) OR `auto`>10 OR `amount`=10) AND ((`price2`>1.99 AND `price2` IS NOT NULL) AND ((`price3`>1.99 AND `price3` IS NOT NULL) OR `id`="20")) GROUP BY type ORDER BY type DESC LIMIT 10 OFFSET 1',
+      'SELECT COUNT(type) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((price>amount_val AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20")) GROUP BY type ORDER BY type DESC LIMIT 5 OFFSET 1',
     );
     const execute = await testQuery(query);
     expect(execute.rows).toBeDefined();
@@ -434,7 +434,7 @@ describe('Test Query Types', () => {
     };
     const query = new Query('', 'travel-sample').select().where(where).limit(10).build();
     expect(query).toStrictEqual(
-      'SELECT * FROM `travel-sample` WHERE ANY search IN address SATISFIES `address`="10" END LIMIT 10',
+      'SELECT * FROM `travel-sample` WHERE ANY search IN address SATISFIES address="10" END LIMIT 10',
     );
     const execute = await testQuery(query);
     expect(execute.rows).toBeDefined();
@@ -475,7 +475,7 @@ describe('Test Query Types', () => {
       .limit(10)
       .build();
     expect(query).toStrictEqual(
-      'SELECT COUNT(`type`) FROM `travel-sample` GROUP BY type AS sch LETTING amount_val=10,size_val=20 HAVING `type` LIKE "%hotel%" LIMIT 10',
+      'SELECT COUNT(type) FROM `travel-sample` GROUP BY type AS sch LETTING amount_val=10,size_val=20 HAVING type LIKE "%hotel%" LIMIT 10',
     );
     const execute = await testQuery(query);
     expect(execute.rows).toBeDefined();
@@ -501,7 +501,7 @@ describe('Test Query Types', () => {
       .plainJoin('JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_"))')
       .build();
     expect(result).toStrictEqual(
-      'SELECT `beer.name` FROM `beer-sample brewery` JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_")) ',
+      'SELECT beer.name FROM `beer-sample brewery` JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_")) ',
     );
   });
 });
