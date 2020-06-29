@@ -68,7 +68,7 @@ export abstract class Document<T> {
   }
 
   /**
-   * Remove document from DB
+   * Remove document from database
    */
   async remove(options = {}) {
     const data = extractDataFromModel(this);
@@ -166,7 +166,7 @@ export abstract class Document<T> {
   }
 
   /**
-   * Allow to easyly apply data from object to current document.
+   * Allow to easily apply data from object to current document.
    */
   _applyData(data) {
     for (const key in data) {

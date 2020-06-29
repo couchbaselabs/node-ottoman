@@ -23,7 +23,9 @@ app.use('/flightPaths', jwtMiddleware, RouteRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(YAML.load('./api/swagger.yaml')));
 
 // Handle not found and catch exception layer
-app.use((req: Request, res: Response) => res.status(404).json({ error: 'Route Not Match' }));
+app.use((req: Request, res: Response) =>
+  res.status(404).json({ error: 'The incoming request did not match any route' }),
+);
 app.use((err: Error, req: Request, res: Response) => {
   if (err.name === 'UnauthorizedError') {
     return res.status(401).json({ error: 'Invalid token...' });

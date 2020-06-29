@@ -38,7 +38,7 @@ describe('Mode Query Index Tests', () => {
     expect(results.rows[0].user).toBe(user.id);
   });
 
-  test('Test schema query check wrong structure', async () => {
+  test('Test schema query: check wrong structure', async () => {
     const run = () => {
       const userSchema = new Schema({
         name: String,
@@ -55,7 +55,7 @@ describe('Mode Query Index Tests', () => {
     expect(run).toThrow('The "by" and "of" properties are required to build the queries.');
   });
 
-  test('Test schema query not register model exception', async () => {
+  test('Test schema query: not registered model exception', async () => {
     const run = () => {
       const userSchema = new Schema({
         name: String,

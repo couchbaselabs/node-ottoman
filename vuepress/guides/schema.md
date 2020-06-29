@@ -60,7 +60,7 @@ const Blog = model('Blog', blogSchema);
 
 ## Indexes
 
-You can specify numerous indexes on a model.  There are multiple different kinds of indexes, each with it's own benefits and restrictions.
+You can specify several indexes on a model.  There are different kinds of indexes, each with its own benefits and restrictions.
 
 To specify indexes on a [Schema](/guides/schema), use the index key on the schema:
 ```javascript
@@ -92,9 +92,9 @@ schema.index.findByLastName = {
 ```
 
 In order for indexes to be created on the server, you must call the `ensureIndexes` method. 
-This method will internally generate a list of indexes which will be used and the most optimal 
-configuration for them and build any which are missing on the server. 
-This must be called after all models are defined, and it is a good idea to only call this when needed rather than any time your server is started.
+This method will internally generate a list of indexes which will be used in the most optimal 
+configuration for them, and will build any index missing on the server. 
+This method must be called after all models are defined, and it is a good idea to call this only when needed rather than any time your server is started.
 
 ```javascript
 import express from 'express';
@@ -130,9 +130,9 @@ returning only partial results.  One of the cons of views is that they are event
 penalty if you want consistency in the result.
 
 #### `n1ql`
-These indexes utilize the new SQL-like query language available in Couchbase Server 4.0.0.  These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
+These indexes uses the new SQL-like query language available from Couchbase Server 4.0.0.  These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
 
-N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html).  If you need flexibility of query and
+N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html).  If you need flexibility of queries and
 speed, this is the way to go.
 
 ## Instance methods
@@ -225,7 +225,7 @@ schema.pre('save', async function() {
 
 ### Hooks Use Cases
 
-Middleware are useful for atomizing model logic. Here are some other ideas:
+Middleware is useful for atomizing model logic. Here are some other ideas:
 
 - complex validation
 - removing dependent documents (removing a user removes all his blogposts)
@@ -234,7 +234,7 @@ Middleware are useful for atomizing model logic. Here are some other ideas:
 
 Errors in Pre Hooks
 
-If any pre hook errors out, ottoman will not execute subsequent hooks or the hooked function.
+If any pre hook errors out, Ittoman will not execute subsequent hooks or the hooked function.
 
 ```javascript
 schema.pre('save', function() {
@@ -300,7 +300,7 @@ new User({ name: 'test' }).save();
 
 ### Save/Validate Hooks
 
-The `save()` function triggers `validate()` hooks, because ottoman has a built-in `pre('save')` hook that calls `validate()`.
+The `save()` function triggers `validate()` hooks, because Ottoman has a built-in `pre('save')` hook that calls `validate()`.
 This means that all `pre('validate')` and `post('validate')` hooks get called before any `pre('save')` hooks.
 The `update()` function have the same behavior.
 
@@ -351,7 +351,7 @@ await user.save();
 ```
 
 ### Global Plugins
-Want to register a plugin for all schemas? The ottoman `registerGlobalPlugin` function registers a plugin for every schema. For example:
+Want to register a plugin for all schemas? The Ottoman `registerGlobalPlugin` function registers a plugin for every schema. For example:
 
 ```javascript
 import {registerGlobalPlugin} from 'ottoman';

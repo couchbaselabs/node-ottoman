@@ -9,7 +9,7 @@ type ParseResult = {
 };
 
 /**
- * Build the fields using the given definition, if the [[obj]] is a schema instance, the data will be taken from the fields provided
+ * Build the fields using the given definition. If the [[obj]] is a schema instance, the data will be taken from the fields provided
  * @function
  * @public
  *
@@ -130,7 +130,7 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
  *    console.log(castSchema(data, strictSchema)); // Throw "Property age must be of type Number"
  * ```
  */
-export const castSchema = (data, schema: Schema | SchemaDef) => {
+export const castSchema = (data, schema: Schema | SchemaDef): any => {
   const _schema = schema instanceof Schema ? schema : new Schema(schema);
   return _schema.cast(data);
 };
@@ -148,7 +148,7 @@ export const castSchema = (data, schema: Schema | SchemaDef) => {
  *  console.log(obj);
  * ```
  */
-export const applyDefaultValue = (obj, schema: Schema | SchemaDef) => {
+export const applyDefaultValue = (obj, schema: Schema | SchemaDef): any => {
   const _schema = schema instanceof Schema ? schema : new Schema(schema);
   return _schema.applyDefaultsToObject(obj);
 };
@@ -192,7 +192,7 @@ export const registerType = (name: string, factory: FactoryFunction): void => {
  *    });
  *  ```
  */
-export const addValidators = (validators: CustomValidations) => {
+export const addValidators = (validators: CustomValidations): void => {
   if (!is(validators, Object)) {
     throw new BuildSchemaError('Validators must be an object.');
   }

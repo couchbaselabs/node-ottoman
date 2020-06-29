@@ -42,7 +42,7 @@ The flexiblity and dynamic nature of a NOSQL Document Database and JSON simplifi
 - hotels
 - users
  
-The source code is organized by each module in a  folder under the root of the application, a module defines REST endpoints, and the data model of a resource, the data model is defined in `.model.ts` by the schema and model and case of endpoints are defined in `.controller.ts`.   Let's walk through the code starting with the `hotels` module.
+The source code is organized by each module in a  folder under the root of the application, a module defines REST endpoints, and the data model of a resource. The data model is defined in `.model.ts` by the schema and model, and case of endpoints are defined in `.controller.ts`.   Let's walk through the code starting with the `hotels` module.
 
 ### Hotel Model
 
@@ -53,7 +53,7 @@ import { model, addValidators, Schema } from 'ottoman';    // ← use ottoman
 import { GeolocationSchema } from '../shared/geolocation.model';
 ```
 
-Next a custom validator function is defined to make sure a phone number in the standard USA format is created.
+Next, a custom validator function is defined to make sure that a phone number in the standard USA format is created.
 
 ```ts
 addValidators({
@@ -115,7 +115,7 @@ HotelSchema.index.findByName = { by: 'name', type: 'n1ql' };
 export const HotelModel = model('hotel', HotelSchema);
 ```
 
-In the Hotel model above, there are one explicit index defined. By default,
+In the Hotel model above, there is one explicit index defined. By default,
 if an index type is not specified Ottoman will select the fastest available index supported within the current Couchbase cluster.
 In addition to utilizing built in secondary index support within Couchbase, 
 Ottoman can also utilize referential documents and maintain the referential integrity for updates and deletes. 
@@ -132,7 +132,7 @@ import { model, addValidators, Schema } from 'ottoman';    // ← use ottoman
 import { GeolocationSchema } from '../shared/geolocation.model';
 ```
 
-As in the Customer model example, the Bike object is defined with several different data types, embedded references to other Ottoman models and explicitly defined secondary indexes. 
+As in the Hotel model example, the Airport object is defined with several different data types, embedded references to other Ottoman models and explicitly defined secondary indexes. 
 
 ```ts
 const AirportSchema = new Schema({
@@ -207,4 +207,4 @@ ensureIndexes()
 ```
 
 #### Routes and Documentations
-You can found in swagger all definitions. [Docs](http://127.0.0.1:4500/api-docs)
+You can find all definitions in Swagger. [Docs](http://127.0.0.1:4500/api-docs)

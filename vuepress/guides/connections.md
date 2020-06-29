@@ -12,8 +12,8 @@ import { connect } from 'ottoman';
 const connection = connect('couchbase://localhost/travel-sample@admin:password');
 ```
 
-This is the minimum needed to connect the travel-sample bucket.
-If connecting fails on your machine, try using 127.0.0.1 instead of `localhost`.
+This is the minimum needed to connect to the travel-sample bucket.
+If the connection fails on your machine, try using 127.0.0.1 instead of `localhost`.
 
 ### Connection String Anatomy
 
@@ -32,7 +32,7 @@ const connection = connect({
 });
 ```
 
-The availables options are:
+The available options are:
 
 ```typescript
 interface ConnectOptions {
@@ -48,7 +48,7 @@ interface ConnectOptions {
 
 ```
 
-## Using default connection
+## Using the default connection
 
 ```javascript
 import { connect, model } from 'ottoman';
@@ -111,7 +111,7 @@ The first successful connection will be set as the default connection and
 could be accessed anywhere in your code by calling `getDefaultConnection` function.
 
 
-All active connections will be store and could be accessed with `getConnections` function. 
+All active connections will be stored and could be accessed with the `getConnections` function. 
 
 ## Closing connections
 

@@ -39,7 +39,7 @@ describe('Schema Types with Strict Strategy', () => {
     validationStrategy: VALIDATION_STRATEGY.STRICT,
   };
   const schema = new Schema(schemaDef, schemaOptions);
-  test('should allow add the preHooks since schema constructor', () => {
+  test('should allow to add the preHooks from the schema constructor', () => {
     const options = {
       preHooks: {
         validate: (document) => console.log(document),
@@ -53,7 +53,7 @@ describe('Schema Types with Strict Strategy', () => {
     };
     expect(new Schema({ name: String }, options2)).toBeInstanceOf(Schema);
   });
-  test('should throw an error if the preHooks since schema constructor is not valid', () => {
+  test('should throw an error if the preHooks from the schema constructor is not valid', () => {
     const options = {
       preHooks: {
         validate: 23,
@@ -71,7 +71,7 @@ describe('Schema Types with Strict Strategy', () => {
     expect(schema).toBeInstanceOf(Schema);
     expect(schema.preHooks).toEqual({});
   });
-  test('should allow add the postHooks since schema constructor', () => {
+  test('should allow to add the postHooks from the schema constructor', () => {
     const options = {
       postHooks: {
         validate: (document) => console.log(document),

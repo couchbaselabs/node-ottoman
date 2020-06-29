@@ -106,7 +106,7 @@ export class Query extends BaseQuery {
   }
 
   /**
-   * Add results selectors to SELECT clause.
+   * Add result selectors to SELECT clause.
    * @method
    * @public
    *

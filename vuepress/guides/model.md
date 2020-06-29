@@ -12,10 +12,10 @@ When you call `model()` function on a schema, Ottoman compiles a model for you.
 const schema = new Schema({name: String, age: Number})
 const User = model('User', schema);
 ```
-The first argument is the name of the collection your model is for. for the example above, the `model` User is for the **User** collection in the database.
+The first argument is the name of the collection your model is for. For the example above, the `model` User is for the **User** collection in the database.
 
 ::: warning
-The `model()` function makes a copy of schema. Make sure that you've added everything you want to schema, including hooks, before calling model()!
+The `model()` function makes a copy of the schema. Make sure that you've added everything you want to the schema, including hooks, before calling model()!
 :::
 
 
@@ -31,7 +31,7 @@ const User = model('User', schema, {collectionName: 'users'});
 ```
 
 ::: tip
-By default ottoman will take the model name if `collectionName` isn't provided.
+By default Ottoman will take the model name if `collectionName` isn't provided.
 :::
 
 The models options are:
@@ -49,7 +49,7 @@ interface ModelOptions {
 
 ## Constructing Documents
 
-An instance of a model is called a document. Creating them and saving to the database is easy.
+An instance of a model is called a document. Creating and saving them to the database is easy.
 
 ```javascript
 const User = model('User', schema);
@@ -72,8 +72,8 @@ Every model has an associated connection. When you use ottoman.model(), your mod
 
 ## Querying
 
-Finding documents is easy with Ottoman, empower by a built-in Query Builder. 
-Documents can be retreived using each models `find`, `findById`, defined [indexes](/guides/schema.html#indexes) or where [static methods](/guides/schema.html#statics).
+Finding documents is easy with Ottoman, powered by the built-in Query Builder. 
+Documents can be retrieved using each models `find`, `findById`, defined [indexes](/guides/schema.html#indexes) or where [static methods](/guides/schema.html#statics).
 
 ```javascript
 User.find({name: "Jane"})
@@ -85,7 +85,7 @@ User.findById('userId')
 // will return the user document with the current id.
 ```
 
-### Advance use of filter parameter.
+### Advanced use of filter parameter.
 ```javascript
 const filter = {
   $or: [{ price: { $gt: 'amount_val', $isNotNull: true } }, { auto: { $gt: 10 } }, { amount: 10 }],
@@ -97,7 +97,7 @@ const filter = {
 User.find(filter)
 // Returns a list of the elements that match the applied filters.
 ```
-See the chapter on queries for more details on how to use the [Query](/guides/query-builder) api.
+See the chapter on queries for more details on how to use the [Query](/guides/query-builder) API.
 
 ## Deleting
 

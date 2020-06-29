@@ -124,7 +124,7 @@ const story1 = new Story({
 await story1.save()
 ```
 
-### Population ways
+### Using Population
 
 So far we haven't done anything much different. We've merely created a Person and a Story.
 Now let's take a look at populating our story's author:
@@ -144,7 +144,7 @@ console.log('The author is %s', story.author.name);
     // prints "The author is Ian Fleming"
 ```
 
-Populated paths are no longer set to their original id , their value is replaced with the ottoman document returned from the database by performing a separate query before returning the results.
+Populated paths are no longer set to their original id, their value is replaced with the ottoman document returned from the database by performing a separate query before returning the results.
 
 Arrays of refs work the same way. Just call the populate method on the query and an array of documents will be returned in place of the original ids.
 
@@ -169,7 +169,7 @@ story.depopulate('author'); // Make `author` not populated anymore
 story.populated('author'); // false
 ```
 
-### Advance Population
+### Advanced Population
 
 You can use the `*` symbol as a wildcard to populate all references in the current model, in this example all properties types references will be populated:
 
@@ -177,8 +177,8 @@ You can use the `*` symbol as a wildcard to populate all references in the curre
 await story._populate('*');
 ```
 
-Also, you can setup to autmatically populate child document references, by passing a second integer value to `_populate` function,
-this value will tell to ottoman how deep you want to populate.
+Also, you can setup to automatically populate child document references, by passing a second integer value to `_populate` function,
+this value will tell to Ottoman how deep you want to populate.
 
 ```javascript
 // Using on a document
@@ -188,11 +188,11 @@ await story._populate('*', 2);
 const stories = await Story.find({ title: 'Casino Royale' }, {populate: 'author', populateMaxDeep: 2})
 ```
 
-In the above example ottoman will populate all references on story and story children. 
-Doesn't matter if they are single or array references.
+In the above example Ottoman will populate all references on story and story children. 
+It doesn't matter if they are single or array references.
 
 ::: warning
-Beware from setting a large integer value on populate `deep` argument, it could affected the query performance.
+Beware from setting a large integer value on populate `deep` argument, it could affect the query performance.
 :::
 
 

@@ -8,7 +8,7 @@ import { isDebugMode } from '../../../utils/is-debug-mode';
 
 /**
  * Creates the register index in the Database Server.
- * in addition, creates one index as primary for the bucketName
+ * In addition, creates one index as primary for the bucketName
  * and one for every Ottoman model.
  */
 export const ensureN1qlIndexes = async (connection: ConnectionManager) => {
