@@ -81,6 +81,11 @@ User.find({name: "Jane"})
 ```
 
 ```javascript
+User.findOne({name: "Jane"})
+// will return a document with a User with the name "Jane" or null in case of not finding it
+```
+
+```javascript
 User.findById('userId')
 // will return the user document with the current id.
 ```
