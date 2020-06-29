@@ -170,6 +170,28 @@ export const registerType = (name: string, factory: FactoryFunction): void => {
   Schema.Types[name] = factory;
 };
 
+/**
+ * Register custom validators to Schema validators register.
+ * @function
+ * @param validators
+ * @throws Error
+ * @example
+ *  ```ts
+ *    addValidators({
+ *      email: (value) => {
+ *        regexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+ *        if (!regexp.test(value)) {
+ *          throw new Error('Email address is invalid.')
+ *        }
+ *      }
+ *    });
+ *
+ *    const ContactSchema = new Schema({
+ *      name: String,
+ *      contact: { type: String, validator: 'email' }
+ *    });
+ *  ```
+ */
 export const addValidators = (validators: CustomValidations) => {
   if (!is(validators, Object)) {
     throw new BuildSchemaError('Validators must be an object.');
