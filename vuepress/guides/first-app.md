@@ -2,7 +2,7 @@
 
 ## Prepare Couchbase Server
 
-This is a sample application for getting started with OttomanJS using Couchbase Server 6.5. The application provides a Rest API and demonstrates ODM capabilities. It uses Couchbase Server 6.5. together with OttomanJS v2 + Express + Couchbase SDK + Node.js.  The application is a flight planner that allows the user to search for and select a flight route (including return flight) based on airports and dates. Airport selection is done dynamically using an angular typeahead bound to cb server query. Date selection uses date time pickers and then searches for applicable air flight routes from a previously populated database. You additionally can use Full-Text Search to perform hotel searches.
+This is a sample application for getting started with OttomanJS using Couchbase Server 6.5. The application provides a Rest API and demonstrates ODM capabilities. It uses Couchbase Server 6.5. together with OttomanJS v2 + Express + Couchbase SDK + Node.js.  The application is a flight planner that allows the user to search for and select a flight route (including return flight) based on airports and dates.
 
 ## Prepare Our Project Folder
 
