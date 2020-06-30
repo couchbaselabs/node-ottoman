@@ -36,6 +36,7 @@ import {
   SelectClauseException,
   WhereClauseException,
 } from '../exceptions';
+import { escapeReservedWords } from '../utils';
 
 // select expressions functions
 /**
@@ -107,9 +108,9 @@ const _buildAS = (c: ISelectAggType | IField) => {
  * */
 const _buildField = (clause: IField | string) => {
   if (clause.hasOwnProperty('name')) {
-    return `${clause['name']}${_buildAS(clause as IField)}`;
+    return `${escapeReservedWords(clause['name'])}${_buildAS(clause as IField)}`;
   }
-  return `${clause}`;
+  return `${escapeReservedWords(clause as string)}`;
 };
 
 /**
@@ -171,7 +172,9 @@ const _buildAggDictExpr = (clause: ISelectAggType, key: string) => {
  * */
 const _buildLetExpr = (letExpr: ILetExpr[] | undefined, clause?: string) => {
   return Array.isArray(letExpr)
-    ? ` ${clause ? clause : 'LET'} ${letExpr.map((value: ILetExpr) => `${value.key}=${value.value}`).join(',')}`
+    ? ` ${clause ? clause : 'LET'} ${letExpr
+        .map((value: ILetExpr) => `${escapeReservedWords(value.key)}=${value.value}`)
+        .join(',')}`
     : '';
 };
 
@@ -181,7 +184,7 @@ const _buildLetExpr = (letExpr: ILetExpr[] | undefined, clause?: string) => {
 const _buildOrderByExpr = (orderExpr: Record<string, SortType> | undefined) => {
   return !!orderExpr
     ? ` ORDER BY ${Object.keys(orderExpr)
-        .map((value: string) => `${value} ${orderExpr[value]}`)
+        .map((value: string) => `${escapeReservedWords(value)} ${orderExpr[value]}`)
         .join(',')}`
     : '';
 };
@@ -236,7 +239,7 @@ const _buildGroupByExpr = (groupByExpr?: IGroupBy[], lettingExpr?: ILetExpr[], h
 const _buildGroupBy = (groupByExpr: IGroupBy[]) => {
   return `GROUP BY ${groupByExpr
     .map((value: IGroupBy) => {
-      return `${value.expr}${value.as ? ` AS ${value.as}` : ''}`;
+      return `${escapeReservedWords(value.expr)}${value.as ? ` AS ${value.as}` : ''}`;
     })
     .join(',')}`;
 };
@@ -321,10 +324,10 @@ const _buildFieldClauseExpr = (field: Record<string, string | number | boolean |
       }
       if (!value.includes('$')) {
         if (typeof field[value] === 'string') {
-          return `${value}=${stringifyValues(field[value])}`;
+          return `${escapeReservedWords(value)}=${stringifyValues(field[value])}`;
         }
         if (typeof field[value] === 'number' || typeof field[value] === 'boolean' || Array.isArray(field[value])) {
-          return `${value}=${stringifyValues(field[value])}`;
+          return `${escapeReservedWords(value)}=${stringifyValues(field[value])}`;
         }
       }
       throw new QueryOperatorNotFoundException(value);
@@ -347,16 +350,20 @@ const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWh
       .map((value: string) => {
         if (!!comparison[value]) {
           if (ComparisonEmptyOperatorDict.hasOwnProperty(value)) {
-            return `${fieldName} ${ComparisonEmptyOperatorDict[value]}`;
+            return `${escapeReservedWords(fieldName)} ${ComparisonEmptyOperatorDict[value]}`;
           }
           if (ComparisonSingleOperatorDict.hasOwnProperty(value)) {
-            return `${fieldName}${ComparisonSingleOperatorDict[value]}${comparison[value]}`;
+            return `${escapeReservedWords(fieldName)}${ComparisonSingleOperatorDict[value]}${comparison[value]}`;
           }
           if (ComparisonSingleStringOperatorDict.hasOwnProperty(value)) {
-            return `${fieldName} ${ComparisonSingleStringOperatorDict[value]} ${stringifyValues(comparison[value])}`;
+            return `${escapeReservedWords(fieldName)} ${ComparisonSingleStringOperatorDict[value]} ${stringifyValues(
+              comparison[value],
+            )}`;
           }
           if (ComparisonMultipleOperatorDict.hasOwnProperty(value) && Array.isArray(comparison[value])) {
-            return `${fieldName} ${ComparisonMultipleOperatorDict[value]} ${comparison[value].join(' AND ')}`;
+            return `${escapeReservedWords(fieldName)} ${ComparisonMultipleOperatorDict[value]} ${comparison[value].join(
+              ' AND ',
+            )}`;
           }
         }
         throw new QueryOperatorNotFoundException(value);
@@ -453,7 +460,7 @@ export const buildIndexExpr = (
 const buildOnExpr = (on: IIndexOnParams[]) => {
   return on
     .map((value: IIndexOnParams) => {
-      return `\`${value.name}\`${buildOnSortExpr(value)}`;
+      return `${escapeReservedWords(value.name)}${buildOnSortExpr(value)}`;
     })
     .join(',');
 };

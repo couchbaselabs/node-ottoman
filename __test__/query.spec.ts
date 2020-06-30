@@ -136,7 +136,7 @@ describe('Test Query Types', () => {
       {
         $raw: {
           $field: {
-            name: '`travel-sample`',
+            name: 'travel-sample',
           },
         },
       },
@@ -154,7 +154,7 @@ describe('Test Query Types', () => {
       {
         $raw: {
           $field: {
-            name: '`travel-sample`',
+            name: 'travel-sample',
           },
         },
       },
@@ -171,7 +171,7 @@ describe('Test Query Types', () => {
       {
         $raw: {
           $field: {
-            name: '`travel-sample`',
+            name: 'travel-sample',
           },
         },
       },
@@ -192,7 +192,7 @@ describe('Test Query Types', () => {
       },
       {
         $field: {
-          name: '`travel-sample`',
+          name: 'travel-sample',
         },
       },
     ];
@@ -332,7 +332,7 @@ describe('Test Query Types', () => {
     const index = buildIndexExpr('travel-sample', 'CREATE', 'travel_sample_id_test', on, expr_where, true, withExpr);
 
     expect(index).toStrictEqual(
-      'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`["ASC"]) WHERE travel-sample.callsign LIKE "%57-59%" USING GSI WITH {"nodes": [],"defer_build": true,"num_replica": 0}',
+      'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample`.callsing["ASC"]) WHERE `travel-sample`.callsign LIKE "%57-59%" USING GSI WITH {"nodes": [],"defer_build": true,"num_replica": 0}',
     );
   });
 
@@ -356,7 +356,7 @@ describe('Test Query Types', () => {
       .build();
 
     expect(query).toStrictEqual(
-      'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`) WHERE travel-sample.callsign LIKE "%57-59%" USING GSI WITH {"nodes": ["192.168.1.1:8078","192.168.1.1:8079"],"defer_build": true,"num_replica": 2}',
+      'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample`.callsing) WHERE `travel-sample`.callsign LIKE "%57-59%" USING GSI WITH {"nodes": ["192.168.1.1:8078","192.168.1.1:8079"],"defer_build": true,"num_replica": 2}',
     );
   });
 

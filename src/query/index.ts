@@ -38,4 +38,4 @@ export {
   ResultExprType,
   ReturnResultType,
 } from './interface/query.types';
-export { parseStringSelectExpr } from './utils';
+export { parseStringSelectExpr, escapeReservedWords } from './utils';

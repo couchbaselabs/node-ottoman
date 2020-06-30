@@ -1,3 +1,5 @@
+import { n1qlReservedWords } from './helpers';
+
 const replaceList = ['ALL', 'DISTINCT', 'RAW', 'ELEMENT', 'VALUE'];
 
 /**
@@ -25,4 +27,19 @@ const extractAsValue = (expr: string): string => {
     return result[1].trim();
   }
   return expr.trim();
+};
+
+/**
+ * @ignore
+ */
+export const escapeReservedWords = (field: string) => {
+  if (n1qlReservedWords.includes(field.toUpperCase())) {
+    return `\`${field}\``;
+  }
+  if (field.match(/(\-)|(\.)|(\[\d+\])/g)) {
+    let expr = field;
+    expr = expr.replace(/([a-z0-9]*\-[a-z0-9]*)/g, '`$&`');
+    return expr;
+  }
+  return field;
 };
