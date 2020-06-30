@@ -2,8 +2,8 @@ import { connect, globalConfig, getConnections } from '../lib';
 import { connectUri } from './testData';
 beforeAll(async () => {
   globalConfig({
-    collectionKey: '__type',
-    scopeKey: '__scope',
+    collectionKey: 'collectionName',
+    scopeKey: 'scopeName',
     populateMaxDeep: 1,
   });
   connect(connectUri);

@@ -15,7 +15,15 @@ export const buildIndexQuery = (Model, fields, indexFnName, indexOptions = {}) =
       filter = {};
       for (let i = 0; i < fields.length; i++) {
         const field = fields[i];
-        filter[field] = values[i];
+        if (field.includes('[*]')) {
+          const [target, targetField] = field.split('[*].');
+          filter['$any'] = {
+            $expr: [{ $in: { search_expr: 'x', target_expr: target } }],
+            $satisfied: { [`x.${targetField}`]: values[i] },
+          };
+        } else {
+          filter[field] = values[i];
+        }
       }
     } else {
       throw new Error(`Function ${indexFnName} received wrong number of arguments`);

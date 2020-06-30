@@ -78,6 +78,9 @@ Documents can be retrieved using each models `find`, `findById`, defined [indexe
 ```javascript
 User.find({name: "Jane"})
 // will return a list of all users with the name "Jane"
+
+User.find({name: "Jane"}, {limit: 10})
+// will return a list of all users with the name "Jane" and limited to 10 items
 ```
 
 ```javascript
@@ -88,6 +91,9 @@ User.findOne({name: "Jane"})
 ```javascript
 User.findById('userId')
 // will return the user document with the current id.
+
+User.findById('userId', {select: 'name, cards', populate: 'cards'})
+// will return the user document with the current id only with the fields name and cards populated
 ```
 
 ### Advanced use of filter parameter.

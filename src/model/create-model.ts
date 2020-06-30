@@ -150,12 +150,18 @@ export const _buildModel = (metadata: ModelMetadata) => {
 
     static findById = async (key: string, options: FindByIdOptions = {}) => {
       const findOptions = options;
+      const populate = options.populate;
+      delete options.populate;
       if (findOptions.select) {
         findOptions['project'] = extractSelect(findOptions.select, { noId: true, noCollection: true });
         delete findOptions.select;
       }
       const { value } = await collection.get(key, findOptions);
-      return new _Model({ ...value, [ID_KEY]: key });
+      const document = new _Model({ ...value, [ID_KEY]: key });
+      if (populate) {
+        return await document._populate(populate);
+      }
+      return document;
     };
 
     static findOne = async (filter: LogicalWhereExpr = {}, options: { sort?: Record<string, SortType> } = {}) => {

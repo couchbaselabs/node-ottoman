@@ -5,10 +5,15 @@ describe('Indexes', () => {
   const UserSchema = new Schema({
     name: String,
     email: String,
+    card: {
+      cardNumber: String,
+      zipCode: String,
+    },
     roles: [{ name: String }],
   });
 
   UserSchema.index.findN1qlByName = { by: 'name', options: { limit: 4, select: 'name' }, type: 'n1ql' };
+  UserSchema.index.findN1qlByCardNumber = { by: 'card.cardNumber', type: 'n1ql' };
   UserSchema.index.findN1qlByRoles = { by: 'roles[*].name', type: 'n1ql' };
   UserSchema.index.findN1qlByNameandEmail = {
     by: ['name', 'email'],
@@ -24,7 +29,12 @@ describe('Indexes', () => {
     const User = model('User', UserSchema);
     await ensureIndexes();
 
-    const userData = { name: `index`, email: 'index@email.com', roles: [{ name: 'admin' }] };
+    const userData = {
+      name: `index`,
+      email: 'index@email.com',
+      card: { cardNumber: '424242425252', zipCode: '42424' },
+      roles: [{ name: 'admin' }],
+    };
     const user = new User(userData);
     await user.save();
 
@@ -32,12 +42,16 @@ describe('Indexes', () => {
 
     const usersN1ql = await User.findN1qlByName(userData.name);
     expect(usersN1ql.rows[0].name).toBe(userData.name);
+
+    const usersN1qlByCard = await User.findN1qlByCardNumber(userData.card.cardNumber);
+    expect(usersN1qlByCard.rows[0].card.cardNumber).toBe(userData.card.cardNumber);
+
     const usersN1qlByNameAndEmail = await User.findN1qlByNameandEmail([userData.name, userData.email]);
     expect(usersN1qlByNameAndEmail.rows[0].name).toBe(userData.name);
     expect(usersN1qlByNameAndEmail.rows[0].email).toBe(userData.email);
 
-    // const usersRolesN1ql = await User.findN1qlByRoles(userData.roles[0].name);
-    // expect(usersRolesN1ql.rows[0].roles[0].name).toBe(userData.roles[0].name);
+    const usersRolesN1ql = await User.findN1qlByRoles(userData.roles[0].name);
+    expect(usersRolesN1ql.rows[0].roles[0].name).toBe(userData.roles[0].name);
 
     try {
       await User.findByName();

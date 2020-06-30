@@ -2,7 +2,7 @@
 
 Schema maps to a Couchbase collection and defines the shape of the documents within that collection.
 
-![How to Use](./how-to-use.png)
+![How to Use](./howToUse.jpg)
 
 ## Defining your schema
 
