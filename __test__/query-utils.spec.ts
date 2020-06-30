@@ -50,10 +50,10 @@ describe('Test Query Builder Utils', () => {
   });
 
   test('Test escape reserved words function', () => {
-    const expr = escapeReservedWords('travel-sample[0].roles.name.permissions[0].name-aux');
+    const expr = escapeReservedWords('travel-sample[0].user.name.permissions[0].name-aux');
     const expr2 = escapeReservedWords('roles.name.permissions-admin');
     const expr3 = escapeReservedWords('travel-sample');
-    expect(expr).toStrictEqual('`travel-sample`[0].roles.name.permissions[0].`name-aux`');
+    expect(expr).toStrictEqual('`travel-sample`[0].`user`.name.permissions[0].`name-aux`');
     expect(expr2).toStrictEqual('roles.name.`permissions-admin`');
     expect(expr3).toStrictEqual('`travel-sample`');
   });

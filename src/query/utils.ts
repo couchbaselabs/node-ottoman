@@ -38,6 +38,15 @@ export const escapeReservedWords = (field: string) => {
   }
   if (field.match(/(\-)|(\.)|(\[\d+\])/g)) {
     let expr = field;
+    expr = expr
+      .split('.')
+      .map((value) => {
+        if (n1qlReservedWords.includes(value.toUpperCase())) {
+          return `\`${value}\``;
+        }
+        return value;
+      })
+      .join('.');
     expr = expr.replace(/([a-z0-9]*\-[a-z0-9]*)/g, '`$&`');
     return expr;
   }
