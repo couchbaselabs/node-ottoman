@@ -110,6 +110,27 @@ describe('Test Query Types', () => {
     expect(execute.rows).toBeDefined();
   });
 
+  test('should build correctly N1QL syntax if is using alias on from clause', async () => {
+    const select: ISelectType[] = [
+      {
+        $raw: {
+          $count: {
+            $field: {
+              name: 'amount',
+            },
+            as: 'odm',
+            ro: '$distinct',
+          },
+        },
+      },
+    ];
+
+    const query = new Query({}, 'travel-sample as t').select(select).limit(1).build();
+    expect(query).toStrictEqual('SELECT RAW COUNT(DISTINCT amount) AS odm FROM `travel-sample` as t LIMIT 1');
+    const execute = await testQuery(query);
+    expect(execute.rows).toBeDefined();
+  });
+
   test('Check the orderBy function of the query builder', async () => {
     const select: ISelectType[] = [
       {
@@ -501,7 +522,7 @@ describe('Test Query Types', () => {
       .plainJoin('JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_"))')
       .build();
     expect(result).toStrictEqual(
-      'SELECT beer.name FROM `beer-sample brewery` JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_")) ',
+      'SELECT beer.name FROM `beer-sample` brewery JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_")) ',
     );
   });
 });

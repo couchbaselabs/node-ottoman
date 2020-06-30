@@ -30,19 +30,17 @@ The requirements of this application are:
 
 - REST Api for Travel-Sample Application.
 - The application must store hotels, flight and airports information.
-- Provide the authorization using a Json Web Token
 - Couchbase will be the system of record.
 
 ### Data Model
 
-The flexiblity and dynamic nature of a NOSQL Document Database and JSON simplifies building the data model. For the travel sample application we will use four types of objects, and we'll define those in specific modules in the node application.   
+The flexiblity and dynamic nature of a NOSQL Document Database and JSON simplifies building the data model. For the travel sample application we will use three types of objects, and we'll define those in specific modules in the node application.   
 
 - airports
 - flightPaths
 - hotels
-- users
  
-The source code is organized by each module in a  folder under the root of the application, a module defines REST endpoints, and the data model of a resource. The data model is defined in `.model.ts` by the schema and model, and case of endpoints are defined in `.controller.ts`.   Let's walk through the code starting with the `hotels` module.
+The source code is organized by each module in a folder under the root of the application, a module defines REST endpoints, and the data model of a resource. The data model is defined in `.model.ts` by the schema and model, and case of endpoints are defined in `.controller.ts`. Let's walk through the code starting with the `hotels` module.
 
 ### Hotel Model
 
@@ -57,16 +55,60 @@ Next, a custom validator function is defined to make sure that a phone number in
 
 ```ts
 addValidators({
-  PhoneValidator: (value) => {
-      const phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-      if(value && !value.match(phoneno)) {
+  phone: (value) => {
+      const phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+      if(value && !value.match(phone)) {
         throw new Error('Phone number is invalid.');
       }
   },
 });
 ```
 
-The model for the Hotels object is defined, using several of the built in types that Ottoman supports.   For additional reference, see http://www.ottomanjs.com.   Several indices are defined along with the model.  The indices are utilized as methods for each instance of the Hotel Object.  Ottoman supports complex data types, embedded references to other models, and customization.  
+The model for the Hotels object is defined, using several of the built in types that Ottoman supports. For additional reference, see http://www.ottomanjs.com. Several indices are defined along with the model. The indices are utilized as methods for each instance of the Hotel Object. Ottoman supports complex data types, embedded references to other models, and customization.
+
+
+We are going to define a custom type link
+```ts
+    import { IOttomanType, ValidationError, registerType } from 'ottoman';
+    
+    /**
+     * Custom type to manage the links
+     */
+    export class LinkType implements IOttomanType {
+      typeName = 'Link';
+      constructor(public name) {}
+      cast(value: unknown) {
+        if (!isLink(String(value))) {
+          throw new ValidationError(`Field ${this.name} only allows a Link`);
+        }
+        return String(value);
+      }
+    }
+    
+    /**
+     * Factory function
+     * @param name of field
+     */
+    export const linkTypeFactory = (name) => new LinkType(name);
+    
+    /**
+     * Register type on Schema Supported Types
+     */
+    registerType(LinkType.name, linkTypeFactory);
+    
+    /**
+     * Check if value is a valid Link
+     * @param value
+     */
+    const isLink = (value: string) => {
+      const regExp = new RegExp(
+        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
+      );
+      return regExp.test(value);
+    };
+```
+
+With the link custom type, we continue with the schema definition
 
 ```ts
 const ReviewSchema = new Schema({
@@ -99,7 +141,7 @@ const HotelSchema = new Schema({
   geo: GeolocationSchema,
   name: { type: String, required: true },
   pets_ok: Boolean,
-  phone: { type: String, validator: 'PhoneValidator' },
+  phone: { type: String, validator: 'phone' },
   price: Number,
   public_likes: [String],
   reviews: [ReviewSchema],

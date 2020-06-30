@@ -1,4 +1,11 @@
-export { connect, getCollection, closeConnection, model, getConnections } from './connections/connection-handler';
+export {
+  connect,
+  getCollection,
+  closeConnection,
+  model,
+  getConnections,
+  getDefaultConnection,
+} from './connections/connection-handler';
 export { Model } from './model/model';
 export { getModelMetadata } from './model/utils/model.utils';
 export { ensureIndexes } from './model/index/ensure-indexes';
