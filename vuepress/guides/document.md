@@ -20,7 +20,7 @@ In Ottoman, a `document` generally means an instance of a model. You should not 
 
 ## Retrieving
 
-When you load documents from Couchbase Server using model functions like getById(), you get a Ottoman `document` back.
+When you load documents from Couchbase Server using model functions like findById(), you get a Ottoman `document` back.
 
 ```javascript
 const doc = await MyModel.findOne();
@@ -144,7 +144,7 @@ console.log('The author is %s', story.author.name);
     // prints "The author is Ian Fleming"
 ```
 
-Populated paths are no longer set to their original id, their value is replaced with the ottoman document returned from the database by performing a separate query before returning the results.
+Populated paths are no longer set to their original id, their value is replaced with the Ottoman document returned from the database by performing a separate query before returning the results.
 
 Arrays of refs work the same way. Just call the populate method on the query and an array of documents will be returned in place of the original ids.
 

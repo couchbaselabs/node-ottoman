@@ -28,7 +28,7 @@
     "is:ready": "yarn lint && yarn build && yarn test:ready",
     "lint": "eslint --ignore-pattern '/lib/' '*/**/*.ts' --quiet --fix",
     "test": "jest --clearCache && jest -i",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest -i --coverage",
     "test:dev": "jest --watch",
     "test:ready": "jest --clearCache && jest -i --coverage"
   },

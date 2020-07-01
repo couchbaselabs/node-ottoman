@@ -5,7 +5,7 @@ All your [Models](/guides/model) will be created via a connection and map to a C
 
 ## Create a connection
 
-You can connect to Couchbase Server with the ottoman.connect() method.
+You can connect to Couchbase Server with the `connect()` method.
 
 ```javascript
 import { connect } from 'ottoman';
@@ -74,6 +74,8 @@ Using .env file
 ```
 OTTOMAN_CONNECTION_STRING=couchbase://localhost/travel-sample@admin:password
 ```
+
+For more details about how to use and configure a .env file, [see this link](https://www.npmjs.com/package/dotenv)
 
 ## Multiple connections
 

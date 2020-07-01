@@ -30,8 +30,7 @@ Notice above that if a property only requires a type, it can be specified using 
 Keys may also be assigned to nested objects containing further key/type definitions like the meta property above. 
 This will happen whenever a key's value is a POJO that lacks a bona-fide type property. 
 In these cases, only the leaves in a tree are given actual paths in the schema (like meta.votes and meta.favs above), and the branches do not have actual paths.
-A side-effect of this is that meta above cannot have its own validation. If validation is needed up the tree. A path needs to be created up the tree 
-- see the Subdocuments section for more information on how to do this. Also read the Mixed subsection of the SchemaTypes guide for some gotchas.
+A side-effect of this is that meta above cannot have its own validation. If validation is needed up the tree. A path needs to be created up the tree.
 
 
 ## Allowed SchemaTypes are:
@@ -41,17 +40,16 @@ A side-effect of this is that meta above cannot have its own validation. If vali
 * [Date](/classes/datetype)
 * [Object](/classes/objecttype)
 * [Array](/classes/arraytype)
-* Mixed
 
 
 Schemas not only define the structure of your document and casting of properties,
 they also define document instance methods, static Model methods, 
-compound indexes, and document lifecycle hooks.
+compound indexes, plugins and document lifecycle hooks.
 
 
 ## Creating a model
 To use our schema definition, we need to convert our blogSchema into a Model we can work with. 
-To do so, we pass it into ottoman.model(modelName, schema):
+To do so, we pass it into `model(modelName, schema)`:
 
 ```javascript
 const Blog = model('Blog', blogSchema);
@@ -97,6 +95,7 @@ configuration for them, and will build any index missing on the server.
 This method must be called after all models are defined, and it is a good idea to call this only when needed rather than any time your server is started.
 
 ```javascript
+// index.js
 import express from 'express';
 import { ensureIndexes } from 'ottoman';
 import { UserRoutes } from './users/users.controller';
@@ -111,25 +110,25 @@ ensureIndexes()
   })
 ```
 
-### Index Types
+## Index Types
 
 Below are some quick notes on the types of indexes available, and their pros and cons.  For a more in-depth discussion, consider
 reading [Couchbasics: How Functional and Performance Needs Determine Data Access in Couchbase](https://blog.couchbase.com/determine-data-access-in-couchbase/)
 
-#### `refdoc`
+### `refdoc`
 These indexes are the most performant, but the least flexible.  They allow only a single document to occupy any particular value and do direct key-value lookups using a referential document to identify a matching document in Couchbase.
 
 In short, if you need to look up a document by a single value of a single attribute quickly (e.g. key lookups), this is the way to go.  But you cannot combine multiple refdoc indexes to speed up finding
 something like "all customers with first name 'John' last name 'Smith'".
 
-#### `view`
+### `view`
 These indexes are the default and use map-reduce views.  This type of index is always available once `ensureIndexes` is called and will work with any Couchbase Server version.
 
 Because views use map-reduce, certain types of queries can be faster as the query can be parallelized over all nodes in the cluster, with each node
 returning only partial results.  One of the cons of views is that they are eventually consistent by default, and incur a performance
 penalty if you want consistency in the result.
 
-#### `n1ql`
+### `n1ql`
 These indexes uses the new SQL-like query language available from Couchbase Server 4.0.0.  These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
 
 N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html).  If you need flexibility of queries and
@@ -157,16 +156,16 @@ const Animal = model('Animal', animalSchema);
 const dog = new Animal({ type: 'dog' });
 
 const dogs = await dog.findSimilarTypes();
-console.log(dogs); // woof
+console.log(dogs); 
 ```
 
-* Overwriting a default ottoman document method may lead to unpredictable results.
-* The example above uses the Schema.methods object directly to save an instance method. You can also use the Schema.method() helper as described here.
+* Overwriting a default Ottoman document method may lead to unpredictable results.
+* The example above uses the Schema.methods object directly to save an instance method. You can also use the Schema.method() helper as described [here](/guides/schema.html#instance-methods).
 * Do not declare methods using ES6 arrow functions (=>). Arrow functions explicitly prevent binding this, so your method will not have access to the document and the above examples will not work.
 
 ## Statics
 
-You can also add static functions to your model. There are two equivalent ways to add a static:
+You can also add static functions to your model.
 
 Add a function property to schema.statics
 Call the Schema#static() function
@@ -225,7 +224,7 @@ schema.pre('save', async function() {
 
 ### Hooks Use Cases
 
-Middleware is useful for atomizing model logic. Here are some other ideas:
+Hooks are useful for atomizing model logic. Here are some other ideas:
 
 - complex validation
 - removing dependent documents (removing a user removes all his blogposts)
@@ -234,7 +233,7 @@ Middleware is useful for atomizing model logic. Here are some other ideas:
 
 Errors in Pre Hooks
 
-If any pre hook errors out, Ittoman will not execute subsequent hooks or the hooked function.
+If any pre hook errors out, Ottoman will not execute subsequent hooks or the hooked function.
 
 ```javascript
 schema.pre('save', function() {
@@ -326,7 +325,7 @@ Schemas are pluggable, that is, they allow for applying pre-packaged capabilitie
 ### Plugin Example
 
 Plugins are a tool for reusing logic in multiple schemas.
-Suppose you have several models in your database and want to add a loadedAt property to each one.
+Suppose you have several models in your database and want to add a function to log all doc before save.
 Just create a plugin once and apply it to each Schema using the `plugin` function:
 
 ```javascript
@@ -356,6 +355,12 @@ Want to register a plugin for all schemas? The Ottoman `registerGlobalPlugin` fu
 ```javascript
 import {registerGlobalPlugin} from 'ottoman';
 
+const pluginLog = (schema) => {
+  schema.pre('save', function (doc) {
+    console.log(doc)
+  });
+};
+
 registerGlobalPlugin(pluginLog);
 
 const UserSchema = new Schema({
@@ -366,7 +371,7 @@ const UserSchema = new Schema({
 const UserModel = model('User', UserSchema);
 
 const user = new UserModel(...);
-// Pre save hooks will be execute and it will print the document just before save it to Couchbase server.
+// Pre save hooks will be execute and it will log the document just before save it to Couchbase server.
 await user.save();
 ```
 

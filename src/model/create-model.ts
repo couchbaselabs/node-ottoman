@@ -148,7 +148,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       throw new Error('The query did not return any results.');
     };
 
-    static findById = async (key: string, options: FindByIdOptions = {}) => {
+    static findById = async (id: string, options: FindByIdOptions = {}) => {
       const findOptions = options;
       const populate = options.populate;
       delete options.populate;
@@ -156,8 +156,8 @@ export const _buildModel = (metadata: ModelMetadata) => {
         findOptions['project'] = extractSelect(findOptions.select, { noId: true, noCollection: true });
         delete findOptions.select;
       }
-      const { value } = await collection.get(key, findOptions);
-      const document = new _Model({ ...value, [ID_KEY]: key });
+      const { value } = await collection.get(id, findOptions);
+      const document = new _Model({ ...value, [ID_KEY]: id });
       if (populate) {
         return await document._populate(populate);
       }
@@ -193,7 +193,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return instance.save();
     };
 
-    static replace = (data, id?) => {
+    static replace = (data, id?: string) => {
       const key = id || data[ID_KEY];
       const instance = new _Model({
         ...data,
