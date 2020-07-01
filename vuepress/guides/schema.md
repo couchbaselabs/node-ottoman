@@ -10,18 +10,20 @@ Everything in Ottoman starts with a Schema.
 
 ```javascript
 const blogSchema = new Schema({
-  title:  String, // String is shorthand for {type: String}
-  author: String,
+  title:  { type: String, required: true },
+  author: String,  // String is shorthand for {type: String}
   body:   String,
   comments: [{ body: String, date: Date }],
   date: { type: Date, default: Date.now },
   hidden: Boolean,
+  status: { type: String, enum: ["Close", "Open", "Review"] },
   meta: {
-    votes: Number,
+    votes: { type: Number, min: 0, max: 5 },
     favs:  Number
   }
 });
 ```
+To more information about options, [review the types ](/guides/schema.html#allowed-schematypes-are)
 
 Each key in our code blogSchema defines a property in our documents which will be cast to its associated SchemaType. For example, we've defined a property title which will be cast to the String SchemaType and property date which will be cast to a Date SchemaType.
 
@@ -40,6 +42,9 @@ A side-effect of this is that meta above cannot have its own validation. If vali
 * [Date](/classes/datetype)
 * [Object](/classes/objecttype)
 * [Array](/classes/arraytype)
+* [Embed](/classes/embedtype)
+* [Reference](/classes/reference)
+
 
 
 Schemas not only define the structure of your document and casting of properties,
@@ -65,11 +70,11 @@ To specify indexes on a [Schema](/guides/schema), use the index key on the schem
 import {Schema} from 'ottoman';
 
 const schema = new Schema({
-  email: 'string',
+  email: String,
   name: {
-    first: 'string',
-    last: 'string',
-    full: 'string'
+    first: String,
+    last: String,
+    full: String
   }
 });
 

@@ -3,6 +3,9 @@ import { is } from '../../utils/is-type';
 import { ValidationError } from '../errors';
 import { CoreTypeOptions } from '../interfaces';
 
+/**
+ * @inheritDoc
+ */
 export class BooleanType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions) {
     super(name, Boolean.name, options);

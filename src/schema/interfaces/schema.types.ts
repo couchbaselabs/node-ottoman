@@ -9,6 +9,7 @@ export type FactoryFunction = (name, options) => IOttomanType;
  * Should throw all errors detected
  */
 export type ValidatorFunction = (value: unknown) => void;
+export type AutoFunction = () => unknown;
 export type SupportType = { [key: string]: FactoryFunction };
 export type CustomValidations = { [key: string]: ValidatorFunction };
 export type RequiredFunction = () => boolean | RequiredOption;

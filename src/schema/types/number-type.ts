@@ -9,7 +9,12 @@ interface NumberTypeOptions {
   min?: number | NumberFunction | MinmaxOption;
   max?: number | NumberFunction | MinmaxOption;
 }
-
+/**
+ * @inheritDoc
+ * @param options.intVal flag will be allow only integer values
+ * @param options.min numeric value that will be accepted
+ * @param options.max numeric value that will be accepted
+ */
 class NumberType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & NumberTypeOptions) {
     super(name, Number.name, options);

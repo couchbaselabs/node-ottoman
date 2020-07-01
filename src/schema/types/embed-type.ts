@@ -5,6 +5,9 @@ import { is } from '../../utils/is-type';
 import { ValidationError } from '../errors';
 import { CoreTypeOptions } from '../interfaces';
 
+/**
+ * @inheritDoc
+ */
 class EmbedType extends CoreType {
   constructor(name: string, public schema: Schema, options?: CoreTypeOptions) {
     super(name, 'Embed', options);

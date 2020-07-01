@@ -10,6 +10,9 @@ interface ReferenceOptions {
   refModel: string;
 }
 
+/**
+ * @inheritDoc
+ */
 export class ReferenceType extends CoreType {
   constructor(name: string, public schema: Schema, public refModel: string, options?: CoreTypeOptions) {
     super(name, 'Reference', options);

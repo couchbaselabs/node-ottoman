@@ -9,7 +9,17 @@ import {
   ValidatorOption,
 } from '../interfaces';
 import { VALIDATION_STRATEGY } from '../../utils';
+import { AutoFunction } from '../interfaces/schema.types';
 
+/**
+ *  @param name of field in schema
+ *  @param typeName name of type
+ *  @param options
+ *  @param options.required flag to define if the field is mandatory
+ *  @param options.validator that will be applied to the field, allow function, object or string with the name of a custom validator
+ *  @param options.default that will define the initial value to the field, allow and value or function to generate him
+ *  @param options.auto that will generate the initial value to the field, if the field is String allows value 'uuid'  or a function, other cases only function. It cannot use combined with default
+ */
 export abstract class CoreType implements IOttomanType {
   protected constructor(public name: string, public typeName: string, public options?: CoreTypeOptions) {
     this._checkIntegrity();
@@ -22,7 +32,7 @@ export abstract class CoreType implements IOttomanType {
     return this.options?.validator;
   }
 
-  get auto(): string | undefined {
+  get auto(): string | AutoFunction | undefined {
     return this.options?.auto;
   }
 
@@ -32,6 +42,10 @@ export abstract class CoreType implements IOttomanType {
   buildDefault(): unknown {
     if (typeof this.default === 'function') {
       return this.default();
+    } else if (typeof this.default === 'undefined') {
+      if (typeof this.auto === 'function') {
+        return String(this.auto());
+      }
     } else {
       return this.default;
     }

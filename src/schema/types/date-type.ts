@@ -8,6 +8,12 @@ interface DateTypeOptions {
   min?: Date | DateOption | DateFunction | string;
   max?: Date | DateOption | DateFunction | string;
 }
+
+/**
+ * @inheritDoc
+ * @param options.min date value that will be accepted
+ * @param options.max date value that will be accepted
+ */
 class DateType extends CoreType {
   constructor(name: string, options?: DateTypeOptions & CoreTypeOptions) {
     super(name, Date.name, options);

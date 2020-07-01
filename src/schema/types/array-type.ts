@@ -4,6 +4,9 @@ import { ValidationError } from '../errors';
 import { CoreTypeOptions, IOttomanType } from '../interfaces';
 import { VALIDATION_STRATEGY } from '../../utils';
 
+/**
+ * @inheritDoc
+ */
 class ArrayType extends CoreType {
   constructor(name: string, private itemType: IOttomanType, options?: CoreTypeOptions) {
     super(name, Array.name, options);

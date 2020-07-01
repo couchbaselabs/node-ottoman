@@ -10,6 +10,10 @@ export interface StringTypeOptions {
   enum?: string[] | FunctionsString;
 }
 
+/**
+ * @inheritDoc
+ * @param options.enum defines a list of admitted values.
+ */
 export class StringType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & StringTypeOptions) {
     super(name, String.name, options);
