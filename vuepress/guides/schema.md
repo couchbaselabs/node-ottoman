@@ -23,7 +23,7 @@ const blogSchema = new Schema({
   }
 });
 ```
-To more information about options, [review the types ](/guides/schema.html#allowed-schematypes-are)
+For more information about options, please [review the types ](/guides/schema.html#allowed-schematypes-are)
 
 Each key in our code blogSchema defines a property in our documents which will be cast to its associated SchemaType. For example, we've defined a property title which will be cast to the String SchemaType and property date which will be cast to a Date SchemaType.
 
@@ -140,7 +140,7 @@ N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/docu
 speed, this is the way to go.
 
 ## Instance methods
-Instances of Models are documents. Documents have many of their own built-in instance methods. 
+Instances of Models are [documents](/guides/document.md). Documents have many of their own built-in instance methods. 
 We may also define our own custom document instance methods.
 
 ```javascript
@@ -165,7 +165,7 @@ console.log(dogs);
 ```
 
 * Overwriting a default Ottoman document method may lead to unpredictable results.
-* The example above uses the Schema.methods object directly to save an instance method. You can also use the Schema.method() helper as described [here](/guides/schema.html#instance-methods).
+* The example above uses the Schema.methods object directly to save an instance method.
 * Do not declare methods using ES6 arrow functions (=>). Arrow functions explicitly prevent binding this, so your method will not have access to the document and the above examples will not work.
 
 ## Statics
@@ -191,7 +191,7 @@ so the above examples will not work because of the value of this.
 ## Hooks
 
 Hooks are functions which are passed control during execution of asynchronous functions. 
-Hooks is specified on the schema level and is useful for writing plugins.
+Hooks are specified at the schema level and are useful for writing plugins.
 
 ### The available hooks are:
 
@@ -202,7 +202,7 @@ Hooks is specified on the schema level and is useful for writing plugins.
 
 ### Register hooks with `pre` function
 
-Pre functions are executed one after another, for each hooks register.
+Pre functions are executed one after another, for each hooks registered.
 
 ```javascript
 import {Schema} from 'ottoman';
@@ -229,14 +229,14 @@ schema.pre('save', async function() {
 
 ### Hooks Use Cases
 
-Hooks are useful for atomizing model logic. Here are some other ideas:
+Hooks are useful for atomizing model logic. Here we list some ideas:
 
 - complex validation
 - removing dependent documents (removing a user removes all his blogposts)
 - asynchronous defaults
 - asynchronous tasks that a certain action triggers
 
-Errors in Pre Hooks
+### Errors in Pre Hooks
 
 If any pre hook errors out, Ottoman will not execute subsequent hooks or the hooked function.
 

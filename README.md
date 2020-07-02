@@ -80,7 +80,7 @@ Thank you to all the people who already contributed to Couchbase Ottoman!
 
 1. [Install Couchbase Server Using Docker](https://docs.couchbase.com/server/current/install/getting-started-docker.html).
 
-2. Get repo and install dependencies 
+2. Get the repo and install dependencies
 ```
 $ git clone https://github.com/couchbaselabs/node-ottoman.git
 $ cd node-ottoman
