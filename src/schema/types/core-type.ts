@@ -16,9 +16,9 @@ import { AutoFunction } from '../interfaces/schema.types';
  *  @param typeName name of type
  *  @param options
  *  @param options.required flag to define if the field is mandatory
- *  @param options.validator that will be applied to the field, allow function, object or string with the name of a custom validator
- *  @param options.default that will define the initial value to the field, allow and value or function to generate him
- *  @param options.auto that will generate the initial value to the field, if the field is String allows value 'uuid'  or a function, other cases only function. It cannot use combined with default
+ *  @param options.validator that will be applied to the field, allowed function, object or string with the name of the custom validator
+ *  @param options.default that will define the initial value of the field, allowed and value or function to generate it
+ *  @param options.auto that will generate the initial value of the field. if the field is String it allows the value 'uuid' or a function, in any other cases only functions. It cannot be used combined with default
  */
 export abstract class CoreType implements IOttomanType {
   protected constructor(public name: string, public typeName: string, public options?: CoreTypeOptions) {

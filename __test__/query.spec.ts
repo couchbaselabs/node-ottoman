@@ -110,7 +110,7 @@ describe('Test Query Types', () => {
     expect(execute.rows).toBeDefined();
   });
 
-  test('should build correctly N1QL syntax if is using alias on from clause', async () => {
+  test('should build  N1QL syntax correctly if it is using an alias in FROM clause', async () => {
     const select: ISelectType[] = [
       {
         $raw: {

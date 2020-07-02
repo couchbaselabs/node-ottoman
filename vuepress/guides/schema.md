@@ -25,14 +25,14 @@ const blogSchema = new Schema({
 ```
 For more information about options, please [review the types ](/guides/schema.html#allowed-schematypes-are)
 
-Each key in our code blogSchema defines a property in our documents which will be cast to its associated SchemaType. For example, we've defined a property title which will be cast to the String SchemaType and property date which will be cast to a Date SchemaType.
+Each key in our code blogSchema defines a property in our documents which will be cast to its associated SchemaType. For example, we've defined a property title which will be casted to the String SchemaType and property date which will be casted to a Date SchemaType.
 
-Notice above that if a property only requires a type, it can be specified using a shorthand notation (contrast the title property above with the date property).
+Please note above that if a property only requires a type, it can be specified using a shorthand notation (contrast the title property above with the date property).
 
 Keys may also be assigned to nested objects containing further key/type definitions like the meta property above. 
 This will happen whenever a key's value is a POJO that lacks a bona-fide type property. 
 In these cases, only the leaves in a tree are given actual paths in the schema (like meta.votes and meta.favs above), and the branches do not have actual paths.
-A side-effect of this is that meta above cannot have its own validation. If validation is needed up the tree. A path needs to be created up the tree.
+A side-effect of this is that meta above cannot have its own validation. If validation is needed up the tree, a path needs to be created up the tree.
 
 
 ## Allowed SchemaTypes are:

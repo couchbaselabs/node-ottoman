@@ -12,7 +12,7 @@ export interface StringTypeOptions {
 
 /**
  * @inheritDoc
- * @param options.enum defines a list of admitted values.
+ * @param options.enum defines a list of allowed values.
  */
 export class StringType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & StringTypeOptions) {

@@ -47,9 +47,9 @@ interface ModelOptions {
 ```
 
 ### Model key
-Ottoman will generate automatically your document's `key` and guarantee that each `key` will be unique.
+Ottoman will generate automatically your document's `key` and will guarantee that each `key` will be unique.
 
-Each document's `key` will be included on the document under a property named `id` by default.
+Each document's `key` will be included on the document under a property called `id` by default.
 
 The `id` property name can be modified using the `ModelOptions.idKey` 
 
@@ -61,7 +61,7 @@ const User = model('User', schema, {collectionName: 'users', idKey: '__id'});
 The above example will override the default `id` with `__id`, now for the `User`'s documents you can get the `key` value from doc.__id.
 
 ::: tip
-You also can get the `id` value by calling the `doc._getId()` methods, regardless of the `id` property name.
+You can also get the `id` value by calling the `doc._getId()` methods, regardless of the `id` property name.
 :::
 
 ## Constructing Documents
@@ -82,7 +82,7 @@ User.create({name:"Jane", age: 29})
 // saved!
 ```
 
-Note that no users will be created/removed until the connection your model uses is open. 
+Note that no users will be created/removed until the connection that your model uses is open. 
 Every model has an associated connection. When you use `model()`,
 your model will use the default Ottoman connection.
 

@@ -108,7 +108,7 @@ We are going to define a custom type link
     };
 ```
 
-With the link custom type, we continue with the schema definition
+With the link custom type, we can continue with the schema definition
 
 ```ts
 const ReviewSchema = new Schema({

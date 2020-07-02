@@ -168,7 +168,7 @@ describe('Test Document Access Functions', () => {
     });
     expect(element).toBeTruthy();
   });
-  test('UserModel findOne function not response', async () => {
+  test('UserModel findOne function no response', async () => {
     const UserModel = model('User', schema);
     await UserModel.create(accessDoc);
     const element = await UserModel.findOne({
