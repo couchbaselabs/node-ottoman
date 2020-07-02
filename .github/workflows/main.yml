@@ -33,4 +33,5 @@ jobs:
         run: yarn test:coverage
 
       - name: Upload coverage to Codecov
+        if: ${{ github.event_name == 'push' }}
         uses: codecov/codecov-action@v1

@@ -14,6 +14,7 @@ module.exports = {
       {
         text: 'API',
         items: [
+          { text: 'Ottoman', link: '/classes/ottoman.html' },
           { text: 'Connections', link: '/classes/connectionmanager.html' },
           { text: 'Schema', link: '/classes/schema.html' },
           { text: 'Model', link: '/classes/model.html' },

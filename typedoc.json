@@ -1,4 +1,5 @@
 {
+  "name": "Ottoman",
   "mode": "file",
   "out": "docs",
   "excludePrivate": true,

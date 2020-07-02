@@ -5,7 +5,7 @@ All your [Models](/guides/model) will be created via a connection and map to a C
 
 ## Create a connection
 
-You can connect to Couchbase Server with the `connect()` method.
+You can connect to Couchbase Server with the [connect()](/classes/ottoman.html#connect) method.
 
 ```javascript
 import { connect } from 'ottoman';
