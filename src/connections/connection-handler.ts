@@ -23,12 +23,19 @@ export let __conn: ConnectionManager;
 export const __connections: ConnectionManager[] = [];
 
 export class Ottoman {
+  /**
+   * Returns default connection
+   */
   getDefaultConnection = (): ConnectionManager => __conn;
+
+  /**
+   * Returns all active connections
+   */
   getConnections = (): ConnectionManager[] => __connections;
 
   /**
-   * Get a given collection from default connection
-   * or return default collection if collectionName is undefined
+   * Gets a given collection from default connection
+   * or returns default collection if collectionName is undefined
    */
   getCollection = (collectionName?: string) => __conn.getCollection(collectionName);
 
@@ -48,7 +55,7 @@ export class Ottoman {
   };
 
   /**
-   * Create a model from a given name, from default connection
+   * Creates a model from a given name, from default connection
    */
   // eslint-disable-next-line no-unused-vars
   model(name: string, schema: Schema | Record<string, any>, options: ModelOptions): Model {

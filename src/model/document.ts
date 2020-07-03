@@ -18,21 +18,21 @@ export abstract class Document<T> {
     return getModelMetadata(this.constructor);
   }
   /**
-   * return id value
+   * Returns id value
    */
   _getId(): string {
     return this[this.$.ID_KEY];
   }
 
   /**
-   * return id key
+   * Returns id key
    */
   _getIdField(): string {
     return this.$.ID_KEY;
   }
 
   /**
-   * Save or Update documents
+   * Saves or Updates the document
    */
   async save() {
     const { scopeName, scopeKey, collectionName, collectionKey, collection, ID_KEY } = this.$;
@@ -68,7 +68,7 @@ export abstract class Document<T> {
   }
 
   /**
-   * Remove document from database
+   * Removes the document from database
    */
   async remove(options = {}) {
     const data = extractDataFromModel(this);
@@ -85,7 +85,7 @@ export abstract class Document<T> {
   }
 
   /**
-   * Allow to load document references
+   * Allows to load document references
    */
   async _populate(fieldsName, deep = DEFAULT_POPULATE_MAX_DEEP) {
     let fieldsToPopulate;
@@ -123,8 +123,7 @@ export abstract class Document<T> {
   }
 
   /**
-   * Revert population
-   * Switch back document reference
+   * Reverts population. Switches back document reference
    */
   _depopulate(fieldsName) {
     let fieldsToPopulate;
@@ -152,7 +151,7 @@ export abstract class Document<T> {
   }
 
   /**
-   * Allow to know if a document field is populated
+   * Allows to know if a document field is populated
    */
   _populated(fieldName: string): boolean {
     let data = this[fieldName];
@@ -166,7 +165,7 @@ export abstract class Document<T> {
   }
 
   /**
-   * Allow to easily apply data from object to current document.
+   * Allows to easily apply data from an object to current document.
    */
   _applyData(data) {
     for (const key in data) {
@@ -175,21 +174,21 @@ export abstract class Document<T> {
   }
 
   /**
-   * Run schema validations over current document
+   * Runs schema validations over current document
    */
   _validate() {
     return castSchema(this, this.$.schema);
   }
 
   /**
-   * Return javascript object with data
+   * Returns a Javascript object with data
    */
   toObject() {
     return this.$toObject();
   }
 
   /**
-   * Return javascript object to be serialized to JSON
+   * Returns a Javascript object to be serialized to JSON
    */
   toJSON() {
     return this.$toObject();

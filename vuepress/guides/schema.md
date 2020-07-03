@@ -90,7 +90,7 @@ schema.index.findByFirstName = {
 
 schema.index.findByLastName = {
   by: 'name.last',
-        type: 'n1ql'
+  type: 'n1ql'
 };
 ```
 

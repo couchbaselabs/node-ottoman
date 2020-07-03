@@ -47,12 +47,12 @@ export class Schema {
   public fields: FieldMap;
 
   /**
-   * @summary Create an instance of Schema
+   * @summary Creates an instance of Schema
    * @name Schema
    * @class
    * @public
    *
-   * @param obj defined in the Schema
+   * @param obj Schema definition
    * @param options Settings to build schema
    * @param options.validationStrategy to apply in validations
    * @param options.preHooks initialization of preHooks since Schema constructor
@@ -85,7 +85,7 @@ export class Schema {
     }
   }
   /**
-   * Cast a model instance using the definition of the schema
+   * Casts a model instance using the definition of the schema
    * @method
    * @public
    *
@@ -118,7 +118,7 @@ export class Schema {
   }
 
   /**
-   * Apply default values defined on schema to an object instance
+   * Applies default values defined on schema to an object instance
    * @method
    * @public
    * @param obj
@@ -138,7 +138,7 @@ export class Schema {
   }
 
   /**
-   * Allow to apply plugins, to extend schema and model features.
+   * Allows to apply plugins, to extend schema and model features.
    */
   plugin(...fns: PluginConstructor[]): Schema {
     if (fns && Array.isArray(fns)) {
@@ -149,6 +149,10 @@ export class Schema {
     return this;
   }
 
+  /**
+   * Allows to register a hook method.
+   * Pre hooks are executed before the hooked method
+   */
   pre(hook: HOOKS, handler: HookHandler): Schema {
     Schema.checkHook(hook);
     if (this.preHooks[hook] === undefined) {
@@ -158,6 +162,10 @@ export class Schema {
     return this;
   }
 
+  /**
+   * Allows to register a hook function.
+   * Post hooks are executed after the hooked method
+   */
   post(hook: HOOKS, handler: HookHandler): Schema {
     Schema.checkHook(hook);
     if (this.postHooks[hook] === undefined) {

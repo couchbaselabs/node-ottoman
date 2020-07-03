@@ -3,20 +3,29 @@ import { DEFAULT_COLLECTION, DEFAULT_SCOPE } from '../utils/constants';
 import { Schema } from '../schema';
 
 /**
- * Create a connection instance,
- * Provide functions to work with cluster, bucket, collection on the current connection,
- * support multiple instances.
+ * Creates a connection instance.
+ * Provide functions to work with cluster, bucket and collection on the current connection.
+ * Supports multiple instances.
  */
 export class ConnectionManager {
   /**
-   * Store instance to a bucket
+   * Bucket represents a storage grouping of data within a Couchbase Server cluster.
    */
   bucket;
 
+  /**
+   * CollectionManager allows the management of collections within a Bucket.
+   */
   collectionManager;
 
+  /**
+   * QueryIndexManager provides an interface for managing the query indexes on the cluster.
+   */
   queryIndexManager;
 
+  /**
+   * ViewIndexManager is an interface which enables the management of view indexes on the cluster.
+   */
   viewIndexManager;
 
   /**
@@ -24,7 +33,25 @@ export class ConnectionManager {
    */
   models = {};
 
-  constructor(public cluster, public bucketName: string, public couchbase) {
+  /**
+   * Cluster represents an entire Couchbase Server cluster.
+   */
+  cluster;
+
+  /**
+   * Contains the name of the current bucket.
+   */
+  bucketName: string;
+
+  /**
+   * Stores a reference to couchbase instance.
+   */
+  couchbase;
+
+  constructor(cluster, bucketName: string, couchbase) {
+    this.cluster = cluster;
+    this.bucketName = bucketName;
+    this.couchbase = couchbase;
     this.bucket = cluster.bucket(bucketName);
     this.collectionManager = this.bucket.collections();
     this.viewIndexManager = this.bucket.viewIndexes();
@@ -32,7 +59,7 @@ export class ConnectionManager {
   }
 
   /**
-   * Create a Model on this connection.
+   * Creates a Model on this connection.
    */
   model(name: string, schema: Schema | Record<string, unknown>, options?) {
     const ModelFactory = createModel({ name, schemaDraft: schema, options, connection: this });
@@ -41,7 +68,7 @@ export class ConnectionManager {
   }
 
   /**
-   * Return a Model constructor from the given name
+   * Returns a Model constructor from the given name
    */
   getModel(name: string) {
     return this.models[name];
@@ -56,14 +83,14 @@ export class ConnectionManager {
   }
 
   /**
-   * Close current connection
+   * Closes the current connection
    */
   close() {
     this.cluster.close();
   }
 
   /**
-   * Execute N1QL Query
+   * Executes N1QL Queries
    */
   query(query: string) {
     return this.cluster.query(query);
