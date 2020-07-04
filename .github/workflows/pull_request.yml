@@ -1,7 +1,7 @@
-name: CI
+name: PR
 
 on:
-  push:
+  pull_request:
     branches: [v2]
 
 jobs:
@@ -29,18 +29,3 @@ jobs:
 
       - name: Test
         run: yarn test:coverage
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-
-# Remove comments went set branch to master
-# These step will generate and publish docs to gh-pages branch
-#
-#      - name: Generate docs
-#        run: yarn docs
-#
-#      - name: Publish docs
-#        uses: peaceiris/actions-gh-pages@v3
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          publish_dir: ./docs/.vuepress/dist
