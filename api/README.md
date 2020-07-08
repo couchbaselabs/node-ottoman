@@ -249,4 +249,6 @@ ensureIndexes()
 ```
 
 #### Routes and Documentations
-You can find all definitions in Swagger. [Docs](http://127.0.0.1:4500/api-docs)
+Once you have the example running, you can find all definitions in Swagger:
+
+```http://127.0.0.1:4500/api-docs```
