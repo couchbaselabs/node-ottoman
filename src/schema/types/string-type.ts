@@ -2,7 +2,7 @@ import { CoreType } from './core-type';
 import { generateUUID } from '../../utils/generate-uuid';
 import { is } from '../../utils/is-type';
 import { ValidationError } from '../errors';
-import { CoreTypeOptions } from '../interfaces';
+import { CoreTypeOptions } from '../interfaces/schema.types';
 
 type FunctionsString = () => string[];
 

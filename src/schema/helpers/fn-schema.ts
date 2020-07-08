@@ -1,7 +1,7 @@
 import { is } from '../../utils/is-type';
 import { BuildSchemaError } from '../errors';
 import { Schema } from '../schema';
-import { SchemaDef, IOttomanType, FieldMap, FactoryFunction, CustomValidations } from '../interfaces';
+import { SchemaDef, IOttomanType, FieldMap, FactoryFunction, CustomValidations } from '../interfaces/schema.types';
 import { VALIDATION_STRATEGY } from '../../utils';
 
 type ParseResult = {

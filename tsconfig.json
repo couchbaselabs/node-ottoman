@@ -6,7 +6,7 @@
     "declarationDir": "./lib/types/",
     "sourceMap": true,
     "declaration": true,
-    "removeComments": true,
+    "removeComments": false,
     "noImplicitAny": false,
     "strict": true,
     "esModuleInterop": true,                  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */

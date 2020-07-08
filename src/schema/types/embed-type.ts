@@ -3,7 +3,7 @@ import { Schema } from '../schema';
 import { isModel } from '../../utils/is-model';
 import { is } from '../../utils/is-type';
 import { ValidationError } from '../errors';
-import { CoreTypeOptions } from '../interfaces';
+import { CoreTypeOptions } from '../interfaces/schema.types';
 
 /**
  * @inheritDoc

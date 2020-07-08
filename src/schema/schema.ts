@@ -23,7 +23,7 @@ import {
   SchemaDef,
   SchemaOptions,
   SupportType,
-} from './interfaces';
+} from './interfaces/schema.types';
 import { HookHandler } from './interfaces/schema.types';
 
 export class Schema {

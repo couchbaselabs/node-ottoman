@@ -1,7 +1,7 @@
 import { CoreType } from './core-type';
 import { is } from '../../utils/is-type';
 import { ValidationError } from '../errors';
-import { CoreTypeOptions } from '../interfaces';
+import { CoreTypeOptions } from '../interfaces/schema.types';
 
 /**
  * @inheritDoc

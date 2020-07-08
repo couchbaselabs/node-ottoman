@@ -1,7 +1,7 @@
 import { CoreType } from './core-type';
 import { DateFunction, DateOption, validateMaxDate, validateMinDate } from '../helpers';
 import { ValidationError } from '../errors';
-import { CoreTypeOptions } from '../interfaces';
+import { CoreTypeOptions } from '../interfaces/schema.types';
 import { is } from '../../utils/is-type';
 
 interface DateTypeOptions {

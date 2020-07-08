@@ -3,7 +3,7 @@ import { Schema } from '../schema';
 import { is } from '../../utils/is-type';
 import { isModel } from '../../utils/is-model';
 import { ValidationError } from '../errors';
-import { CoreTypeOptions } from '../interfaces';
+import { CoreTypeOptions } from '../interfaces/schema.types';
 
 interface ReferenceOptions {
   schema: Schema;

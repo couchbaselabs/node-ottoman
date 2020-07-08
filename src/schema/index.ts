@@ -2,4 +2,4 @@ export { castSchema, applyDefaultValue, buildFields, registerType, addValidators
 export { ValidationError, BuildSchemaError } from './errors';
 export { ReferenceType } from './types';
 export { Schema } from './schema';
-export { IOttomanType } from './interfaces';
+export { IOttomanType } from './interfaces/schema.types';

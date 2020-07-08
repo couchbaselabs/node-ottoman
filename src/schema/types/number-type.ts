@@ -1,7 +1,7 @@
 import { CoreType } from './core-type';
 import { MinmaxOption, NumberFunction, validateMaxLimit, validateMinLimit } from '../helpers';
 import { ValidationError } from '../errors';
-import { CoreTypeOptions } from '../interfaces';
+import { CoreTypeOptions } from '../interfaces/schema.types.js';
 import { is } from '../../utils/is-type';
 
 interface NumberTypeOptions {

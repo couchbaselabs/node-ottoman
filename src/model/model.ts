@@ -8,7 +8,7 @@ type CountOptions = { sort?: Record<string, SortType>; limit?: number; skip?: nu
  * Constructor to build a model instance based on a schema and other options.
  * Provides methods to handle documents of the current collection in the database
  */
-
+/* istanbul ignore file */
 export abstract class Model<T = any> extends Document<T> {
   /**
    * Creates a document from this model.

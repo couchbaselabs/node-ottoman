@@ -1,7 +1,7 @@
 import { CoreType } from './core-type';
 import { is } from '../../utils/is-type';
 import { ValidationError } from '../errors';
-import { CoreTypeOptions, IOttomanType } from '../interfaces';
+import { CoreTypeOptions, IOttomanType } from '../interfaces/schema.types';
 import { VALIDATION_STRATEGY } from '../../utils';
 
 /**

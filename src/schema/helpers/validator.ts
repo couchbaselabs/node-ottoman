@@ -1,6 +1,6 @@
 import { Schema } from '../schema';
 import { BuildSchemaError, ValidationError } from '../errors';
-import { ValidatorFunction, ValidatorOption } from '../interfaces';
+import { ValidatorFunction, ValidatorOption } from '../interfaces/schema.types';
 
 export const applyValidator = (
   val: unknown,

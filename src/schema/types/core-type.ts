@@ -7,9 +7,9 @@ import {
   RequiredOption,
   ValidatorFunction,
   ValidatorOption,
-} from '../interfaces';
+  AutoFunction,
+} from '../interfaces/schema.types';
 import { VALIDATION_STRATEGY } from '../../utils';
-import { AutoFunction } from '../interfaces/schema.types';
 
 /**
  *  @param name of field in schema
