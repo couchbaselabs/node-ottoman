@@ -61,7 +61,7 @@ export class Schema {
    *
    * @example
    * ```ts
-   *  const schema = new Schema([new StringType('name')]);
+   *  const schema = new Schema({name: String, age: {type: Number, intVal: true, min: 18}});
    * ```
    */
   constructor(obj: SchemaDef | Schema, options?: SchemaOptions) {
@@ -91,7 +91,7 @@ export class Schema {
    *
    * @example
    * ```ts
-   *   const schema = new Schema([new StringType('name'), new NumberType('age')]);
+   *   const schema = new Schema({name: String, age: {type: Number, intVal: true, min: 18}});
    *   const result = schema.cast({name: 'John Doe', age: '34'});
    *   console.log(result)
    * ```
@@ -122,6 +122,13 @@ export class Schema {
    * @method
    * @public
    * @param obj
+   * @example
+   * ```ts
+   *   const schema = new Schema({ amount: { type: Number, default: 5}});
+   *   const result = schema.applyDefaultsToObject({});
+   *   console.log(result)
+   * ```
+   * > { amount: 5 }
    */
   applyDefaultsToObject(obj) {
     for (const key in this.fields) {
@@ -132,6 +139,16 @@ export class Schema {
     }
     return obj;
   }
+  /**
+   * Allows access to specify field.
+   * @example
+   * ```ts
+   *   const schema = new Schema({ amount: { type: Number, default: 5}});
+   *   const field = schema.path('amount');
+   *   console.log(field.typeName);
+   * ```
+   * > Number
+   */
 
   path(path: string): IOttomanType | undefined {
     return this.fields[path];
@@ -139,6 +156,12 @@ export class Schema {
 
   /**
    * Allows to apply plugins, to extend schema and model features.
+   * @example
+   * ```ts
+   *   const schema = new Schema({ amount: { type: Number, default: 5}});
+   *   schema.plugin((schema) => console.log(schema.path('amount').typeName));
+   * ```
+   * > Number
    */
   plugin(...fns: PluginConstructor[]): Schema {
     if (fns && Array.isArray(fns)) {
@@ -151,7 +174,12 @@ export class Schema {
 
   /**
    * Allows to register a hook method.
-   * Pre hooks are executed before the hooked method
+   * Pre hooks are executed before the hooked method.
+   * @example
+   * ```ts
+   *   const schema = new Schema({ amount: { type: Number, default: 5}});
+   *   schema.pre(HOOKS.validate, (doc) => console.log(doc));
+   * ```
    */
   pre(hook: HOOKS, handler: HookHandler): Schema {
     Schema.checkHook(hook);
@@ -164,7 +192,12 @@ export class Schema {
 
   /**
    * Allows to register a hook function.
-   * Post hooks are executed after the hooked method
+   * Post hooks are executed after the hooked method.
+   * @example
+   * ```ts
+   *   const schema = new Schema({ amount: { type: Number, default: 5}});
+   *   schema.post(HOOKS.validate, (doc) => console.log(doc));
+   * ```
    */
   post(hook: HOOKS, handler: HookHandler): Schema {
     Schema.checkHook(hook);
@@ -174,6 +207,7 @@ export class Schema {
     this.postHooks[hook].push(handler);
     return this;
   }
+
   private static checkHook(hook: HOOKS): void {
     if (!Object.values(HOOKS).includes(hook)) {
       throw new BuildSchemaError(`The hook ${hook} is not allowed`);
