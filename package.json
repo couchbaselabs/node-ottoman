@@ -1,6 +1,6 @@
 {
   "name": "ottoman",
-  "version": "2.0.0-pre-alpha.1",
+  "version": "2.0.0-alpha.1",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
   "description": "ODM for Couchbase Node.js driver.",
@@ -28,7 +28,7 @@
     "is:ready": "yarn lint && yarn build && yarn test:ready",
     "lint": "eslint --ignore-pattern '/lib/' '*/**/*.ts' --quiet --fix",
     "test": "jest --clearCache && jest -i",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest -i --coverage",
     "test:dev": "jest --watch",
     "test:ready": "jest --clearCache && jest -i --coverage"
   },
@@ -62,7 +62,6 @@
     "express": "^4.17.1",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
-    "jsonwebtoken": "^8.5.1",
     "lint-staged": "^10.2.6",
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",

@@ -1,8 +1,25 @@
-export { connect, getCollection, closeConnection, model } from './connections/connection-handler';
+export {
+  connect,
+  getCollection,
+  closeConnection,
+  model,
+  getConnections,
+  getDefaultConnection,
+} from './connections/connection-handler';
 export { Model } from './model/model';
+export { getModelMetadata } from './model/utils/model.utils';
 export { ensureIndexes } from './model/index/ensure-indexes';
+export { ViewIndexOptions } from './model/index/view/view-index-options';
 export { globalConfig, getCollectionKey, getScopeKey } from './utils/constants';
-export { castSchema, applyDefaultValue, registerType, Schema, ValidationError, BuildSchemaError } from './schema';
+export {
+  castSchema,
+  applyDefaultValue,
+  registerType,
+  addValidators,
+  Schema,
+  ValidationError,
+  BuildSchemaError,
+} from './schema';
 export { FindByIdOptions, FindOptions } from './handler';
 export * from './utils';
 export {
@@ -17,6 +34,8 @@ export {
   MultipleQueryTypesException,
   WhereClauseException,
   QueryOperatorNotFoundException,
+  InWithinOperatorExceptions,
+  QueryGroupByParamsException,
   Query,
   ILetExpr,
   SortType,
@@ -37,6 +56,7 @@ export {
   ResultExprType,
   ReturnResultType,
   parseStringSelectExpr,
+  escapeReservedWords,
 } from './query';
 export { getProjectionFields } from './utils/query/extract-select';
 export { SearchConsistency } from './utils/search-conscistency';

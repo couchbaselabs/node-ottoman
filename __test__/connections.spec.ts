@@ -1,8 +1,12 @@
-import { connect } from '../lib';
+import { connect, model } from '../lib';
 import { connectionString, username, connectUri, bucketName, password } from './testData';
 import { isModel } from '../lib/utils/is-model';
 
 describe('Test connections', () => {
+  process.env.OTTOMAN_CONNECTION_STRING = connectUri;
+  const User = model('User', { name: String });
+  expect(User).toBeDefined();
+
   test('Multiple connections with string param', () => {
     const conn2 = connect(connectUri);
     expect(conn2.bucket).toBeDefined();

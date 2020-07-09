@@ -1,0 +1,31 @@
+name: PR
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    services:
+      couchbase:
+        image: couchbase/server-sandbox:6.5.0
+        ports:
+          - 8091-8094:8091-8094
+          - 11210:11210
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['12']
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Build
+        run: yarn build
+
+      - name: Test
+        run: yarn test:coverage

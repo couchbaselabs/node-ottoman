@@ -1,9 +1,10 @@
-import { COLLECTION_KEY } from '../../../utils/constants';
+import { ModelMetadata } from '../../interfaces/model-metadata.interface';
 
-export const buildMapViewIndexFn = (collectionName, fields) => {
+export const buildMapViewIndexFn = (metadata: ModelMetadata, fields) => {
+  const { collectionKey, collectionName, scopeKey, scopeName } = metadata;
   const docFields = fields.map((field) => `doc.${field}`);
   return `function (doc, meta) {
-    if (doc.${COLLECTION_KEY} == "${collectionName}") {
+    if (doc.${scopeKey} == "${scopeName}" && doc.${collectionKey} == "${collectionName}") {
         emit([${docFields.join(',')}], null);
     }
 }

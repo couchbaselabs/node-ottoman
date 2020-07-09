@@ -1,25 +1,25 @@
-import { ValidatorOption, ValidatorFunction, applyValidator } from '../helpers';
+import { applyValidator } from '../helpers';
 import { BuildSchemaError, ValidationError } from '../errors';
+import {
+  CoreTypeOptions,
+  IOttomanType,
+  RequiredFunction,
+  RequiredOption,
+  ValidatorFunction,
+  ValidatorOption,
+  AutoFunction,
+} from '../interfaces/schema.types';
+import { VALIDATION_STRATEGY } from '../../utils';
 
-export interface RequiredOption {
-  val: boolean;
-  message: string;
-}
-export type RequiredFunction = () => boolean | RequiredOption;
-
-export interface CoreTypeOptions {
-  required?: boolean | RequiredOption | RequiredFunction;
-  default?: unknown;
-  auto?: string;
-  validator?: ValidatorOption | ValidatorFunction;
-}
-
-export interface IOttomanType {
-  name: string;
-  typeName: string;
-  cast(value: unknown): unknown;
-}
-
+/**
+ *  @param name of field in schema
+ *  @param typeName name of type
+ *  @param options
+ *  @param options.required flag to define if the field is mandatory
+ *  @param options.validator that will be applied to the field, allowed function, object or string with the name of the custom validator
+ *  @param options.default that will define the initial value of the field, allowed and value or function to generate it
+ *  @param options.auto that will generate the initial value of the field. if the field is String it allows the value 'uuid' or a function, in any other cases only functions. It cannot be used combined with default
+ */
 export abstract class CoreType implements IOttomanType {
   protected constructor(public name: string, public typeName: string, public options?: CoreTypeOptions) {
     this._checkIntegrity();
@@ -28,11 +28,11 @@ export abstract class CoreType implements IOttomanType {
     return this.options?.required || false;
   }
 
-  get validator(): ValidatorOption | ValidatorFunction | undefined {
+  get validator(): ValidatorOption | ValidatorFunction | string | undefined {
     return this.options?.validator;
   }
 
-  get auto(): string | undefined {
+  get auto(): string | AutoFunction | undefined {
     return this.options?.auto;
   }
 
@@ -42,6 +42,10 @@ export abstract class CoreType implements IOttomanType {
   buildDefault(): unknown {
     if (typeof this.default === 'function') {
       return this.default();
+    } else if (typeof this.default === 'undefined') {
+      if (typeof this.auto === 'function') {
+        return String(this.auto());
+      }
     } else {
       return this.default;
     }
@@ -58,7 +62,8 @@ export abstract class CoreType implements IOttomanType {
     }
   }
 
-  cast(value: unknown): unknown {
+  // eslint-disable-next-line no-unused-vars
+  cast(value: unknown, strategy: VALIDATION_STRATEGY): unknown {
     if (this.isEmpty(value)) {
       const _required = this.checkRequired() || '';
       if (_required.length > 0) {
@@ -77,14 +82,15 @@ export abstract class CoreType implements IOttomanType {
     }
   }
 
-  checkValidator(value: unknown): string | void {
-    const _validator = (typeof this.validator === 'function'
-      ? this.validator(value)
-      : this.validator) as ValidatorOption;
-    return applyValidator(value, _validator);
+  checkValidator(value: unknown): void {
+    applyValidator(value, this.validator, this.name);
   }
 
   isEmpty(value: unknown): boolean {
     return value === undefined || value === null;
+  }
+
+  isStrictStrategy(strategy: VALIDATION_STRATEGY): boolean {
+    return strategy == VALIDATION_STRATEGY.STRICT;
   }
 }

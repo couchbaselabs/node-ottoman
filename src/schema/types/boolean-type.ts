@@ -1,18 +1,24 @@
-import { CoreType, CoreTypeOptions } from './core-type';
+import { CoreType } from './core-type';
 import { is } from '../../utils/is-type';
 import { ValidationError } from '../errors';
+import { CoreTypeOptions } from '../interfaces/schema.types';
 
+/**
+ * @inheritDoc
+ */
 export class BooleanType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions) {
     super(name, Boolean.name, options);
   }
 
-  cast(value: unknown) {
-    value = super.cast(value);
+  cast(value, strategy) {
+    value = super.cast(value, strategy);
     if (value === undefined || value === null) return value;
-    if (is(value, Object)) {
+    const _wrongType = this.isStrictStrategy(strategy) ? !is(value, Boolean) : is(value, Object);
+    if (_wrongType) {
       throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
+    this.checkValidator(value);
     return Boolean(value);
   }
 

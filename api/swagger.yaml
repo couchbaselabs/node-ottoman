@@ -64,7 +64,6 @@ paths:
             $ref: "#/definitions/ListAirportsResponse"
         "400":
           description: "Invalid username/password supplied"
-
   /airports/{id}:
     put:
       tags:
@@ -643,7 +642,7 @@ definitions:
         example: "AF288"
       utc:
         type: "string"
-        "example": "05:02:00"
+        example: "05:02:00"
   Route:
     type: "object"
     properties:
@@ -668,7 +667,7 @@ definitions:
       schedule:
         type: "array"
         items:
-          $ref: '#/definitions/Schedule'
+          $ref: "#/definitions/Schedule"
       sourceairport:
         type: "string"
         example: "TRI"
@@ -698,4 +697,19 @@ definitions:
       items:
         type: "array"
         items:
-          $ref: "#/definitions/Route"
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            flight:
+              type: "string"
+            utc:
+              type: "string"
+            day:
+              type: "number"
+            sourceairport:
+              type: "string"
+            destinationairport:
+              type: "string"
+            equipment:
+              type: "string"

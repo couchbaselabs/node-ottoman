@@ -1,5 +1,6 @@
 export class FindByIdOptions {
   select?: string | string[];
+  populate?: string | string[];
   withExpiry?: boolean;
   transcoder?: any;
   timeout?: number;

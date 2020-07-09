@@ -14,6 +14,8 @@ export {
   WhereClauseException,
   QueryOperatorNotFoundException,
   IndexParamsUsingGSIExceptions,
+  InWithinOperatorExceptions,
+  QueryGroupByParamsException,
 } from './exceptions';
 export { Query } from './query';
 export {
@@ -35,5 +37,5 @@ export {
   LogicalOperatorType,
   ResultExprType,
   ReturnResultType,
-} from './interface';
-export { parseStringSelectExpr } from './utils';
+} from './interface/query.types';
+export { parseStringSelectExpr, escapeReservedWords } from './utils';

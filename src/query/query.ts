@@ -1,6 +1,7 @@
 import { BaseQuery } from './base-query';
 import {
   IConditionExpr,
+  IGroupBy,
   IIndexOnParams,
   IIndexWithParams,
   ILetExpr,
@@ -8,7 +9,7 @@ import {
   ISelectType,
   LogicalWhereExpr,
   SortType,
-} from './interface/query-types';
+} from './interface/query.types';
 import { IndexParamsOnExceptions, IndexParamsUsingGSIExceptions, MultipleQueryTypesException } from './exceptions';
 import { buildIndexExpr, selectBuilder } from './helpers';
 
@@ -37,6 +38,23 @@ export class Query extends BaseQuery {
    * LET Expression.
    */
   private letExpr?: ILetExpr[];
+  /**
+   * GROUP BY Expression.
+   */
+  private groupByExpr?: IGroupBy[];
+  /**
+   * LETTING Expression.
+   */
+  private lettingExpr?: ILetExpr[];
+  /**
+   * HAVING Expression.
+   */
+  private havingExpr?: LogicalWhereExpr;
+
+  /**
+   * Plain JOIN Expression.
+   */
+  private plainJoinExpr?: string;
   /**
    * USE Expression.
    */
@@ -88,7 +106,7 @@ export class Query extends BaseQuery {
   }
 
   /**
-   * Add results selectors to SELECT clause.
+   * Add result selectors to SELECT clause.
    * @method
    * @public
    *
@@ -225,6 +243,24 @@ export class Query extends BaseQuery {
   }
 
   /**
+   * Add JOIN expression to SELECT clause.
+   * @method
+   * @public
+   *
+   * @example
+   * ```tS
+   *   const query = new Query({}, 'beer-sample brewery');
+   *   const result = query.select([{$field: 'address'}]).plainJoin('JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_"))').build()
+   *   console.log(result)
+   * ```
+   * > SELECT address FROM `beer-sample brewery` JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_")) LIMIT 1`
+   */
+  plainJoin(value: string): Query {
+    this.plainJoinExpr = value;
+    return this;
+  }
+
+  /**
    * Add ORDER BY expression to SELECT clause.
    * @method
    * @public
@@ -298,6 +334,65 @@ export class Query extends BaseQuery {
   }
 
   /**
+   * Add GROUP BY expression to GROUP BY clause.
+   * @method
+   * @public
+   *
+   * @example
+   * ```ts
+   *   const groupByExpr = [{ expr: 'COUNT(amount_val)', as: 'amount' }];
+   *   const query = new Query({}, 'travel-sample');
+   *   const result = query.select([{$field: 'address'}]).groupBy(groupByExpr).build()
+   *   console.log(result)
+   * ```
+   * > SELECT address FROM `travel-sample GROUP BY COUNT(amount) AS amount`
+   */
+  groupBy(value: IGroupBy[]): Query {
+    this.groupByExpr = value;
+    return this;
+  }
+
+  /**
+   * Add LETTING expression to GROUP BY clause.
+   * @method
+   * @public
+   *
+   * @example
+   * ```ts
+   *   const groupByExpr = [{ expr: 'COUNT(amount_val)', as: 'amount' }];
+   *   const letExpr = [{ key: 'amount_val', value: 10 }];
+   *   const query = new Query({}, 'travel-sample');
+   *   const result = query.select([{$field: 'address'}]).groupBy(groupByExpr).let(letExpr).build()
+   *   console.log(result)
+   * ```
+   * > SELECT address FROM `travel-sample GROUP BY COUNT(amount) AS amount LETTING amount = 10`
+   */
+  letting(value: ILetExpr[]): Query {
+    this.lettingExpr = value;
+    return this;
+  }
+
+  /**
+   * Add HAVING expression to GROUP BY clause.
+   * @method
+   * @public
+   *
+   * @example
+   * ```ts
+   *   const groupByExpr = [{ expr: 'COUNT(amount_val)', as: 'amount' }];
+   *   const having = {address: {$like: '%58%'}};
+   *   const query = new Query({}, 'travel-sample');
+   *   const result = query.select([{$field: 'address'}]).groupBy(groupByExpr).having(having).build()
+   *   console.log(result)
+   * ```
+   * > SELECT address FROM `travel-sample GROUP BY COUNT(amount) AS amount HAVING address LIKE '%58%'`
+   */
+  having(value: LogicalWhereExpr): Query {
+    this.havingExpr = value;
+    return this;
+  }
+
+  /**
    * Add USE KEYS expression to SELECT clause.
    * @method
    * @public
@@ -328,10 +423,22 @@ export class Query extends BaseQuery {
           this.select(conditionals[value]);
           break;
         case 'let':
-          !!conditionals[value] && this.let(conditionals[value] as [ILetExpr]);
+          !!conditionals[value] && this.let(conditionals[value] as ILetExpr[]);
           break;
         case 'where':
           !!conditionals[value] && this.where(conditionals[value] as LogicalWhereExpr);
+          break;
+        case 'plainJoin':
+          !!conditionals[value] && this.plainJoin(conditionals[value] as string);
+          break;
+        case 'groupBy':
+          !!conditionals[value] && this.groupBy(conditionals[value] as IGroupBy[]);
+          break;
+        case 'letting':
+          !!conditionals[value] && this.letting(conditionals[value] as ILetExpr[]);
+          break;
+        case 'having':
+          !!conditionals[value] && this.having(conditionals[value] as LogicalWhereExpr);
           break;
         case 'orderBy':
           !!conditionals[value] && this.orderBy(conditionals[value] as Record<string, SortType>);
@@ -395,6 +502,10 @@ export class Query extends BaseQuery {
             this.limitExpr,
             this.offSetExpr,
             this.useKeysExpr,
+            this.groupByExpr,
+            this.lettingExpr,
+            this.havingExpr,
+            this.plainJoinExpr,
           );
         }
     }

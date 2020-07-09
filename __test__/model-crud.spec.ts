@@ -145,7 +145,7 @@ describe('Test Document Access Functions', () => {
     expect(UserModel.getCats()).toBe('static: getCats');
   });
 
-  test('UserModel count items', async () => {
+  test('UserModel count function', async () => {
     const UserModel = model('User', schema);
     await UserModel.create(accessDoc);
     const count = await UserModel.count();
@@ -156,5 +156,24 @@ describe('Test Document Access Functions', () => {
     const UserModel = model('User', schema);
     const result = await UserModel.find();
     expect(result.rows).toBeDefined();
+  });
+
+  test('UserModel findOne function', async () => {
+    const UserModel = model('User', schema);
+    await UserModel.create(accessDoc);
+    const element = await UserModel.findOne({
+      type: 'airlineR',
+      isActive: false,
+      name: 'Ottoman Access',
+    });
+    expect(element).toBeTruthy();
+  });
+  test('UserModel findOne function no response', async () => {
+    const UserModel = model('User', schema);
+    await UserModel.create(accessDoc);
+    const element = await UserModel.findOne({
+      type: 'airlineFlyFly',
+    });
+    expect(element).toBe(null);
   });
 });

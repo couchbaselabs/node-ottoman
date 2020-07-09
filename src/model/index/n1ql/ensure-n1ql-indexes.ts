@@ -1,11 +1,14 @@
 import { extractIndexFieldNames } from './extract-index-field-names';
 import { getIndexes } from '../index-manager';
-import { COLLECTION_KEY } from '../../../utils/constants';
+import { COLLECTION_KEY, SCOPE_KEY } from '../../../utils/constants';
 import { ConnectionManager } from '../../../connections/connection-manager';
+import { getModelMetadata } from '../../utils/model.utils';
+import { ModelMetadata } from '../../interfaces/model-metadata.interface';
+import { isDebugMode } from '../../../utils/is-debug-mode';
 
 /**
  * Creates the register index in the Database Server.
- * in addition, creates one index as primary for the bucketName
+ * In addition, creates one index as primary for the bucketName
  * and one for every Ottoman model.
  */
 export const ensureN1qlIndexes = async (connection: ConnectionManager) => {
@@ -21,9 +24,9 @@ export const ensureN1qlIndexes = async (connection: ConnectionManager) => {
   }
 
   // Create the ottoman type index, needed to make model lookups fast.
-  const ottomanType = `Ottoman${COLLECTION_KEY}`;
+  const ottomanType = `Ottoman${SCOPE_KEY}${COLLECTION_KEY}`;
   if (!existingIndexesNames.includes(ottomanType)) {
-    await cluster.query(queryForIndexOttomanType(bucketName));
+    await cluster.query(queryForIndexOttomanType(bucketName, ottomanType));
     indexesToBuild.push(ottomanType);
   }
 
@@ -35,13 +38,15 @@ export const ensureN1qlIndexes = async (connection: ConnectionManager) => {
         const index = __indexes[indexName];
         const fieldNames = extractIndexFieldNames(index);
         indexesToBuild.push(indexNameSanitized);
-        yield cluster.query(queryBuildIndexDefered(bucketName, indexNameSanitized, fieldNames, index.modelName));
+        const Model = connection.getModel(index.modelName);
+        const metadata = getModelMetadata(Model);
+        yield cluster.query(queryBuildIndexDefered(bucketName, indexNameSanitized, fieldNames, metadata));
       }
     }
   }
 
   for await (const index of asyncIndexesQuery()) {
-    if (process.env.DEBUG) {
+    if (isDebugMode()) {
       console.log(index);
     }
   }
@@ -57,16 +62,18 @@ export const ensureN1qlIndexes = async (connection: ConnectionManager) => {
 const queryForPrimaryIndex = (bucketName): string => `CREATE PRIMARY INDEX ON \`${bucketName}\` USING GSI`;
 
 // Create the ottoman type index, needed to make model lookups fast.
-const queryForIndexOttomanType = (bucketName): string =>
-  `CREATE INDEX \`Ottoman${COLLECTION_KEY}\` ON \`${bucketName}\`(\`${COLLECTION_KEY}\`) USING GSI WITH {"defer_build": true}`;
+const queryForIndexOttomanType = (bucketName, ottomanType): string =>
+  `CREATE INDEX \`${ottomanType}\` ON \`${bucketName}\`(\`${SCOPE_KEY}\`, \`${COLLECTION_KEY}\`) USING GSI WITH {"defer_build": true}`;
 
 // Map createIndex across all individual n1ql model indexes.
 // concurrency: 1 is important to avoid overwhelming the server.
 // Promise.all turns the array into a single promise again.
-const queryBuildIndexDefered = (bucketName, indexName, fields, modelName) =>
-  `CREATE INDEX \`${indexName}\` ON \`${bucketName}\`(${fields.join(
+const queryBuildIndexDefered = (bucketName, indexName, fields, metadata: ModelMetadata) => {
+  const { collectionName, collectionKey, scopeKey, scopeName } = metadata;
+  return `CREATE INDEX \`${indexName}\` ON \`${bucketName}\`(${fields.join(
     ',',
-  )}) WHERE ${COLLECTION_KEY}="${modelName}" USING GSI WITH {"defer_build": true}`;
+  )}) WHERE ${scopeKey}="${scopeName}" AND ${collectionKey}="${collectionName}"  USING GSI WITH {"defer_build": true}`;
+};
 
 // All indexes were built deferred, so now kick off actual build.
 const queryBuildIndexes = (bucketName, indexesName: string[]) => {

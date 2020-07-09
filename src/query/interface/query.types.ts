@@ -1,6 +1,3 @@
-/**
- * Sorting types
- */
 export type SortType = 'ASC' | 'DESC';
 /**
  * Result expressions ALL | DISTINCT
@@ -56,9 +53,58 @@ export type ComparisonSingleStringOperatorType = '$like' | '$notLike';
 export type ComparisonMultipleOperatorType = '$btw' | '$notBtw';
 
 /**
- * List of Logical operators
+ * List of Logical operators.
  * */
 export type LogicalOperatorType = '$and' | '$or' | '$not';
+
+/**
+ * Collection Select Operator.
+ * */
+export type CollectionSelectOperator = '$any' | '$every';
+
+/**
+ * Collection IN and WITHIN Operators.
+ * */
+export type CollectionInWithinOperator = '$in' | '$within';
+
+/**
+ * List of Collection IN and WITHIN Operators.
+ * */
+export type CollectionSatisfiesOperator = '$satisfies';
+
+export interface CollectionInWithinOperatorValue {
+  search_expr: unknown;
+  target_expr: unknown;
+  $not?: boolean;
+}
+
+/**
+ * Structure of the collection in within operator
+ *
+ * @example
+ * ```
+ * {$in:{search_expr: 'search', target_expr: 'address', $not: true}}
+ * ```
+ * */
+export type CollectionInWithinOperatorType = Record<CollectionInWithinOperator, CollectionInWithinOperatorValue>;
+
+/**
+ * Structure of the collection expression
+ *
+ * */
+export interface CollectionExpressionType {
+  $expr: CollectionInWithinOperatorType[];
+  $satisfied: LogicalWhereExpr;
+}
+/**
+ * Structure of the collection in within operator
+ *
+ * @example
+ * ```
+ * {$any: {$expr: [{$in:{search_expr: 'search', target_expr: 'address', $not: true} }], $satisfied:{address: '10'}}}
+ * ```
+ * */
+export type CollectionSelectOperatorType = Record<CollectionSelectOperator, CollectionExpressionType>;
 
 /**
  * Structure of the comparison operators.
@@ -69,13 +115,15 @@ export type LogicalOperatorType = '$and' | '$or' | '$not';
  * ```
  *
  * */
-export type ComparisonWhereExpr = {
-  [key in
-    | ComparisonEmptyOperatorType
-    | ComparisonSingleOperatorType
-    | ComparisonMultipleOperatorType
-    | ComparisonSingleStringOperatorType]?: string | number | boolean | number[];
-};
+export type ComparisonWhereExpr =
+  | {
+      [key in
+        | ComparisonEmptyOperatorType
+        | ComparisonSingleOperatorType
+        | ComparisonMultipleOperatorType
+        | ComparisonSingleStringOperatorType]?: string | number | boolean | number[];
+    }
+  | CollectionSelectOperatorType;
 
 /**
  * Structure of WHERE field expression
@@ -184,6 +232,11 @@ export interface ILetExpr {
   value: unknown;
 }
 
+export interface IGroupBy {
+  expr: string;
+  as?: string;
+}
+
 /**
  * List of params to build a SELECT clause
  * */
@@ -195,6 +248,9 @@ export interface IConditionExpr {
   limit?: number;
   offset?: number;
   use?: string[];
+  groupBy?: IGroupBy[];
+  letting?: ILetExpr[];
+  having?: LogicalWhereExpr;
 }
 
 /**

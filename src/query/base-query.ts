@@ -1,4 +1,4 @@
-import { IConditionExpr, ILetExpr, ISelectType, LogicalWhereExpr, SortType } from './interface/query-types';
+import { IConditionExpr, ILetExpr, ISelectType, LogicalWhereExpr, SortType } from './interface/query.types';
 
 /**
  * Basic definition of Query Class

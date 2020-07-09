@@ -1,4 +1,5 @@
 import { model, Schema, FindByIdOptions, FindOptions } from '../lib';
+import { delay } from './testData';
 
 const cardInfo = {
   cardNumber: '4242 4242 4242 4242',
@@ -112,12 +113,8 @@ describe('Test populate feature', () => {
     user.cats = [catCreated.id, catCreated2.id];
 
     await user.save();
-    const delay = new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 2000);
-    });
-    await delay;
+
+    await delay(2000);
     const options = new FindOptions({
       select: 'name, cats, card',
       limit: 5,
@@ -164,9 +161,14 @@ describe('Test populate feature', () => {
     expect(result.name).toBeDefined();
     expect(result.card).toBeDefined();
     expect(result.cats).toBeDefined();
+    expect(result.isActive).toBeUndefined();
+    expect(result._populated('card')).toBe(false);
     await result._populate('*', 2);
+    expect(result._populated('card')).toBe(true);
     expect(result.card.cardNumber).toBe('4242 4242 4242 4242');
     expect(result.card.issues[0].title).toBe('stolen card');
     expect(result.cats.length).toBe(2);
+    await result._depopulate('card');
+    expect(result._populated('card')).toBe(false);
   });
 });

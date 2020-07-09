@@ -5,6 +5,7 @@ import { extractConnectionString } from '../lib/utils/extract-connection-string'
 import { is } from '../lib/utils/is-type';
 import { isMetadataKey } from '../lib/utils/is-metadata';
 import { COLLECTION_KEY } from '../lib/utils/constants';
+import { canBePopulated } from '../lib/utils/populate/can-be-populated';
 
 test('Build connection options from string', () => {
   const result = extractConnectionString(connectUri);
@@ -82,4 +83,9 @@ describe('Metadata', () => {
   test("should return false when a key isn't a metadata key", () => {
     expect(isMetadataKey('name')).toBeFalsy();
   });
+});
+
+test('util.canBePopulated', async () => {
+  expect(canBePopulated('name', ['name', 'email'])).toBe(true);
+  expect(canBePopulated('age', ['name', 'email'])).toBe(false);
 });

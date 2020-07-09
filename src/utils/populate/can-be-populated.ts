@@ -6,6 +6,8 @@ export const canBePopulated = (populate: string, fields: string[]): boolean => {
     return true;
   }
 
-  console.warn(`Unable to populate field "${populate}", it is not available on select clause [${fields.join(', ')}]`);
+  if (!process.env.CI || (process.env.CI && process.env.CI.toLowerCase() !== 'true')) {
+    console.warn(`Unable to populate field "${populate}", it is not available on select clause [${fields.join(', ')}]`);
+  }
   return false;
 };

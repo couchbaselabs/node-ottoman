@@ -1,10 +1,11 @@
 import { indexFieldsName } from '../helpers/index-field-names';
-import { ModelMetadata } from '../../interfaces/model-metadata';
+import { ModelMetadata } from '../../interfaces/model-metadata.interface';
 
-export const buildViewRefdoc = (metadata: ModelMetadata, Model, fields, prefix) => async (...values: any[]) => {
+export const buildViewRefdoc = (metadata: ModelMetadata, Model, fields, prefix) => async (values, options = {}) => {
+  values = Array.isArray(values) ? values : [values];
   const key = buildRefKey(fields, values, prefix);
   const { collection } = metadata;
-  const result = await collection.get(key);
+  const result = await collection.get(key, options);
   if (result && result.value) {
     return Model.findById(result.value);
   }

@@ -1,4 +1,4 @@
-import { ModelMetadata } from '../interfaces/model-metadata';
+import { ModelMetadata } from '../interfaces/model-metadata.interface';
 
 export const modelMetadataSymbol = Symbol('modelMetadataSymbol');
 export const getModelMetadata = (modelConstructor) => modelConstructor[modelMetadataSymbol];

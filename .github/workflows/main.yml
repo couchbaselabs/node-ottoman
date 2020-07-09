@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [v2]
-  pull_request:
-    branches: [v2]
+    branches: [master]
 
 jobs:
   build:
@@ -18,19 +16,28 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: ['8', '12']
+        node_version: ['12']
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Install Dependencies
-        run: npm install
+        run: yarn --frozen-lockfile
 
       - name: Build
-        run: npm run build
+        run: yarn build
 
       - name: Test
-        run: npm run test
+        run: yarn test:coverage
 
-      - name: Generate Docs
-        run: npm run docs
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+
+      - name: Generate docs
+        run: yarn docs
+
+      - name: Publish docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/.vuepress/dist

@@ -150,7 +150,7 @@ describe('Schema Native Types', () => {
         expect(updateInstance1.createdAt).toBeDefined();
         expect(updateInstance1.createdAt).toBeInstanceOf(Date);
 
-        const schema2 = { name: String, birthday: Date, createdAt: { type: Date, default: '2000-01-01' } };
+        const schema2 = new Schema({ name: String, birthday: Date, createdAt: { type: Date, default: '2000-01-01' } });
         const updateInstance2 = applyDefaultValue(modelInstance, schema2);
         expect(updateInstance2.createdAt).toBeDefined();
         expect(updateInstance2.createdAt).toBeInstanceOf(Date);
@@ -176,7 +176,6 @@ describe('Schema Native Types', () => {
         expect(updateInstance.birthday).toEqual(modelInstance.birthday);
       });
     });
-
     const validationsFailAssertions = (data, schema1, schema2, schema3, schema4, schema5, opts) => {
       expect(() => castSchema(data, schema1)).toThrow(ValidationError);
       expect(() => castSchema(data, schema2)).toThrow(ValidationError);
@@ -184,7 +183,6 @@ describe('Schema Native Types', () => {
       expect(() => castSchema(data, schema4)).toThrow(new ValidationError(opts.message));
       expect(() => castSchema(data, schema5)).toThrow(new ValidationError(opts.message));
     };
-
     const validationsSuccessAssertions = (data, schema1, schema2, schema3, schema4, schema5) => {
       expect(castSchema(data, schema1)).toEqual(data);
       expect(castSchema(data, schema2)).toEqual(data);
@@ -192,7 +190,6 @@ describe('Schema Native Types', () => {
       expect(castSchema(data, schema4)).toEqual(data);
       expect(castSchema(data, schema5)).toEqual(data);
     };
-
     describe('Min Validation', () => {
       const _minDate = new Date('1999-12-31');
       const schema1 = { name: String, birthday: { type: Date, min: '1999-12-31' } };

@@ -1,5 +1,7 @@
 import {
   AggType,
+  CollectionSelectOperator,
+  CollectionInWithinOperator,
   ComparisonEmptyOperatorType,
   ComparisonMultipleOperatorType,
   ComparisonSingleOperatorType,
@@ -7,7 +9,8 @@ import {
   LogicalOperatorType,
   ResultExprType,
   ReturnResultType,
-} from '../interface';
+  CollectionSatisfiesOperator,
+} from '../interface/query.types';
 
 /**
  * Dictionary for handling aggregation functions.
@@ -89,4 +92,27 @@ export const LogicalOperatorDict: Record<LogicalOperatorType, string> = {
   $and: 'AND',
   $or: 'OR',
   $not: 'NOT',
+};
+
+/**
+ * Dictionary for handling collection select operators
+ * */
+export const CollectionSelectOperatorDict: Record<CollectionSelectOperator, string> = {
+  $any: 'ANY',
+  $every: 'EVERY',
+};
+
+/**
+ * Dictionary for handling collection (in | within) operators
+ * */
+export const CollectionInWithinOperatorDict: Record<CollectionInWithinOperator, string> = {
+  $in: 'IN',
+  $within: 'WITHIN',
+};
+
+/**
+ * Dictionary for handling collection satisfies operators
+ * */
+export const CollectionSatisfiesOperatorDict: Record<CollectionSatisfiesOperator, string> = {
+  $satisfies: 'SATISFIES',
 };

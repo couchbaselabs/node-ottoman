@@ -41,6 +41,9 @@ describe('Test Model-Schema Integration and Validations', () => {
     const user = new User(populateDoc);
     user.card = cardCreated.id;
     user.cats = [catCreated.id, catCreated2.id];
+    const validated = await user._validate();
+    expect(validated).toBeTruthy();
+    expect(user._getIdField()).toBe('id');
     const saved = await user.save();
     const result = await User.findById(saved.id);
     await result._populate();

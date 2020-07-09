@@ -1,6 +1,14 @@
-import { model, Schema } from '../../lib';
+import { model, Schema, addValidators } from '../../lib';
 import { GeolocationSchema } from '../shared/geolocation.model';
 import { LinkType } from '../shared/link.type';
+addValidators({
+  phone: (value) => {
+    const phone = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    if (value && !value.match(phone)) {
+      throw new Error('Phone number is invalid.');
+    }
+  },
+});
 
 const ReviewSchema = new Schema({
   author: String,
@@ -32,7 +40,7 @@ const HotelSchema = new Schema({
   geo: GeolocationSchema,
   name: { type: String, required: true },
   pets_ok: Boolean,
-  phone: String,
+  phone: { type: String, validator: 'phone' },
   price: Number,
   public_likes: [String],
   reviews: [ReviewSchema],
@@ -43,6 +51,9 @@ const HotelSchema = new Schema({
   vacancy: Boolean,
 });
 
-HotelSchema.index.findByName = { by: 'name', type: 'n1ql' };
+HotelSchema.index.findByName = { by: 'name' };
+HotelSchema.index.findByAlias = { by: 'alias', type: 'n1ql' };
+HotelSchema.index.findViewCountry = { by: 'email', type: 'view' };
+HotelSchema.index.findRefName = { by: 'name', type: 'refdoc' };
 
 export const HotelModel = model('hotel', HotelSchema);

@@ -1,13 +1,20 @@
-import { CoreType, CoreTypeOptions } from './core-type';
+import { CoreType } from './core-type';
 import { MinmaxOption, NumberFunction, validateMaxLimit, validateMinLimit } from '../helpers';
 import { ValidationError } from '../errors';
+import { CoreTypeOptions } from '../interfaces/schema.types.js';
+import { is } from '../../utils/is-type';
 
 interface NumberTypeOptions {
   intVal?: boolean;
   min?: number | NumberFunction | MinmaxOption;
   max?: number | NumberFunction | MinmaxOption;
 }
-
+/**
+ * @inheritDoc
+ * @param options.intVal flag that will allow only integer values
+ * @param options.min numeric value that will be accepted
+ * @param options.max numeric value that will be accepted
+ */
 class NumberType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & NumberTypeOptions) {
     super(name, Number.name, options);
@@ -28,19 +35,20 @@ class NumberType extends CoreType {
     return typeof _options.intVal === 'undefined' ? false : _options.intVal;
   }
 
-  cast(value: unknown) {
-    const _value = Number(super.cast(value));
+  cast(value: unknown, strategy) {
+    value = super.cast(value, strategy);
     if (this.isEmpty(value)) return value;
+    const _value = Number(value);
     let errors: string[] = [];
-
-    if (isNaN(_value)) {
+    const _wrongType = this.isStrictStrategy(strategy) ? !is(value, Number) : isNaN(_value);
+    if (_wrongType) {
       throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
 
     if (this.intVal && _value % 1 !== 0) {
       errors.push(`Property ${this.name} only allows Integer values`);
     }
-
+    this.checkValidator(_value);
     errors.push(this._checkMin(_value));
     errors.push(this._checkMax(_value));
     errors = errors.filter((e) => e !== '');

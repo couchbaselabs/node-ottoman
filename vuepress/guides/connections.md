@@ -5,21 +5,50 @@ All your [Models](/guides/model) will be created via a connection and map to a C
 
 ## Create a connection
 
-You can connect to Couchbase Server with the ottoman.connect() method.
+You can connect to Couchbase Server with the [connect()](/classes/ottoman.html#connect) method.
 
 ```javascript
 import { connect } from 'ottoman';
 const connection = connect('couchbase://localhost/travel-sample@admin:password');
 ```
 
-This is the minimum needed to connect the travel-sample bucket.
-If connecting fails on your machine, try using 127.0.0.1 instead of `localhost`.
+This is the minimum needed to connect to the travel-sample bucket.
+If the connection fails on your machine, try using 127.0.0.1 instead of `localhost`.
 
 ### Connection String Anatomy
 
 ![Connection Anatomy](./connection-anatomy.png)
 
-## Using default connection
+
+## Connection options  
+`connect` function also support a javascript object as parameter.
+```javascript
+import { connect } from 'ottoman';
+const connection = connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel-sample',
+    username: 'admin',
+    password: 'password'
+});
+```
+
+The available options are:
+
+```typescript
+interface ConnectOptions {
+  connectionString: string;
+  username: string;
+  password: string;
+  bucketName: string;
+  clientCertificate?: string;
+  certificateChain?: string;
+  transcoder?: unknown;
+  logFunc?: unknown;
+}
+
+```
+
+## Using the default connection
 
 ```javascript
 import { connect, model } from 'ottoman';
@@ -45,6 +74,8 @@ Using .env file
 ```
 OTTOMAN_CONNECTION_STRING=couchbase://localhost/travel-sample@admin:password
 ```
+
+For more details about how to use and configure a .env file, [see this link](https://www.npmjs.com/package/dotenv)
 
 ## Multiple connections
 
@@ -82,7 +113,7 @@ The first successful connection will be set as the default connection and
 could be accessed anywhere in your code by calling `getDefaultConnection` function.
 
 
-All active connections will be store and could be accessed with `getConnections` function. 
+All active connections will be stored and could be accessed with the `getConnections` function. 
 
 ## Closing connections
 

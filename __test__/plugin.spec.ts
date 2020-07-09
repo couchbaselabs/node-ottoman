@@ -21,6 +21,12 @@ describe('Test plugin', () => {
     };
     registerGlobalPlugin(pluginLog3);
 
+    try {
+      registerGlobalPlugin({ fail: true });
+    } catch (e) {
+      expect(e.message).toBe('Unable to register the global plugin, only functions are allowed');
+    }
+
     const UserSchema = new Schema(schema);
 
     const pluginLog2 = (schema) => {

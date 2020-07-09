@@ -9,4 +9,6 @@ export interface ModelMetadata {
   collection: any;
   ID_KEY: string;
   connection: ConnectionManager;
+  collectionKey: string;
+  scopeKey: string;
 }

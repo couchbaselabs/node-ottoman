@@ -1,8 +1,8 @@
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
-import { COLLECTION_KEY, DEFAULT_POPULATE_MAX_DEEP, SCOPE_KEY } from '../utils/constants';
+import { DEFAULT_POPULATE_MAX_DEEP } from '../utils/constants';
 import { castSchema } from '../schema/helpers';
-import { ModelMetadata } from './interfaces/model-metadata';
+import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { getModelMetadata } from './utils/model.utils';
 import { storeLifeCycle } from './utils/store-life-cycle';
 import { removeLifeCycle } from './utils/remove-life-cycle';
@@ -10,6 +10,22 @@ import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
 import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
 
+/**
+ * Document class represent a database document
+ * and provide some useful methods to work with.
+ *
+ * @example
+ * ```javascript
+ * import { connect, model } from "ottoman";
+ * connect("couchbase://localhost/travel-sample@admin:password");
+ *
+ * // Create an `User` model
+ * const User = model('User', { name: String });
+ *
+ * // Create a document from the `User` Model
+ * const jane = new User({name: "Jane Doe"})
+ * ```
+ */
 export abstract class Document<T> {
   /**
    * @ignore
@@ -18,27 +34,41 @@ export abstract class Document<T> {
     return getModelMetadata(this.constructor);
   }
   /**
-   * return id value
+   * Returns id value, useful when working with dynamic ID_KEY
+   *
+   * @example
+   * ```javascript
+   *   console.log(user._getId()); // 'userId'
+   *   console.log(user.id); // 'userId'
+   * ```
    */
   _getId(): string {
     return this[this.$.ID_KEY];
   }
 
   /**
-   * return id key
+   * Returns id key
    */
   _getIdField(): string {
     return this.$.ID_KEY;
   }
 
   /**
-   * Save or Update documents
+   * Saves or Updates the document
+   *
+   * @example
+   * ```javascript
+   * const user = new User({name: "John Doe"}); //user document created, it's not saved yet
+   *
+   * await user.save(); // user saved into the DB
+   * ```
    */
   async save() {
+    const { scopeName, scopeKey, collectionName, collectionKey, collection, ID_KEY } = this.$;
     const data = extractDataFromModel(this);
     const options: any = {};
     let id = this._getId();
-    const prefix = `${this.$.scopeName}${this.$.collectionName}`;
+    const prefix = `${scopeName}${collectionName}`;
     const newRefKeys = getModelRefKeys(data, prefix);
     const refKeys: { add: string[]; remove: string[] } = {
       add: [],
@@ -48,7 +78,7 @@ export abstract class Document<T> {
       id = generateUUID();
       refKeys.add = newRefKeys;
     } else {
-      const { cas, value: oldData } = await this.$.collection.get(id);
+      const { cas, value: oldData } = await collection.get(id);
       const oldRefKeys = getModelRefKeys(oldData, prefix);
       refKeys.add = arrayDiff(newRefKeys, oldRefKeys);
       refKeys.remove = arrayDiff(oldRefKeys, newRefKeys);
@@ -56,18 +86,25 @@ export abstract class Document<T> {
         options.cas = cas;
       }
     }
-    const addedMetadata = { ...data, [COLLECTION_KEY]: this.$.collectionName, [SCOPE_KEY]: this.$.scopeName };
+    const addedMetadata = { ...data, [collectionKey]: collectionName, [scopeKey]: scopeName };
     const metadata = this.$;
     const { result, document } = await storeLifeCycle({ key: id, data: addedMetadata, options, metadata, refKeys });
-    if (!document[this.$.ID_KEY]) {
-      document[this.$.ID_KEY] = id;
+    if (!document[ID_KEY]) {
+      document[ID_KEY] = id;
     }
     this._applyData(document);
     return result;
   }
 
   /**
-   * Remove document from DB
+   * Removes the document from database
+   *
+   * @example
+   * ```javascript
+   * const user = User.findById('userId')
+   *
+   * await user.remove();
+   * ```
    */
   async remove(options = {}) {
     const data = extractDataFromModel(this);
@@ -84,9 +121,45 @@ export abstract class Document<T> {
   }
 
   /**
-   * Allow to load document references
+   * Allows to load document references
+   *
+   *
+   * @example
+   * Getting context to explain populate.
+   * ```javascript
+   * const CardSchema = new Schema({
+   *   number: String,
+   *   zipCode: String,
+   *   issues: [{ type: IssueSchema, ref: 'Issue' }],
+   * });
+   *
+   * const IssueSchema = new Schema({
+   *   title: String,
+   *   description: String,
+   * });
+   *
+   * const Card = model('Card', CardSchema);
+   * const Issue = model('Issue', CardSchema);
+   *
+   * const issue = await Issue.create({ title: 'Broken card' });
+   *
+   * const card = await Card.create({
+   *   cardNumber: '4242 4242 4242 4242',
+   *   zipCode: '42424',
+   *   issues: [issue.id],
+   * });
+   * ```
+   *
+   * Now we will see how the _populate methods works.
+   * ```javascript
+   * const card = await Card.findById(cardId);
+   * console.log(card.issues); // ['issueId']
+   *
+   * await card.populate('issues')
+   * console.log(card.issues); // [{id: 'issueId', title: 'Broken card'}]
+   * ```
    */
-  async _populate(fieldsName, deep = DEFAULT_POPULATE_MAX_DEEP) {
+  async _populate(fieldsName: string | string[], deep: number = DEFAULT_POPULATE_MAX_DEEP) {
     let fieldsToPopulate;
     if (fieldsName && fieldsName !== '*') {
       fieldsToPopulate = extractSchemaReferencesFromGivenFields(fieldsName, this.$.schema);
@@ -122,10 +195,22 @@ export abstract class Document<T> {
   }
 
   /**
-   * Revert population
-   * Switch back document reference
+   * Reverts population. Switches back document reference
+   *
+   * @example
+   * To get in context about the Card and Issue Models [see the populate example.](/classes/document.html#populate)
+   * ```javascript
+   * const card = await Card.findById(cardId);
+   * console.log(card.issues); // ['issueId']
+   *
+   * await card._populate('issues')
+   * console.log(card.issues); // [{id: 'issueId', title: 'Broken card'}]
+   *
+   * card._depopulate('issues')
+   * console.log(card.issues); // ['issueId']
+   * ```
    */
-  _depopulate(fieldsName) {
+  _depopulate(fieldsName: string | string[]) {
     let fieldsToPopulate;
     if (fieldsName) {
       fieldsToPopulate = extractSchemaReferencesFromGivenFields(fieldsName, this.$.schema);
@@ -151,7 +236,19 @@ export abstract class Document<T> {
   }
 
   /**
-   * Allow to know if a document field is populated
+   * Allows to know if a document field is populated
+   *
+   * @example
+   * To get in context about the Card and Issue Models [see the populate example.](/classes/document.html#populate)
+   * ```javascript
+   * const card = await Card.findById(cardId);
+   * console.log(card.issues); // ['issueId']
+   * console.log(card._populated('issues')); // false
+   *
+   * await card._populate('issues')
+   * console.log(card.issues); // [{id: 'issueId', title: 'Broken card'}]
+   * console.log(card._populated('issues')); // true
+   * ```
    */
   _populated(fieldName: string): boolean {
     let data = this[fieldName];
@@ -165,7 +262,15 @@ export abstract class Document<T> {
   }
 
   /**
-   * Allow to easyly apply data from object to current document.
+   * Allows to easily apply data from an object to current document.
+   *
+   * @example
+   * ```javascript
+   * const user = new User({name: "John Doe"});
+   *
+   * user._applyData({name: "Jane Doe"});
+   * console.log(user) // {name: "Jane Doe"}
+   * ```
    */
   _applyData(data) {
     for (const key in data) {
@@ -174,21 +279,31 @@ export abstract class Document<T> {
   }
 
   /**
-   * Run schema validations over current document
+   * Runs schema validations over current document
+   * @example
+   * ```javascript
+   * const user = new User({name: "John Doe"});
+   *
+   * try {
+   *   await user._validate()
+   * } catch(errors) {
+   *   console.log(errors)
+   * }
+   * ```
    */
   _validate() {
     return castSchema(this, this.$.schema);
   }
 
   /**
-   * Return javascript object with data
+   * Returns a Javascript object with data
    */
   toObject() {
     return this.$toObject();
   }
 
   /**
-   * Return javascript object to be serialized to JSON
+   * Returns a Javascript object to be serialized to JSON
    */
   toJSON() {
     return this.$toObject();
