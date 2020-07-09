@@ -1,4 +1,4 @@
-![CI](https://github.com/couchbaselabs/node-ottoman/workflows/CI/badge.svg?branch=v2) 
+![CI](https://github.com/couchbaselabs/node-ottoman/workflows/CI/badge.svg)
 [![npm version](https://badge.fury.io/js/ottoman.svg)](https://badge.fury.io/js/ottoman)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

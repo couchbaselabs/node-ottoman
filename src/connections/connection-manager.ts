@@ -6,6 +6,13 @@ import { Schema } from '../schema';
  * Creates a connection instance.
  * Provide functions to work with cluster, bucket and collection on the current connection.
  * Supports multiple instances.
+ *
+ * @example
+ * ```javascript
+ *  import { connect } from "ottoman";
+ *  const connection: ConnectionManager
+ *                        = connect("couchbase://localhost/travel-sample@admin:password");
+ *  ```
  */
 export class ConnectionManager {
   /**
@@ -60,6 +67,11 @@ export class ConnectionManager {
 
   /**
    * Creates a Model on this connection.
+   *
+   * @example
+   * ```javascript
+   * const User = connection.model('User', { name: String }, {collectionName: 'users'});
+   * ```
    */
   model(name: string, schema: Schema | Record<string, unknown>, options?) {
     const ModelFactory = createModel({ name, schemaDraft: schema, options, connection: this });
@@ -69,6 +81,11 @@ export class ConnectionManager {
 
   /**
    * Returns a Model constructor from the given name
+   *
+   * @example
+   * ```javascript
+   * const User = connection.getModel('User');
+   * ```
    */
   getModel(name: string) {
     return this.models[name];
@@ -84,15 +101,34 @@ export class ConnectionManager {
 
   /**
    * Closes the current connection
+   *
+   * @example
+   * ```javascript
+   * connection.close().then(() => console.log('connection closed'));
+   * ```
    */
   close() {
     this.cluster.close();
   }
 
   /**
-   * Executes N1QL Queries
+   * Executes N1QL Queries.
+   *
+   * Ottoman provides a powerful [Query Builder](/guides/query-builder) system to create valid N1QL queries in a easier way.
+   * See the example below:
+   *
+   * @example
+   * ```javascript
+   * const expr_where = {$or: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }]};
+   * const query = new Query({}, 'travel-sample');
+   * const n1qlQuery = query.select([{$field: 'address'}]).where(expr_where).build()
+   *
+   * connection.query(n1qlQuery).then(result => console.log(result))
+   * ```
+   * The above example will run this query:
+   * > `SELECT address FROM travel-sample WHERE (address LIKE '%57-59%' OR free_breakfast = true)`
    */
-  query(query: string) {
+  async query(query: string) {
     return this.cluster.query(query);
   }
 }

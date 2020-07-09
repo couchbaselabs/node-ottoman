@@ -41,6 +41,11 @@ export class Ottoman {
 
   /**
    * Connect to Couchbase server
+   * @example
+   * ```javascript
+   *  import { connect } from "ottoman";
+   *  const connection = connect("couchbase://localhost/travel-sample@admin:password");
+   * ```
    */
   connect = (connectOptions: ConnectOptions | string): ConnectionManager => {
     const { connectionString, password, username, bucketName } =
@@ -56,6 +61,14 @@ export class Ottoman {
 
   /**
    * Creates a model from a given name, from default connection
+   *
+   * @example
+   * ```javascript
+   * import { connect, model } from "ottoman";
+   * connect("couchbase://localhost/travel-sample@admin:password");
+   *
+   * const User = model('User', { name: String });
+   * ```
    */
   // eslint-disable-next-line no-unused-vars
   model(name: string, schema: Schema | Record<string, any>, options: ModelOptions): Model {
