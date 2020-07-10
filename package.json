@@ -16,7 +16,7 @@
   ],
   "license": "Apache-2.0",
   "scripts": {
-    "build": "rimraf ./lib && tsc",
+    "build": "tsc",
     "build:test": "yarn build && yarn test",
     "commit": "git-cz",
     "dev": "tsc --watch --incremental",
