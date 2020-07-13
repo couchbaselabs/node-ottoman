@@ -1,4 +1,4 @@
-import { Schema, model, ensureIndexes } from '../lib';
+import { Schema, model, ensureIndexes } from '../src';
 import { delay } from './testData';
 
 const generateMockData = async () => {
@@ -47,6 +47,7 @@ describe('Mode Query Index Tests', () => {
       });
       userSchema.queries = {
         myPosts: {
+          // @ts-ignore
           off: 'Post',
           by: 'user',
         },

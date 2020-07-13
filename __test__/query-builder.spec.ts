@@ -9,7 +9,7 @@ import {
   IIndexOnParams,
   IIndexWithParams,
   buildIndexExpr,
-} from '../lib';
+} from '../src';
 
 describe('Test Query Builder functions', () => {
   test('Check select clause parameter types', async () => {

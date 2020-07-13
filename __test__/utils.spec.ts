@@ -1,11 +1,11 @@
 import { bucketName, connectionString, connectUri, password, username } from './testData';
-import { model } from '../lib';
-import { isModel } from '../lib/utils/is-model';
-import { extractConnectionString } from '../lib/utils/extract-connection-string';
-import { is } from '../lib/utils/is-type';
-import { isMetadataKey } from '../lib/utils/is-metadata';
-import { COLLECTION_KEY } from '../lib/utils/constants';
-import { canBePopulated } from '../lib/utils/populate/can-be-populated';
+import { model } from '../src';
+import { isModel } from '../src/utils/is-model';
+import { extractConnectionString } from '../src/utils/extract-connection-string';
+import { is } from '../src/utils/is-type';
+import { isMetadataKey } from '../src/utils/is-metadata';
+import { COLLECTION_KEY } from '../src/utils/constants';
+import { canBePopulated } from '../src/utils/populate/can-be-populated';
 
 test('Build connection options from string', () => {
   const result = extractConnectionString(connectUri);
@@ -18,7 +18,7 @@ test('Build connection options from string', () => {
 describe('isModel util function', () => {
   test('isModel to be true', async () => {
     const UserModel = model('User', { name: String });
-    const user = new UserModel();
+    const user = new UserModel({});
     expect(isModel(user)).toBe(true);
   });
 
@@ -29,6 +29,7 @@ describe('isModel util function', () => {
   });
 
   test('isModel to be false', async () => {
+    // @ts-ignore
     expect(isModel()).toBe(false);
   });
 });

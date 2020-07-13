@@ -1,5 +1,5 @@
-import { applyValidator } from '../lib/schema/helpers';
-import { ValidationError } from '../lib';
+import { applyValidator } from '../src/schema/helpers';
+import { ValidationError } from '../src';
 
 describe('Schema Helpers', () => {
   test('should return void when using ValidatorOption in the validator and the value is valid', () => {

@@ -1,4 +1,4 @@
-import { connect, globalConfig, getConnections } from '../lib';
+import { connect, globalConfig, getConnections } from '../src';
 import { connectUri } from './testData';
 beforeAll(async () => {
   globalConfig({

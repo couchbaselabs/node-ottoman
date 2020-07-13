@@ -1,4 +1,4 @@
-import { ensureIndexes, Schema, model, ViewIndexOptions } from '../lib';
+import { ensureIndexes, Schema, model, ViewIndexOptions } from '../src';
 import { delay } from './testData';
 
 describe('Indexes', () => {

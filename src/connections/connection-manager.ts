@@ -1,6 +1,7 @@
 import { createModel } from '../model/create-model';
 import { DEFAULT_COLLECTION, DEFAULT_SCOPE } from '../utils/constants';
 import { Schema } from '../schema';
+import { ModelTypes } from '../model/model.types';
 
 /**
  * Creates a connection instance.
@@ -87,7 +88,7 @@ export class ConnectionManager {
    * const User = connection.getModel('User');
    * ```
    */
-  getModel(name: string) {
+  getModel(name: string): ModelTypes {
     return this.models[name];
   }
 

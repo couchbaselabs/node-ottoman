@@ -14,7 +14,7 @@ import { VALIDATION_STRATEGY } from '..';
 import { SchemaIndex, SchemaQuery } from '../model/index/types/index.types';
 import { getGlobalPlugins } from '../plugins/global-plugin-handler';
 import { buildFields } from './helpers';
-import { HOOKS } from '../utils/hooks';
+import { HOOKS, HookTypes } from '../utils/hooks';
 import {
   IOttomanType,
   CustomValidations,
@@ -37,10 +37,10 @@ export class Schema {
     Embed: embedTypeFactory,
   };
   static validators: CustomValidations = {};
-  statics = {};
-  methods = {};
-  preHooks = {};
-  postHooks = {};
+  statics: any = {};
+  methods: any = {};
+  preHooks: any = {};
+  postHooks: any = {};
   index: SchemaIndex = {};
   queries: SchemaQuery = {};
   validationStrategy: VALIDATION_STRATEGY;
@@ -181,7 +181,7 @@ export class Schema {
    *   schema.pre(HOOKS.validate, (doc) => console.log(doc));
    * ```
    */
-  pre(hook: HOOKS, handler: HookHandler): Schema {
+  pre(hook: HookTypes, handler: HookHandler): Schema {
     Schema.checkHook(hook);
     if (this.preHooks[hook] === undefined) {
       this.preHooks[hook] = [];
@@ -199,7 +199,7 @@ export class Schema {
    *   schema.post(HOOKS.validate, (doc) => console.log(doc));
    * ```
    */
-  post(hook: HOOKS, handler: HookHandler): Schema {
+  post(hook: HookTypes, handler: HookHandler): Schema {
     Schema.checkHook(hook);
     if (this.postHooks[hook] === undefined) {
       this.postHooks[hook] = [];
@@ -208,8 +208,8 @@ export class Schema {
     return this;
   }
 
-  private static checkHook(hook: HOOKS): void {
-    if (!Object.values(HOOKS).includes(hook)) {
+  private static checkHook(hook: HookTypes): void {
+    if (!(Object.values(HOOKS) as string[]).includes(hook)) {
       throw new BuildSchemaError(`The hook ${hook} is not allowed`);
     }
   }

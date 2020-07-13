@@ -8,3 +8,5 @@ export enum HOOKS {
   UPDATE = 'update',
   REMOVE = 'remove',
 }
+
+export type HookTypes = HOOKS | 'validate' | 'save' | 'update' | 'remove';

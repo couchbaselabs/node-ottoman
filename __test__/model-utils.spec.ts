@@ -1,4 +1,4 @@
-import { model } from '../lib';
+import { model } from '../src';
 
 describe('Test Model utilities methods', () => {
   test('model.toObject', () => {

@@ -1,4 +1,4 @@
-import { addValidators, castSchema, Schema, BuildSchemaError } from '../lib';
+import { addValidators, castSchema, Schema, BuildSchemaError } from '../src';
 
 describe('schema custom validators', () => {
   beforeAll(() => {
@@ -62,6 +62,7 @@ describe('schema custom validators', () => {
     );
   });
   test("should throw an errors if validators aren't object", () => {
+    // @ts-ignore
     expect(() => addValidators([])).toThrow(new BuildSchemaError('Validators must be an object.'));
   });
 
@@ -71,6 +72,7 @@ describe('schema custom validators', () => {
         name: (val) => {
           console.log(val);
         },
+        // @ts-ignore
         fails: 'Not valid',
       }),
     ).toThrow(new BuildSchemaError('Validator object properties must be functions.'));

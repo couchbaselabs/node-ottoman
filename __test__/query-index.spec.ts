@@ -6,7 +6,7 @@ import {
   MultipleQueryTypesException,
   IndexParamsOnExceptions,
   IndexParamsUsingGSIExceptions,
-} from '../lib';
+} from '../src';
 
 describe('Test Query Builder INDEX clause', () => {
   test('Check the INDEX clause of the query builder', async () => {

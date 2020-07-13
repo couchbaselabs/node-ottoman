@@ -1,4 +1,4 @@
-import { model, Schema, FindByIdOptions, FindOptions } from '../lib';
+import { model, Schema, FindByIdOptions, FindOptions } from '../src';
 import { delay } from './testData';
 
 const cardInfo = {
