@@ -16,6 +16,7 @@ export {
   IndexParamsUsingGSIExceptions,
   InWithinOperatorExceptions,
   QueryGroupByParamsException,
+  IndexParamsOnExceptions,
 } from './exceptions';
 export { Query } from './query';
 export {

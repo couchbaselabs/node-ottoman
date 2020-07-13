@@ -30,6 +30,7 @@ describe('Test Query Builder functions', () => {
   });
   test('Verify the exception throwing, if there is an error in the SELECT expression.', async () => {
     const dist: ISelectType = {
+      // @ts-ignore
       $raw1: {
         $count: {
           $field: {
@@ -43,7 +44,8 @@ describe('Test Query Builder functions', () => {
     expect(run).toThrow(SelectClauseException);
   });
   test('Check the exception WHERE with an operator not found', async () => {
-    const expr_where = {
+    const expr_where: LogicalWhereExpr = {
+      // @ts-ignore
       $nill: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }, { free_lunch: [1] }],
     };
 
@@ -52,7 +54,8 @@ describe('Test Query Builder functions', () => {
   });
 
   test('Check the exception WHERE', async () => {
-    const expr_where = {
+    const expr_where: LogicalWhereExpr = {
+      // @ts-ignore
       $not: { address: { $like: '%57-59%' }, free_breakfast: true, free_lunch: [1] },
     };
 

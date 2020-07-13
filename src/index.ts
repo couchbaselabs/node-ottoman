@@ -36,6 +36,8 @@ export {
   QueryOperatorNotFoundException,
   InWithinOperatorExceptions,
   QueryGroupByParamsException,
+  IndexParamsUsingGSIExceptions,
+  IndexParamsOnExceptions,
   Query,
   ILetExpr,
   SortType,
