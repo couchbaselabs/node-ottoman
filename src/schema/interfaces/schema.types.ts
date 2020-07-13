@@ -35,10 +35,9 @@ export interface CoreTypeOptions {
   validator?: ValidatorOption | ValidatorFunction | string;
 }
 
-export interface IOttomanType {
-  name: string;
-  typeName: string;
-  cast(value: unknown, strategy: VALIDATION_STRATEGY): unknown;
+export abstract class IOttomanType {
+  protected constructor(public name: string, public typeName: string) {}
+  abstract cast(value: unknown, strategy: VALIDATION_STRATEGY): unknown;
 }
 
 export interface SchemaOptions {

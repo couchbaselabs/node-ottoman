@@ -74,9 +74,10 @@ We are going to define a custom type link
     /**
      * Custom type to manage the links
      */
-    export class LinkType implements IOttomanType {
-      typeName = 'Link';
-      constructor(public name) {}
+    export class LinkType extends IOttomanType {
+      constructor(name: string) {
+        super(name, 'Link');
+      }
       cast(value: unknown) {
         if (!isLink(String(value))) {
           throw new ValidationError(`Field ${this.name} only allows a Link`);

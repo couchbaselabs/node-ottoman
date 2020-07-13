@@ -236,9 +236,10 @@ describe('Schema Types', () => {
     });
   });
   describe('Schema Add Custom Types', () => {
-    class Int8 implements IOttomanType {
-      constructor(public name: string) {}
-      typeName = 'Int8';
+    class Int8 extends IOttomanType {
+      constructor(name: string) {
+        super(name, 'Int8');
+      }
 
       cast(): unknown {
         return undefined;
