@@ -1,4 +1,4 @@
-import { model, Schema, ensureIndexes } from '../src';
+import { model, Schema, ensureIndexes, SearchConsistency } from '../src';
 import { isDocumentNotFoundError } from '../src/utils/is-not-found';
 
 const accessDoc = {
@@ -154,7 +154,7 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel find items without params', async () => {
     const UserModel = model('User', schema);
-    const result = await UserModel.find();
+    const result = await UserModel.find({}, { consistency: SearchConsistency.LOCAL });
     expect(result.rows).toBeDefined();
   });
 

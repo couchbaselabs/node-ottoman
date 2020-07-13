@@ -5,6 +5,7 @@ module.exports = {
     displayAllHeaders: true,
     nav: [
       { text: 'Home', link: '/' },
+      { text: 'Quick Start', link: '/guides/quick-start.md' },
       { text: 'Connections', link: '/guides/connections.md' },
       { text: 'Schema', link: '/guides/schema.md' },
       { text: 'Model', link: '/guides/model.md' },
@@ -26,5 +27,5 @@ module.exports = {
     ],
     sidebar: 'auto',
   },
-  plugins: ['@vuepress/medium-zoom', '@vuepress/back-to-top', 'vuepress-plugin-smooth-scroll'],
+  plugins: ['@vuepress/medium-zoom', '@vuepress/back-to-top', 'vuepress-plugin-smooth-scroll', 'one-click-copy'],
 };
