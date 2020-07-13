@@ -1,4 +1,4 @@
-import { model, Schema, FindByIdOptions, FindOptions } from '../src';
+import { model, Schema, FindByIdOptions, FindOptions, SearchConsistency } from '../src';
 import { delay } from './testData';
 
 const cardInfo = {
@@ -120,6 +120,7 @@ describe('Test populate feature', () => {
       limit: 5,
       populate: ['cats', 'card'],
       populateMaxDeep: 2,
+      consistency: SearchConsistency.GLOBAL,
     });
     const result = await User.find({ name: user.name }, options);
     expect(result.rows.length).toBeGreaterThanOrEqual(1);

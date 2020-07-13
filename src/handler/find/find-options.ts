@@ -7,6 +7,7 @@ export class FindOptions {
   populate?: string | string[];
   populateMaxDeep?: number;
   select?: ISelectType[] | string | string[];
+  consistency?: 0 | 1 | 2;
   noId?: boolean;
   noCollection?: boolean;
   constructor(data: FindOptions) {

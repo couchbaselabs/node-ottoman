@@ -69,7 +69,7 @@ export class Ottoman {
    * const User = model('User', { name: String });
    * ```
    */
-  model<T>(name: string, schema: Schema | Record<string, any>, options: ModelOptions = {}) {
+  model(name: string, schema: Schema | Record<string, any>, options: ModelOptions = {}) {
     if (!__conn) {
       connectFromEnvVariables(name);
     }

@@ -5,6 +5,7 @@ import { getProjectionFields } from '../../utils/query/extract-select';
 import { canBePopulated } from '../../utils/populate/can-be-populated';
 import { extractPopulate } from '../../utils/query/extract-populate';
 import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
+import { SearchConsistency } from '../..';
 
 /**
  * Find documents
@@ -12,7 +13,7 @@ import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
  * @ignore
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
-  const { skip, limit, sort, populate, select, noCollection, noId, populateMaxDeep } = options;
+  const { skip, limit, sort, populate, select, noCollection, noId, populateMaxDeep, consistency } = options;
   const { connection, collectionName, collectionKey, scopeKey, scopeName, modelName } = metadata;
   const { bucketName, cluster } = connection;
   // Handling select
@@ -36,7 +37,17 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   if (sort) {
     query = query.orderBy(sort);
   }
-  const result = cluster.query(query.build());
+  const queryOptions: Record<string, unknown> = {};
+  switch (consistency) {
+    case SearchConsistency.GLOBAL:
+    case SearchConsistency.LOCAL:
+      queryOptions.scanConsistency = connection.couchbase.QueryScanConsistency.RequestPlus;
+      break;
+    case SearchConsistency.NONE:
+      queryOptions.scanConsistency = connection.couchbase.QueryScanConsistency.NotBounded;
+      break;
+  }
+  const result = cluster.query(query.build(), queryOptions);
   return result.then(async (r: { rows: unknown[] }) => {
     if (populate) {
       const populateFields = extractPopulate(populate);
