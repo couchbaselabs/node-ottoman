@@ -16,6 +16,7 @@ export {
   applyDefaultValue,
   registerType,
   addValidators,
+  IOttomanType,
   Schema,
   ValidationError,
   BuildSchemaError,

@@ -20,8 +20,9 @@ import { VALIDATION_STRATEGY } from '../../utils';
  *  @param options.default that will define the initial value of the field, allowed and value or function to generate it
  *  @param options.auto that will generate the initial value of the field. if the field is String it allows the value 'uuid' or a function, in any other cases only functions. It cannot be used combined with default
  */
-export abstract class CoreType implements IOttomanType {
-  protected constructor(public name: string, public typeName: string, public options?: CoreTypeOptions) {
+export abstract class CoreType extends IOttomanType {
+  protected constructor(name: string, typeName: string, public options?: CoreTypeOptions) {
+    super(name, typeName);
     this._checkIntegrity();
   }
   get required(): boolean | RequiredOption | RequiredFunction {
