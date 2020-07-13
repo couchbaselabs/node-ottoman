@@ -1,6 +1,6 @@
-import { connect, model } from '../lib';
+import { connect, model } from '../src';
 import { connectionString, username, connectUri, bucketName, password } from './testData';
-import { isModel } from '../lib/utils/is-model';
+import { isModel } from '../src/utils/is-model';
 
 describe('Test connections', () => {
   process.env.OTTOMAN_CONNECTION_STRING = connectUri;

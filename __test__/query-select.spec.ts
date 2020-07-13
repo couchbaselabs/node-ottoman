@@ -1,6 +1,5 @@
 import {
   connect,
-  IConditionExpr,
   ILetExpr,
   InWithinOperatorExceptions,
   ISelectType,
@@ -10,8 +9,9 @@ import {
   selectBuilder,
   SortType,
   WhereClauseException,
-} from '../lib';
+} from '../src';
 import { bucketName, connectionString, password, username } from './testData';
+import { IConditionExpr } from '../src/query/interface/query.types';
 
 const testQuery = async (query: string) => {
   const conn = connect({

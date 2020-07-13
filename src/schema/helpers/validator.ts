@@ -5,7 +5,7 @@ import { ValidatorFunction, ValidatorOption } from '../interfaces/schema.types';
 export const applyValidator = (
   val: unknown,
   validator: ValidatorOption | ValidatorFunction | string | undefined,
-  name: string,
+  name?: string,
 ): string | void => {
   let _validator: ValidatorFunction | undefined = undefined;
   if (validator !== undefined) {

@@ -14,6 +14,7 @@ import { indexFieldsName } from './index/helpers/index-field-names';
 import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
 import { LogicalWhereExpr, SortType } from '../query';
 import { Schema } from '../schema';
+import { ModelTypes } from './model.types';
 
 /**
  * @ignore
@@ -81,20 +82,21 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
     }
   }
 
-  // Extend model properties dynamically to allow autocomplete and typescript support
-  type ExtractStaticTypes = typeof ModelFactory;
-
-  // Find a way to add dynamic props and methods, then remove this type
-  type WhateverTypes = { [key: string]: any };
-
-  return ModelFactory as ExtractStaticTypes &
-    WhateverTypes & {
-      new <T>(data: T): Model<T> & T;
-    };
+  return ModelFactory as ModelTypes;
 };
 
 export const _buildModel = (metadata: ModelMetadata) => {
-  const { schema, collection, ID_KEY, collectionName, collectionKey, scopeKey, scopeName, connection } = metadata;
+  const {
+    schema,
+    collection,
+    ID_KEY,
+    collectionName,
+    collectionKey,
+    scopeKey,
+    scopeName,
+    connection,
+    modelName,
+  } = metadata;
   return class _Model<T> extends Model<T> {
     constructor(data) {
       super(data);
@@ -157,7 +159,8 @@ export const _buildModel = (metadata: ModelMetadata) => {
         delete findOptions.select;
       }
       const { value } = await collection.get(id, findOptions);
-      const document = new _Model({ ...value, [ID_KEY]: id });
+      const ModelFactory = connection.getModel(modelName);
+      const document = new ModelFactory({ ...value, [ID_KEY]: id });
       if (populate) {
         return await document._populate(populate);
       }

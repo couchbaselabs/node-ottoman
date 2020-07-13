@@ -1,5 +1,5 @@
-import { applyDefaultValue, castSchema, ValidationError, BuildSchemaError } from '../lib';
-import { Schema, ModelObject } from '../lib/schema/schema';
+import { applyDefaultValue, castSchema, ValidationError, BuildSchemaError } from '../src';
+import { Schema } from '../src/schema';
 
 describe('Schema Native Types', () => {
   describe('Schema String Type', () => {
@@ -145,7 +145,7 @@ describe('Schema Native Types', () => {
         birthday: new Date('2000-01-01'),
       };
       test('should return a valid date after applying default values', () => {
-        const schema1: ModelObject = { name: String, birthday: Date, createdAt: { type: Date, default: Date.now } };
+        const schema1 = { name: String, birthday: Date, createdAt: { type: Date, default: Date.now } };
         const updateInstance1 = applyDefaultValue(modelInstance, schema1);
         expect(updateInstance1.createdAt).toBeDefined();
         expect(updateInstance1.createdAt).toBeInstanceOf(Date);

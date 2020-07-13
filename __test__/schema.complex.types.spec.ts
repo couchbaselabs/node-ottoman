@@ -1,7 +1,6 @@
-import { castSchema, ValidationError, BuildSchemaError } from '../lib';
-import { registerType } from '../lib/schema/helpers';
-import { Schema } from '../lib/schema/schema';
-import { IOttomanType } from '../lib/schema/types';
+import { castSchema, ValidationError, BuildSchemaError } from '../src';
+import { registerType } from '../src/schema/helpers';
+import { Schema, IOttomanType } from '../src/schema';
 
 describe('Schema Types', () => {
   describe('Schema Array Types', () => {

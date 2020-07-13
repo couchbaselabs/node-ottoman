@@ -3,7 +3,6 @@ import { extractConnectionString } from '../utils/extract-connection-string';
 import { ConnectionManager } from './connection-manager';
 import { Schema } from '../schema';
 import { ModelOptions } from '../model/interfaces/create-model.interface';
-import { Model } from '../model/model';
 
 export interface ConnectOptions {
   connectionString: string;
@@ -70,10 +69,11 @@ export class Ottoman {
    * const User = model('User', { name: String });
    * ```
    */
-  // eslint-disable-next-line no-unused-vars
-  model(name: string, schema: Schema | Record<string, any>, options: ModelOptions): Model {
-    class ModelFactory extends Model {}
-    return new ModelFactory({});
+  model<T>(name: string, schema: Schema | Record<string, any>, options: ModelOptions = {}) {
+    if (!__conn) {
+      connectFromEnvVariables(name);
+    }
+    return __conn.model(name, schema, options);
   }
 
   /**
@@ -83,14 +83,6 @@ export class Ottoman {
 }
 
 export const ottoman = new Ottoman();
-Object.defineProperty(ottoman, 'model', {
-  value: (name: string, schema, options?) => {
-    if (!__conn) {
-      connectFromEnvVariables(name);
-    }
-    return __conn.model(name, schema, options);
-  },
-});
 
 /**
  * Allow connecting from env variable OTTOMAN_CONNECTION_STRING if provided.

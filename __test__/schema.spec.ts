@@ -1,5 +1,5 @@
-import { BuildSchemaError } from '../lib';
-import { Schema } from '../lib/schema/schema';
+import { BuildSchemaError } from '../src';
+import { Schema } from '../src/schema';
 
 describe('Schema', () => {
   const schema = new Schema({ name: String });
@@ -23,6 +23,7 @@ describe('Schema', () => {
       expect(schema.preHooks.remove[0]).toBeInstanceOf(Function);
     });
     test('should throw an error when adding the pre-hook to an action not allowed', () => {
+      // @ts-ignore
       expect(() => schema.pre('other', () => console.log('Yes'))).toThrow(BuildSchemaError);
     });
   });
@@ -47,6 +48,7 @@ describe('Schema', () => {
       expect(schema.postHooks.remove[0]).toBeInstanceOf(Function);
     });
     test('should throw an error when adding the post-hook to an action not allowed', () => {
+      // @ts-ignore
       expect(() => schema.post('other', () => console.log('Yes'))).toThrow(BuildSchemaError);
     });
   });

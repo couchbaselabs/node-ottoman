@@ -1,5 +1,5 @@
-import { Schema, model } from '../lib';
-import { registerGlobalPlugin } from '../lib/plugins/global-plugin-handler';
+import { Schema, model } from '../src';
+import { registerGlobalPlugin } from '../src/plugins/global-plugin-handler';
 const accessDoc2 = {
   type: 'hooks',
   isActive: false,

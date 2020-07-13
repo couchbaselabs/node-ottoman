@@ -30,6 +30,11 @@ export abstract class Document<T> {
   /**
    * @ignore
    */
+  [key: string]: any;
+
+  /**
+   * @ignore
+   */
   get $(): ModelMetadata {
     return getModelMetadata(this.constructor);
   }

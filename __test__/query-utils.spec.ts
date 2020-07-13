@@ -1,4 +1,4 @@
-import { parseStringSelectExpr, getProjectionFields, Query, getCollectionKey, escapeReservedWords } from '../lib';
+import { parseStringSelectExpr, getProjectionFields, Query, getCollectionKey, escapeReservedWords } from '../src';
 
 describe('Test Query Builder Utils', () => {
   test('Test the conversion of select expression into an Array of selection keys', async () => {

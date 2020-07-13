@@ -1,5 +1,5 @@
-import { model, Schema, ensureIndexes } from '../lib';
-import { isDocumentNotFoundError } from '../lib/utils/is-not-found';
+import { model, Schema, ensureIndexes } from '../src';
+import { isDocumentNotFoundError } from '../src/utils/is-not-found';
 
 const accessDoc = {
   type: 'airlineR',

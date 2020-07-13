@@ -1,4 +1,4 @@
-import { Schema, model, isDocumentNotFoundError } from '../lib';
+import { Schema, model, isDocumentNotFoundError } from '../src';
 const accessDoc2 = {
   type: 'hooks',
   isActive: false,

@@ -1,4 +1,4 @@
-import { Schema, model } from '../lib';
+import { Schema, model } from '../src';
 
 describe('Test Model-Schema Integration and Validations', () => {
   const CardSchema = new Schema({

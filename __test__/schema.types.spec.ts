@@ -1,7 +1,7 @@
-import { applyDefaultValue, castSchema, ValidationError, BuildSchemaError } from '../lib';
-import { Schema } from '../lib/schema/schema';
-import { isOttomanType } from '../lib/schema/helpers';
-import { VALIDATION_STRATEGY } from '../lib/utils';
+import { applyDefaultValue, castSchema, ValidationError, BuildSchemaError } from '../src';
+import { Schema } from '../src/schema/schema';
+import { isOttomanType } from '../src/schema/helpers';
+import { VALIDATION_STRATEGY } from '../src/utils';
 
 const validData = {
   firstName: 'John',
@@ -59,6 +59,7 @@ describe('Schema Types with Strict Strategy', () => {
         validate: 23,
       },
     };
+    // @ts-ignore
     let schema = new Schema({ name: String }, options);
     expect(schema).toBeInstanceOf(Schema);
     expect(schema.preHooks).toEqual({});
@@ -67,6 +68,7 @@ describe('Schema Types with Strict Strategy', () => {
         validate: [12],
       },
     };
+    // @ts-ignore
     schema = new Schema({ name: String }, options2);
     expect(schema).toBeInstanceOf(Schema);
     expect(schema.preHooks).toEqual({});
