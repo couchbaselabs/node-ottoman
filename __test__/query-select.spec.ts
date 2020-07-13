@@ -165,6 +165,7 @@ describe('Test Query Builder SELECT clause', () => {
   });
 
   test('Check the exception WhereClauseException in selectBuilder', async () => {
+    // @ts-ignore
     const run = () => selectBuilder('travel-sample', {}, [], { $not: {} });
     expect(run).toThrow(WhereClauseException);
   });
@@ -174,6 +175,7 @@ describe('Test Query Builder SELECT clause', () => {
       new Query({}, 'travel-sample')
         .index('CREATE', 'travel_sample_index')
         .on([{ name: 'address' }])
+        // @ts-ignore
         .with({ nodes1: [] })
         .build();
 
@@ -282,13 +284,13 @@ describe('Test Query Builder SELECT clause', () => {
   });
 
   test('Test Collection Operator', async () => {
-    const where = {
+    const where: LogicalWhereExpr = {
       $any: {
         $expr: [{ $in: { search_expr: 'search', target_expr: 'address' } }],
         $satisfied: { address: '10' },
       },
     };
-    const query = new Query('', 'travel-sample').select().where(where).limit(10).build();
+    const query = new Query({}, 'travel-sample').select().where(where).limit(10).build();
     expect(query).toStrictEqual(
       'SELECT * FROM `travel-sample` WHERE ANY search IN address SATISFIES address="10" END LIMIT 10',
     );
@@ -297,33 +299,34 @@ describe('Test Query Builder SELECT clause', () => {
   });
 
   test('Test (IN|WITHIN) Operator', async () => {
-    const where = {
+    const where: LogicalWhereExpr = {
       $in: { search_expr: 'search', target_expr: ['address'] },
     };
-    const query = new Query('', 'travel-sample').select().where(where).limit(10).build();
+    const query = new Query({}, 'travel-sample').select().where(where).limit(10).build();
     expect(query).toStrictEqual('SELECT * FROM `travel-sample` WHERE search IN ["address"] LIMIT 10');
     const execute = await testQuery(query);
     expect(execute.rows).toBeDefined();
   });
 
   test('Test (IN|WITHIN) Operator Exception', () => {
-    const where = {
+    const where: LogicalWhereExpr = {
+      // @ts-ignore
       $in: { search_expr: 'search' },
     };
-    const run = () => new Query('', 'travel-sample').select().where(where).limit(10).build();
+    const run = () => new Query({}, 'travel-sample').select().where(where).limit(10).build();
     expect(run).toThrow(InWithinOperatorExceptions);
   });
 
   test('Test GROUP BY clause', async () => {
     const groupBy = [{ expr: 'type', as: 'sch' }];
-    const having = {
+    const having: LogicalWhereExpr = {
       type: { $like: '%hotel%' },
     };
     const letExpr: ILetExpr[] = [
       { key: 'amount_val', value: 10 },
       { key: 'size_val', value: 20 },
     ];
-    const query = new Query('', 'travel-sample')
+    const query = new Query({}, 'travel-sample')
       .select([{ $count: { $field: 'type' } }])
       .groupBy(groupBy)
       .letting(letExpr)
@@ -338,11 +341,11 @@ describe('Test Query Builder SELECT clause', () => {
   });
 
   test('Test GROUP BY Exception', () => {
-    const having = {
+    const having: LogicalWhereExpr = {
       type: { $like: '%hotel%' },
     };
     const run = () =>
-      new Query('', 'travel-sample')
+      new Query({}, 'travel-sample')
         .select([{ $count: { $field: 'type' } }])
         .having(having)
         .limit(10)

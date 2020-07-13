@@ -86,7 +86,9 @@ export interface CollectionInWithinOperatorValue {
  * {$in:{search_expr: 'search', target_expr: 'address', $not: true}}
  * ```
  * */
-export type CollectionInWithinOperatorType = Record<CollectionInWithinOperator, CollectionInWithinOperatorValue>;
+export type CollectionInWithinOperatorType = {
+  [key in CollectionInWithinOperator]?: CollectionInWithinOperatorValue;
+};
 
 /**
  * Structure of the collection expression
@@ -94,7 +96,7 @@ export type CollectionInWithinOperatorType = Record<CollectionInWithinOperator, 
  * */
 export interface CollectionExpressionType {
   $expr: CollectionInWithinOperatorType[];
-  $satisfied: LogicalWhereExpr;
+  $satisfied: FieldWhereExpr;
 }
 /**
  * Structure of the collection in within operator
@@ -104,7 +106,9 @@ export interface CollectionExpressionType {
  * {$any: {$expr: [{$in:{search_expr: 'search', target_expr: 'address', $not: true} }], $satisfied:{address: '10'}}}
  * ```
  * */
-export type CollectionSelectOperatorType = Record<CollectionSelectOperator, CollectionExpressionType>;
+export type CollectionSelectOperatorType = {
+  [key in CollectionSelectOperator]?: CollectionExpressionType;
+};
 
 /**
  * Structure of the comparison operators.
@@ -115,15 +119,13 @@ export type CollectionSelectOperatorType = Record<CollectionSelectOperator, Coll
  * ```
  *
  * */
-export type ComparisonWhereExpr =
-  | {
-      [key in
-        | ComparisonEmptyOperatorType
-        | ComparisonSingleOperatorType
-        | ComparisonMultipleOperatorType
-        | ComparisonSingleStringOperatorType]?: string | number | boolean | number[];
-    }
-  | CollectionSelectOperatorType;
+export type ComparisonWhereExpr = {
+  [key in
+    | ComparisonEmptyOperatorType
+    | ComparisonSingleOperatorType
+    | ComparisonMultipleOperatorType
+    | ComparisonSingleStringOperatorType]?: string | number | boolean | number[];
+};
 
 /**
  * Structure of WHERE field expression
@@ -145,9 +147,15 @@ export type FieldWhereExpr = Record<string, string | number | boolean | Comparis
  * ```
  *
  * */
-export type LogicalWhereExpr = {
-  [key in LogicalOperatorType]?: FieldWhereExpr[];
-};
+export type LogicalWhereExpr =
+  | {
+      [key in LogicalOperatorType]?: FieldWhereExpr[];
+    }
+  | {
+      [key: string]: FieldWhereExpr;
+    }
+  | CollectionSelectOperatorType
+  | CollectionInWithinOperatorType;
 
 /**
  * SELECT field structure
@@ -171,12 +179,10 @@ export interface IField {
  * ```
  *
  * */
-export type ISelectAggType =
-  | {
-      [key in AggType]?: ISelectFieldType;
-    }
-  | Record<'as', string>
-  | Record<'ro', ReturnResultType>;
+
+export type ISelectAggType = {
+  [key in AggType]?: ISelectFieldType;
+};
 
 /**
  * SELECT field expression
@@ -187,7 +193,11 @@ export type ISelectAggType =
  * ```
  *
  * */
-export type ISelectFieldType = Record<'$field', IField | string>;
+export interface ISelectFieldType {
+  $field: IField | string;
+  as?: string;
+  ro?: ReturnResultType;
+}
 
 /**
  * SELECT result expression

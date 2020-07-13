@@ -34,7 +34,7 @@ describe('Test Query Builder INDEX clause', () => {
   });
 
   test('Check Multiple Query Exceptions with select', () => {
-    const run = () => new Query({}, 'travel-sample').index('travel_index', 'CREATE').select('*');
+    const run = () => new Query({}, 'travel-sample').index('CREATE', 'travel_index').select('*');
     expect(run).toThrow(MultipleQueryTypesException);
   });
 
@@ -56,7 +56,7 @@ describe('Test Query Builder INDEX clause', () => {
     );
   });
   test('Check Multiple Query Exceptions with index', () => {
-    const run = () => new Query({}, 'travel-sample').select('*').index('travel_index', 'CREATE');
+    const run = () => new Query({}, 'travel-sample').select('*').index('CREATE', 'travel_index');
     expect(run).toThrow(MultipleQueryTypesException);
   });
 
