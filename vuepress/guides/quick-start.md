@@ -46,7 +46,7 @@ The `$_` command simply captures our last used argument which in our case was th
 Now with a node package manager and manifest (`package.json`) in place, let’s add Ottoman to our dependencies for the project:
 
 ```bash
-npm install ottoman@2.0.0-alpha.1
+npm install ottoman@alpha
 ```
 
 Now we will create a file named `server.js` and launch Visual Studio Code:

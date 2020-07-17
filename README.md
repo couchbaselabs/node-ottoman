@@ -13,7 +13,7 @@ bringing to developers a reliable tool to build systems that are easy-to-design,
 #### Installation
 
 ```
-npm install ottoman
+npm install ottoman@alpha
 ```
 
 That's it, you are ready to use Ottoman.
