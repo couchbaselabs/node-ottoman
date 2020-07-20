@@ -6,6 +6,7 @@ import { canBePopulated } from '../../utils/populate/can-be-populated';
 import { extractPopulate } from '../../utils/query/extract-populate';
 import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
 import { SearchConsistency } from '../..';
+import { DISABLE_SCOPES } from '../../utils/constants';
 
 /**
  * Find documents
@@ -25,6 +26,9 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
     [scopeKey as string]: scopeName,
     [collectionKey as string]: collectionName,
   };
+  if (DISABLE_SCOPES) {
+    delete expr_where[scopeKey];
+  }
 
   // Building the query
   let query = new Query({}, bucketName).select(projectionFields.projection).where(expr_where);

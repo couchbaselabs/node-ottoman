@@ -2,11 +2,13 @@ interface configOptions {
   collectionKey?: string;
   scopeKey?: string;
   populateMaxDeep?: number;
+  disableScopes?: boolean;
 }
-export const globalConfig = ({ collectionKey, scopeKey, populateMaxDeep }: configOptions = {}) => {
+export const globalConfig = ({ collectionKey, scopeKey, populateMaxDeep, disableScopes }: configOptions = {}) => {
   collectionKey && (COLLECTION_KEY = collectionKey);
   scopeKey && (SCOPE_KEY = scopeKey);
   populateMaxDeep && (DEFAULT_POPULATE_MAX_DEEP = populateMaxDeep);
+  disableScopes && (DISABLE_SCOPES = disableScopes);
 };
 
 export const getCollectionKey = (): string => COLLECTION_KEY;
@@ -42,3 +44,5 @@ export const DEFAULT_SCOPE = '_default';
 export const DEFAULT_COLLECTION = '_default';
 
 export let DEFAULT_POPULATE_MAX_DEEP = 1;
+
+export let DISABLE_SCOPES = false;
