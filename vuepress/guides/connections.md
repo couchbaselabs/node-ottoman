@@ -45,7 +45,32 @@ interface ConnectOptions {
   transcoder?: unknown;
   logFunc?: unknown;
 }
+```
 
+## Global config
+
+Ottoman allows you to modify some settings, which could be useful for database modeling or migration,
+using the `globalConfig` function you can for example change the metadata key to define collection in documents.
+
+```typescript
+import {globalConfig} from "./ottoman";
+
+globalConfig({
+    collectionKey: 'type',
+  });
+```
+
+The `collectionKey` default value is set to `_type`, but maybe you want to change it to `type` as it's described in the example above.
+
+The available configurations are:
+
+```typescript
+interface configOptions {
+  collectionKey?: string;
+  scopeKey?: string;
+  populateMaxDeep?: number;
+  disableScopes?: boolean;
+}
 ```
 
 ## Using the default connection
