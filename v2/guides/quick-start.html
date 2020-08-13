@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Quick Start with Ottoman v2 | Ottoman.js</title>
+    <meta name="generator" content="VuePress 1.5.2">
+    
+    <meta name="description" content="Ottoman is a ODM built for Couchbase and Node.js. ">
+    <link rel="preload" href="/assets/css/0.styles.0e1d4a33.css" as="style"><link rel="preload" href="/assets/js/app.9dd137a4.js" as="script"><link rel="preload" href="/assets/js/2.9242dada.js" as="script"><link rel="preload" href="/assets/js/45.e823da05.js" as="script"><link rel="prefetch" href="/assets/js/10.1bd8e478.js"><link rel="prefetch" href="/assets/js/11.188f40b4.js"><link rel="prefetch" href="/assets/js/12.adde0583.js"><link rel="prefetch" href="/assets/js/13.19332bb3.js"><link rel="prefetch" href="/assets/js/14.12791382.js"><link rel="prefetch" href="/assets/js/15.9d2d1ad5.js"><link rel="prefetch" href="/assets/js/16.89b7c5b4.js"><link rel="prefetch" href="/assets/js/17.d97f8d3c.js"><link rel="prefetch" href="/assets/js/18.674a0eeb.js"><link rel="prefetch" href="/assets/js/19.bc316133.js"><link rel="prefetch" href="/assets/js/20.c1eb846e.js"><link rel="prefetch" href="/assets/js/21.89c9b72d.js"><link rel="prefetch" href="/assets/js/22.8b261e32.js"><link rel="prefetch" href="/assets/js/23.4847855d.js"><link rel="prefetch" href="/assets/js/24.fc2b23e1.js"><link rel="prefetch" href="/assets/js/25.f02eb2b8.js"><link rel="prefetch" href="/assets/js/26.044f2c4d.js"><link rel="prefetch" href="/assets/js/27.6391d674.js"><link rel="prefetch" href="/assets/js/28.b8c1fc8d.js"><link rel="prefetch" href="/assets/js/29.a74b9bf8.js"><link rel="prefetch" href="/assets/js/3.bfa66ddb.js"><link rel="prefetch" href="/assets/js/30.9026ad4d.js"><link rel="prefetch" href="/assets/js/31.8aa297af.js"><link rel="prefetch" href="/assets/js/32.ead323aa.js"><link rel="prefetch" href="/assets/js/33.ebb4c574.js"><link rel="prefetch" href="/assets/js/34.f559b05b.js"><link rel="prefetch" href="/assets/js/35.7d6a684f.js"><link rel="prefetch" href="/assets/js/36.a32be433.js"><link rel="prefetch" href="/assets/js/37.de6e8afc.js"><link rel="prefetch" href="/assets/js/38.d84942cb.js"><link rel="prefetch" href="/assets/js/39.381e7a11.js"><link rel="prefetch" href="/assets/js/4.2071cca5.js"><link rel="prefetch" href="/assets/js/40.649cebd1.js"><link rel="prefetch" href="/assets/js/41.f5b65341.js"><link rel="prefetch" href="/assets/js/42.b9a555ba.js"><link rel="prefetch" href="/assets/js/43.3f0e4553.js"><link rel="prefetch" href="/assets/js/44.1de9f2b2.js"><link rel="prefetch" href="/assets/js/46.eb38557d.js"><link rel="prefetch" href="/assets/js/47.fcb848ae.js"><link rel="prefetch" href="/assets/js/48.8b735347.js"><link rel="prefetch" href="/assets/js/49.1ad9945a.js"><link rel="prefetch" href="/assets/js/5.3e2abc03.js"><link rel="prefetch" href="/assets/js/50.448027ef.js"><link rel="prefetch" href="/assets/js/51.bd8e74a5.js"><link rel="prefetch" href="/assets/js/52.ea8581e6.js"><link rel="prefetch" href="/assets/js/53.fa7ec773.js"><link rel="prefetch" href="/assets/js/54.3b54b08b.js"><link rel="prefetch" href="/assets/js/55.ba7c0707.js"><link rel="prefetch" href="/assets/js/56.797ab7a1.js"><link rel="prefetch" href="/assets/js/57.c53e8ed4.js"><link rel="prefetch" href="/assets/js/58.40f32b60.js"><link rel="prefetch" href="/assets/js/59.84981896.js"><link rel="prefetch" href="/assets/js/6.ef212bb4.js"><link rel="prefetch" href="/assets/js/60.ee0e1732.js"><link rel="prefetch" href="/assets/js/61.9626abc0.js"><link rel="prefetch" href="/assets/js/62.0d09bd00.js"><link rel="prefetch" href="/assets/js/63.eeaf615f.js"><link rel="prefetch" href="/assets/js/64.8bc1873d.js"><link rel="prefetch" href="/assets/js/65.34ecab49.js"><link rel="prefetch" href="/assets/js/66.65cd07d6.js"><link rel="prefetch" href="/assets/js/67.b40e59c2.js"><link rel="prefetch" href="/assets/js/68.e8891018.js"><link rel="prefetch" href="/assets/js/69.42cb3a7a.js"><link rel="prefetch" href="/assets/js/7.623dbcac.js"><link rel="prefetch" href="/assets/js/70.7d5567a1.js"><link rel="prefetch" href="/assets/js/71.fd839e56.js"><link rel="prefetch" href="/assets/js/72.2acff047.js"><link rel="prefetch" href="/assets/js/8.4ec0886b.js"><link rel="prefetch" href="/assets/js/9.a08d2343.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.0e1d4a33.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Ottoman.js</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guides/quick-start.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  Quick Start
+</a></div><div class="nav-item"><a href="/guides/connections.html" class="nav-link">
+  Connections
+</a></div><div class="nav-item"><a href="/guides/schema.html" class="nav-link">
+  Schema
+</a></div><div class="nav-item"><a href="/guides/model.html" class="nav-link">
+  Model
+</a></div><div class="nav-item"><a href="/guides/document.html" class="nav-link">
+  Document
+</a></div><div class="nav-item"><a href="/guides/query-builder.html" class="nav-link">
+  Query Builder
+</a></div><div class="nav-item"><a href="/guides/first-app.html" class="nav-link">
+  Example
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/classes/ottoman.html" class="nav-link">
+  Ottoman
+</a></li><li class="dropdown-item"><!----> <a href="/classes/connectionmanager.html" class="nav-link">
+  Connections
+</a></li><li class="dropdown-item"><!----> <a href="/classes/schema.html" class="nav-link">
+  Schema
+</a></li><li class="dropdown-item"><!----> <a href="/classes/model.html" class="nav-link">
+  Model
+</a></li><li class="dropdown-item"><!----> <a href="/classes/document.html" class="nav-link">
+  Document
+</a></li><li class="dropdown-item"><!----> <a href="/classes/query.html" class="nav-link">
+  Query Builder
+</a></li></ul></div></div><div class="nav-item"><a href="https://github.com/couchbaselabs/node-ottoman" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guides/quick-start.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  Quick Start
+</a></div><div class="nav-item"><a href="/guides/connections.html" class="nav-link">
+  Connections
+</a></div><div class="nav-item"><a href="/guides/schema.html" class="nav-link">
+  Schema
+</a></div><div class="nav-item"><a href="/guides/model.html" class="nav-link">
+  Model
+</a></div><div class="nav-item"><a href="/guides/document.html" class="nav-link">
+  Document
+</a></div><div class="nav-item"><a href="/guides/query-builder.html" class="nav-link">
+  Query Builder
+</a></div><div class="nav-item"><a href="/guides/first-app.html" class="nav-link">
+  Example
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/classes/ottoman.html" class="nav-link">
+  Ottoman
+</a></li><li class="dropdown-item"><!----> <a href="/classes/connectionmanager.html" class="nav-link">
+  Connections
+</a></li><li class="dropdown-item"><!----> <a href="/classes/schema.html" class="nav-link">
+  Schema
+</a></li><li class="dropdown-item"><!----> <a href="/classes/model.html" class="nav-link">
+  Model
+</a></li><li class="dropdown-item"><!----> <a href="/classes/document.html" class="nav-link">
+  Document
+</a></li><li class="dropdown-item"><!----> <a href="/classes/query.html" class="nav-link">
+  Query Builder
+</a></li></ul></div></div><div class="nav-item"><a href="https://github.com/couchbaselabs/node-ottoman" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Quick Start with Ottoman v2</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guides/quick-start.html#prerequisites-three-steps-required-to-query-our-bucket" class="sidebar-link">Prerequisites: Three Steps required to Query our Bucket</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/guides/quick-start.html#step-1-create-the-ottoman-node-js-project" class="sidebar-link">Step 1: Create The Ottoman Node JS Project</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/guides/quick-start.html#connecting-to-a-couchbase-bucket" class="sidebar-link">Connecting to a Couchbase Bucket</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/guides/quick-start.html#creating-an-ottoman-model" class="sidebar-link">Creating an Ottoman Model</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/guides/quick-start.html#create-new-user-documents" class="sidebar-link">Create New User Documents</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/guides/quick-start.html#persist-documents-to-our-bucket" class="sidebar-link">Persist Documents to Our Bucket</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/guides/quick-start.html#write-a-query-with-ottoman-s-query-api" class="sidebar-link">Write a Query with Ottoman’s Query API</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/guides/quick-start.html#summary" class="sidebar-link">Summary</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/guides/quick-start.html#exercise-complete" class="sidebar-link">Exercise Complete</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="quick-start-with-ottoman-v2"><a href="#quick-start-with-ottoman-v2" class="header-anchor">#</a> Quick Start with Ottoman v2</h1> <blockquote><p>Before we get started with Ottoman and Node JS, we need to ensure you have Couchbase up and running.
+We will create a data bucket and two indexes for basic queries. Using Couchbase’s N1QL query syntax,
+we will create two indexes, a primary and adaptive index.
+After we upsert our records, these indexes will allow us to look up our documents with the Query API in Ottoman</p></blockquote> <h2 id="prerequisites-three-steps-required-to-query-our-bucket"><a href="#prerequisites-three-steps-required-to-query-our-bucket" class="header-anchor">#</a> Prerequisites: Three Steps required to Query our Bucket</h2> <ol><li>Setup Couchbase Server 6.5 and ensure it is running.</li> <li>Create an empty bucket named &quot;default&quot;.</li> <li>Add a primary and adaptive index for our default bucket.</li></ol> <p>If you still need to perform these tasks please use one of the following:</p> <ul><li><a href="https://docs.couchbase.com/tutorials/quick-start/quickstart-docker-image-manual-cb65.html" target="_blank" rel="noopener noreferrer">5-minute Couchbase Docker Container Configuration<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li></ul> <h2 id="step-1-create-the-ottoman-node-js-project"><a href="#step-1-create-the-ottoman-node-js-project" class="header-anchor">#</a> Step 1: Create The Ottoman Node JS Project</h2> <p>In this exercise, we will be working with the <a href="https://github.com/couchbaselabs/node-ottoman" target="_blank" rel="noopener noreferrer">Ottoman v2 ODM (Object Document Mapper)<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>
+in conjunction with the <a href="https://docs.couchbase.com/nodejs-sdk/3.0/hello-world/start-using-sdk.html" target="_blank" rel="noopener noreferrer">NodeJS SDK v3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> or any minor version that is higher will do.
+I’m using Node JS version 12.14 and NPM version 6.13, you can find these version numbers for Node and NPM by running the following command:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>node --version
+<span class="token function">npm</span> --version
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">Note</p> <p>You can get to the Couchbase Server Web UI at any time by visiting <a href="http://localhost:8091/" target="_blank" rel="noopener noreferrer">localhost:8091<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>.</p></div> <p>Let’s first create a project directory named <code>first-query-ottoman</code>, change directories into that directory and initialize NPM:</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">mkdir</span> first-query-ottoman <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">cd</span> <span class="token variable">$_</span> <span class="token operator">&amp;&amp;</span> <span class="token function">npm</span> init
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">Note</p> <p>The double ampersands (<code>&amp;&amp;</code>) are just a way of chaining multiple shell commands.
+The <code>$_</code> command simply captures our last used argument which in our case was the directory that we created.</p></div> <p>Now with a node package manager and manifest (<code>package.json</code>) in place, let’s add Ottoman to our dependencies for the project:</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">npm</span> <span class="token function">install</span> ottoman@alpha
+</code></pre></div><p>Now we will create a file named <code>server.js</code> and launch Visual Studio Code:</p> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token function">touch</span> server.js <span class="token operator">&amp;&amp;</span> code <span class="token builtin class-name">.</span>
+</code></pre></div><p>This command has set up a project directory and enabled npm, installed <code>ottoman</code> as well as created a <code>server.js</code> file and
+finally opened up our VS Code editor to the project root.</p> <p>Open <code>server.js</code> file, this is where we’ll add our code.</p> <p>Taking each code sample below, we will add each new block of code done after one another.</p> <h2 id="connecting-to-a-couchbase-bucket"><a href="#connecting-to-a-couchbase-bucket" class="header-anchor">#</a> Connecting to a Couchbase Bucket</h2> <p>Create a connection to our Couchbase Server running in Docker. Your password may be different, just swap out yours if it is different.</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> ottoman <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ottoman'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> connection <span class="token operator">=</span> ottoman<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    connectionString<span class="token operator">:</span> <span class="token string">'couchbase://localhost'</span><span class="token punctuation">,</span>
+    bucketName<span class="token operator">:</span> <span class="token string">'default'</span><span class="token punctuation">,</span>
+    username<span class="token operator">:</span> <span class="token string">'admin'</span><span class="token punctuation">,</span>
+    password<span class="token operator">:</span> <span class="token string">'password'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="creating-an-ottoman-model"><a href="#creating-an-ottoman-model" class="header-anchor">#</a> Creating an Ottoman Model</h2> <p>Create a model for our <code>User</code> document. It will get auto-created and stored in our already created <code>default</code> bucket in Couchbase.
+Once our model is set up, we can add a few initial documents to populate our bucket.</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> User <span class="token operator">=</span> ottoman<span class="token punctuation">.</span><span class="token function">model</span><span class="token punctuation">(</span><span class="token string">'User'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  firstName<span class="token operator">:</span> String<span class="token punctuation">,</span>
+  lastName<span class="token operator">:</span> String<span class="token punctuation">,</span>
+  email<span class="token operator">:</span> String<span class="token punctuation">,</span>
+  tagline<span class="token operator">:</span> String
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div><p>Ottoman does support other data types like <code>boolean</code>, <code>number</code>, and <code>Date</code>.
+A model can also define indexes similar to the ones we set up manually.
+For now, we are going to skip letting Ottoman set up our indexes as we already have them in place.</p> <h2 id="create-new-user-documents"><a href="#create-new-user-documents" class="header-anchor">#</a> Create New User Documents</h2> <p>Here we are defining a few documents that we want to persist to our bucket,
+notice we are using the same document that we defined in our model.</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> perry <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  firstName<span class="token operator">:</span> <span class="token string">'Perry'</span><span class="token punctuation">,</span>
+  lastName<span class="token operator">:</span> <span class="token string">'Mason'</span><span class="token punctuation">,</span>
+  email<span class="token operator">:</span> <span class="token string">'perry.mason@acme.com'</span><span class="token punctuation">,</span>
+  tagLine <span class="token operator">:</span> <span class="token string">'Who can we get on the case?'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token keyword">const</span> tom <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  firstName<span class="token operator">:</span> <span class="token string">'Major'</span><span class="token punctuation">,</span>
+  lastName<span class="token operator">:</span> <span class="token string">'Tom'</span><span class="token punctuation">,</span>
+  email<span class="token operator">:</span> <span class="token string">'major.tom@acme.com'</span><span class="token punctuation">,</span>
+  tagLine <span class="token operator">:</span> <span class="token string">'Send me up a drink'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div><h2 id="persist-documents-to-our-bucket"><a href="#persist-documents-to-our-bucket" class="header-anchor">#</a> Persist Documents to Our Bucket</h2> <p>Let's create an <code>async</code> function called <code>runAsync</code> to handle our code with the <code>async/await</code> technique.
+In the function body block just call Ottoman’s <code>save()</code> method on each of these objects which will add them to our database so long as no errors occur.</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> <span class="token function-variable function">runAsync</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">await</span> perry<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">success: user </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>perry<span class="token punctuation">.</span>firstName<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> added!</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">await</span> tom<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">success: user </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>tom<span class="token punctuation">.</span>firstName<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> added!</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">runAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>Now that we have added the code to save (persist) each record to the database, let’s run our app for the first time with Node:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>node server.js
+</code></pre></div><p>You should get two success messages in the console.</p> <div class="language-bash extra-class"><pre class="language-bash"><code>success: user Perry added<span class="token operator">!</span>
+success: user Major added<span class="token operator">!</span>
+</code></pre></div><p>If we open our Web UI at <a href="http://localhost:8091/" target="_blank" rel="noopener noreferrer">localhost:8091<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> and navigate to the &quot;Buckets&quot; tab,
+we can see that two records were added to the <code>default</code> bucket.</p> <div class="custom-block tip"><p class="custom-block-title">Note</p> <p>You can edit the document in place by clicking the pencil icon or remove them individually with the trash icon.
+You can also edit the buckets and in the section &quot;Advanced bucket settings&quot; enable Flush. When flushed, all items in the bucket are removed.
+This is a quick way to remove all documents.</p></div> <p>Let’s remove these two documents, write some more code that will add the documents, and then turn around and query them.</p> <h2 id="write-a-query-with-ottoman-s-query-api"><a href="#write-a-query-with-ottoman-s-query-api" class="header-anchor">#</a> Write a Query with Ottoman’s Query API</h2> <p>In Ottoman, we can retrieve records from our bucket using the adaptive index we have in place by calling the <code>find()</code> method.
+Append the <code>find()</code> logic to our <code>runAsync</code> function.</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token function-variable function">runAsync</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token comment">//...saving users</span>
+ 
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> User<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">{</span> lastName<span class="token operator">:</span> <span class="token string">'Tom'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> consistency<span class="token operator">:</span> ottoman<span class="token punctuation">.</span>SearchConsistency<span class="token punctuation">.</span><span class="token constant">LOCAL</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Query Result: '</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>rows<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>The first two arguments to the <code>find()</code> method are <code>filter</code> and <code>options</code>.</p> <p>Instead of passing objects along as parameters,
+let’s write our code to define the filter and options as objects first and then pass them into the function as arguments.</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token function-variable function">runAsync</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token comment">//...saving users</span>
+ 
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> filter <span class="token operator">=</span> <span class="token punctuation">{</span> lastName<span class="token operator">:</span> <span class="token string">'Tom'</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> options <span class="token operator">=</span> <span class="token punctuation">{</span> consistency<span class="token operator">:</span> ottoman<span class="token punctuation">.</span>SearchConsistency<span class="token punctuation">.</span><span class="token constant">LOCAL</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> User<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>filter<span class="token punctuation">,</span> options<span class="token punctuation">)</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Query Result: '</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>rows<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">Note</p> <p>If we had a lot more data and we were expecting hundreds of records to be returned,
+we could page the results with our options to get the second page (pagination), like this:</p></div> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> options <span class="token operator">=</span> <span class="token punctuation">{</span>
+  limit<span class="token operator">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+  skip<span class="token operator">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+  consistency<span class="token operator">:</span> ottoman<span class="token punctuation">.</span>SearchConsistency<span class="token punctuation">.</span><span class="token constant">LOCAL</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>Let’s run Node again and now we should get the same two success messages and an object returned to us that we queried for:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>node server.js
+</code></pre></div><p>You should see results similar to the following in your command line:</p> <div class="language-bash extra-class"><pre class="language-bash"><code>success: user Perry added<span class="token operator">!</span>
+success: user Major added<span class="token operator">!</span>
+Query results:  <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      _scope: <span class="token string">'_default'</span>,
+      email: <span class="token string">'major.tom@acme.com'</span>,
+      firstName: <span class="token string">'Major'</span>,
+      id: <span class="token string">'02374d71-6e4d-47f1-9cbe-54b487cec89b'</span>,
+      lastName: <span class="token string">'Tom'</span>,
+      tagLine: <span class="token string">'Send me up a drink'</span>,
+      type: <span class="token string">'User'</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">]</span>
+</code></pre></div><div class="custom-block tip"><p class="custom-block-title">Note</p> <p>In our case indexes were added manually, if not Ottoman would have given us this error message:</p></div> <div class="language-bash extra-class"><pre class="language-bash"><code><span class="token string">&quot;errors&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    <span class="token string">&quot;code&quot;</span><span class="token builtin class-name">:</span> <span class="token number">4000</span>,
+    <span class="token string">&quot;msg&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;No index available on keyspace default that matches your query.
+     Use CREATE INDEX or CREATE PRIMARY INDEX to create an index,
+     or check that your expected index is online.&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span>
+</code></pre></div><details class="custom-block details"><summary>Here you can see the complete content of the server.js file.</summary> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> ottoman <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'ottoman'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> connection <span class="token operator">=</span> ottoman<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    connectionString<span class="token operator">:</span> <span class="token string">'couchbase://localhost'</span><span class="token punctuation">,</span>
+    bucketName<span class="token operator">:</span> <span class="token string">'default'</span><span class="token punctuation">,</span>
+    username<span class="token operator">:</span> <span class="token string">'admin'</span><span class="token punctuation">,</span>
+    password<span class="token operator">:</span> <span class="token string">'password'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> User <span class="token operator">=</span> connection<span class="token punctuation">.</span><span class="token function">model</span><span class="token punctuation">(</span><span class="token string">'User'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    firstName<span class="token operator">:</span> String<span class="token punctuation">,</span>
+    lastName<span class="token operator">:</span> String<span class="token punctuation">,</span>
+    email<span class="token operator">:</span> String<span class="token punctuation">,</span>
+    tagline<span class="token operator">:</span> String
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> perry <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    firstName<span class="token operator">:</span> <span class="token string">'Perry'</span><span class="token punctuation">,</span>
+    lastName<span class="token operator">:</span> <span class="token string">'Mason'</span><span class="token punctuation">,</span>
+    email<span class="token operator">:</span> <span class="token string">'perry.mason@acme.com'</span><span class="token punctuation">,</span>
+    tagLine <span class="token operator">:</span> <span class="token string">'Who can we get on the case?'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token keyword">const</span> tom <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    firstName<span class="token operator">:</span> <span class="token string">'Major'</span><span class="token punctuation">,</span>
+    lastName<span class="token operator">:</span> <span class="token string">'Tom'</span><span class="token punctuation">,</span>
+    email<span class="token operator">:</span> <span class="token string">'major.tom@acme.com'</span><span class="token punctuation">,</span>
+    tagLine <span class="token operator">:</span> <span class="token string">'Send me up a drink'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token keyword">const</span> <span class="token function-variable function">runAsync</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">await</span> perry<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">success: user </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>perry<span class="token punctuation">.</span>firstName<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> added!</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">await</span> tom<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">success: user </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>tom<span class="token punctuation">.</span>firstName<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> added!</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> filter <span class="token operator">=</span> <span class="token punctuation">{</span> lastName<span class="token operator">:</span> <span class="token string">'Tom'</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> options <span class="token operator">=</span> <span class="token punctuation">{</span> consistency<span class="token operator">:</span> ottoman<span class="token punctuation">.</span>SearchConsistency<span class="token punctuation">.</span><span class="token constant">LOCAL</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> User<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>filter<span class="token punctuation">,</span> options<span class="token punctuation">)</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Query Result: '</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>rows<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">runAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div></details> <h2 id="summary"><a href="#summary" class="header-anchor">#</a> Summary</h2> <p>We have created models in Ottoman, defined some documents, and persisted them to the database.
+We then subsequently looked them up using the built-in <code>find()</code> method which used the Ottoman Query API for Couchbase.
+We have not yet touched on indexes other than the fact that we created two of them during the docker and indexes section of the quickstart.</p> <p>If you would like to continue learning about Ottoman, I suggest checking out the <a href="http://ottomanjs.com/" target="_blank" rel="noopener noreferrer">Ottoman Documentation<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>.</p> <h2 id="exercise-complete"><a href="#exercise-complete" class="header-anchor">#</a> Exercise Complete</h2> <p>Congratulations! You have engaged with the world’s most powerful JSON document database by using Ottoman.
+Know that our query language N1QL was run under the hood too but we did not have to write any N1QL,
+you can learn more about it with our <a href="https://query-tutorial.couchbase.com/tutorial" target="_blank" rel="noopener noreferrer">N1QL Tutorial<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>
+if you are interested in exploring our query language for Couchbase.</p></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"><!----></div></div>
+    <script src="/assets/js/app.9dd137a4.js" defer></script><script src="/assets/js/2.9242dada.js" defer></script><script src="/assets/js/45.e823da05.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Class: MultipleQueryTypesException | Ottoman.js</title>
+    <meta name="generator" content="VuePress 1.5.2">
+    
+    <meta name="description" content="Ottoman is a ODM built for Couchbase and Node.js. ">
+    <link rel="preload" href="/assets/css/0.styles.0e1d4a33.css" as="style"><link rel="preload" href="/assets/js/app.9dd137a4.js" as="script"><link rel="preload" href="/assets/js/2.9242dada.js" as="script"><link rel="preload" href="/assets/js/24.fc2b23e1.js" as="script"><link rel="prefetch" href="/assets/js/10.1bd8e478.js"><link rel="prefetch" href="/assets/js/11.188f40b4.js"><link rel="prefetch" href="/assets/js/12.adde0583.js"><link rel="prefetch" href="/assets/js/13.19332bb3.js"><link rel="prefetch" href="/assets/js/14.12791382.js"><link rel="prefetch" href="/assets/js/15.9d2d1ad5.js"><link rel="prefetch" href="/assets/js/16.89b7c5b4.js"><link rel="prefetch" href="/assets/js/17.d97f8d3c.js"><link rel="prefetch" href="/assets/js/18.674a0eeb.js"><link rel="prefetch" href="/assets/js/19.bc316133.js"><link rel="prefetch" href="/assets/js/20.c1eb846e.js"><link rel="prefetch" href="/assets/js/21.89c9b72d.js"><link rel="prefetch" href="/assets/js/22.8b261e32.js"><link rel="prefetch" href="/assets/js/23.4847855d.js"><link rel="prefetch" href="/assets/js/25.f02eb2b8.js"><link rel="prefetch" href="/assets/js/26.044f2c4d.js"><link rel="prefetch" href="/assets/js/27.6391d674.js"><link rel="prefetch" href="/assets/js/28.b8c1fc8d.js"><link rel="prefetch" href="/assets/js/29.a74b9bf8.js"><link rel="prefetch" href="/assets/js/3.bfa66ddb.js"><link rel="prefetch" href="/assets/js/30.9026ad4d.js"><link rel="prefetch" href="/assets/js/31.8aa297af.js"><link rel="prefetch" href="/assets/js/32.ead323aa.js"><link rel="prefetch" href="/assets/js/33.ebb4c574.js"><link rel="prefetch" href="/assets/js/34.f559b05b.js"><link rel="prefetch" href="/assets/js/35.7d6a684f.js"><link rel="prefetch" href="/assets/js/36.a32be433.js"><link rel="prefetch" href="/assets/js/37.de6e8afc.js"><link rel="prefetch" href="/assets/js/38.d84942cb.js"><link rel="prefetch" href="/assets/js/39.381e7a11.js"><link rel="prefetch" href="/assets/js/4.2071cca5.js"><link rel="prefetch" href="/assets/js/40.649cebd1.js"><link rel="prefetch" href="/assets/js/41.f5b65341.js"><link rel="prefetch" href="/assets/js/42.b9a555ba.js"><link rel="prefetch" href="/assets/js/43.3f0e4553.js"><link rel="prefetch" href="/assets/js/44.1de9f2b2.js"><link rel="prefetch" href="/assets/js/45.e823da05.js"><link rel="prefetch" href="/assets/js/46.eb38557d.js"><link rel="prefetch" href="/assets/js/47.fcb848ae.js"><link rel="prefetch" href="/assets/js/48.8b735347.js"><link rel="prefetch" href="/assets/js/49.1ad9945a.js"><link rel="prefetch" href="/assets/js/5.3e2abc03.js"><link rel="prefetch" href="/assets/js/50.448027ef.js"><link rel="prefetch" href="/assets/js/51.bd8e74a5.js"><link rel="prefetch" href="/assets/js/52.ea8581e6.js"><link rel="prefetch" href="/assets/js/53.fa7ec773.js"><link rel="prefetch" href="/assets/js/54.3b54b08b.js"><link rel="prefetch" href="/assets/js/55.ba7c0707.js"><link rel="prefetch" href="/assets/js/56.797ab7a1.js"><link rel="prefetch" href="/assets/js/57.c53e8ed4.js"><link rel="prefetch" href="/assets/js/58.40f32b60.js"><link rel="prefetch" href="/assets/js/59.84981896.js"><link rel="prefetch" href="/assets/js/6.ef212bb4.js"><link rel="prefetch" href="/assets/js/60.ee0e1732.js"><link rel="prefetch" href="/assets/js/61.9626abc0.js"><link rel="prefetch" href="/assets/js/62.0d09bd00.js"><link rel="prefetch" href="/assets/js/63.eeaf615f.js"><link rel="prefetch" href="/assets/js/64.8bc1873d.js"><link rel="prefetch" href="/assets/js/65.34ecab49.js"><link rel="prefetch" href="/assets/js/66.65cd07d6.js"><link rel="prefetch" href="/assets/js/67.b40e59c2.js"><link rel="prefetch" href="/assets/js/68.e8891018.js"><link rel="prefetch" href="/assets/js/69.42cb3a7a.js"><link rel="prefetch" href="/assets/js/7.623dbcac.js"><link rel="prefetch" href="/assets/js/70.7d5567a1.js"><link rel="prefetch" href="/assets/js/71.fd839e56.js"><link rel="prefetch" href="/assets/js/72.2acff047.js"><link rel="prefetch" href="/assets/js/8.4ec0886b.js"><link rel="prefetch" href="/assets/js/9.a08d2343.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.0e1d4a33.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Ottoman.js</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guides/quick-start.html" class="nav-link">
+  Quick Start
+</a></div><div class="nav-item"><a href="/guides/connections.html" class="nav-link">
+  Connections
+</a></div><div class="nav-item"><a href="/guides/schema.html" class="nav-link">
+  Schema
+</a></div><div class="nav-item"><a href="/guides/model.html" class="nav-link">
+  Model
+</a></div><div class="nav-item"><a href="/guides/document.html" class="nav-link">
+  Document
+</a></div><div class="nav-item"><a href="/guides/query-builder.html" class="nav-link">
+  Query Builder
+</a></div><div class="nav-item"><a href="/guides/first-app.html" class="nav-link">
+  Example
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/classes/ottoman.html" class="nav-link">
+  Ottoman
+</a></li><li class="dropdown-item"><!----> <a href="/classes/connectionmanager.html" class="nav-link">
+  Connections
+</a></li><li class="dropdown-item"><!----> <a href="/classes/schema.html" class="nav-link">
+  Schema
+</a></li><li class="dropdown-item"><!----> <a href="/classes/model.html" class="nav-link">
+  Model
+</a></li><li class="dropdown-item"><!----> <a href="/classes/document.html" class="nav-link">
+  Document
+</a></li><li class="dropdown-item"><!----> <a href="/classes/query.html" class="nav-link">
+  Query Builder
+</a></li></ul></div></div><div class="nav-item"><a href="https://github.com/couchbaselabs/node-ottoman" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guides/quick-start.html" class="nav-link">
+  Quick Start
+</a></div><div class="nav-item"><a href="/guides/connections.html" class="nav-link">
+  Connections
+</a></div><div class="nav-item"><a href="/guides/schema.html" class="nav-link">
+  Schema
+</a></div><div class="nav-item"><a href="/guides/model.html" class="nav-link">
+  Model
+</a></div><div class="nav-item"><a href="/guides/document.html" class="nav-link">
+  Document
+</a></div><div class="nav-item"><a href="/guides/query-builder.html" class="nav-link">
+  Query Builder
+</a></div><div class="nav-item"><a href="/guides/first-app.html" class="nav-link">
+  Example
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/classes/ottoman.html" class="nav-link">
+  Ottoman
+</a></li><li class="dropdown-item"><!----> <a href="/classes/connectionmanager.html" class="nav-link">
+  Connections
+</a></li><li class="dropdown-item"><!----> <a href="/classes/schema.html" class="nav-link">
+  Schema
+</a></li><li class="dropdown-item"><!----> <a href="/classes/model.html" class="nav-link">
+  Model
+</a></li><li class="dropdown-item"><!----> <a href="/classes/document.html" class="nav-link">
+  Document
+</a></li><li class="dropdown-item"><!----> <a href="/classes/query.html" class="nav-link">
+  Query Builder
+</a></li></ul></div></div><div class="nav-item"><a href="https://github.com/couchbaselabs/node-ottoman" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Class: MultipleQueryTypesException</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/classes/multiplequerytypesexception.html#hierarchy" class="sidebar-link">Hierarchy</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/classes/multiplequerytypesexception.html#constructors" class="sidebar-link">Constructors</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/classes/multiplequerytypesexception.html#constructor" class="sidebar-link">constructor</a></li></ul></li><li><a href="/classes/multiplequerytypesexception.html#properties" class="sidebar-link">Properties</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/classes/multiplequerytypesexception.html#message" class="sidebar-link">message</a></li><li class="sidebar-sub-header"><a href="/classes/multiplequerytypesexception.html#name" class="sidebar-link">name</a></li><li class="sidebar-sub-header"><a href="/classes/multiplequerytypesexception.html#optional-stack" class="sidebar-link">Optional stack</a></li><li class="sidebar-sub-header"><a href="/classes/multiplequerytypesexception.html#static-error" class="sidebar-link">Static Error</a></li></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="class-multiplequerytypesexception"><a href="#class-multiplequerytypesexception" class="header-anchor">#</a> Class: MultipleQueryTypesException</h1> <h2 id="hierarchy"><a href="#hierarchy" class="header-anchor">#</a> Hierarchy</h2> <ul><li><p><a href="/classes/buildschemaerror.html#static-error">Error</a></p> <p>↳ <strong>MultipleQueryTypesException</strong></p></li></ul> <h2 id="constructors"><a href="#constructors" class="header-anchor">#</a> Constructors</h2> <h3 id="constructor"><a href="#constructor" class="header-anchor">#</a> constructor</h3> <p>+ <strong>new MultipleQueryTypesException</strong>(<code>type1</code>: string, <code>type2</code>: string): <em><a href="/classes/multiplequerytypesexception.html" aria-current="page" class="router-link-exact-active router-link-active">MultipleQueryTypesException</a></em></p> <p><strong>Parameters:</strong></p> <table><thead><tr><th>Name</th> <th>Type</th></tr></thead> <tbody><tr><td><code>type1</code></td> <td>string</td></tr> <tr><td><code>type2</code></td> <td>string</td></tr></tbody></table> <p><strong>Returns:</strong> <em><a href="/classes/multiplequerytypesexception.html" aria-current="page" class="router-link-exact-active router-link-active">MultipleQueryTypesException</a></em></p> <h2 id="properties"><a href="#properties" class="header-anchor">#</a> Properties</h2> <h3 id="message"><a href="#message" class="header-anchor">#</a> message</h3> <p>• <strong>message</strong>: <em>string</em></p> <p><em>Inherited from <a href="/classes/buildschemaerror.html">BuildSchemaError</a>.<a href="/classes/buildschemaerror.html#message">message</a></em></p> <hr> <h3 id="name"><a href="#name" class="header-anchor">#</a> name</h3> <p>• <strong>name</strong>: <em>string</em></p> <p><em>Inherited from <a href="/classes/buildschemaerror.html">BuildSchemaError</a>.<a href="/classes/buildschemaerror.html#name">name</a></em></p> <hr> <h3 id="optional-stack"><a href="#optional-stack" class="header-anchor">#</a> <code>Optional</code> stack</h3> <p>• <strong>stack</strong>? : <em>undefined | string</em></p> <p><em>Inherited from <a href="/classes/buildschemaerror.html">BuildSchemaError</a>.<a href="/classes/buildschemaerror.html#optional-stack">stack</a></em></p> <hr> <h3 id="static-error"><a href="#static-error" class="header-anchor">#</a> <code>Static</code> Error</h3> <p>▪ <strong>Error</strong>: <em>ErrorConstructor</em></p></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"><!----></div></div>
+    <script src="/assets/js/app.9dd137a4.js" defer></script><script src="/assets/js/2.9242dada.js" defer></script><script src="/assets/js/24.fc2b23e1.js" defer></script>
+  </body>
+</html>
