@@ -6,7 +6,7 @@ import { buildSelectArrayExpr, parseStringSelectExpr, ISelectType } from '../../
 
 export const extractSelect = (
   select: string | string[],
-  options: { noId?: boolean; noCollection?: boolean } = {},
+  options: { noId?: boolean | string; noCollection?: boolean } = {},
   excludeMeta = false,
 ): string[] => {
   const { noId, noCollection } = options;
@@ -26,7 +26,7 @@ export const extractSelect = (
 export const getProjectionFields = (
   collection: string,
   select: ISelectType[] | string | string[] = '',
-  options: { noId?: boolean; noCollection?: boolean } = {},
+  options: { noId?: boolean | string; noCollection?: boolean } = {},
 ): { projection: string; fields: string[] } => {
   let fields: string[] = [];
   let projection = '';
@@ -70,19 +70,19 @@ export const getProjectionFields = (
   };
 };
 
-const getMetadata = (noId?: boolean, noCollection?: boolean) => {
+const getMetadata = (noId?: boolean | string, noCollection?: boolean) => {
   const metadataSelect: string[] = [];
   if (!noCollection) {
     metadataSelect.push(getCollectionKey());
   }
-  if (!noId) {
-    metadataSelect.push(getMetaId());
+  if (!noId || typeof noId === 'string') {
+    metadataSelect.push(getMetaId(noId || DEFAULT_ID_KEY));
   }
   return metadataSelect;
 };
 
-const getMetaId = () => {
-  return `META().id as ${DEFAULT_ID_KEY}`;
+const getMetaId = (id) => {
+  return `META().id as ${id}`;
 };
 
 const getCollectionKey = () => {

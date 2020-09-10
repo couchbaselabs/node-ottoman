@@ -152,22 +152,43 @@ describe('Test Document Access Functions', () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test('UserModel find items without params', async () => {
-    const UserModel = model('User', schema);
-    const result = await UserModel.find({}, { consistency: SearchConsistency.LOCAL });
-    expect(result.rows).toBeDefined();
+  test('UserModel findOne function, also check return correct custom idKey', async () => {
+    const CUSTOM_ID_KEY = 'userId';
+    const UserModel = model('User', schema, { idKey: CUSTOM_ID_KEY });
+    await UserModel.create({
+      type: 'airline',
+      isActive: false,
+      name: 'Ottoman Access Find One',
+    });
+    const document = await UserModel.findOne(
+      {
+        name: 'Ottoman Access Find One',
+      },
+      { consistency: SearchConsistency.LOCAL },
+    );
+    expect(document).toBeTruthy();
+    expect(typeof document[CUSTOM_ID_KEY]).toBe('string');
   });
 
-  test('UserModel findOne function', async () => {
-    const UserModel = model('User', schema);
-    await UserModel.create(accessDoc);
-    const element = await UserModel.findOne({
-      type: 'airlineR',
+  test('UserModel find function, also check return correct custom idKey', async () => {
+    const CUSTOM_ID_KEY = 'userListId';
+    const UserModel = model('User', schema, { idKey: CUSTOM_ID_KEY });
+    await UserModel.create({
+      type: 'airline',
       isActive: false,
-      name: 'Ottoman Access',
+      name: 'Ottoman Access List',
     });
-    expect(element).toBeTruthy();
+    const documents = await UserModel.find(
+      {
+        name: 'Ottoman Access List',
+      },
+      { consistency: SearchConsistency.LOCAL },
+    );
+    expect(documents.rows).toBeDefined();
+    const document = documents.rows[0];
+    expect(typeof document[CUSTOM_ID_KEY]).toBe('string');
   });
+
   test('UserModel findOne function no response', async () => {
     const UserModel = model('User', schema);
     await UserModel.create(accessDoc);
@@ -175,5 +196,31 @@ describe('Test Document Access Functions', () => {
       type: 'airlineFlyFly',
     });
     expect(element).toBe(null);
+  });
+
+  test('UserModel save with arbitrary id', async () => {
+    const CUSTOM_ID_KEY = 'airlineId';
+    const UserModel = model('User', schema, { idKey: CUSTOM_ID_KEY });
+    const user = new UserModel({
+      [CUSTOM_ID_KEY]: 'Airline-1',
+      type: 'airline',
+      isActive: false,
+      name: 'Ottoman Access List',
+    });
+    await user.save();
+    const document = await UserModel.findById(user[CUSTOM_ID_KEY]);
+    expect(document[CUSTOM_ID_KEY]).toBe(user[CUSTOM_ID_KEY]);
+  });
+
+  test('UserModel create with arbitrary id', async () => {
+    const UserModel = model('User', schema);
+    const user = await UserModel.create({
+      id: 'Airline-2',
+      type: 'airline',
+      isActive: false,
+      name: 'Ottoman Access List',
+    });
+    const document = await UserModel.findById(user.id);
+    expect(document.id).toBe(user.id);
   });
 });

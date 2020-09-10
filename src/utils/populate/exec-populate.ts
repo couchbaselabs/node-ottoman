@@ -5,10 +5,8 @@
 export const execPopulation = (rows, toPopulate: string, connection, modelName: string, deep?): Promise<any[]> => {
   const promises: Promise<any>[] = [];
   for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-    if (row[toPopulate]) {
-      const Model = connection.getModel(modelName);
-      const document = new Model(row);
+    const document = rows[i];
+    if (document[toPopulate]) {
       promises.push(
         document._populate(toPopulate, deep).then((populated) => {
           rows[i] = populated;

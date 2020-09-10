@@ -1,3 +1,4 @@
+import { DocumentNotFoundError } from 'couchbase';
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
 import { DEFAULT_POPULATE_MAX_DEEP } from '../utils/constants';
@@ -83,12 +84,18 @@ export abstract class Document<T> {
       id = generateUUID();
       refKeys.add = newRefKeys;
     } else {
-      const { cas, value: oldData } = await collection.get(id);
-      const oldRefKeys = getModelRefKeys(oldData, prefix);
-      refKeys.add = arrayDiff(newRefKeys, oldRefKeys);
-      refKeys.remove = arrayDiff(oldRefKeys, newRefKeys);
-      if (cas) {
-        options.cas = cas;
+      try {
+        const { cas, value: oldData } = await collection.get(id);
+        const oldRefKeys = getModelRefKeys(oldData, prefix);
+        refKeys.add = arrayDiff(newRefKeys, oldRefKeys);
+        refKeys.remove = arrayDiff(oldRefKeys, newRefKeys);
+        if (cas) {
+          options.cas = cas;
+        }
+      } catch (e) {
+        if (e instanceof DocumentNotFoundError) {
+          refKeys.add = newRefKeys;
+        }
       }
     }
     const addedMetadata = { ...data, [collectionKey]: collectionName, [scopeKey]: scopeName };
