@@ -5,6 +5,7 @@ export {
   model,
   getConnections,
   getDefaultConnection,
+  startOttoman,
 } from './connections/connection-handler';
 export { Model } from './model/model';
 export { getModelMetadata } from './model/utils/model.utils';

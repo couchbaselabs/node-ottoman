@@ -208,7 +208,7 @@ import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import { UserRoutes, AuthRoutes } from './users/users.controller';
-import { ensureIndexes } from '../lib/model/index/ensure-indexes';
+import { startOttoman } from '../lib/connections/connection-handler';
 import { jwtMiddleware } from './shared/protected.router';
 import { AirportRoutes } from './airports/airports.controller';
 import { HotelRoutes } from './hotels/hotels.controller';
@@ -237,7 +237,7 @@ app.use((err: Error, req: Request, res: Response) => {
   return res.status(500).json({ error: err.toString() });
 });
 
-ensureIndexes()
+startOttoman(true)
   .then(() => {
     console.log('All the indexes were registered');
     const port = 4500;

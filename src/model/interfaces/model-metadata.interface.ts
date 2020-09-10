@@ -11,5 +11,6 @@ export interface ModelMetadata {
   connection: ConnectionManager;
   collectionKey: string;
   scopeKey: string;
+  maxExpiry: string;
   keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
 }

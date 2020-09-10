@@ -92,21 +92,21 @@ schema.index.findByLastName = {
 };
 ```
 
-In order for indexes to be created on the server, you must call the `ensureIndexes` method. 
-This method will internally generate a list of indexes which will be used in the most optimal 
+In order for indexes to be created on the server, you must call the `startOttoman` method. 
+This method will internally generate a list of scopes, collections and indexes which will be used in the most optimal 
 configuration for them, and will build any index missing on the server. 
 This method must be called after all models are defined, and it is a good idea to call this only when needed rather than any time your server is started.
 
 ```javascript
 // index.js
 import express from 'express';
-import { ensureIndexes } from 'ottoman';
+import { startOttoman } from 'ottoman';
 import { UserRoutes } from './users/users.controller';
 const app = express();
 
 app.use('/users', UserRoutes);
 
-ensureIndexes()
+startOttoman(true)
   .then(() => {
     console.log('All the indexes were registered');
     app.listen(5000);

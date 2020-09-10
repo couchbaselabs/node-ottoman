@@ -80,6 +80,12 @@ export class Ottoman {
    * Close Couchbase connection
    */
   closeConnection = () => __conn.close();
+
+  /**
+   * Start ottoman creating scopes and collection if they don't exist
+   * @param ensureIndexes is a flag to define if ensure that all indexes are created in the server
+   */
+  startOttoman = (ensureIndexes = false): Promise<void> => __conn.start(ensureIndexes);
 }
 
 export const ottoman = new Ottoman();
@@ -97,5 +103,5 @@ const connectFromEnvVariables = (modelName: string) => {
   }
 };
 
-const { connect, closeConnection, getCollection, getConnections, getDefaultConnection, model } = ottoman;
-export { connect, closeConnection, getCollection, getConnections, getDefaultConnection, model };
+const { connect, closeConnection, getCollection, getConnections, getDefaultConnection, model, startOttoman } = ottoman;
+export { connect, closeConnection, getCollection, getConnections, getDefaultConnection, model, startOttoman };

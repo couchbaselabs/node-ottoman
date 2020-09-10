@@ -8,6 +8,7 @@ export interface ModelOptions {
   idKey?: string;
   scopeKey?: string;
   collectionKey?: string;
+  maxExpiry?: string;
   keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
 }
 

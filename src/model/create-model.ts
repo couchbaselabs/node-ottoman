@@ -1,6 +1,6 @@
 import { Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
-import { KEY_GENERATOR, COLLECTION_KEY, DEFAULT_ID_KEY, DEFAULT_SCOPE, SCOPE_KEY } from '../utils/constants';
+import { KEY_GENERATOR, COLLECTION_KEY, DEFAULT_ID_KEY, DEFAULT_SCOPE, SCOPE_KEY, DEFAULT_MAX_EXPIRY } from '../utils/constants';
 import { extractSelect } from '../utils/query/extract-select';
 import { find } from '../handler/find/find';
 import { CreateModel } from './interfaces/create-model.interface';
@@ -29,6 +29,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
   const scopeKey = options && options.scopeKey ? options.scopeKey : SCOPE_KEY;
   const collectionKey = options && options.collectionKey ? options.collectionKey : COLLECTION_KEY;
   const collection = connection.getCollection(collectionName, scopeName);
+  const maxExpiry = options && options.maxExpiry ? options.maxExpiry : DEFAULT_MAX_EXPIRY;
 
   const metadata: ModelMetadata = {
     modelName: name,
@@ -41,6 +42,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
     scopeKey,
     collectionKey,
     keyGenerator,
+    maxExpiry,
   };
 
   const ModelFactory = _buildModel(metadata);
