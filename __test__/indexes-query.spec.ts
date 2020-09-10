@@ -1,4 +1,4 @@
-import { Schema, model, ensureIndexes } from '../src';
+import { Schema, model, startOttoman } from '../src';
 import { delay } from './testData';
 
 const generateMockData = async () => {
@@ -12,7 +12,7 @@ const generateMockData = async () => {
     },
   };
   const User = model('User', userSchema);
-  await ensureIndexes();
+  await startOttoman(true);
   const postSchema = new Schema({
     user: { type: userSchema, ref: 'User' },
     title: String,

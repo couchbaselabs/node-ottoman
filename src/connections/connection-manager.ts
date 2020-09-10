@@ -2,6 +2,9 @@ import { createModel } from '../model/create-model';
 import { DEFAULT_COLLECTION, DEFAULT_SCOPE } from '../utils/constants';
 import { Schema } from '../schema';
 import { ModelTypes } from '../model/model.types';
+import { isDebugMode } from '../utils/is-debug-mode';
+import { getModelMetadata } from '..';
+import { ensureIndexes } from '../model/index/ensure-indexes';
 
 /**
  * Creates a connection instance.
@@ -131,5 +134,50 @@ export class ConnectionManager {
    */
   async query(query: string) {
     return this.cluster.query(query);
+  }
+
+  /**
+   * Start ottoman creating scopes and collection if they don't exist
+   * @param ensureIndexes is a flag to define if ensure that all indexes are created in the server
+   * @returns
+   */
+  async start(_ensureIndexes = false): Promise<void> {
+    const scopePromises: Promise<any>[] = [];
+    const collectionPromises: Promise<any>[] = [];
+    for (const key in this.models) {
+      if (this.models[key]) {
+        const metadata = getModelMetadata(this.models[key]);
+        const { scopeName, collectionName, maxExpiry } = metadata;
+
+        if (scopeName !== DEFAULT_SCOPE) {
+          scopePromises.push(this.collectionManager.createScope(scopeName).catch((e) => console.log(e)));
+        }
+        if (collectionName !== DEFAULT_COLLECTION) {
+          const _maxExpiry = +maxExpiry;
+          collectionPromises.push(
+            this.collectionManager
+              .createCollection({
+                name: collectionName,
+                scopeName,
+                _maxExpiry,
+              })
+              .catch((e) => console.log(e)),
+          );
+        }
+      }
+    }
+    for await (const scope of scopePromises) {
+      if (isDebugMode()) {
+        console.log(scope);
+      }
+    }
+    for await (const collection of collectionPromises) {
+      if (isDebugMode()) {
+        console.log(collection);
+      }
+    }
+    if (_ensureIndexes) {
+      await ensureIndexes();
+    }
   }
 }

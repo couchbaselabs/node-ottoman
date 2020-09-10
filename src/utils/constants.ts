@@ -61,3 +61,5 @@ export let DEFAULT_POPULATE_MAX_DEEP = 1;
 export let DISABLE_SCOPES = false;
 
 export let KEY_GENERATOR = ({ metadata, id }) => `${metadata.scopeName}$${metadata.collectionName}::${id}`;
+
+export const DEFAULT_MAX_EXPIRY = '300000';

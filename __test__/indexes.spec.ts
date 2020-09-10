@@ -1,4 +1,4 @@
-import { ensureIndexes, Schema, model, ViewIndexOptions } from '../src';
+import { startOttoman, Schema, model, ViewIndexOptions } from '../src';
 import { delay } from './testData';
 
 describe('Indexes', () => {
@@ -27,7 +27,7 @@ describe('Indexes', () => {
 
   test('Testing indexes', async () => {
     const User = model('User', UserSchema);
-    await ensureIndexes();
+    await startOttoman(true);
 
     const userData = {
       name: `index`,

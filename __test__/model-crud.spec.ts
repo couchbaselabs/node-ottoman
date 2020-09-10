@@ -1,4 +1,4 @@
-import { model, Schema, ensureIndexes, SearchConsistency } from '../src';
+import { model, Schema, startOttoman, SearchConsistency } from '../src';
 import { isDocumentNotFoundError } from '../src/utils/is-not-found';
 
 const accessDoc = {
@@ -31,7 +31,7 @@ const schema = {
 
 describe('Test Document Access Functions', () => {
   beforeEach(async () => {
-    await ensureIndexes();
+    await startOttoman();
   });
 
   test('UserModel.create Creating a document', async () => {
