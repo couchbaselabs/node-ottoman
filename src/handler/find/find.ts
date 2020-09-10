@@ -15,10 +15,13 @@ import { DISABLE_SCOPES } from '../../utils/constants';
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
   const { skip, limit, sort, populate, select, noCollection, noId, populateMaxDeep, consistency } = options;
-  const { connection, collectionName, collectionKey, scopeKey, scopeName, modelName } = metadata;
+  const { connection, collectionName, collectionKey, scopeKey, scopeName, modelName, ID_KEY } = metadata;
   const { bucketName, cluster } = connection;
   // Handling select
-  const projectionFields = getProjectionFields(bucketName, select, { noId: noId, noCollection: noCollection });
+  const projectionFields = getProjectionFields(bucketName, select, {
+    noId: noId || ID_KEY,
+    noCollection,
+  });
 
   // Handling conditions
   const expr_where = {
@@ -53,14 +56,18 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   }
   const result = cluster.query(query.build(), queryOptions);
   return result.then(async (r: { rows: unknown[] }) => {
-    if (populate) {
-      const populateFields = extractPopulate(populate);
-      for (const toPopulate of populateFields) {
-        if (canBePopulated(toPopulate, projectionFields.fields)) {
-          await execPopulation(r.rows, toPopulate, connection, modelName, populateMaxDeep);
+    if (select !== 'RAW COUNT(*) as count') {
+      const Model = connection.getModel(modelName);
+      r.rows = r.rows.map((row) => new Model(row));
+      if (populate) {
+        const populateFields = extractPopulate(populate);
+        for (const toPopulate of populateFields) {
+          if (canBePopulated(toPopulate, projectionFields.fields)) {
+            await execPopulation(r.rows, toPopulate, connection, modelName, populateMaxDeep);
+          }
         }
+        return r;
       }
-      return r;
     }
     return r;
   });
