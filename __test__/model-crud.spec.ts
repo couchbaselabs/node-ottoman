@@ -37,8 +37,7 @@ describe('Test Document Access Functions', () => {
   test('UserModel.create Creating a document', async () => {
     const UserModel = model('User', schema);
     const result = await UserModel.create(accessDoc);
-    UserModel.update({ name: 'Updated' }, result.id);
-    expect(result.token).toBeDefined();
+    expect(result.id).toBeDefined();
   });
 
   test('UserModel.findById Get a document', async () => {
@@ -82,8 +81,8 @@ describe('Test Document Access Functions', () => {
     expect(user.id).toBeDefined();
     user.name = 'Instance Edited';
     user.id = result.id;
-    const update = await user.save();
-    expect(update.token).toBeDefined();
+    const updated = await user.save();
+    expect(updated.name).toBe('Instance Edited');
   });
 
   test('Remove saved document from Model instance', async () => {
@@ -176,11 +175,11 @@ describe('Test Document Access Functions', () => {
     await UserModel.create({
       type: 'airline',
       isActive: false,
-      name: 'Ottoman Access List',
+      name: 'Ottoman Access List Custom ID',
     });
     const documents = await UserModel.find(
       {
-        name: 'Ottoman Access List',
+        name: 'Ottoman Access List Custom ID',
       },
       { consistency: SearchConsistency.LOCAL },
     );
@@ -222,5 +221,20 @@ describe('Test Document Access Functions', () => {
     });
     const document = await UserModel.findById(user.id);
     expect(document.id).toBe(user.id);
+  });
+
+  test('UserModel custom idKey and keyGenerator', async () => {
+    const keyGenerator = ({ metadata, id }) => `${metadata.scopeName}--${metadata.collectionName}::${id}`;
+    const idKey = 'airlineKey';
+    const UserModel = model('Airlines', schema, { keyGenerator, idKey });
+    const user = await UserModel.create({
+      [idKey]: 'Airline-Key-2',
+      type: 'airline',
+      isActive: false,
+      name: 'Ottoman Access List',
+    });
+    const document = await UserModel.findById(user[idKey]);
+    expect(document[idKey]).toBe(user[idKey]);
+    expect(document[idKey]).toBe('Airline-Key-2');
   });
 });

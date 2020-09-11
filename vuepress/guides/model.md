@@ -43,6 +43,7 @@ interface ModelOptions {
   idKey?: string;
   scopeKey?: string;
   collectionKey?: string;
+  keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
 }
 ```
 

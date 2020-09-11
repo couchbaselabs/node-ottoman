@@ -1,15 +1,15 @@
 /**
  * Extract the values to be used on select clause.
  */
-import { COLLECTION_KEY, DEFAULT_ID_KEY } from '../constants';
+import { COLLECTION_KEY } from '../constants';
 import { buildSelectArrayExpr, parseStringSelectExpr, ISelectType } from '../../query';
 
 export const extractSelect = (
   select: string | string[],
-  options: { noId?: boolean | string; noCollection?: boolean } = {},
+  options: { noCollection?: boolean } = {},
   excludeMeta = false,
 ): string[] => {
-  const { noId, noCollection } = options;
+  const { noCollection } = options;
   let selectProjection: string[] = [];
 
   if (select) {
@@ -19,18 +19,18 @@ export const extractSelect = (
       selectProjection = parseStringSelectExpr(select);
     }
   }
-  const metadata = excludeMeta ? [] : getMetadata(noId, noCollection);
+  const metadata = excludeMeta ? [] : getMetadata(noCollection);
   return [...new Set([...selectProjection, ...metadata])];
 };
 
 export const getProjectionFields = (
   collection: string,
   select: ISelectType[] | string | string[] = '',
-  options: { noId?: boolean | string; noCollection?: boolean } = {},
+  options: { noCollection?: boolean } = {},
 ): { projection: string; fields: string[] } => {
   let fields: string[] = [];
   let projection = '';
-  const metadata = getMetadata(options.noId, options.noCollection);
+  const metadata = getMetadata(options.noCollection);
   if (typeof select === 'string') {
     if (!select) {
       projection = [`\`${collection}\`.*`, ...metadata].join(',');
@@ -38,7 +38,7 @@ export const getProjectionFields = (
       projection = [select, ...metadata].join(',');
     }
 
-    fields = extractSelect(select, { noCollection: options.noCollection, noId: options.noId }, true);
+    fields = extractSelect(select, { noCollection: options.noCollection }, true);
   } else if (Array.isArray(select) && select.length > 0) {
     if (typeof select[0] === 'string') {
       projection = [select, ...metadata].join(',');
@@ -46,7 +46,6 @@ export const getProjectionFields = (
         select as string[],
         {
           noCollection: options.noCollection,
-          noId: options.noId,
         },
         true,
       );
@@ -57,7 +56,6 @@ export const getProjectionFields = (
         selectExpr.replace(/`/g, ''),
         {
           noCollection: options.noCollection,
-          noId: options.noId,
         },
         true,
       );
@@ -70,19 +68,12 @@ export const getProjectionFields = (
   };
 };
 
-const getMetadata = (noId?: boolean | string, noCollection?: boolean) => {
+const getMetadata = (noCollection?: boolean) => {
   const metadataSelect: string[] = [];
   if (!noCollection) {
     metadataSelect.push(getCollectionKey());
   }
-  if (!noId || typeof noId === 'string') {
-    metadataSelect.push(getMetaId(noId || DEFAULT_ID_KEY));
-  }
   return metadataSelect;
-};
-
-const getMetaId = (id) => {
-  return `META().id as ${id}`;
 };
 
 const getCollectionKey = () => {

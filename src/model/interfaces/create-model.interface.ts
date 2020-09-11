@@ -1,5 +1,6 @@
 import { Schema } from '../../schema/schema';
 import { ConnectionManager } from '../../connections/connection-manager';
+import { ModelMetadata } from './model-metadata.interface';
 
 export interface ModelOptions {
   collectionName?: string;
@@ -7,6 +8,7 @@ export interface ModelOptions {
   idKey?: string;
   scopeKey?: string;
   collectionKey?: string;
+  keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
 }
 
 export interface CreateModel {

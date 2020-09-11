@@ -8,8 +8,8 @@ import { updateRefdocIndexes } from './update-refdoc-indexes';
  * Store lifecycle including hooks and validations
  * @ignore
  */
-export const storeLifeCycle = async ({ key, data, options, metadata, refKeys }) => {
-  const { schema, collection, ID_KEY } = metadata;
+export const storeLifeCycle = async ({ key, id, data, options, metadata, refKeys }) => {
+  const { schema, collection } = metadata;
   let document = data;
   await execHooks(schema, 'preHooks', HOOKS.VALIDATE, document);
 
@@ -23,15 +23,15 @@ export const storeLifeCycle = async ({ key, data, options, metadata, refKeys }) 
     await execHooks(schema, 'preHooks', HOOKS.SAVE, document);
   }
 
-  const result = await store(key, document, options, collection, ID_KEY);
+  const result = await store(key, document, options, collection);
 
   // After storing the document update the index refdocs
-  updateRefdocIndexes(refKeys, key, collection);
+  await updateRefdocIndexes(refKeys, id, collection);
 
   if (options.cas) {
-    await execHooks(schema, 'postHooks', HOOKS.UPDATE, { document, result });
+    await execHooks(schema, 'postHooks', HOOKS.UPDATE, document);
   } else {
-    await execHooks(schema, 'postHooks', HOOKS.SAVE, { document, result });
+    await execHooks(schema, 'postHooks', HOOKS.SAVE, document);
   }
 
   return { result, document };

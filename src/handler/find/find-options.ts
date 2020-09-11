@@ -8,7 +8,6 @@ export class FindOptions {
   populateMaxDeep?: number;
   select?: ISelectType[] | string | string[];
   consistency?: 0 | 1 | 2;
-  noId?: boolean;
   noCollection?: boolean;
   constructor(data: FindOptions) {
     for (const key in data) {

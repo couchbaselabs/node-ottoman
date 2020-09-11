@@ -1,21 +1,44 @@
-export const updateRefdocIndexes = (refKeys: { add: string[]; remove: string[] }, key: string | null, collection) => {
-  for (const ref of refKeys.add) {
+import { isDebugMode } from '../../utils/is-debug-mode';
+
+export const updateRefdocIndexes = async (
+  refKeys: { add: string[]; remove: string[] },
+  key: string | null,
+  collection,
+) => {
+  for await (const ref of addRefKeys(refKeys.add, collection, key)) {
+    if (isDebugMode()) {
+      console.log('Adding refdoc index:', ref);
+    }
+  }
+
+  for await (const ref of removeRefKeys(refKeys.remove, collection)) {
+    if (isDebugMode()) {
+      console.log('Removing refdoc index:', ref);
+    }
+  }
+};
+
+async function* addRefKeys(refKeys, collection, key) {
+  for (const ref of refKeys) {
     if (ref.length < 250) {
-      collection.insert(ref, key).catch((e) => {
+      yield collection.insert(ref, key).catch((e) => {
         if (!process.env.CI || (process.env.CI && process.env.CI.toLowerCase() !== 'true')) {
           console.warn(e);
         }
       });
     } else {
       console.log(`Unable to store refdoc index for ${ref}, Maximum key size is 250 bytes`);
+      yield false;
     }
   }
+}
 
-  for (const ref of refKeys.remove) {
-    collection.remove(ref).catch((e) => {
+async function* removeRefKeys(refKeys, collection) {
+  for (const ref of refKeys) {
+    yield collection.remove(ref).catch((e) => {
       if (!process.env.CI || (process.env.CI && process.env.CI.toLowerCase() !== 'true')) {
         console.warn(e);
       }
     });
   }
-};
+}

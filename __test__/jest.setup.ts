@@ -5,6 +5,7 @@ beforeAll(async () => {
     collectionKey: 'collectionName',
     scopeKey: 'scopeName',
     populateMaxDeep: 1,
+    keyGenerator: ({ metadata, id }) => `${metadata.scopeName}-${metadata.collectionName}::${id}`,
   });
   connect(connectUri);
 });

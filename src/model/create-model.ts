@@ -1,6 +1,6 @@
 import { Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
-import { COLLECTION_KEY, DEFAULT_ID_KEY, DEFAULT_SCOPE, SCOPE_KEY } from '../utils/constants';
+import { KEY_GENERATOR, COLLECTION_KEY, DEFAULT_ID_KEY, DEFAULT_SCOPE, SCOPE_KEY } from '../utils/constants';
 import { extractSelect } from '../utils/query/extract-select';
 import { find } from '../handler/find/find';
 import { CreateModel } from './interfaces/create-model.interface';
@@ -23,6 +23,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
   const schema = schemaDraft instanceof Schema ? schemaDraft : new Schema(schemaDraft);
 
   const ID_KEY = options && options.idKey ? options.idKey : DEFAULT_ID_KEY;
+  const keyGenerator = options && options.keyGenerator ? options.keyGenerator : KEY_GENERATOR;
   const scopeName = options && options.scopeName ? options.scopeName : DEFAULT_SCOPE;
   const collectionName = options && options.collectionName ? options.collectionName : name;
   const scopeKey = options && options.scopeKey ? options.scopeKey : SCOPE_KEY;
@@ -31,7 +32,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
 
   const metadata: ModelMetadata = {
     modelName: name,
-    collectionName: collectionName,
+    collectionName,
     scopeName,
     collection,
     schema,
@@ -39,6 +40,7 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
     connection,
     scopeKey,
     collectionKey,
+    keyGenerator,
   };
 
   const ModelFactory = _buildModel(metadata);
@@ -96,6 +98,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
     scopeName,
     connection,
     modelName,
+    keyGenerator,
   } = metadata;
   return class _Model<T> extends Model<T> {
     constructor(data) {
@@ -129,7 +132,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
     }
 
     static find = (filter: LogicalWhereExpr = {}, options: IFindOptions = {}) => {
-      return find(metadata)(filter, { ...options, ...{ noCollection: false, noId: false } });
+      return find(metadata)(filter, { ...options, ...{ noCollection: false } });
     };
 
     static collection = collection;
@@ -142,7 +145,6 @@ export const _buildModel = (metadata: ModelMetadata) => {
         ...options,
         select: 'RAW COUNT(*) as count',
         noCollection: true,
-        noId: true,
       });
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
         return response.rows[0];
@@ -155,12 +157,13 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const populate = options.populate;
       delete options.populate;
       if (findOptions.select) {
-        findOptions['project'] = extractSelect(findOptions.select, { noId: true, noCollection: true });
+        findOptions['project'] = extractSelect(findOptions.select, { noCollection: true });
         delete findOptions.select;
       }
-      const { value } = await collection.get(id, findOptions);
+      const key = keyGenerator!({ metadata, id });
+      const { value } = await collection.get(key, findOptions);
       const ModelFactory = connection.getModel(modelName);
-      const document = new ModelFactory({ ...value, [ID_KEY]: id });
+      const document = new ModelFactory({ ...value });
       if (populate) {
         return await document._populate(populate);
       }
@@ -179,18 +182,19 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return null;
     };
 
-    static create = (data: Record<string, any>): Promise<any> => {
+    static create = async (data: Record<string, any>): Promise<any> => {
       const instance = new _Model({ ...data });
-      return instance.save();
+      await instance.save();
+      return instance;
     };
 
     static update = async (data, id?: string) => {
       const key = id || data[ID_KEY];
-      const { value } = await collection.get(key);
+      const value = await _Model.findById(key);
       const updated = {
         ...value,
         ...data,
-        ...{ [ID_KEY]: key, [collectionKey]: value[collectionKey], [scopeKey]: value[scopeKey] },
+        ...{ [collectionKey]: value[collectionKey], [scopeKey]: value[scopeKey] },
       };
       const instance = new _Model({ ...updated });
       return instance.save();
