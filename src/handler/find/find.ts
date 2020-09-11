@@ -14,12 +14,11 @@ import { DISABLE_SCOPES } from '../../utils/constants';
  * @ignore
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
-  const { skip, limit, sort, populate, select, noCollection, noId, populateMaxDeep, consistency } = options;
-  const { connection, collectionName, collectionKey, scopeKey, scopeName, modelName, ID_KEY } = metadata;
+  const { skip, limit, sort, populate, select, noCollection, populateMaxDeep, consistency } = options;
+  const { connection, collectionName, collectionKey, scopeKey, scopeName, modelName } = metadata;
   const { bucketName, cluster } = connection;
   // Handling select
   const projectionFields = getProjectionFields(bucketName, select, {
-    noId: noId || ID_KEY,
     noCollection,
   });
 

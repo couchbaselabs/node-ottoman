@@ -35,15 +35,14 @@ test('Hook.pre.save', async () => {
 
 test('Hook.post.save', async () => {
   const UserSchema = new Schema(schema);
-  UserSchema.post('save', ({ document, result }) => {
+  UserSchema.post('save', (document) => {
     document.name = 'async post save';
-    result.document = document;
   });
 
   const UserModel = model('User', UserSchema);
   const result = await UserModel.create(accessDoc2);
-  expect(result.document).toBeDefined();
-  expect(result.document.name).toBe('async post save');
+  expect(result).toBeDefined();
+  expect(result.name).toBe('async post save');
 });
 
 test('Hook update', async () => {
@@ -52,8 +51,8 @@ test('Hook update', async () => {
     document.name = 'async pre update';
   });
 
-  UserSchema.post('update', ({ document, result }) => {
-    result.document = document;
+  UserSchema.post('update', (document) => {
+    document.document = document;
   });
 
   const UserModel = model('User', UserSchema);
@@ -61,12 +60,12 @@ test('Hook update', async () => {
   await user.save();
   expect(user.id).toBeDefined();
   expect(user.name).toBe(accessDoc2.name);
-  const updateResult = await user.save();
+  await user.save();
   expect(user.name).toBe('async pre update');
   const userUpdated = await UserModel.findById(user.id);
   expect(userUpdated.name).toBe('async pre update');
-  expect(updateResult.document).toBeDefined();
-  expect(updateResult.document.name).toBe('async pre update');
+  expect(user.document).toBeDefined();
+  expect(user.document.name).toBe('async pre update');
 });
 
 test('Hook.pre.remove function', async () => {

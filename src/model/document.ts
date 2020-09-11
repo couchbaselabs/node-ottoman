@@ -70,7 +70,7 @@ export abstract class Document<T> {
    * ```
    */
   async save() {
-    const { scopeName, scopeKey, collectionName, collectionKey, collection, ID_KEY } = this.$;
+    const { scopeName, scopeKey, collectionName, collectionKey, collection, keyGenerator } = this.$;
     const data = extractDataFromModel(this);
     const options: any = {};
     let id = this._getId();
@@ -80,12 +80,19 @@ export abstract class Document<T> {
       add: [],
       remove: [],
     };
+    const metadata = this.$;
+    let key = '';
     if (!id) {
       id = generateUUID();
+      key = keyGenerator!({ metadata, id });
+      if (!data[this._getIdField()]) {
+        data[this._getIdField()] = id;
+      }
       refKeys.add = newRefKeys;
     } else {
       try {
-        const { cas, value: oldData } = await collection.get(id);
+        key = keyGenerator!({ metadata, id });
+        const { cas, value: oldData } = await collection.get(key);
         const oldRefKeys = getModelRefKeys(oldData, prefix);
         refKeys.add = arrayDiff(newRefKeys, oldRefKeys);
         refKeys.remove = arrayDiff(oldRefKeys, newRefKeys);
@@ -99,13 +106,9 @@ export abstract class Document<T> {
       }
     }
     const addedMetadata = { ...data, [collectionKey]: collectionName, [scopeKey]: scopeName };
-    const metadata = this.$;
-    const { result, document } = await storeLifeCycle({ key: id, data: addedMetadata, options, metadata, refKeys });
-    if (!document[ID_KEY]) {
-      document[ID_KEY] = id;
-    }
+    const { document } = await storeLifeCycle({ key, id, data: addedMetadata, options, metadata, refKeys });
     this._applyData(document);
-    return result;
+    return this;
   }
 
   /**
@@ -120,13 +123,15 @@ export abstract class Document<T> {
    */
   async remove(options = {}) {
     const data = extractDataFromModel(this);
-    const prefix = `${this.$.scopeName}${this.$.collectionName}`;
     const metadata = this.$;
+    const { keyGenerator, scopeName, collectionName } = metadata;
+    const prefix = `${scopeName}${collectionName}`;
     const refKeys = {
       add: [],
       remove: getModelRefKeys(data, prefix),
     };
-    const id = this._getId();
+    const idValue = this._getId();
+    const id = keyGenerator!({ metadata, id: idValue });
     const { result, document } = await removeLifeCycle({ id, options, metadata, refKeys, data });
     this._applyData(document);
     return result;

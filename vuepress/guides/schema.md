@@ -40,11 +40,9 @@ A side-effect of this is that meta above cannot have its own validation. If vali
 * [Number](/classes/numbertype)
 * [Boolean](/classes/booleantype)
 * [Date](/classes/datetype)
-* [Object](/classes/objecttype)
 * [Array](/classes/arraytype)
 * [Embed](/classes/embedtype)
 * [Reference](/classes/reference)
-
 
 
 Schemas not only define the structure of your document and casting of properties,
@@ -144,13 +142,16 @@ Instances of Models are [documents](/guides/document.md). Documents have many of
 We may also define our own custom document instance methods.
 
 ```javascript
-import {getModel} from 'ottoman';
+import {connect, Schema} from 'ottoman';
+// connecting
+const connection = connect('couchbase://localhost/travel-sample@admin:password');
+
 // define a schema
 const animalSchema = new Schema({ name: String, type: String });
 
 // assign a function to the "methods" object of our animalSchema
 animalSchema.methods.findSimilarTypes = function() {
-return getModel('Animal').find({ type: this.type });
+return connection.getModel('Animal').find({ type: this.type });
 };
 ```
 

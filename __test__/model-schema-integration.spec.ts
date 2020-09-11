@@ -44,8 +44,8 @@ describe('Test Model-Schema Integration and Validations', () => {
     const validated = await user._validate();
     expect(validated).toBeTruthy();
     expect(user._getIdField()).toBe('id');
-    const saved = await user.save();
-    const result = await User.findById(saved.id);
+    await user.save();
+    const result = await User.findById(user.id);
     await result._populate();
     expect(result.card.cardNumber).toBe(cardInfo.cardNumber);
     expect(result.cats[0].name).toBe('Figaro');

@@ -68,10 +68,18 @@ The available configurations are:
 interface configOptions {
   collectionKey?: string;
   scopeKey?: string;
+  defaultScope?: string;
   populateMaxDeep?: number;
   disableScopes?: boolean;
+  keyGenerator?: (params: { metadata: ModelMetadata; id: any; }) => string;
 }
 ```
+
+The default implementation for `keyGenerator` function is:
+```typescript
+KEY_GENERATOR = ({ metadata, id }) => `${metadata.scopeName}$${metadata.collectionName}::${id}`;
+```
+`keyGenerator` can be override for each `Model` if you want, check this in [model options](/guides/model.html#model-options)
 
 ## Using the default connection
 
