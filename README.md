@@ -96,6 +96,14 @@ $ yarn docs
 ```
 Check results on [http://localhost:8091/](http://localhost:8091/) couchbase web client
 
+## Deploying Ottoman to NPM
+
+- Pull master branch from repo
+- yarn install
+- ensure version number is bumped
+- yarn build
+- npm 
+
 ## License
 © Copyright 2013 Couchbase Inc.
 
