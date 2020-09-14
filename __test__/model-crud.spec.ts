@@ -1,5 +1,6 @@
-import { model, Schema, startOttoman, SearchConsistency } from '../src';
+import { model, Schema, SearchConsistency, getDefaultConnection } from '../src';
 import { isDocumentNotFoundError } from '../src/utils/is-not-found';
+import { startInTest } from './testData';
 
 const accessDoc = {
   type: 'airlineR',
@@ -30,18 +31,16 @@ const schema = {
 };
 
 describe('Test Document Access Functions', () => {
-  beforeEach(async () => {
-    await startOttoman();
-  });
-
   test('UserModel.create Creating a document', async () => {
     const UserModel = model('User', schema);
+    await startInTest(getDefaultConnection());
     const result = await UserModel.create(accessDoc);
     expect(result.id).toBeDefined();
   });
 
   test('UserModel.findById Get a document', async () => {
     const UserModel = model('User', schema);
+    await startInTest(getDefaultConnection());
     const result = await UserModel.create(accessDoc);
     const user = await UserModel.findById(result.id);
     expect(user.name).toBeDefined();
@@ -49,6 +48,7 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel.findById expect to fail', async () => {
     const UserModel = model('User', schema);
+    await startInTest(getDefaultConnection());
     const key = 'not-found';
     try {
       await UserModel.findById(key);
@@ -60,6 +60,7 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel.update -> Update a document', async () => {
     const UserModel = model('User', schema);
+    await startInTest(getDefaultConnection());
     const result = await UserModel.create(accessDoc);
     await UserModel.update(updateDoc, result.id);
     const user = await UserModel.findById(result.id);
@@ -68,6 +69,7 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel.replace Replace a document', async () => {
     const UserModel = model('User', schema);
+    await startInTest(getDefaultConnection());
     const result = await UserModel.create(accessDoc);
     await UserModel.replace(replaceDoc, result.id);
     const user = await UserModel.findById(result.id);
@@ -76,6 +78,7 @@ describe('Test Document Access Functions', () => {
 
   test('Document.save Save and update a document', async () => {
     const UserModel = model('User', schema);
+    await startInTest(getDefaultConnection());
     const user = new UserModel(accessDoc2);
     const result = await user.save();
     expect(user.id).toBeDefined();
@@ -87,6 +90,7 @@ describe('Test Document Access Functions', () => {
 
   test('Remove saved document from Model instance', async () => {
     const UserModel = model('User', schema);
+    await startInTest(getDefaultConnection());
     const user = new UserModel(accessDoc2);
     await user.save();
     expect(user.id).toBeDefined();
@@ -97,6 +101,7 @@ describe('Test Document Access Functions', () => {
   test('Remove saved document from Model Constructor', async () => {
     const UserSchema = new Schema(schema);
     const UserModel = model('User', UserSchema);
+    await startInTest(getDefaultConnection());
     const user = new UserModel(accessDoc2);
     const result = await user.save();
     expect(result.id).toBeDefined();
@@ -112,7 +117,8 @@ describe('Test Document Access Functions', () => {
     };
     const UserSchema = new Schema(schema);
 
-    const UserModel = model('User', UserSchema);
+    const UserModel = model('User', UserSchema, { scopeName: 'myScope' });
+    await startInTest(getDefaultConnection());
     const user = new UserModel(removeDoc);
     await user.save();
     const userSaved = await UserModel.findById(user.id);
@@ -131,6 +137,7 @@ describe('Test Document Access Functions', () => {
       return `method: getType -> ${this.type}`;
     };
     const UserModel = model('User', UserSchema);
+    await startInTest(getDefaultConnection());
     const user = new UserModel(accessDoc2);
     expect(user.getType()).toBe(`method: getType -> ${accessDoc2.type}`);
   });
@@ -145,7 +152,8 @@ describe('Test Document Access Functions', () => {
   });
 
   test('UserModel count function', async () => {
-    const UserModel = model('User', schema);
+    const UserModel = model('User', schema, { scopeName: 'myScope' });
+    await startInTest(getDefaultConnection());
     await UserModel.create(accessDoc);
     const count = await UserModel.count();
     expect(count).toBeGreaterThan(0);
@@ -154,6 +162,7 @@ describe('Test Document Access Functions', () => {
   test('UserModel findOne function, also check return correct custom idKey', async () => {
     const CUSTOM_ID_KEY = 'userId';
     const UserModel = model('User', schema, { idKey: CUSTOM_ID_KEY });
+    await startInTest(getDefaultConnection());
     await UserModel.create({
       type: 'airline',
       isActive: false,
@@ -172,6 +181,7 @@ describe('Test Document Access Functions', () => {
   test('UserModel find function, also check return correct custom idKey', async () => {
     const CUSTOM_ID_KEY = 'userListId';
     const UserModel = model('User', schema, { idKey: CUSTOM_ID_KEY });
+    await startInTest(getDefaultConnection());
     await UserModel.create({
       type: 'airline',
       isActive: false,
@@ -190,6 +200,7 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel findOne function no response', async () => {
     const UserModel = model('User', schema);
+    await startInTest(getDefaultConnection());
     await UserModel.create(accessDoc);
     const element = await UserModel.findOne({
       type: 'airlineFlyFly',

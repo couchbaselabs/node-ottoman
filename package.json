@@ -29,6 +29,7 @@
     "lint": "eslint --ignore-pattern '/lib/' '*/**/*.ts' --quiet --fix",
     "test": "jest --clearCache && jest -i",
     "test:coverage": "jest -i --coverage",
+    "test:collections": "jest --clearCache && useCollections=1 jest -i",
     "test:dev": "jest --watch",
     "test:ready": "jest --clearCache && jest -i --coverage"
   },

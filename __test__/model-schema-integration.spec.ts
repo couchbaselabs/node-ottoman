@@ -1,4 +1,5 @@
-import { Schema, model } from '../src';
+import { Schema, model, getDefaultConnection } from '../src';
+import { startInTest } from './testData';
 
 describe('Test Model-Schema Integration and Validations', () => {
   const CardSchema = new Schema({
@@ -35,6 +36,9 @@ describe('Test Model-Schema Integration and Validations', () => {
       expect(typeof doc.cats[0]).toBe('string');
     });
     const User = model('User', UserSchema);
+
+    await startInTest(getDefaultConnection());
+
     const cardCreated = await Card.create(cardInfo);
     const catCreated = await Cat.create({ name: 'Figaro', age: 6 });
     const catCreated2 = await Cat.create({ name: 'Garfield', age: 27 });

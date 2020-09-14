@@ -1,10 +1,11 @@
+import { CollectionExistsError, ScopeExistsError } from 'couchbase';
 import { createModel } from '../model/create-model';
 import { DEFAULT_COLLECTION, DEFAULT_SCOPE } from '../utils/constants';
 import { Schema } from '../schema';
 import { ModelTypes } from '../model/model.types';
 import { isDebugMode } from '../utils/is-debug-mode';
 import { getModelMetadata } from '..';
-import { ensureIndexes } from '../model/index/ensure-indexes';
+import { ensureIndexes as ensureIndexesFn } from '../model/index/ensure-indexes';
 
 /**
  * Creates a connection instance.
@@ -139,45 +140,80 @@ export class ConnectionManager {
   /**
    * Start ottoman creating scopes and collection if they don't exist
    * @param ensureIndexes is a flag to define if ensure that all indexes are created in the server
+   * @param useCollections is a flag to create scopes/collections.
    * @returns
    */
-  async start(_ensureIndexes = false): Promise<void> {
-    const scopePromises: Promise<any>[] = [];
-    const collectionPromises: Promise<any>[] = [];
-    for (const key in this.models) {
-      if (this.models[key]) {
-        const metadata = getModelMetadata(this.models[key]);
-        const { scopeName, collectionName, maxExpiry } = metadata;
+  async start({
+    ensureIndexes = true,
+    useCollections = false,
+  }: {
+    ensureIndexes?: boolean;
+    useCollections?: boolean;
+  } = {}): Promise<void> {
+    if (useCollections) {
+      const scopePromises = new Map();
+      const collectionPromises = new Map();
+      for (const key in this.models) {
+        if (this.models[key]) {
+          const metadata = getModelMetadata(this.models[key]);
+          const { scopeName, collectionName, maxExpiry } = metadata;
 
-        if (scopeName !== DEFAULT_SCOPE) {
-          scopePromises.push(this.collectionManager.createScope(scopeName).catch((e) => console.log(e)));
+          if (scopeName !== '_default') {
+            scopePromises.set(
+              scopeName,
+              this.collectionManager
+                .createScope(scopeName)
+                .then(() => console.log('Scope created: ', scopeName))
+                .catch((e) => {
+                  if (!(e instanceof ScopeExistsError)) {
+                    console.error(e);
+                  }
+                }),
+            );
+          }
+          if (collectionName !== '_default') {
+            collectionPromises.set(
+              `${scopeName}${collectionName}`,
+              this.collectionManager
+                .createCollection({
+                  name: collectionName,
+                  scopeName,
+                  maxExpiry: +maxExpiry,
+                })
+                .then(() => console.log(`collection created: ${scopeName}/${collectionName}`))
+                .catch((e) => {
+                  if (!(e instanceof CollectionExistsError)) {
+                    console.error(e);
+                  }
+                }),
+            );
+          }
         }
-        if (collectionName !== DEFAULT_COLLECTION) {
-          const _maxExpiry = +maxExpiry;
-          collectionPromises.push(
-            this.collectionManager
-              .createCollection({
-                name: collectionName,
-                scopeName,
-                _maxExpiry,
-              })
-              .catch((e) => console.log(e)),
-          );
+      }
+      for await (const scope of scopePromises.values()) {
+        if (isDebugMode()) {
+          console.log(scope);
+        }
+      }
+
+      delay(1000);
+
+      for await (const collection of collectionPromises.values()) {
+        if (isDebugMode()) {
+          console.log(collection);
         }
       }
     }
-    for await (const scope of scopePromises) {
-      if (isDebugMode()) {
-        console.log(scope);
-      }
-    }
-    for await (const collection of collectionPromises) {
-      if (isDebugMode()) {
-        console.log(collection);
-      }
-    }
-    if (_ensureIndexes) {
-      await ensureIndexes();
+
+    if (ensureIndexes) {
+      await ensureIndexesFn(this);
     }
   }
 }
+
+const delay = (timems) =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, timems);
+  });

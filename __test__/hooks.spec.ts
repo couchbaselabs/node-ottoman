@@ -1,4 +1,5 @@
-import { Schema, model, isDocumentNotFoundError } from '../src';
+import { Schema, model, isDocumentNotFoundError, getDefaultConnection } from '../src';
+import { startInTest } from './testData';
 const accessDoc2 = {
   type: 'hooks',
   isActive: false,
@@ -28,6 +29,7 @@ test('Hook.pre.save', async () => {
   });
 
   const UserModel = model('User', UserSchema);
+  await startInTest(getDefaultConnection());
   const result = await UserModel.create(accessDoc2);
   const userSaved = await UserModel.findById(result.id);
   expect(userSaved.name).toBe('async pre save');
@@ -40,6 +42,9 @@ test('Hook.post.save', async () => {
   });
 
   const UserModel = model('User', UserSchema);
+
+  await startInTest(getDefaultConnection());
+
   const result = await UserModel.create(accessDoc2);
   expect(result).toBeDefined();
   expect(result.name).toBe('async post save');
@@ -56,6 +61,9 @@ test('Hook update', async () => {
   });
 
   const UserModel = model('User', UserSchema);
+
+  await startInTest(getDefaultConnection());
+
   const user = new UserModel(accessDoc2);
   await user.save();
   expect(user.id).toBeDefined();
@@ -76,6 +84,9 @@ test('Hook.pre.remove function', async () => {
   });
 
   const UserModel = model('User', UserSchema);
+
+  await startInTest(getDefaultConnection());
+
   const user = new UserModel(removeDoc);
   await user.save();
   const userSaved = await UserModel.findById(user.id);
@@ -100,6 +111,9 @@ test('Hook.pre.validate function', async () => {
   });
 
   const UserModel = model('User', UserSchema);
+
+  await startInTest(getDefaultConnection());
+
   const user = new UserModel(validateDoc);
   try {
     await user.save();

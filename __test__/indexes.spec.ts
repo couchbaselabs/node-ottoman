@@ -1,5 +1,5 @@
-import { startOttoman, Schema, model, ViewIndexOptions } from '../src';
-import { delay } from './testData';
+import { Schema, model, ViewIndexOptions, getDefaultConnection } from '../src';
+import { delay, startInTest } from './testData';
 
 describe('Indexes', () => {
   const UserSchema = new Schema({
@@ -27,7 +27,7 @@ describe('Indexes', () => {
 
   test('Testing indexes', async () => {
     const User = model('User', UserSchema);
-    await startOttoman(true);
+    await startInTest(getDefaultConnection());
 
     const userData = {
       name: `index`,
