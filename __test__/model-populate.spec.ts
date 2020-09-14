@@ -1,5 +1,5 @@
-import { model, Schema, FindByIdOptions, FindOptions, SearchConsistency } from '../src';
-import { delay } from './testData';
+import { model, Schema, FindByIdOptions, FindOptions, SearchConsistency, getDefaultConnection } from '../src';
+import { delay, startInTest } from './testData';
 
 const cardInfo = {
   cardNumber: '4242 4242 4242 4242',
@@ -55,6 +55,9 @@ describe('Test populate feature', () => {
       card: { type: CardSchema, ref: 'Card' },
     });
     const User = model('User', schema);
+
+    await startInTest(getDefaultConnection());
+
     const cardCreated = await Card.create(cardInfo);
     const user = new User(accessDoc);
     user.card = cardCreated.id;
@@ -75,6 +78,9 @@ describe('Test populate feature', () => {
       cats: [{ type: CatSchema, ref: 'Cat' }],
     });
     const User = model('User', schema);
+
+    await startInTest(getDefaultConnection());
+
     const cardCreated = await Card.create(cardInfo);
     const catCreated = await Cat.create(myCat);
     const catCreated2 = await Cat.create({ name: 'Garfield', age: 27 });
@@ -99,6 +105,9 @@ describe('Test populate feature', () => {
       cats: [{ type: CatSchema, ref: 'Cat' }],
     });
     const User = model('User', schema);
+
+    await startInTest(getDefaultConnection());
+
     const issueCreated = await Issue.create({ title: 'broken card' });
     const cardInfoWithIssue = {
       cardNumber: '4242 4242 4242 4242',
@@ -141,13 +150,16 @@ describe('Test populate feature', () => {
       card: { type: CardSchema, ref: 'Card' },
       cats: [{ type: CatSchema, ref: 'Cat' }],
     });
+    const User = model('User', schema);
+
+    await startInTest(getDefaultConnection());
+
     const issueCreated = await Issue.create({ title: 'stolen card' });
     const cardInfoWithIssue = {
       cardNumber: '4242 4242 4242 4242',
       zipCode: '42424',
       issues: [issueCreated.id],
     };
-    const User = model('User', schema);
     const cardCreated = await Card.create(cardInfoWithIssue);
     const catCreated = await Cat.create(myCat);
     const catCreated2 = await Cat.create({ name: 'Garfield', age: 27 });

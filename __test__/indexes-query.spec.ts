@@ -1,5 +1,5 @@
-import { Schema, model, startOttoman } from '../src';
-import { delay } from './testData';
+import { Schema, model, getDefaultConnection } from '../src';
+import { delay, startInTest } from './testData';
 
 const generateMockData = async () => {
   const userSchema = new Schema({
@@ -12,13 +12,15 @@ const generateMockData = async () => {
     },
   };
   const User = model('User', userSchema);
-  await startOttoman(true);
   const postSchema = new Schema({
     user: { type: userSchema, ref: 'User' },
     title: String,
     body: String,
   });
   const Post = model('Post', postSchema);
+
+  await startInTest(getDefaultConnection());
+
   const user = new User({ name: 'ottoman-user' });
   await user.save();
   const post = new Post({

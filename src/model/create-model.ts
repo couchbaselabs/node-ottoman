@@ -1,6 +1,13 @@
 import { Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
-import { KEY_GENERATOR, COLLECTION_KEY, DEFAULT_ID_KEY, DEFAULT_SCOPE, SCOPE_KEY, DEFAULT_MAX_EXPIRY } from '../utils/constants';
+import {
+  KEY_GENERATOR,
+  COLLECTION_KEY,
+  DEFAULT_ID_KEY,
+  DEFAULT_SCOPE,
+  SCOPE_KEY,
+  DEFAULT_MAX_EXPIRY,
+} from '../utils/constants';
 import { extractSelect } from '../utils/query/extract-select';
 import { find } from '../handler/find/find';
 import { CreateModel } from './interfaces/create-model.interface';

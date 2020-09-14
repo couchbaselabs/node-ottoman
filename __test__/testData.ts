@@ -10,3 +10,10 @@ export const delay = (timems) =>
       resolve(true);
     }, timems);
   });
+
+export const startInTest = async (conn, params = {}) => {
+  const useCollections = !!process.env.useCollections;
+  await conn.start({ useCollections, ...params });
+  await delay(700);
+  return true;
+};
