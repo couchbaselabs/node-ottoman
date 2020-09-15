@@ -138,7 +138,7 @@ export class ConnectionManager {
   }
 
   /**
-   * Start ottoman creating scopes and collection if they don't exist
+   * Ensure that the ottoman start correcty
    * @param ensureIndexes is a flag to define if ensure that all indexes are created in the server
    * @param useCollections is a flag to create scopes/collections.
    * @returns
