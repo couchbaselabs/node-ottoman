@@ -92,23 +92,23 @@ schema.index.findByLastName = {
 };
 ```
 
-In order for indexes to be created on the server, you must call the `startOttoman` method. 
-This method will internally generate a list of scopes, collections and indexes which will be used in the most optimal 
-configuration for them, and will build any index missing on the server. 
+In order to ensure the server working, you must call the `start` method. 
+This method will internally generate a list of indexes and scopes, collections (if you have the developer preview active) 
+which will be used with the configuration most optimal for them and will build any they are missing on the server. 
 This method must be called after all models are defined, and it is a good idea to call this only when needed rather than any time your server is started.
 
 ```javascript
 // index.js
 import express from 'express';
-import { startOttoman } from 'ottoman';
+import { start } from 'ottoman';
 import { UserRoutes } from './users/users.controller';
 const app = express();
 
 app.use('/users', UserRoutes);
-
-startOttoman(true)
+const useCollections = false; // true to create scopes/collections. 
+start({ useCollections })
   .then(() => {
-    console.log('All the indexes were registered');
+    console.log('Ottoman is ready!');
     app.listen(5000);
   })
 ```
