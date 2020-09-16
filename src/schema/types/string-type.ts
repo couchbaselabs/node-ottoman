@@ -24,11 +24,12 @@ export class StringType extends CoreType {
     return _options.enum;
   }
 
-  buildDefault(): string {
+  buildDefault(): string | undefined {
     if (this.auto === 'uuid') {
       return generateUUID();
     }
-    return String(super.buildDefault());
+    const _value = super.buildDefault();
+    return typeof _value === 'undefined' ? _value : String(_value);
   }
 
   cast(value: unknown, strategy) {

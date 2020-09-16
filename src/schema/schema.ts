@@ -134,7 +134,10 @@ export class Schema {
     for (const key in this.fields) {
       const field = this.fields[key];
       if (typeof obj[field.name] === 'undefined' && field instanceof CoreType) {
-        obj[field.name] = field.buildDefault();
+        const _val = field.buildDefault();
+        if (typeof _val !== 'undefined') {
+          obj[field.name] = _val;
+        }
       }
     }
     return obj;
