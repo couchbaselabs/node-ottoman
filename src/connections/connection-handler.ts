@@ -82,8 +82,8 @@ export class Ottoman {
   closeConnection = () => __conn.close();
 
   /**
-   * Ensure that the ottoman start correcty
-   * @param ensureIndexes is a flag to define if ensure that all indexes are created in the server
+   * Ensure that Ottoman start correcty
+   * @param ensureIndexes is a flag that defines when Ottoman must ensure that all indexes are created on the server
    * @param useCollections is a flag to create scopes/collections.
    */
   start = (params = {}): Promise<void> => __conn.start(params);

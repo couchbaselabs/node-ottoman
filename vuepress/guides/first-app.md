@@ -236,7 +236,7 @@ app.use((err: Error, req: Request, res: Response) => {
   }
   return res.status(500).json({ error: err.toString() });
 });
-const useCollections = false; // true to create scopes/collections. 
+const useCollections = false; // set this to true to create scopes/collections.
 start({ useCollections })
   .then(() => {
     console.log('All the indexes were registered');
