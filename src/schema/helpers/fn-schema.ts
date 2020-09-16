@@ -132,7 +132,8 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
  */
 export const castSchema = (data, schema: Schema | SchemaDef): any => {
   const _schema = schema instanceof Schema ? schema : new Schema(schema);
-  return _schema.cast(data);
+  const _data = applyDefaultValue(data, _schema);
+  return _schema.cast(_data);
 };
 
 /**

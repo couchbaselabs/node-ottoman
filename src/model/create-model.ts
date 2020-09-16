@@ -20,7 +20,7 @@ import { buildIndexQuery } from './index/n1ql/build-index-query';
 import { indexFieldsName } from './index/helpers/index-field-names';
 import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
 import { LogicalWhereExpr, SortType } from '../query';
-import { Schema } from '../schema';
+import { applyDefaultValue, Schema } from '../schema';
 import { ModelTypes } from './model.types';
 
 /**
@@ -113,6 +113,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
     constructor(data) {
       super(data);
       this._applyData(data);
+      applyDefaultValue(this, schema);
 
       // Adding methods to the model instance
       if (schema?.methods) {

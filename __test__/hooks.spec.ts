@@ -1,5 +1,5 @@
 import { Schema, model, isDocumentNotFoundError, getDefaultConnection } from '../src';
-import { startInTest } from './testData';
+import { delay, startInTest } from './testData';
 const accessDoc2 = {
   type: 'hooks',
   isActive: false,
@@ -24,7 +24,8 @@ const schema = {
 
 test('Hook.pre.save', async () => {
   const UserSchema = new Schema(schema);
-  UserSchema.pre('save', (document) => {
+  UserSchema.pre('save', async (document) => {
+    await delay(300);
     document.name = 'async pre save';
   });
 
