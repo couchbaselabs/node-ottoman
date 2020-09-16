@@ -92,9 +92,9 @@ schema.index.findByLastName = {
 };
 ```
 
-In order to ensure the server working, you must call the `start` method. 
-This method will internally generate a list of indexes and scopes, collections (if you have the developer preview active) 
-which will be used with the configuration most optimal for them and will build any they are missing on the server. 
+To ensure that server is working, you must call the `start` method.
+This method will internally generate a list of indexes and scopes, collections (if you have the developer preview active)
+which will be used with the most optimal configuration for them and will build the structures that might be missing on the server. 
 This method must be called after all models are defined, and it is a good idea to call this only when needed rather than any time your server is started.
 
 ```javascript
@@ -105,7 +105,7 @@ import { UserRoutes } from './users/users.controller';
 const app = express();
 
 app.use('/users', UserRoutes);
-const useCollections = false; // true to create scopes/collections. 
+const useCollections = false; // set this to true to create scopes/collections.
 start({ useCollections })
   .then(() => {
     console.log('Ottoman is ready!');
