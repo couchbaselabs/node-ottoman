@@ -22,6 +22,7 @@ import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
 import { LogicalWhereExpr, SortType } from '../query';
 import { applyDefaultValue, Schema } from '../schema';
 import { ModelTypes } from './model.types';
+import { SearchConsistency } from '..';
 
 /**
  * @ignore
@@ -155,6 +156,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
         ...options,
         select: 'RAW COUNT(*) as count',
         noCollection: true,
+        consistency: SearchConsistency.LOCAL,
       });
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
         return response.rows[0];
