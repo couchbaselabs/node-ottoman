@@ -57,4 +57,24 @@ describe('Test Model-Schema Integration and Validations', () => {
     expect(typeof result.card).toBe('string');
     expect(typeof result.cats[0]).toBe('string');
   });
+
+  test('test default values in Model constructor', async () => {
+    const schema = new Schema({ name: String, dogs: { type: Number, default: 0 } });
+    const Person = model('Person', schema, { idKey: 'name' });
+    await startInTest(getDefaultConnection());
+    const jane = new Person({ name: 'Jane' });
+    expect(jane.dogs).toBe(0);
+  });
+
+  test('test default values', async () => {
+    const schema = new Schema({ name: String, dogs: { type: Number, default: 0 } });
+    const Person = model('Person', schema, { idKey: 'name' });
+    await startInTest(getDefaultConnection());
+    const john = new Person({ name: 'John' });
+    expect(john.dogs).toBe(0);
+    delete john.dogs;
+    await john.save();
+    const johnFetched = await Person.findById('John');
+    expect(johnFetched.dogs).toBe(0);
+  });
 });

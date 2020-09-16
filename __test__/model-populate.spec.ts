@@ -125,15 +125,20 @@ describe('Test populate feature', () => {
 
     await delay(2000);
     const options = new FindOptions({
-      select: 'name, cats, card',
       limit: 5,
       populate: ['cats', 'card'],
       populateMaxDeep: 2,
       consistency: SearchConsistency.GLOBAL,
     });
-    const result = await User.find({ name: user.name }, options);
+    let result = await User.find({ name: user.name }, options);
     expect(result.rows.length).toBeGreaterThanOrEqual(1);
-    const item = result.rows[0];
+    let item = result.rows[0];
+    expect(item.card.cardNumber).toBe(cardInfoWithIssue.cardNumber);
+    expect(item.card.issues[0].title).toBe('broken card');
+    expect(item.cats.length).toBe(user.cats.length);
+
+    result = await User.find({ name: user.name }, { ...options, ...{ select: 'cats, card' } });
+    item = result.rows[0];
     expect(item.card.cardNumber).toBe(cardInfoWithIssue.cardNumber);
     expect(item.card.issues[0].title).toBe('broken card');
     expect(item.cats.length).toBe(user.cats.length);
