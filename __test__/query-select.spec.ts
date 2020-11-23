@@ -277,7 +277,7 @@ describe('Test Query Builder SELECT clause', () => {
     const query = new Query(params, 'travel-sample').build();
 
     expect(query).toStrictEqual(
-      'SELECT COUNT(type) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((price>amount_val AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20")) GROUP BY type ORDER BY type DESC LIMIT 5 OFFSET 1',
+      'SELECT COUNT(type) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((price>"amount_val" AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20")) GROUP BY type ORDER BY type DESC LIMIT 5 OFFSET 1',
     );
     const execute = await testQuery(query);
     expect(execute.rows).toBeDefined();
