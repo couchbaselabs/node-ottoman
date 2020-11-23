@@ -353,7 +353,9 @@ const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWh
             return `${escapeReservedWords(fieldName)} ${ComparisonEmptyOperatorDict[value]}`;
           }
           if (ComparisonSingleOperatorDict.hasOwnProperty(value)) {
-            return `${escapeReservedWords(fieldName)}${ComparisonSingleOperatorDict[value]}${comparison[value]}`;
+            return `${escapeReservedWords(fieldName)}${ComparisonSingleOperatorDict[value]}${stringifyValues(
+              comparison[value],
+            )}`;
           }
           if (ComparisonSingleStringOperatorDict.hasOwnProperty(value)) {
             return `${escapeReservedWords(fieldName)} ${ComparisonSingleStringOperatorDict[value]} ${stringifyValues(
