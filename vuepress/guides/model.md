@@ -114,6 +114,21 @@ User.findById('userId', {select: 'name, cards', populate: 'cards'})
 // will return the user document with the current id only with the fields name and cards populated
 ```
 
+The find options are: [link](/classes/findoptions.html#hierarchy)
+
+```typescript
+export interface IFindOptions {
+  skip?: number;
+  limit?: number;
+  sort?: Record<string, SortType>;
+  populate?: string | string[];
+  populateMaxDeep?: number;
+  select?: ISelectType[] | string | string[];
+  consistency?: SearchConsistency;
+  noCollection?: boolean;
+}
+```
+
 ### Advanced use of filter parameter.
 ```javascript
 const filter = {
@@ -130,10 +145,10 @@ See the chapter on queries for more details on how to use the [Query](/guides/qu
 
 ## Deleting
 
-Models have static removeById() function to remove documents matching the given filter.
+Models have static removeById() function to remove documents matching the given id value.
 
 ```javascript
-User.removeById('userId')
+User.remove('userId')
 ```
 
 ## Updating 
