@@ -130,10 +130,10 @@ See the chapter on queries for more details on how to use the [Query](/guides/qu
 
 ## Deleting
 
-Models have static remove() function to remove documents matching the given filter.
+Models have static removeById() function to remove documents matching the given filter.
 
 ```javascript
-User.remove('userId')
+User.removeById('userId')
 ```
 
 ## Updating 

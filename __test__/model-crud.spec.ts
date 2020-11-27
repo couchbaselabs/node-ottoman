@@ -106,7 +106,7 @@ describe('Test Document Access Functions', () => {
     const result = await user.save();
     expect(result.id).toBeDefined();
     user.id = result.id;
-    const removed = await UserModel.remove(result.id);
+    const removed = await UserModel.removeById(result.id);
     expect(removed.cas).toBeDefined();
   });
 

@@ -48,7 +48,7 @@ If the document with the corresponding id is not found, Ottoman will report a `D
 const doc = await MyModel.findOne();
 
 // Delete the document so Ottoman won't be able to save changes
-await MyModel.remove(doc._id);
+await MyModel.removeById(doc._id);
 
 doc.name = 'foo';
 await doc.save(); // Throws DocumentNotFoundError
