@@ -1,5 +1,5 @@
 import { ISelectType, SortType } from '../../query';
-import { SearchConsistency } from '../../utils/search-conscistency';
+import { SearchConsistency } from '../../utils/search-consistency';
 
 export class FindOptions {
   skip?: number;
