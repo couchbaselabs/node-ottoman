@@ -157,7 +157,7 @@ const query = new Query({}, 'travel-sample').select().where(where).limit(20).bui
 console.log(query);
 ```
 
-> SELECT * FROM `travel-sample` WHERE (address IS NULL OR free_breakfast IS MISSING OR free_breakfast IS NOT VALUED OR id=8000 OR id!=9000 OR id>7000 OR id>=6999 OR id<5000 OR id<=4999) AND (address IS NOT NULL AND address IS NOT MISSING AND address IS VALUED) AND NOT (address LIKE '%59%' AND name NOT LIKE 'Otto%' AND (id BETWEEN 1 AND 2000 OR id NOT BETWEEN 2001 AND 8000) AND address LIKE '%20%') LIMIT 20
+> SELECT \* FROM `travel-sample` WHERE (address IS NULL OR free_breakfast IS MISSING OR free_breakfast IS NOT VALUED OR id=8000 OR id!=9000 OR id>7000 OR id>=6999 OR id<5000 OR id<=4999) AND (address IS NOT NULL AND address IS NOT MISSING AND address IS VALUED) AND NOT (address LIKE '%59%' AND name NOT LIKE 'Otto%' AND (id BETWEEN 1 AND 2000 OR id NOT BETWEEN 2001 AND 8000) AND address LIKE '%20%') LIMIT 20
 
 ## N1QL SELECT clause structure
 
@@ -238,6 +238,7 @@ Available COLLECTION operators:
 | ----------- | --------- |
 | \$any       | ANY       |
 | \$every     | EVERY     |
+| \$in        | IN        |
 | \$within    | WITHIN    |
 | \$satisfies | SATISFIES |
 
@@ -246,7 +247,6 @@ Available COLLECTION operators:
 See definition [here](/classes/query.html#plainJoin)
 
 The syntax of a JOIN clause in n1ql is documented [here](https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/join.html).
-
 
 ## N1QL GROUP BY clause structure
 

@@ -1,4 +1,5 @@
 import { ISelectType, SortType } from '../../query';
+import { SearchConsistency } from '../../utils/search-conscistency';
 
 export class FindOptions {
   skip?: number;
@@ -7,7 +8,7 @@ export class FindOptions {
   populate?: string | string[];
   populateMaxDeep?: number;
   select?: ISelectType[] | string | string[];
-  consistency?: 0 | 1 | 2;
+  consistency?: SearchConsistency;
   noCollection?: boolean;
   constructor(data: FindOptions) {
     for (const key in data) {
@@ -21,5 +22,8 @@ export interface IFindOptions {
   limit?: number;
   sort?: Record<string, SortType>;
   populate?: string | string[];
+  populateMaxDeep?: number;
   select?: ISelectType[] | string | string[];
+  consistency?: SearchConsistency;
+  noCollection?: boolean;
 }
