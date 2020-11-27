@@ -221,7 +221,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return instance.save();
     };
 
-    static remove = (id: string) => {
+    static removeById = (id: string) => {
       const instance = new _Model({ ...{ [ID_KEY]: id, [collectionKey]: collectionName, [scopeKey]: scopeName } });
       return instance.remove();
     };

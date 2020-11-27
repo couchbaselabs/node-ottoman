@@ -146,11 +146,11 @@ export abstract class Model<T = any> extends Document<T> {
    *
    * @example
    * ```javascript
-   * const result = await User.remove('userId');
+   * const result = await User.removeById('userId');
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async remove(id: string): Promise<any> {
+  static async removeById(id: string): Promise<any> {
     return Promise.resolve({});
   }
 
