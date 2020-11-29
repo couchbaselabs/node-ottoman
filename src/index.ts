@@ -63,4 +63,4 @@ export {
   escapeReservedWords,
 } from './query';
 export { getProjectionFields } from './utils/query/extract-select';
-export { SearchConsistency } from './utils/search-conscistency';
+export { SearchConsistency } from './utils/search-consistency';
