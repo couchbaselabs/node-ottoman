@@ -124,7 +124,7 @@ export type ComparisonWhereExpr = {
     | ComparisonEmptyOperatorType
     | ComparisonSingleOperatorType
     | ComparisonMultipleOperatorType
-    | ComparisonSingleStringOperatorType]?: string | number | boolean | number[];
+    | ComparisonSingleStringOperatorType]?: string | number | boolean | (number | string)[];
 };
 
 /**
