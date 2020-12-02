@@ -363,9 +363,9 @@ const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWh
             )}`;
           }
           if (ComparisonMultipleOperatorDict.hasOwnProperty(value) && Array.isArray(comparison[value])) {
-            return `${escapeReservedWords(fieldName)} ${ComparisonMultipleOperatorDict[value]} ${comparison[value].join(
-              ' AND ',
-            )}`;
+            return `${escapeReservedWords(fieldName)} ${ComparisonMultipleOperatorDict[value]} ${comparison[value]
+              .map((v) => stringifyValues(v))
+              .join(' AND ')}`;
           }
         }
         throw new QueryOperatorNotFoundException(value);
