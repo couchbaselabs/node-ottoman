@@ -14,7 +14,7 @@ bringing to developers a reliable tool to build systems that are easy to design,
 ## Installation
 
 ```
-npm install ottoman@2.0.0-alpha.8
+npm install ottoman@2.0.0-alpha.10
 ```
 
 That's it, you are ready to use Ottoman.
