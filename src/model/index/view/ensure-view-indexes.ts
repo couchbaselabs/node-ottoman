@@ -1,10 +1,8 @@
-import { getViewIndexes } from '../index-manager';
 import couchbase from 'couchbase';
-import { ConnectionManager } from '../../../connections/connection-manager';
+import { Ottoman } from '../../../ottoman/ottoman';
 
-export const ensureViewIndexes = async (connection: ConnectionManager) => {
+export const ensureViewIndexes = async (ottoman: Ottoman, indexes) => {
   const ddocs: { name: string; data: any }[] = [];
-  const indexes = getViewIndexes();
   for (const key in indexes) {
     if (indexes.hasOwnProperty(key)) {
       ddocs.push({
@@ -19,8 +17,8 @@ export const ensureViewIndexes = async (connection: ConnectionManager) => {
   }
 
   for (const ddoc of ddocs) {
-    const doc = couchbase.DesignDocument._fromData(ddoc.name, ddoc.data);
-    await connection.viewIndexManager.upsertDesignDocument(doc);
+    const doc = (couchbase as any).DesignDocument._fromData(ddoc.name, ddoc.data);
+    await ottoman.viewIndexManager.upsertDesignDocument(doc);
   }
   return true;
 };

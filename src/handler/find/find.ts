@@ -6,7 +6,6 @@ import { canBePopulated } from '../../utils/populate/can-be-populated';
 import { extractPopulate } from '../../utils/query/extract-populate';
 import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
 import { SearchConsistency } from '../..';
-import { DISABLE_SCOPES } from '../../utils/constants';
 
 /**
  * Find documents
@@ -15,25 +14,32 @@ import { DISABLE_SCOPES } from '../../utils/constants';
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
   const { skip, limit, sort, populate, select, noCollection, populateMaxDeep, consistency } = options;
-  const { connection, collectionName, collectionKey, scopeKey, scopeName, modelName } = metadata;
-  const { bucketName, cluster } = connection;
+  const { ottoman, collectionName, modelKey, scopeName, modelName } = metadata;
+  const { bucketName, cluster, couchbase } = ottoman;
+  let fromClause = bucketName;
+  let selectDot = bucketName;
+  if (collectionName !== '_default') {
+    fromClause = `\`${bucketName}\`.\`${scopeName}\`.\`${collectionName}\``;
+    selectDot = collectionName;
+  }
   // Handling select
-  const projectionFields = getProjectionFields(bucketName, select, {
-    noCollection,
-  });
+  const projectionFields = getProjectionFields(
+    selectDot,
+    select,
+    {
+      noCollection,
+    },
+    modelKey,
+  );
 
   // Handling conditions
   const expr_where = {
     ...filter,
-    [scopeKey as string]: scopeName,
-    [collectionKey as string]: collectionName,
+    [modelKey as string]: modelName,
   };
-  if (DISABLE_SCOPES) {
-    delete expr_where[scopeKey];
-  }
 
   // Building the query
-  let query = new Query({}, bucketName).select(projectionFields.projection).where(expr_where);
+  let query = new Query({}, fromClause).select(projectionFields.projection).where(expr_where);
   if (limit) {
     query = query.limit(limit);
   }
@@ -47,22 +53,22 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   switch (consistency) {
     case SearchConsistency.GLOBAL:
     case SearchConsistency.LOCAL:
-      queryOptions.scanConsistency = connection.couchbase.QueryScanConsistency.RequestPlus;
+      queryOptions.scanConsistency = couchbase.QueryScanConsistency.RequestPlus;
       break;
     case SearchConsistency.NONE:
-      queryOptions.scanConsistency = connection.couchbase.QueryScanConsistency.NotBounded;
+      queryOptions.scanConsistency = couchbase.QueryScanConsistency.NotBounded;
       break;
   }
   const result = cluster.query(query.build(), queryOptions);
   return result.then(async (r: { rows: unknown[] }) => {
     if (select !== 'RAW COUNT(*) as count') {
-      const Model = connection.getModel(modelName);
+      const Model = ottoman.getModel(modelName);
       r.rows = r.rows.map((row) => new Model(row));
       if (populate) {
         const populateFields = extractPopulate(populate);
         for (const toPopulate of populateFields) {
           if (canBePopulated(toPopulate, projectionFields.fields)) {
-            await execPopulation(r.rows, toPopulate, connection, modelName, populateMaxDeep);
+            await execPopulation(r.rows, toPopulate, ottoman, modelName, populateMaxDeep);
           }
         }
         return r;

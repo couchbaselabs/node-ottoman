@@ -1,9 +1,8 @@
-import { getRefdocIndexByKey } from '../index/index-manager';
 import { buildRefKey } from '../index/refdoc/build-index-refdoc';
 
-export const getModelRefKeys = (data, prefix) => {
+export const getModelRefKeys = (data, prefix, ottoman) => {
   const refdocKeys: string[] = [];
-  const refdocs = getRefdocIndexByKey(prefix);
+  const refdocs = ottoman.getRefdocIndexByKey(prefix);
   if (refdocs) {
     for (const refdoc of refdocs) {
       const { fields } = refdoc;

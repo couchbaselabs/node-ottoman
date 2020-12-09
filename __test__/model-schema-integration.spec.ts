@@ -1,4 +1,4 @@
-import { Schema, model, getDefaultConnection } from '../src';
+import { Schema, model, getDefaultInstance } from '../src';
 import { startInTest } from './testData';
 
 describe('Test Model-Schema Integration and Validations', () => {
@@ -37,7 +37,7 @@ describe('Test Model-Schema Integration and Validations', () => {
     });
     const User = model('User', UserSchema);
 
-    await startInTest(getDefaultConnection());
+    await startInTest(getDefaultInstance());
 
     const cardCreated = await Card.create(cardInfo);
     const catCreated = await Cat.create({ name: 'Figaro', age: 6 });
@@ -61,7 +61,7 @@ describe('Test Model-Schema Integration and Validations', () => {
   test('test default values in Model constructor', async () => {
     const schema = new Schema({ name: String, dogs: { type: Number, default: 0 } });
     const Person = model('Person', schema, { idKey: 'name' });
-    await startInTest(getDefaultConnection());
+    await startInTest(getDefaultInstance());
     const jane = new Person({ name: 'Jane' });
     expect(jane.dogs).toBe(0);
   });
@@ -69,12 +69,24 @@ describe('Test Model-Schema Integration and Validations', () => {
   test('test default values', async () => {
     const schema = new Schema({ name: String, dogs: { type: Number, default: 0 } });
     const Person = model('Person', schema, { idKey: 'name' });
-    await startInTest(getDefaultConnection());
+    await startInTest(getDefaultInstance());
     const john = new Person({ name: 'John' });
     expect(john.dogs).toBe(0);
     delete john.dogs;
     await john.save();
     const johnFetched = await Person.findById('John');
     expect(johnFetched.dogs).toBe(0);
+  });
+
+  test('cast value in model constructor', () => {
+    const dateString = '2020-12-07T14:29:06.062Z';
+    const schema = new Schema({
+      created: Date,
+    });
+    const User = model('User', schema);
+    const user = new User({ created: dateString });
+    expect(user.created).toBeDefined();
+    expect(user.created.toISOString()).toBe(dateString);
+    expect(user.created instanceof Date).toBe(true);
   });
 });

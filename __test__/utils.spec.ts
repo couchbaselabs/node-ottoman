@@ -4,7 +4,7 @@ import { isModel } from '../src/utils/is-model';
 import { extractConnectionString } from '../src/utils/extract-connection-string';
 import { is } from '../src/utils/is-type';
 import { isMetadataKey } from '../src/utils/is-metadata';
-import { COLLECTION_KEY } from '../src/utils/constants';
+import { MODEL_KEY } from '../src/utils/constants';
 import { canBePopulated } from '../src/utils/populate/can-be-populated';
 
 test('Build connection options from string', () => {
@@ -79,7 +79,7 @@ describe('Is operator', () => {
 describe('Metadata', () => {
   test('should return true when a key is a metadata key', () => {
     expect(isMetadataKey('id')).toBeTruthy();
-    expect(isMetadataKey(COLLECTION_KEY)).toBeTruthy();
+    expect(isMetadataKey(MODEL_KEY)).toBeTruthy();
   });
   test("should return false when a key isn't a metadata key", () => {
     expect(isMetadataKey('name')).toBeFalsy();

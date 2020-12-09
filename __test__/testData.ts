@@ -1,3 +1,5 @@
+import { Ottoman } from '../src';
+
 export const bucketName = 'travel-sample';
 export const username = 'Administrator';
 export const password = 'password';
@@ -11,9 +13,8 @@ export const delay = (timems) =>
     }, timems);
   });
 
-export const startInTest = async (conn, params = {}) => {
-  const useCollections = !!process.env.useCollections;
-  await conn.start({ useCollections, ...params });
+export const startInTest = async (ottoman: Ottoman) => {
+  await ottoman.start();
   await delay(700);
   return true;
 };

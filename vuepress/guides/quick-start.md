@@ -68,9 +68,9 @@ Taking each code sample below, we will add each new block of code done after one
 Create a connection to our Couchbase Server running in Docker. Your password may be different, just swap out yours if it is different.
 
 ```javascript
-const ottoman = require('ottoman');
+const {connect} = require('ottoman');
 
-const connection = ottoman.connect({
+connect({
     connectionString: 'couchbase://localhost',
     bucketName: 'default',
     username: 'admin',
@@ -84,7 +84,7 @@ Create a model for our `User` document. It will get auto-created and stored in o
 Once our model is set up, we can add a few initial documents to populate our bucket.
 
 ```javascript
-const User = ottoman.model('User', {
+const User = model('User', {
   firstName: String,
   lastName: String,
   email: String,
@@ -178,7 +178,7 @@ runAsync = async () => {
   //...saving users
  
   try {
-    const result = await User.find({ lastName: 'Tom' }, { consistency: ottoman.SearchConsistency.LOCAL })
+    const result = await User.find({ lastName: 'Tom' }, { consistency: SearchConsistency.LOCAL })
     console.log('Query Result: ', result.rows)
   } catch (err) {
     throw err;
@@ -198,7 +198,7 @@ runAsync = async () => {
  
   try {
     const filter = { lastName: 'Tom' };
-    const options = { consistency: ottoman.SearchConsistency.LOCAL };
+    const options = { consistency: SearchConsistency.LOCAL };
     const result = await User.find(filter, options)
     console.log('Query Result: ', result.rows)
   } catch (err) {
@@ -216,7 +216,7 @@ we could page the results with our options to get the second page (pagination), 
 const options = {
   limit: 10,
   skip: 10,
-  consistency: ottoman.SearchConsistency.LOCAL
+  consistency: SearchConsistency.LOCAL
 }
 ```
 
@@ -261,16 +261,16 @@ In our case indexes were added manually, if not Ottoman would have given us this
 
 ::: details Here you can see the complete content of the server.js file.
 ```javascript
-const ottoman = require('ottoman');
+const {connect, model, SearchConsistency} = require('ottoman');
 
-const connection = ottoman.connect({
+const connection = connect({
     connectionString: 'couchbase://localhost',
     bucketName: 'default',
     username: 'admin',
     password: 'password'
 });
 
-const User = connection.model('User', {
+const User = model('User', {
     firstName: String,
     lastName: String,
     email: String,
@@ -308,7 +308,7 @@ const runAsync = async () => {
 
     try {
         const filter = { lastName: 'Tom' };
-        const options = { consistency: ottoman.SearchConsistency.LOCAL };
+        const options = { consistency: SearchConsistency.LOCAL };
         const result = await User.find(filter, options)
         console.log('Query Result: ', result.rows)
     } catch (err) {

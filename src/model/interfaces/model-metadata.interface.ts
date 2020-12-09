@@ -1,5 +1,5 @@
 import { Schema } from '../../schema/schema';
-import { ConnectionManager } from '../../connections/connection-manager';
+import { Ottoman } from '../../ottoman/ottoman';
 
 export interface ModelMetadata {
   modelName: string;
@@ -8,9 +8,8 @@ export interface ModelMetadata {
   schema: Schema;
   collection: any;
   ID_KEY: string;
-  connection: ConnectionManager;
-  collectionKey: string;
-  scopeKey: string;
+  ottoman: Ottoman;
+  modelKey: string;
   maxExpiry: string;
   keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
 }

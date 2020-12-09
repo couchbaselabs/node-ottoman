@@ -1,4 +1,4 @@
-import { model, Schema, FindByIdOptions, FindOptions, SearchConsistency, getDefaultConnection } from '../src';
+import { model, Schema, FindByIdOptions, FindOptions, SearchConsistency, getDefaultInstance } from '../src';
 import { delay, startInTest } from './testData';
 
 const cardInfo = {
@@ -56,7 +56,7 @@ describe('Test populate feature', () => {
     });
     const User = model('User', schema);
 
-    await startInTest(getDefaultConnection());
+    await startInTest(getDefaultInstance());
 
     const cardCreated = await Card.create(cardInfo);
     const user = new User(accessDoc);
@@ -79,7 +79,7 @@ describe('Test populate feature', () => {
     });
     const User = model('User', schema);
 
-    await startInTest(getDefaultConnection());
+    await startInTest(getDefaultInstance());
 
     const cardCreated = await Card.create(cardInfo);
     const catCreated = await Cat.create(myCat);
@@ -106,7 +106,7 @@ describe('Test populate feature', () => {
     });
     const User = model('User', schema);
 
-    await startInTest(getDefaultConnection());
+    await startInTest(getDefaultInstance());
 
     const issueCreated = await Issue.create({ title: 'broken card' });
     const cardInfoWithIssue = {
@@ -157,7 +157,7 @@ describe('Test populate feature', () => {
     });
     const User = model('User', schema);
 
-    await startInTest(getDefaultConnection());
+    await startInTest(getDefaultInstance());
 
     const issueCreated = await Issue.create({ title: 'stolen card' });
     const cardInfoWithIssue = {

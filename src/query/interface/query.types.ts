@@ -154,6 +154,9 @@ export type LogicalWhereExpr =
   | {
       [key: string]: FieldWhereExpr;
     }
+  | {
+      [key: string]: unknown;
+    }
   | CollectionSelectOperatorType
   | CollectionInWithinOperatorType;
 
