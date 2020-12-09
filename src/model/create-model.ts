@@ -65,9 +65,9 @@ export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel
           break;
         case 'view':
           indexName = key;
-          const ddocName = `${scopeName}${collectionName}`;
-          ModelFactory[key] = buildViewIndexQuery(ottoman, ddocName, indexName, fields, ModelFactory);
-          ottoman.registerViewIndex(ddocName, indexName, fields, metadata);
+          const designDocName = `${scopeName}${collectionName}`;
+          ModelFactory[key] = buildViewIndexQuery(ottoman, designDocName, indexName, fields, ModelFactory);
+          ottoman.registerViewIndex(designDocName, indexName, fields, metadata);
           break;
         case 'refdoc':
           const prefix = `${scopeName}${collectionName}`;

@@ -65,12 +65,12 @@ export class Ottoman {
   /**
    * @ignore
    */
-  registerViewIndex = (ddocName: string, indexName: string, fields, metadata) => {
+  registerViewIndex = (designDocName: string, indexName: string, fields, metadata) => {
     const map = buildMapViewIndexFn(metadata, fields);
-    if (!this.viewIndexes[ddocName]) {
-      this.viewIndexes[ddocName] = { views: {} };
+    if (!this.viewIndexes[designDocName]) {
+      this.viewIndexes[designDocName] = { views: {} };
     }
-    this.viewIndexes[ddocName].views[indexName] = { map };
+    this.viewIndexes[designDocName].views[indexName] = { map };
   };
 
   /**
