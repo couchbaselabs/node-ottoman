@@ -1,18 +1,14 @@
-import { connect, globalConfig, getConnections } from '../src';
+import { Ottoman, close } from '../src';
 import { connectUri } from './testData';
 beforeAll(async () => {
-  globalConfig({
-    collectionKey: 'collectionName',
-    scopeKey: 'scopeName',
-    populateMaxDeep: 1,
-    keyGenerator: ({ metadata, id }) => `${metadata.scopeName}-${metadata.collectionName}::${id}`,
-  });
-  connect(connectUri);
+  let options = {};
+  if (process.env.OTTOMAN_LEGACY_TEST) {
+    options = { collectionName: '_default' };
+  }
+  const ottoman = new Ottoman(options);
+  ottoman.connect(connectUri);
 });
 
 afterAll(async () => {
-  const connections = getConnections() || [];
-  for (const connection of connections) {
-    await connection.close();
-  }
+  close();
 });

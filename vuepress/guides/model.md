@@ -12,7 +12,6 @@ When you call [model()](/classes/ottoman.html#model) function on a schema, Ottom
 const schema = new Schema({name: String, age: Number})
 const User = model('User', schema);
 ```
-The first argument is the name of the collection your model is for. For the example above, the `model` User is for the **User** collection in the database.
 
 ::: warning
 The [model()](/classes/ottoman.html#model) function makes a copy of the schema. Make sure that you've added everything you want to the schema, including hooks, before calling model()!
@@ -30,8 +29,26 @@ const schema = new Schema({name: String, age: Number})
 const User = model('User', schema, {collectionName: 'users'});
 ```
 
-::: tip
-By default Ottoman will take the model name if `collectionName` isn't provided.
+::: tip Defining Collection Name
+Models will be mapped to your Collections, if no Collection name option is provided then the Collection name will be equal to the Model name.
+There is an exception to this rule:
+- If you provide a `collectionName` option at Ottoman instance level then the Collection name will be equal to Ottoman `collectionName` option
+  if it's not explicitly passed as `collectionName` in model options.
+  ```typescript
+    import { Ottoman } from "ottoman";
+
+    const ottoman = new Ottoman({collectionName: '_default'});
+    const schema = new Schema({name: String, age: Number});
+  
+    // Collection name for model `Cat` will be `_default`
+    const Cat = ottoman.model('Cat', schema);
+  
+    // Collection name for model `Dog` will be `dogs`
+    const Dog = ottoman.model('Dog', schema, {collectionName: 'dogs'});
+ 
+  ```
+Therefore this is the way to get the Collection name for a Model:
+Collection Name = Model `collectionName` Options > Ottoman `collectionName` Options > Model name
 :::
 
 The models options are:
@@ -41,16 +58,15 @@ interface ModelOptions {
   collectionName?: string;
   scopeName?: string;
   idKey?: string;
-  scopeKey?: string;
-  collectionKey?: string;
+  modelKey?: string;
   keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
 }
 ```
 
-### Model key
-Ottoman will generate automatically your document's `key` and will guarantee that each `key` will be unique.
+### Model id
+Ottoman will generate automatically your document's `id` and will guarantee that each `id` will be unique.
 
-Each document's `key` will be included on the document under a property called `id` by default.
+Each document's `id` will be included on the document under a property called `id` by default.
 
 The `id` property name can be modified using the `ModelOptions.idKey` 
 
@@ -59,7 +75,7 @@ const schema = new Schema({name: String, age: Number})
 const User = model('User', schema, {collectionName: 'users', idKey: '__id'});
 ```
 
-The above example will override the default `id` with `__id`, now for the `User`'s documents you can get the `key` value from doc.__id.
+The above example will override the default `id` with `__id`, now for the `User`'s documents you can get the `id` value from doc.__id.
 
 ::: tip
 You can also get the `id` value by calling the `doc._getId()` methods, regardless of the `id` property name.

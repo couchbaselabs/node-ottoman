@@ -2,7 +2,11 @@ import { Document } from './document';
 import { FindByIdOptions, FindOptions } from '../handler';
 import { LogicalWhereExpr, SortType } from '../query';
 
-type CountOptions = { sort?: Record<string, SortType>; limit?: number; skip?: number };
+export type CountOptions = {
+  sort?: Record<string, SortType>;
+  limit?: number;
+  skip?: number;
+};
 
 /**
  * Constructor to build a model instance based on a schema and other options.
@@ -98,7 +102,7 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async findOne(filter: LogicalWhereExpr = {}, options: { sort?: Record<string, SortType> } = {}): Promise<any> {
+  static async findOne(filter: LogicalWhereExpr = {}, options: FindOptions = {}): Promise<any> {
     return Promise.resolve({});
   }
 

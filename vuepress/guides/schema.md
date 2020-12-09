@@ -42,7 +42,7 @@ A side-effect of this is that meta above cannot have its own validation. If vali
 * [Date](/classes/datetype)
 * [Array](/classes/arraytype)
 * [Embed](/classes/embedtype)
-* [Reference](/classes/reference)
+* [Reference](/classes/referencetype)
 
 
 Schemas not only define the structure of your document and casting of properties,

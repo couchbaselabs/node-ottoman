@@ -1,42 +1,29 @@
-import { Model } from './model';
+import { CountOptions, Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
-import {
-  KEY_GENERATOR,
-  COLLECTION_KEY,
-  DEFAULT_ID_KEY,
-  DEFAULT_SCOPE,
-  SCOPE_KEY,
-  DEFAULT_MAX_EXPIRY,
-} from '../utils/constants';
+import { DEFAULT_MAX_EXPIRY } from '../utils/constants';
 import { extractSelect } from '../utils/query/extract-select';
-import { find } from '../handler/find/find';
+import { find, FindOptions } from '../handler';
 import { CreateModel } from './interfaces/create-model.interface';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { FindByIdOptions, IFindOptions } from '../handler/';
-import { registerIndex, registerRefdocIndex, registerViewIndex } from './index/index-manager';
-import { setModelMetadata } from './utils/model.utils';
+import { getModelMetadata, setModelMetadata } from './utils/model.utils';
 import { buildViewIndexQuery } from './index/view/build-view-index-query';
 import { buildIndexQuery } from './index/n1ql/build-index-query';
 import { indexFieldsName } from './index/helpers/index-field-names';
 import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
-import { LogicalWhereExpr, SortType } from '../query';
-import { applyDefaultValue, Schema } from '../schema';
+import { LogicalWhereExpr } from '../query';
+import { castSchema, Schema } from '../schema';
 import { ModelTypes } from './model.types';
 import { SearchConsistency } from '..';
 
 /**
  * @ignore
  */
-export const createModel = ({ name, schemaDraft, options, connection }: CreateModel) => {
+export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel) => {
   const schema = schemaDraft instanceof Schema ? schemaDraft : new Schema(schemaDraft);
 
-  const ID_KEY = options && options.idKey ? options.idKey : DEFAULT_ID_KEY;
-  const keyGenerator = options && options.keyGenerator ? options.keyGenerator : KEY_GENERATOR;
-  const scopeName = options && options.scopeName ? options.scopeName : DEFAULT_SCOPE;
-  const collectionName = options && options.collectionName ? options.collectionName : name;
-  const scopeKey = options && options.scopeKey ? options.scopeKey : SCOPE_KEY;
-  const collectionKey = options && options.collectionKey ? options.collectionKey : COLLECTION_KEY;
-  const collection = connection.getCollection(collectionName, scopeName);
+  const { idKey: ID_KEY, modelKey, scopeName, collectionName, keyGenerator } = options;
+  const collection = ottoman.getCollection(collectionName, scopeName);
   const maxExpiry = options && options.maxExpiry ? options.maxExpiry : DEFAULT_MAX_EXPIRY;
 
   const metadata: ModelMetadata = {
@@ -46,9 +33,8 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
     collection,
     schema,
     ID_KEY,
-    connection,
-    scopeKey,
-    collectionKey,
+    ottoman,
+    modelKey,
     keyGenerator,
     maxExpiry,
   };
@@ -67,26 +53,26 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
     if (schema.index.hasOwnProperty(key)) {
       const { by, options, type } = schema.index[key];
       const fields = Array.isArray(by) ? by : [by];
-      let indexName = `${connection.bucketName}_${scopeName}_${collectionName}$${indexFieldsName(fields)}`;
+      let indexName = `${ottoman.bucketName}_${scopeName}_${collectionName}$${indexFieldsName(fields)}`;
       indexName = indexName.replace(/-/g, '_');
       switch (type) {
         case 'n1ql':
+        case undefined:
           // Register access method e.g FindByName
           ModelFactory[key] = buildIndexQuery(ModelFactory, fields, key, options);
           // Register index to sync later with the server
-          registerIndex(indexName, fields, collectionName);
+          ottoman.registerIndex(indexName, fields, name);
           break;
         case 'view':
-        case undefined:
           indexName = key;
           const ddocName = `${scopeName}${collectionName}`;
-          ModelFactory[key] = buildViewIndexQuery(connection, ddocName, indexName, fields, ModelFactory);
-          registerViewIndex(ddocName, indexName, fields, metadata);
+          ModelFactory[key] = buildViewIndexQuery(ottoman, ddocName, indexName, fields, ModelFactory);
+          ottoman.registerViewIndex(ddocName, indexName, fields, metadata);
           break;
         case 'refdoc':
           const prefix = `${scopeName}${collectionName}`;
           ModelFactory[key] = buildViewRefdoc(metadata, ModelFactory, fields, prefix);
-          registerRefdocIndex(fields, prefix);
+          ottoman.registerRefdocIndex(fields, prefix);
           break;
         default:
           throw new Error(`Unexpected index type in index ${key}`);
@@ -98,23 +84,12 @@ export const createModel = ({ name, schemaDraft, options, connection }: CreateMo
 };
 
 export const _buildModel = (metadata: ModelMetadata) => {
-  const {
-    schema,
-    collection,
-    ID_KEY,
-    collectionName,
-    collectionKey,
-    scopeKey,
-    scopeName,
-    connection,
-    modelName,
-    keyGenerator,
-  } = metadata;
+  const { schema, collection, ID_KEY, modelKey, scopeName, ottoman, modelName, keyGenerator } = metadata;
   return class _Model<T> extends Model<T> {
     constructor(data) {
       super(data);
-      this._applyData(data);
-      applyDefaultValue(this, schema);
+      const schemaData = castSchema(data, schema);
+      this._applyData(schemaData);
 
       // Adding methods to the model instance
       if (schema?.methods) {
@@ -127,15 +102,18 @@ export const _buildModel = (metadata: ModelMetadata) => {
       for (const key in schema?.queries) {
         const { by, of } = schema.queries[key];
         if (by && of) {
-          if (!connection.getModel(of)) {
+          const QueryModel = ottoman.getModel(of);
+          if (!QueryModel) {
             throw new Error(`Collection ${of} does not exist.`);
           }
-          let indexName = `${connection.bucketName}_${scopeName}_${of}$${indexFieldsName([by])}`;
+          const queryMetadata = getModelMetadata(QueryModel);
+          let indexName = `${ottoman.bucketName}_${scopeName}_${of}$${indexFieldsName([by])}`;
           indexName = indexName.replace(/-/g, '_');
           nonenumerable(this, key);
-          this[key] = () => find({ ...metadata, collectionName: of })({ [by]: this._getId() });
+          this[key] = () =>
+            find({ ...metadata, modelName: of, collectionName: queryMetadata.collectionName })({ [by]: this._getId() });
           // Register index to sync later with the server
-          registerIndex(indexName, [by], of);
+          ottoman.registerIndex(indexName, [by], of);
         } else {
           throw new Error('The "by" and "of" properties are required to build the queries.');
         }
@@ -148,10 +126,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
 
     static collection = collection;
 
-    static count = async (
-      filter: LogicalWhereExpr = {},
-      options: { sort?: Record<string, SortType>; limit?: number; skip?: number } = {},
-    ) => {
+    static count = async (filter: LogicalWhereExpr = {}, options: CountOptions = {}) => {
       const response = await find(metadata)(filter, {
         ...options,
         select: 'RAW COUNT(*) as count',
@@ -169,12 +144,12 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const populate = options.populate;
       delete options.populate;
       if (findOptions.select) {
-        findOptions['project'] = extractSelect(findOptions.select, { noCollection: true });
+        findOptions['project'] = extractSelect(findOptions.select, { noCollection: true }, false, modelKey);
         delete findOptions.select;
       }
       const key = keyGenerator!({ metadata, id });
       const { value } = await collection.get(key, findOptions);
-      const ModelFactory = connection.getModel(modelName);
+      const ModelFactory = ottoman.getModel(modelName);
       const document = new ModelFactory({ ...value });
       if (populate) {
         return await document._populate(populate);
@@ -182,14 +157,13 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return document;
     };
 
-    static findOne = async (filter: LogicalWhereExpr = {}, options: { sort?: Record<string, SortType> } = {}) => {
+    static findOne = async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
       const response = await find(metadata)(filter, {
         ...options,
         limit: 1,
-        select: `\`${connection.bucketName}\`.*`,
       });
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
-        return new _Model(response.rows[0]);
+        return response.rows[0];
       }
       return null;
     };
@@ -206,7 +180,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const updated = {
         ...value,
         ...data,
-        ...{ [collectionKey]: value[collectionKey], [scopeKey]: value[scopeKey] },
+        ...{ [modelKey]: value[modelKey] },
       };
       const instance = new _Model({ ...updated });
       return instance.save();
@@ -216,13 +190,13 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const key = id || data[ID_KEY];
       const instance = new _Model({
         ...data,
-        ...{ [ID_KEY]: key, [collectionKey]: collectionName, [scopeKey]: scopeName },
+        ...{ [ID_KEY]: key, [modelKey]: modelName },
       });
       return instance.save();
     };
 
     static removeById = (id: string) => {
-      const instance = new _Model({ ...{ [ID_KEY]: id, [collectionKey]: collectionName, [scopeKey]: scopeName } });
+      const instance = new _Model({ ...{ [ID_KEY]: id, [modelKey]: modelName } });
       return instance.remove();
     };
 

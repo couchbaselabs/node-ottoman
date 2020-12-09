@@ -1,17 +1,16 @@
 export {
   connect,
   getCollection,
-  closeConnection,
   model,
-  getConnections,
-  getDefaultConnection,
   start,
-} from './connections/connection-handler';
+  close,
+  getDefaultInstance,
+  getOttomanIntances,
+  Ottoman,
+} from './ottoman/ottoman';
 export { Model } from './model/model';
 export { getModelMetadata } from './model/utils/model.utils';
-export { ensureIndexes } from './model/index/ensure-indexes';
 export { ViewIndexOptions } from './model/index/view/view-index-options';
-export { globalConfig, getCollectionKey, getScopeKey } from './utils/constants';
 export {
   castSchema,
   applyDefaultValue,

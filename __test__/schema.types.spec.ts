@@ -202,4 +202,15 @@ describe('Schema Types', () => {
     };
     expect(() => new Schema(schemaWithUndefined)).toThrow(new BuildSchemaError('Property amount is a required type'));
   });
+
+  test('date type', () => {
+    const dateString = '2020-12-07T14:29:06.062Z';
+    const schema = new Schema({
+      created: Date,
+    });
+    const data = castSchema({ created: dateString }, schema);
+    expect(data.created).toBeDefined();
+    expect(data.created.toISOString()).toBe(dateString);
+    expect(data.created instanceof Date).toBe(true);
+  });
 });

@@ -14,7 +14,7 @@ bringing to developers a reliable tool to build systems that are easy to design,
 ## Installation
 
 ```
-npm install ottoman@2.0.0-alpha.10
+npm install ottoman
 ```
 
 That's it, you are ready to use Ottoman.
@@ -31,7 +31,7 @@ Supported version are:
 
 ## Getting started
 
-```javascript
+```typescript
 import { connect, model } from "ottoman";
 connect("couchbase://localhost/travel-sample@admin:password");
 

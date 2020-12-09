@@ -1,4 +1,4 @@
-import { Schema, model, ViewIndexOptions, getDefaultConnection } from '../src';
+import { Schema, model, getDefaultInstance, ViewIndexOptions } from '../src';
 import { delay, startInTest } from './testData';
 
 describe('Indexes', () => {
@@ -12,7 +12,7 @@ describe('Indexes', () => {
     roles: [{ name: String }],
   });
 
-  UserSchema.index.findN1qlByName = { by: 'name', options: { limit: 4, select: 'name' }, type: 'n1ql' };
+  UserSchema.index.findN1qlByName = { by: 'name', options: { limit: 4, select: 'name' } };
   UserSchema.index.findN1qlByCardNumber = { by: 'card.cardNumber', type: 'n1ql' };
   UserSchema.index.findN1qlByRoles = { by: 'roles[*].name', type: 'n1ql' };
   UserSchema.index.findN1qlByNameandEmail = {
@@ -21,13 +21,12 @@ describe('Indexes', () => {
     type: 'n1ql',
   };
   UserSchema.index.findByEmail = { by: 'email', type: 'n1ql' };
-  UserSchema.index.findByName = { by: 'name' };
-  UserSchema.index.findViewByEmail = { by: 'email', type: 'view' };
+  UserSchema.index.findByName = { by: 'name', type: 'view' };
   UserSchema.index.findRefName = { by: 'name', type: 'refdoc' };
 
   test('Testing indexes', async () => {
     const User = model('User', UserSchema);
-    await startInTest(getDefaultConnection());
+    await startInTest(getDefaultInstance());
 
     const userData = {
       name: `index`,
@@ -68,6 +67,7 @@ describe('Indexes', () => {
     const viewIndexOptions = new ViewIndexOptions({ limit: 1 });
     const usersView = await User.findByName(userData.name, viewIndexOptions);
     expect(usersView).toBeDefined();
+
     const userRefdoc = await User.findRefName(userData.name);
     expect(userRefdoc.name).toBe(userData.name);
   });

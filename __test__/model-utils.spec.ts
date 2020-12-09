@@ -6,7 +6,7 @@ describe('Test Model utilities methods', () => {
     const Cat = model('Cat', { name: String });
     const catObject = { name: 'figaro' };
     const cat = new Cat(catObject);
-    expect(cat.toObject()).toStrictEqual(catObject);
+    expect(JSON.stringify(cat.toObject())).toStrictEqual(JSON.stringify(catObject));
   });
 
   test('model.toJson', async () => {

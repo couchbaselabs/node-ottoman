@@ -1,4 +1,4 @@
-import { ConnectOptions } from '../connections/connection-handler';
+import { ConnectOptions } from '../ottoman/ottoman';
 
 export const extractConnectionString = (connectOptions: string): ConnectOptions => {
   const [connUrl, credentials] = connectOptions.split('@');

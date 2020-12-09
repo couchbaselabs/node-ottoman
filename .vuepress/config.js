@@ -6,7 +6,7 @@ module.exports = {
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Quick Start', link: '/guides/quick-start.md' },
-      { text: 'Connections', link: '/guides/connections.md' },
+      { text: 'Ottoman', link: '/guides/ottoman.md' },
       { text: 'Schema', link: '/guides/schema.md' },
       { text: 'Model', link: '/guides/model.md' },
       { text: 'Document', link: '/guides/document.md' },
@@ -16,7 +16,6 @@ module.exports = {
         text: 'API',
         items: [
           { text: 'Ottoman', link: '/classes/ottoman.html' },
-          { text: 'Connections', link: '/classes/connectionmanager.html' },
           { text: 'Schema', link: '/classes/schema.html' },
           { text: 'Model', link: '/classes/model.html' },
           { text: 'Document', link: '/classes/document.html' },

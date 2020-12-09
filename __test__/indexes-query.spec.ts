@@ -1,4 +1,4 @@
-import { Schema, model, getDefaultConnection } from '../src';
+import { Schema, model, getDefaultInstance } from '../src';
 import { delay, startInTest } from './testData';
 
 const generateMockData = async () => {
@@ -19,7 +19,7 @@ const generateMockData = async () => {
   });
   const Post = model('Post', postSchema);
 
-  await startInTest(getDefaultConnection());
+  await startInTest(getDefaultInstance());
 
   const user = new User({ name: 'ottoman-user' });
   await user.save();

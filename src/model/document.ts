@@ -1,8 +1,7 @@
-import { DocumentNotFoundError } from 'couchbase';
+import couchbase from 'couchbase';
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
-import { DEFAULT_POPULATE_MAX_DEEP } from '../utils/constants';
-import { castSchema } from '../schema/helpers';
+import { castSchema } from '../schema';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { getModelMetadata } from './utils/model.utils';
 import { storeLifeCycle } from './utils/store-life-cycle';
@@ -70,12 +69,12 @@ export abstract class Document<T> {
    * ```
    */
   async save() {
-    const { scopeName, scopeKey, collectionName, collectionKey, collection, keyGenerator } = this.$;
+    const { scopeName, collectionName, modelKey, collection, keyGenerator, modelName, ottoman } = this.$;
     const data = extractDataFromModel(this);
     const options: any = {};
     let id = this._getId();
     const prefix = `${scopeName}${collectionName}`;
-    const newRefKeys = getModelRefKeys(data, prefix);
+    const newRefKeys = getModelRefKeys(data, prefix, ottoman);
     const refKeys: { add: string[]; remove: string[] } = {
       add: [],
       remove: [],
@@ -93,19 +92,19 @@ export abstract class Document<T> {
       try {
         key = keyGenerator!({ metadata, id });
         const { cas, value: oldData } = await collection.get(key);
-        const oldRefKeys = getModelRefKeys(oldData, prefix);
+        const oldRefKeys = getModelRefKeys(oldData, prefix, ottoman);
         refKeys.add = arrayDiff(newRefKeys, oldRefKeys);
         refKeys.remove = arrayDiff(oldRefKeys, newRefKeys);
         if (cas) {
           options.cas = cas;
         }
       } catch (e) {
-        if (e instanceof DocumentNotFoundError) {
+        if (e instanceof (couchbase as any).DocumentNotFoundError) {
           refKeys.add = newRefKeys;
         }
       }
     }
-    const addedMetadata = { ...data, [collectionKey]: collectionName, [scopeKey]: scopeName };
+    const addedMetadata = { ...data, [modelKey]: modelName };
     const { document } = await storeLifeCycle({ key, id, data: addedMetadata, options, metadata, refKeys });
     this._applyData(document);
     return this;
@@ -124,11 +123,11 @@ export abstract class Document<T> {
   async remove(options = {}) {
     const data = extractDataFromModel(this);
     const metadata = this.$;
-    const { keyGenerator, scopeName, collectionName } = metadata;
+    const { keyGenerator, scopeName, collectionName, ottoman } = metadata;
     const prefix = `${scopeName}${collectionName}`;
     const refKeys = {
       add: [],
-      remove: getModelRefKeys(data, prefix),
+      remove: getModelRefKeys(data, prefix, ottoman),
     };
     const idValue = this._getId();
     const id = keyGenerator!({ metadata, id: idValue });
@@ -176,7 +175,7 @@ export abstract class Document<T> {
    * console.log(card.issues); // [{id: 'issueId', title: 'Broken card'}]
    * ```
    */
-  async _populate(fieldsName: string | string[], deep: number = DEFAULT_POPULATE_MAX_DEEP) {
+  async _populate(fieldsName: string | string[], deep = 1) {
     let fieldsToPopulate;
     if (fieldsName && fieldsName !== '*') {
       fieldsToPopulate = extractSchemaReferencesFromGivenFields(fieldsName, this.$.schema);
@@ -192,7 +191,7 @@ export abstract class Document<T> {
         for (let i = 0; i < refFields.length; i++) {
           const refField = refFields[i];
           if (typeof refField === 'string' && modelName) {
-            const { findById } = this.$.connection.getModel(modelName);
+            const { findById } = this.$.ottoman.getModel(modelName);
             const populated = await findById(refField);
             const currentDeep = deep - 1;
             if (currentDeep > 0) {
