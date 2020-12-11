@@ -11,7 +11,7 @@ describe('Test Document Access Functions', () => {
       if (id.indexOf('9') !== -1) {
         return Promise.resolve(new StatusExecution(id, 'SUCCESS'));
       } else {
-        return Promise.resolve(new StatusExecution(id, 'FAILED'));
+        return Promise.reject(new StatusExecution(id, 'FAILED'));
       }
     };
     const stack = Array(205)
