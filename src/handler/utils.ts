@@ -1,6 +1,9 @@
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
 import { GenericManyQueryResponse, StatusExecution } from './types';
 
+/**
+ * @ignore
+ */
 export const chunkArray = (list, size) => {
   const results: any = [];
   while (list.length) {
@@ -9,6 +12,9 @@ export const chunkArray = (list, size) => {
   return results;
 };
 
+/**
+ * @ignore
+ */
 function* processBatch(ids, fn, metadata): IterableIterator<StatusExecution> {
   const clonedIds = [...ids];
   for (const id of clonedIds) {
@@ -18,6 +24,9 @@ function* processBatch(ids, fn, metadata): IterableIterator<StatusExecution> {
   }
 }
 
+/**
+ * @ignore
+ */
 export const batchProcessQueue = (metadata: ModelMetadata) => async (ids, fn, throttle = 100) => {
   const chunks = chunkArray(ids, throttle);
   const chunkPromises = chunks.map((data) => Promise.resolve(data));
@@ -32,7 +41,7 @@ export const batchProcessQueue = (metadata: ModelMetadata) => async (ids, fn, th
         }
       }
     } catch (e) {
-      console.error(e);
+      throw e;
     }
   }
   return new GenericManyQueryResponse('SUCCESS', result);
