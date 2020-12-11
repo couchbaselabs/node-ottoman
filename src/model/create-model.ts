@@ -1,8 +1,9 @@
+import couchbase from 'couchbase';
 import { CountOptions, Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
 import { DEFAULT_MAX_EXPIRY } from '../utils/constants';
 import { extractSelect } from '../utils/query/extract-select';
-import { find, FindOptions } from '../handler';
+import { find, FindOptions, removeMany } from '../handler';
 import { CreateModel } from './interfaces/create-model.interface';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { FindByIdOptions, IFindOptions } from '../handler/';
@@ -203,5 +204,17 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static fromData(data: Record<string, any>): _Model<any> {
       return new _Model(data);
     }
+
+    static removeMany = async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
+      try {
+        const response = await find(metadata)(filter, options);
+        if (response.hasOwnProperty('rows') && response.rows.length > 0) {
+          return removeMany(metadata)(response.rows.map((v) => v[ID_KEY]));
+        }
+        throw new (couchbase as any).DocumentNotFoundError();
+      } catch (e) {
+        throw e;
+      }
+    };
   };
 };
