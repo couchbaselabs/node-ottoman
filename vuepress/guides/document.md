@@ -37,7 +37,7 @@ Ottoman documents track changes. You can modify a document using vanilla JavaScr
 ```javascript
 doc.name = 'foo';
 
-// Ottoman sends an `update({ name: 'foo' }, doc.id)`
+// Ottoman sends an `updateById(doc.id, { name: 'foo' })`
 // to Couchbase Server.
 await doc.save();
 ```

@@ -307,7 +307,7 @@ new User({ name: 'test' }).save();
 
 The `save()` function triggers `validate()` hooks, because Ottoman has a built-in `pre('save')` hook that calls `validate()`.
 This means that all `pre('validate')` and `post('validate')` hooks get called before any `pre('save')` hooks.
-The `update()` function have the same behavior.
+The `updateById()` function have the same behavior.
 
 ```javascript
 schema.pre('validate', function() {

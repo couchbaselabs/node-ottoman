@@ -62,7 +62,7 @@ describe('Test Document Access Functions', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const result = await UserModel.create(accessDoc);
-    await UserModel.update(updateDoc, result.id);
+    await UserModel.updateById(result.id, updateDoc);
     const user = await UserModel.findById(result.id);
     expect(user.isActive).toBe(true);
   });
