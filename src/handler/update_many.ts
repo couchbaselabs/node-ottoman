@@ -27,7 +27,7 @@ export const updateCallback = (
 ): Promise<StatusExecution> => {
   const model = metadata.ottoman.getModel(metadata.modelName);
   return model
-    .update({ ...document, ...extra })
+    .updateById(document[metadata.ID_KEY], { ...document, ...extra })
     .then(() => {
       return Promise.resolve(new StatusExecution(document[metadata.ID_KEY], 'SUCCESS'));
     })

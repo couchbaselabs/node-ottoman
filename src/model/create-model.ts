@@ -176,7 +176,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return instance;
     };
 
-    static update = async (data, id?: string) => {
+    static updateById = async (id: string, data) => {
       const key = id || data[ID_KEY];
       const value = await _Model.findById(key);
       const updated = {

@@ -125,11 +125,11 @@ export abstract class Model<T = any> extends Document<T> {
    *
    * @example
    * ```javascript
-   * const user = await User.update({name: "John Doe"}, 'userId');
+   * const user = await User.updateById('userId', {name: "John Doe"});
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async update(data: any, id?: string): Promise<any> {
+  static async updateById(id: string, data: any): Promise<any> {
     return Promise.resolve({});
   }
 
