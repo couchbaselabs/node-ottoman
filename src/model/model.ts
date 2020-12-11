@@ -175,4 +175,20 @@ export abstract class Model<T = any> extends Document<T> {
   static fromData(data): Model<any> {
     return data;
   }
+
+  /**
+   * Deletes all of the documents that match conditions from the collection
+   *
+   * @example
+   * ```javascript
+   * const result = await Cat.removeMany({ name: { $like: '%Cat%' } })
+   * ```
+   * Return a [QueryResponse](/classes/queryresponse.html) if any items matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/DocumentNotFoundError.html) will be thrown
+   *
+   *
+   */
+  // eslint-disable-next-line no-unused-vars
+  static async removeMany(filter: LogicalWhereExpr = {}, options: FindOptions = {}): Promise<any> {
+    return Promise.resolve({});
+  }
 }

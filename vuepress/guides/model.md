@@ -164,7 +164,13 @@ See the chapter on queries for more details on how to use the [Query](/guides/qu
 Models have static removeById() function to remove documents matching the given id value.
 
 ```javascript
-User.remove('userId')
+User.removeById('userId')
+```
+
+Models have static removeMany() function to remove all documents matching the given condition.
+
+```javascript
+User.removeMany({ name: { $like: '%JohnDoe%' } })
 ```
 
 ## Updating 
