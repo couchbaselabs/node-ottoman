@@ -4,7 +4,7 @@ import { model, Schema } from '../src';
 import { ModelMetadata } from '../src/model/interfaces/model-metadata.interface';
 import { delay } from './testData';
 
-describe('Test Document Access Functions', () => {
+describe('Test Document Remove Many', () => {
   test('Test Process Query Stack Function', async () => {
     const removeCallback = async (id: string) => {
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -19,7 +19,7 @@ describe('Test Document Access Functions', () => {
       .map((u, i) => i.toString());
     // @ts-ignore
     const items = await batchProcessQueue({ collection: null } as ModelMetadata)(stack, removeCallback, 100);
-    expect(items.message.success).toBe(38);
+    expect(items.message.modified).toBe(38);
     expect(items.message.errors.length).toBe(167);
   });
   test('Test ChunkArray Function', () => {
@@ -46,7 +46,8 @@ describe('Test Document Access Functions', () => {
     await batchCreate();
     await delay(500);
     const response = await Cat.removeMany({ name: { $like: '%Cat%' } });
-    expect(response.message.success).toBe(4);
+    expect(response.message.modified).toBe(4);
+    expect(response.message.match_number).toBe(4);
   });
 
   test('Test Remove Many Function Document Not Found Error', async () => {

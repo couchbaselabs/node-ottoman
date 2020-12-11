@@ -12,13 +12,13 @@ import { StatusExecution } from './types';
  * @return (GenericManyQueryResponse)[(/classes/queryresponse.html)]
  */
 export const removeMany = (metadata: ModelMetadata) => async (ids) => {
-  return await batchProcessQueue(metadata)(ids, removeCallback, 100);
+  return await batchProcessQueue(metadata)(ids, removeCallback, {}, 100);
 };
 
 /**
  * @ignore
  */
-export const removeCallback = (id, metadata): Promise<StatusExecution> => {
+export const removeCallback = (id: string, metadata: ModelMetadata): Promise<StatusExecution> => {
   const model = metadata.ottoman.getModel(metadata.modelName);
   return model
     .removeById(id)
@@ -26,6 +26,7 @@ export const removeCallback = (id, metadata): Promise<StatusExecution> => {
       return Promise.resolve(new StatusExecution(id, 'SUCCESS'));
     })
     .catch(() => {
+      /* istanbul ignore next */
       return Promise.reject(new StatusExecution(id, 'FAILED'));
     });
 };

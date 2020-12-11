@@ -160,14 +160,15 @@ User.find(filter)
 See the chapter on queries for more details on how to use the [Query](/guides/query-builder) API.
 
 ## Deleting
-
 Models have static removeById() function to remove documents matching the given id value.
+See the [API](/classes/model.html#static-removebyid) docs for more detail.
 
 ```javascript
 User.removeById('userId')
 ```
 
 Models have static removeMany() function to remove all documents matching the given condition.
+See the [API](/classes/model.html#static-removemany) docs for more detail.
 
 ```javascript
 User.removeMany({ name: { $like: '%JohnDoe%' } })
@@ -175,11 +176,18 @@ User.removeMany({ name: { $like: '%JohnDoe%' } })
 
 ## Updating 
 Each `model` has its own `update` method for modifying documents in the database without returning them to your application.
-See the [API](/classes/model) docs for more detail.
+See the [API](/classes/model.html#static-update) docs for more detail.
 
 ```javascript
 User.update({age: 30}, 'userId')
 // update document with id equal to 'userId' with age 30.
+```
+
+Models have static updateMany() function to update all documents matching the given condition.
+See the [API](/classes/model.html#static-updatemany) docs for more detail.
+
+```javascript
+User.updateMany({ name: { $like: '%JohnDoe%' } }, {name: 'John'})
 ```
 
 ## Next Up
