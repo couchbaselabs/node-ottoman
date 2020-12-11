@@ -5,4 +5,5 @@ export * from './remove';
 export * from './store';
 export * from './types';
 export * from './remove-many';
+export * from './update_many';
 export * from './utils';

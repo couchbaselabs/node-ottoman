@@ -31,8 +31,9 @@ export class StatusExecution {
  * Message of a Many Query Response
  * */
 export interface GenericManyResponse {
+  match_number: number;
+  modified: number;
   errors: string[];
-  success: number;
 }
 
 /**

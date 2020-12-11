@@ -1,6 +1,7 @@
 import { Document } from './document';
 import { FindByIdOptions, FindOptions } from '../handler';
 import { LogicalWhereExpr, SortType } from '../query';
+import { UpdateManyOptions } from './interfaces/update-many.interface';
 
 export type CountOptions = {
   sort?: Record<string, SortType>;
@@ -181,14 +182,44 @@ export abstract class Model<T = any> extends Document<T> {
    *
    * @example
    * ```javascript
-   * const result = await Cat.removeMany({ name: { $like: '%Cat%' } })
+   * const result = await User.removeMany({ name: { $like: '%John Doe%' } })
    * ```
+   *
+   * @param filter Filter Condition [Where Expression](/classes/query.html#where)
+   * @param options [Find Options](/classes/findoptions.html#class-findoptions)
+   *
    * Return a [QueryResponse](/classes/queryresponse.html) if any items matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/DocumentNotFoundError.html) will be thrown
    *
    *
    */
   // eslint-disable-next-line no-unused-vars
   static async removeMany(filter: LogicalWhereExpr = {}, options: FindOptions = {}): Promise<any> {
+    return Promise.resolve({});
+  }
+
+  /**
+   * Update all of the documents that match conditions from the collection
+   *
+   * @example
+   * ```javascript
+   * const result = await User.updateMany({ name: { $like: '%John Doe%' } })
+   * ```
+   *
+   * @param filter Filter Condition [Where Expression](/classes/query.html#where)
+   * @param doc Values for the fields to update.
+   * @param options [Update Many Options](/interfaces/updatemanyoptions.html)
+   *
+   * Return a [QueryResponse](/classes/queryresponse.html) if any items matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/DocumentNotFoundError.html) will be thrown
+   *
+   *
+   */
+  static async updateMany(
+    // eslint-disable-next-line no-unused-vars
+    filter: LogicalWhereExpr = {},
+    doc: Record<string, unknown>,
+    // eslint-disable-next-line no-unused-vars
+    options: UpdateManyOptions = {},
+  ): Promise<any> {
     return Promise.resolve({});
   }
 }

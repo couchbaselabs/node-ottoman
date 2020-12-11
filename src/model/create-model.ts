@@ -3,7 +3,7 @@ import { CountOptions, Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
 import { DEFAULT_MAX_EXPIRY } from '../utils/constants';
 import { extractSelect } from '../utils/query/extract-select';
-import { find, FindOptions, removeMany } from '../handler';
+import { find, FindOptions, GenericManyQueryResponse, removeMany, updateMany } from '../handler';
 import { CreateModel } from './interfaces/create-model.interface';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { FindByIdOptions, IFindOptions } from '../handler/';
@@ -16,6 +16,7 @@ import { LogicalWhereExpr } from '../query';
 import { castSchema, Schema } from '../schema';
 import { ModelTypes } from './model.types';
 import { SearchConsistency } from '..';
+import { UpdateManyOptions } from './interfaces/update-many.interface';
 
 /**
  * @ignore
@@ -212,6 +213,29 @@ export const _buildModel = (metadata: ModelMetadata) => {
           return removeMany(metadata)(response.rows.map((v) => v[ID_KEY]));
         }
         throw new (couchbase as any).DocumentNotFoundError();
+      } catch (e) {
+        throw e;
+      }
+    };
+
+    static updateMany = async (
+      filter: LogicalWhereExpr = {},
+      doc: Record<string, unknown>,
+      options: UpdateManyOptions = {},
+    ) => {
+      try {
+        const response = await find(metadata)(filter, options);
+        if (response.hasOwnProperty('rows') && response.rows.length > 0) {
+          return updateMany(metadata)(response.rows, doc);
+        } else {
+          if (options.upsert) {
+            const ModelFactory = ottoman.getModel(modelName);
+            await ModelFactory.create(doc);
+            return new GenericManyQueryResponse('SUCCESS', { modified: 1, match_number: 0, errors: [] });
+          } else {
+            throw new (couchbase as any).DocumentNotFoundError();
+          }
+        }
       } catch (e) {
         throw e;
       }

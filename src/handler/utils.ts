@@ -1,5 +1,5 @@
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
-import { GenericManyQueryResponse, StatusExecution } from './types';
+import { GenericManyQueryResponse, GenericManyResponse, StatusExecution } from './types';
 
 /**
  * @ignore
@@ -15,10 +15,10 @@ export const chunkArray = (list, size) => {
 /**
  * @ignore
  */
-function* processBatch(ids, fn, metadata): IterableIterator<StatusExecution> {
-  const clonedIds = [...ids];
-  for (const id of clonedIds) {
-    yield fn(id, metadata)
+function* processBatch(items, fn, metadata, extra): IterableIterator<StatusExecution> {
+  const clonedItems = [...items];
+  for (const items of clonedItems) {
+    yield fn(items, metadata, extra)
       .then((result) => result)
       .catch((error) => error);
   }
@@ -27,22 +27,27 @@ function* processBatch(ids, fn, metadata): IterableIterator<StatusExecution> {
 /**
  * @ignore
  */
-export const batchProcessQueue = (metadata: ModelMetadata) => async (ids, fn, throttle = 100) => {
-  const chunks = chunkArray(ids, throttle);
+export const batchProcessQueue = (metadata: ModelMetadata) => async (
+  items: unknown[],
+  fn: unknown,
+  extra: Record<string, unknown> = {},
+  throttle = 100,
+) => {
+  const chunks = chunkArray([...items], throttle);
   const chunkPromises = chunks.map((data) => Promise.resolve(data));
-  const result: { success: number; errors: string[] } = { success: 0, errors: [] };
+  const result: GenericManyResponse = { modified: 0, match_number: items.length, errors: [] };
   for await (const chunk of chunkPromises) {
     try {
-      for await (const r of processBatch(chunk, fn, metadata)) {
+      for await (const r of processBatch(chunk, fn, metadata, extra)) {
         if (r.status === 'FAILED') {
           result.errors.push(r.id);
         } else {
-          result.success = result.success + 1;
+          result.modified = result.modified + 1;
         }
       }
     } catch (e) {
       throw e;
     }
   }
-  return new GenericManyQueryResponse('SUCCESS', result);
+  return new GenericManyQueryResponse(result.modified === 0 ? 'FAILED' : 'SUCCESS', result);
 };
