@@ -107,7 +107,7 @@ your model will use the default Ottoman connection.
 ## Querying
 
 Finding documents is easy with Ottoman, powered by the built-in Query Builder.
-Documents can be retrieved using each models `find`, `findById`, defined [indexes](/guides/schema.html#indexes) or where [static methods](/guides/schema.html#statics).
+Documents can be retrieved using each models `find`, `findById`, `findOne`, defined [indexes](/guides/schema.html#indexes) or where [static methods](/guides/schema.html#statics).
 
 ```javascript
 User.find({ name: 'Jane' });
@@ -162,6 +162,7 @@ User.find(filter);
 See the chapter on queries for more details on how to use the [Query](/guides/query-builder) API.
 
 ## Deleting
+
 Models have static removeById() function to remove documents matching the given id value.
 See the [API](/classes/model.html#static-removebyid) docs for more detail.
 
@@ -186,12 +187,27 @@ User.updateById('userId', { age: 30 });
 // update document with id equal to 'userId' with age 30.
 ```
 
-Models have static updateMany() function to update all documents matching the given condition.
+Models have static `updateMany` function to update all documents matching the given condition.
 See the [API](/classes/model.html#static-updatemany) docs for more detail.
 
 ```javascript
-User.updateMany({ name: { $like: '%JohnDoe%' } }, {name: 'John'})
+User.updateMany({ name: { $like: '%JohnDoe%' } }, { name: 'John' });
 ```
+
+Models have static `findOneAndUpdate` function to finds a document that matches the conditions of the collection and updates it.
+See the [API](/classes/model.html#static-findoneandupdate) docs for more detail.
+
+```javascript
+User.findOneAndUpdate({ name: { $like: '%John Doe%' } }, { name: 'John' }, { new: true, upsert: true });
+```
+
+::: tip
+By default the option **new** and **upsert** are **false**
+
+If options.new is **true** return the document after update otherwise by default return the document before update.
+
+If options.upsert is **true** insert a document if the document does not exist.
+:::
 
 ## Next Up
 
