@@ -22,7 +22,7 @@ describe('Test Document Update Many', () => {
     expect(response.message.modified).toBe(4);
     expect(response.message.match_number).toBe(4);
     await delay(500);
-    const cleanUp = async () => await Cat.removeMany({ name: { $like: '%Cat%' } });
+    const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
   });
 
@@ -51,7 +51,7 @@ describe('Test Document Update Many', () => {
     expect(response.message.match_number).toBe(0);
     expect(response.message.modified).toBe(1);
     await delay(500);
-    const cleanUp = async () => await Cat.removeMany({ name: 'Cats' });
+    const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
   });
 });

@@ -17,6 +17,7 @@ import { castSchema, Schema } from '../schema';
 import { ModelTypes } from './model.types';
 import { SearchConsistency } from '..';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
+import { FindOneAndUpdateOption } from './interfaces/find.interface';
 
 /**
  * @ignore
@@ -239,6 +240,23 @@ export const _buildModel = (metadata: ModelMetadata) => {
       } catch (e) {
         throw e;
       }
+    };
+
+    static findOneAndUpdate = async (
+      filter: LogicalWhereExpr = {},
+      doc: Record<string, unknown>,
+      options: FindOneAndUpdateOption = {},
+    ) => {
+      const before = await _Model.findOne(filter, options);
+      if (before) {
+        const after = await _Model.fromData({ ...before, ...doc }).save();
+        return options.new ? after : before;
+      } else {
+        if (options.upsert) {
+          return await _Model.create(doc);
+        }
+      }
+      throw new (couchbase as any).DocumentNotFoundError();
     };
   };
 };

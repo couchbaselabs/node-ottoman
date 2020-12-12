@@ -2,6 +2,7 @@ import { Document } from './document';
 import { FindByIdOptions, FindOptions } from '../handler';
 import { LogicalWhereExpr, SortType } from '../query';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
+import { FindOneAndUpdateOption } from './interfaces/find.interface';
 
 export type CountOptions = {
   sort?: Record<string, SortType>;
@@ -219,6 +220,35 @@ export abstract class Model<T = any> extends Document<T> {
     doc: Record<string, unknown>,
     // eslint-disable-next-line no-unused-vars
     options: UpdateManyOptions = {},
+  ): Promise<any> {
+    return Promise.resolve({});
+  }
+
+  /**
+   * Finds a document that matches the conditions of the collection and updates it.
+   *
+   * @example
+   * ```javascript
+   * const result = await User.findOneAndUpdate({ name: { $like: '%John Doe%' } }, { name: "John" })
+   * ```
+   *
+   * @param filter Filter Condition [Where Expression](/classes/query.html#where)
+   * @param doc Values for the fields to update.
+   * @param options [FindOneAndUpdateOptions](/interfaces/findoneandupdateoption.html)
+   *
+   *
+   * Return a [Model](/classes/model.html) if at least one item matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/DocumentNotFoundError.html) will be thrown.
+   * If options.new is **true** return the document after update otherwise by default return the document before update.
+   * If options.upsert is **true** insert a document if the document does not exist.
+   *
+   *
+   */
+  static async findOneAndUpdate(
+    // eslint-disable-next-line no-unused-vars
+    filter: LogicalWhereExpr = {},
+    doc: Record<string, unknown>,
+    // eslint-disable-next-line no-unused-vars
+    options: FindOneAndUpdateOption = {},
   ): Promise<any> {
     return Promise.resolve({});
   }
