@@ -18,8 +18,12 @@ export class ReferenceType extends CoreType {
     super(name, 'Reference', options);
   }
 
-  cast(value: unknown, strategy) {
-    super.cast(value, strategy);
+  cast(value) {
+    return value;
+  }
+
+  validate(value: unknown, strategy) {
+    super.validate(value, strategy);
     if (this.isEmpty(value)) return value;
     if (is(value, String)) {
       return String(value);
@@ -28,7 +32,7 @@ export class ReferenceType extends CoreType {
       throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
     }
     this.checkValidator(value);
-    return this.schema.cast(value);
+    return this.schema.validate(value);
   }
 }
 

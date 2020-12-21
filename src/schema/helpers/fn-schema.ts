@@ -1,8 +1,8 @@
 import { is } from '../../utils/is-type';
-import { BuildSchemaError } from '../errors';
+import { BuildSchemaError, ValidationError } from '../errors';
 import { Schema } from '../schema';
-import { SchemaDef, IOttomanType, FieldMap, FactoryFunction, CustomValidations } from '../interfaces/schema.types';
-import { VALIDATION_STRATEGY } from '../../utils';
+import { CustomValidations, FactoryFunction, FieldMap, IOttomanType, SchemaDef } from '../interfaces/schema.types';
+import { cast, CAST_STRATEGY } from '../../utils/cast-strategy';
 
 type ParseResult = {
   [key in 'type' | 'options']: unknown;
@@ -14,7 +14,7 @@ type ParseResult = {
  * @public
  *
  * @param {Schema|Object} obj the definition or schema instance
- * @param strategy define validation policy
+ * @param strict will drop all property not defined in schema
  * @returns {FieldMap}
  * @throws {Error}
  *
@@ -23,7 +23,7 @@ type ParseResult = {
  *    const fields = buildFields({name: String, hasChild: {type: Boolean, default: true}});
  *  ```
  */
-export const buildFields = (obj: Schema | SchemaDef, strategy?: VALIDATION_STRATEGY): FieldMap => {
+export const buildFields = (obj: Schema | SchemaDef, strict = true): FieldMap => {
   if (obj instanceof Schema) {
     return obj.fields;
   }
@@ -31,9 +31,7 @@ export const buildFields = (obj: Schema | SchemaDef, strategy?: VALIDATION_STRAT
   const keys = Object.keys(obj);
   for (const _key of keys) {
     const opts =
-      obj[_key] !== undefined && obj[_key] !== null
-        ? _parseType(obj[_key], strategy)
-        : ({ type: false } as ParseResult);
+      obj[_key] !== undefined && obj[_key] !== null ? _parseType(obj[_key], strict) : ({ type: false } as ParseResult);
     if (!opts.type) {
       throw new BuildSchemaError(`Property ${_key} is a required type`);
     }
@@ -49,7 +47,7 @@ export const buildFields = (obj: Schema | SchemaDef, strategy?: VALIDATION_STRAT
  * @param value that is going to parsed
  * @throws BuildSchemaError
  */
-const _parseType = (value, strategy): ParseResult => {
+const _parseType = (value, strict = true): ParseResult => {
   if (value instanceof Schema) {
     return {
       type: 'Embed',
@@ -60,9 +58,15 @@ const _parseType = (value, strategy): ParseResult => {
       return {
         type: 'Reference',
         options: {
-          schema: new Schema(value.type, { validationStrategy: strategy }),
+          schema: new Schema(value.type, { strict }),
           refModel: value.ref,
         },
+      };
+    } else if (is(value.type, Array)) {
+      const childType = _parseType(value.type[0], strict);
+      return {
+        type: Array.name,
+        options: _makeField('', childType),
       };
     } else if (typeof value.type !== 'undefined') {
       return {
@@ -72,11 +76,11 @@ const _parseType = (value, strategy): ParseResult => {
     } else {
       return {
         type: 'Embed',
-        options: new Schema(value, { validationStrategy: strategy }),
+        options: new Schema(value, { strict }),
       };
     }
   } else if (is(value, Array)) {
-    const childType = _parseType(value[0], strategy);
+    const childType = _parseType(value[0], strict);
     return {
       type: Array.name,
       options: _makeField('', childType),
@@ -108,6 +112,7 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
  * Validate data using the schema definition
  * @param data that is going to be validated
  * @param schema that will be used to validate
+ * @param options
  * @throws BuildSchemaError, ValidationError
  * @example
  * ```ts
@@ -130,10 +135,35 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
  *    console.log(castSchema(data, strictSchema)); // Throw "Property age must be of type Number"
  * ```
  */
-export const castSchema = (data, schema: Schema | SchemaDef): any => {
+export const validate = (
+  data,
+  schema: Schema | SchemaDef,
+  options: { strategy?: CAST_STRATEGY; strict?: boolean; skip?: string[] } = {
+    strategy: CAST_STRATEGY.THROW,
+    strict: true,
+    skip: [],
+  },
+): any => {
   const _schema = schema instanceof Schema ? schema : new Schema(schema);
-  const _data = applyDefaultValue(data, _schema);
-  return _schema.cast(_data);
+  const _data = cast(data, _schema, options);
+  const skip = options.skip || [];
+  const errors: string[] = [];
+  for (const key in _schema.fields) {
+    const type = _schema.fields[key];
+    if (!skip.includes(type.name)) {
+      try {
+        const value = _data[type.name];
+        type.validate(value, options.strict);
+      } catch (e) {
+        errors.push(e.message);
+      }
+    }
+  }
+
+  if (errors.length > 0) {
+    throw new ValidationError(errors.join(', '));
+  }
+  return _data;
 };
 
 /**

@@ -93,27 +93,40 @@ export class Ottoman {
   /**
    * CollectionManager allows the management of collections within a Bucket.
    */
-  collectionManager;
+  get collectionManager() {
+    return this.bucket.collections();
+  }
 
   /**
    * QueryIndexManager provides an interface for managing the query indexes on the cluster.
    */
-  queryIndexManager;
+  get queryIndexManager() {
+    return this.cluster.queryIndexes();
+  }
 
   /**
    * ViewIndexManager is an interface which enables the management of view indexes on the cluster.
    */
-  viewIndexManager;
+  get viewIndexManager() {
+    return this.bucket.viewIndexes();
+  }
 
   /**
    * Dictionary for all models registered on this connection.
    */
   models = {};
 
+  public _cluster;
+
   /**
    * Cluster represents an entire Couchbase Server cluster.
    */
-  cluster;
+  get cluster() {
+    if (!this._cluster) {
+      throw new Error('No active connection detected, please try to connect.');
+    }
+    return this._cluster;
+  }
 
   /**
    * Contains the name of the current bucket.
@@ -144,14 +157,10 @@ export class Ottoman {
   connect = (connectOptions: ConnectOptions | string) => {
     const { connectionString, password, username, bucketName } =
       typeof connectOptions === 'object' ? connectOptions : extractConnectionString(connectOptions);
-    const cluster = new (couchbase as any).Cluster(connectionString, { username, password });
-    this.cluster = cluster;
+    this._cluster = new (couchbase as any).Cluster(connectionString, { username, password });
     this.bucketName = bucketName;
     this.couchbase = couchbase;
-    this.bucket = cluster.bucket(bucketName);
-    this.collectionManager = this.bucket.collections();
-    this.viewIndexManager = this.bucket.viewIndexes();
-    this.queryIndexManager = this.cluster.queryIndexes();
+    this.bucket = this._cluster.bucket(bucketName);
     return this;
   };
 
@@ -164,6 +173,9 @@ export class Ottoman {
    * ```
    */
   model(name: string, schema: Schema | Record<string, unknown>, options: ModelOptions = {}) {
+    if (this.models[name]) {
+      throw new Error(`A model with name '${name}' has already been registered.`);
+    }
     const modelOptions = options as CreateModelOptions;
     modelOptions.collectionName = options.collectionName || this.config.collectionName || name;
     modelOptions.scopeName = options.scopeName || this.config.scopeName || DEFAULT_SCOPE;
@@ -206,7 +218,7 @@ export class Ottoman {
    * ```
    */
   close() {
-    this.cluster.close();
+    this.cluster && this.cluster.close();
   }
 
   /**
@@ -256,13 +268,14 @@ export class Ottoman {
         }
 
         if (collectionName !== '_default') {
+          const _maxExpiry = maxExpiry ? +maxExpiry : undefined;
           collectionPromises.set(
             `${scopeName}${collectionName}`,
             this.collectionManager
               .createCollection({
                 name: collectionName,
                 scopeName,
-                maxExpiry: +maxExpiry,
+                maxExpiry: _maxExpiry,
               })
               .then(() => console.log(`collection created: ${scopeName}/${collectionName}`))
               .catch((e) => {
@@ -320,11 +333,19 @@ export const connect = (connectOptions: ConnectOptions | string) => {
   if (!__ottoman) {
     new Ottoman();
   }
-  __ottoman.connect(connectOptions);
+  __ottoman && __ottoman.connect(connectOptions);
 };
-export const close = () => __ottoman.close();
-export const start = () => __ottoman.start();
+export const close = () => {
+  if (__ottoman) {
+    __ottoman.close();
+    (__ottoman as any) = undefined;
+  }
+};
+export const start = () => __ottoman && __ottoman.start();
+export const getModel = (name: string) => {
+  __ottoman && __ottoman.getModel(name);
+};
 export const getCollection = (collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) =>
-  __ottoman.getCollection(collectionName, scopeName);
+  __ottoman && __ottoman.getCollection(collectionName, scopeName);
 export const model = (name: string, schema: Schema | Record<string, unknown>, options?) =>
-  __ottoman.model(name, schema, options);
+  __ottoman && __ottoman.model(name, schema, options);

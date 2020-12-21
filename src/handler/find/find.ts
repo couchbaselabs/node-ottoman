@@ -6,6 +6,7 @@ import { canBePopulated } from '../../utils/populate/can-be-populated';
 import { extractPopulate } from '../../utils/query/extract-populate';
 import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
 import { SearchConsistency } from '../..';
+import { CAST_STRATEGY } from '../../utils/cast-strategy';
 
 /**
  * Find documents
@@ -60,10 +61,11 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
       break;
   }
   const result = cluster.query(query.build(), queryOptions);
+
   return result.then(async (r: { rows: unknown[] }) => {
     if (select !== 'RAW COUNT(*) as count') {
       const Model = ottoman.getModel(modelName);
-      r.rows = r.rows.map((row) => new Model(row));
+      r.rows = r.rows.map((row) => new Model(row, { strict: false, strategy: CAST_STRATEGY.KEEP }));
       if (populate) {
         const populateFields = extractPopulate(populate);
         for (const toPopulate of populateFields) {

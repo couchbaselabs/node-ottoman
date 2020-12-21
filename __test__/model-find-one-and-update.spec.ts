@@ -1,5 +1,5 @@
-import { model, Schema } from '../src';
-import { delay } from './testData';
+import { getDefaultInstance, model, Schema } from '../src';
+import { delay, startInTest } from './testData';
 import couchbase from 'couchbase';
 
 describe('Test findOneAndUpdate function', () => {
@@ -9,6 +9,7 @@ describe('Test findOneAndUpdate function', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
+    startInTest(getDefaultInstance());
     await Cat.create({ name: 'Figaro', age: 27 });
     await delay(500);
     const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' });
@@ -22,6 +23,7 @@ describe('Test findOneAndUpdate function', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
+    startInTest(getDefaultInstance());
     await Cat.create({ name: 'Figaro', age: 27 });
     await delay(500);
     const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' }, { new: true });
@@ -35,6 +37,7 @@ describe('Test findOneAndUpdate function', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
+    startInTest(getDefaultInstance());
     await Cat.create({ name: 'Cat0', age: 27 });
     await delay(500);
     const response = await Cat.findOneAndUpdate({ name: 'Kitty' }, { name: 'Kitty', age: 20 }, { upsert: true });
@@ -48,6 +51,7 @@ describe('Test findOneAndUpdate function', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
+    startInTest(getDefaultInstance());
     const run = async () => await Cat.findOneAndUpdate({ name: { $like: 'DummyCatName91' } }, { name: 'Kitty' });
     await expect(run).rejects.toThrow((couchbase as any).DocumentNotFoundError);
   });

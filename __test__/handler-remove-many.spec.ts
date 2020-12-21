@@ -1,8 +1,8 @@
 import couchbase from 'couchbase';
 import { batchProcessQueue, chunkArray, StatusExecution } from '../src/handler';
-import { model, Schema } from '../src';
+import { getDefaultInstance, model, Schema } from '../src';
 import { ModelMetadata } from '../src/model/interfaces/model-metadata.interface';
-import { delay } from './testData';
+import { delay, startInTest } from './testData';
 
 describe('Test Document Remove Many', () => {
   test('Test Process Query Stack Function', async () => {
@@ -36,6 +36,7 @@ describe('Test Document Remove Many', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
+    startInTest(getDefaultInstance());
 
     const batchCreate = async () => {
       await Cat.create({ name: 'Cat0', age: 27 });
@@ -56,6 +57,7 @@ describe('Test Document Remove Many', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
+    startInTest(getDefaultInstance());
 
     const run = async () => await Cat.removeMany({ name: { $like: 'DummyCatName91' } });
     await expect(run).rejects.toThrow((couchbase as any).DocumentNotFoundError);

@@ -1,5 +1,5 @@
-import { VALIDATION_STRATEGY } from '../../utils';
 import { HOOKS } from '../../utils/hooks';
+import { CAST_STRATEGY } from '../../utils/cast-strategy';
 
 export type SchemaDef = Record<string, any>;
 export type FieldMap = { [key: string]: IOttomanType };
@@ -31,17 +31,17 @@ export interface RequiredOption {
 export interface CoreTypeOptions {
   required?: boolean | RequiredOption | RequiredFunction;
   default?: unknown;
-  auto?: string;
   validator?: ValidatorOption | ValidatorFunction | string;
 }
 
 export abstract class IOttomanType {
   protected constructor(public name: string, public typeName: string) {}
-  abstract cast(value: unknown, strategy: VALIDATION_STRATEGY): unknown;
+  abstract cast(value: unknown, strategy?: CAST_STRATEGY): unknown;
+  abstract validate(value: unknown, strict?: boolean): unknown;
 }
 
 export interface SchemaOptions {
-  validationStrategy?: VALIDATION_STRATEGY;
+  strict?: boolean;
   preHooks?: Hook;
   postHooks?: Hook;
 }

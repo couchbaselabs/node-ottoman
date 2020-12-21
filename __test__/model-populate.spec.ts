@@ -35,7 +35,7 @@ const IssueSchema = new Schema({
 });
 
 const CardSchema = new Schema({
-  number: String,
+  cardNumber: String,
   zipCode: String,
   issues: [{ type: IssueSchema, ref: 'Issue' }],
 });
@@ -94,7 +94,7 @@ describe('Test populate feature', () => {
   });
 
   test('Find.populate Card and Cat  references', async () => {
-    const Issue = model('Issue', CardSchema);
+    const Issue = model('Issue', IssueSchema);
     const Card = model('Card', CardSchema);
     const Cat = model('Cat', CatSchema);
     const schema = new Schema({
@@ -117,18 +117,19 @@ describe('Test populate feature', () => {
     const cardCreated = await Card.create(cardInfoWithIssue);
     const catCreated = await Cat.create(myCat);
     const catCreated2 = await Cat.create({ name: 'Garfield', age: 27 });
-    const user = new User(findPopulateDoc);
+    const userData = { ...findPopulateDoc, ...{ name: `${findPopulateDoc.name} ${Date.now()}` } };
+    const user = new User(userData);
     user.card = cardCreated.id;
-    user.cats = [catCreated.id, catCreated2.id];
+    user.cats = [catCreated, catCreated2];
 
     await user.save();
 
     await delay(2000);
     const options = new FindOptions({
-      limit: 5,
+      limit: 3,
       populate: ['cats', 'card'],
       populateMaxDeep: 2,
-      consistency: SearchConsistency.GLOBAL,
+      consistency: SearchConsistency.LOCAL,
     });
     let result = await User.find({ name: user.name }, options);
     expect(result.rows.length).toBeGreaterThanOrEqual(1);
@@ -145,7 +146,7 @@ describe('Test populate feature', () => {
   });
 
   test('Find.populate recursive', async () => {
-    const Issue = model('Issue', CardSchema);
+    const Issue = model('Issue', IssueSchema);
     const Card = model('Card', CardSchema);
     const Cat = model('Cat', CatSchema);
     const schema = new Schema({

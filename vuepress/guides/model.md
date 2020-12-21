@@ -59,9 +59,18 @@ interface ModelOptions {
   scopeName?: string;
   idKey?: string;
   modelKey?: string;
+  maxExpiry?: string;
   keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
 }
 ```
+- `collectionName`: define the collection name to be use in the Couchbase Server. The default value will be the Model's name.
+- `scopeName`: define the scope where the collection will be placed. The default value is `_default`
+- `idKey`: it's the value of the key to save your id. The default value is set to 'id'.
+- `modelKey`: define the key to store the model name into the document. The default value is `_type`
+- `maxExpiry`: value used to create a collection for this instance. The default value is `300000`.
+- `keyGenerator`: function to generate the key to store documents.
+
+If you don't provided a `keyGenerator` implementation it will be inherited by `Ottoman` instance options, check this in [Ottoman options](/guides/ottoman.html#ottoman-constructor-options)
 
 ### Model id
 
@@ -103,6 +112,14 @@ User.create({ name: 'Jane', age: 29 });
 Note that no users will be created/removed until the connection that your model uses is open.
 Every model has an associated connection. When you use [model()](/classes/ottoman.html#model),
 your model will use the default Ottoman connection.
+
+### Create Many
+Also you can use `createMany` static function to create multiples documents at once.
+See the [API](/classes/model.html#static-createmany) docs for more detail.
+
+```javascript
+User.createMany([{ name: 'John' }, { name: 'Jane' }]);
+```
 
 ## Querying
 
@@ -207,6 +224,46 @@ By default the option **new** and **upsert** are **false**
 If options.new is **true** return the document after update otherwise by default return the document before update.
 
 If options.upsert is **true** insert a document if the document does not exist.
+:::
+## Handling multilpes Models
+
+When you create a new `Model` Ottoman will register it by name.
+
+```javascript
+const User = model('User', userSchema);
+
+// Ottoman under the hood will register in a dictionary object with a key set to model name.
+const models = {
+    "User": UserModel
+}
+```
+
+::: warning
+Duplicate Model's name will throw an exception notifying about the register model duplication.
+:::
+
+### Getting existing Models
+
+You can retrieve a registered Model using the `getModel` function.
+
+```javascript
+import {getModel, model} from "ottoman";
+
+const User = model('User', {name: string});
+
+//anywhere else in the app.
+const User = getModel('User');
+```
+If the name provided doesn't match any registered model `undefined` value will be returned.
+
+:::tip
+Maybe you want to get an existing model and if it's don't exist then attempt to create, the next example could be helpful.
+
+```javascript
+import {getModel, model} from "ottoman";
+
+const User = getModel('User') || model('User', userSchema);
+```
 :::
 
 ## Next Up

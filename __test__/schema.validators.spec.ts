@@ -1,4 +1,4 @@
-import { addValidators, castSchema, Schema, BuildSchemaError } from '../src';
+import { addValidators, validate, Schema, BuildSchemaError } from '../src';
 
 describe('schema custom validators', () => {
   beforeAll(() => {
@@ -31,7 +31,7 @@ describe('schema custom validators', () => {
     });
 
     const data = { name: 'Joseph', score: '1234' };
-    expect(castSchema(data, TestSchema)).toEqual({ name: 'Joseph', score: 1234 });
+    expect(validate(data, TestSchema)).toEqual({ name: 'Joseph', score: 1234 });
   });
 
   test('should fail to validate bad data with custom validators', () => {
@@ -47,7 +47,7 @@ describe('schema custom validators', () => {
     });
 
     const data = { name: 'Joseph', score: 56.9 };
-    expect(() => castSchema(data, TestSchema)).toThrow(new Error('Not an integer!'));
+    expect(() => validate(data, TestSchema)).toThrow(new Error('Not an integer!'));
   });
 
   test("should throw an error if custom validator doesn't exist", () => {
@@ -57,7 +57,7 @@ describe('schema custom validators', () => {
         validator: 'fake',
       },
     };
-    expect(() => castSchema({ name: 'John' }, schemaDef)).toThrow(
+    expect(() => validate({ name: 'John' }, schemaDef)).toThrow(
       new Error('Validator fake for field name does not exist.'),
     );
   });
