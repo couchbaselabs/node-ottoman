@@ -3,6 +3,8 @@ import { MinmaxOption, NumberFunction, validateMaxLimit, validateMinLimit } from
 import { ValidationError } from '../errors';
 import { CoreTypeOptions } from '../interfaces/schema.types.js';
 import { is } from '../../utils/is-type';
+import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
+import { isNumber } from '../../utils/type-helpers';
 
 interface NumberTypeOptions {
   intVal?: boolean;
@@ -35,8 +37,17 @@ class NumberType extends CoreType {
     return typeof _options.intVal === 'undefined' ? false : _options.intVal;
   }
 
-  cast(value: unknown, strategy) {
-    value = super.cast(value, strategy);
+  cast(value: unknown, strategy = CAST_STRATEGY.DEFAULT_OR_DROP): unknown {
+    const castedValue = Number(value);
+    if (isNumber(castedValue)) {
+      return castedValue;
+    } else {
+      return checkCastStrategy(value, strategy, this);
+    }
+  }
+
+  validate(value: unknown, strategy) {
+    value = super.validate(value, strategy);
     if (this.isEmpty(value)) return value;
     const _value = Number(value);
     let errors: string[] = [];

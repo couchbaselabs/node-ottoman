@@ -13,11 +13,13 @@ import { buildIndexQuery } from './index/n1ql/build-index-query';
 import { indexFieldsName } from './index/helpers/index-field-names';
 import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
 import { LogicalWhereExpr } from '../query';
-import { castSchema, Schema } from '../schema';
+import { Schema } from '../schema';
 import { ModelTypes } from './model.types';
 import { SearchConsistency } from '..';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
+import { cast, CAST_STRATEGY } from '../utils/cast-strategy';
+import { createMany } from '../handler/create-many';
 
 /**
  * @ignore
@@ -26,7 +28,7 @@ export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel
   const schema = schemaDraft instanceof Schema ? schemaDraft : new Schema(schemaDraft);
 
   const { idKey: ID_KEY, modelKey, scopeName, collectionName, keyGenerator } = options;
-  const collection = ottoman.getCollection(collectionName, scopeName);
+  const collection = () => ottoman.getCollection(collectionName, scopeName);
   const maxExpiry = options && options.maxExpiry ? options.maxExpiry : DEFAULT_MAX_EXPIRY;
 
   const metadata: ModelMetadata = {
@@ -89,9 +91,12 @@ export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel
 export const _buildModel = (metadata: ModelMetadata) => {
   const { schema, collection, ID_KEY, modelKey, scopeName, ottoman, modelName, keyGenerator } = metadata;
   return class _Model<T> extends Model<T> {
-    constructor(data) {
+    constructor(data, options: { strategy?: CAST_STRATEGY; strict?: boolean; skip?: string[] } = {}) {
       super(data);
-      const schemaData = castSchema(data, schema);
+      const strategy = options.strategy || CAST_STRATEGY.DEFAULT_OR_DROP;
+      const strict = options.strict !== undefined ? options.strict : schema.options.strict;
+      const skip = options.skip || [modelKey, ID_KEY];
+      const schemaData = cast(data, schema, { strategy, strict, skip });
       this._applyData(schemaData);
 
       // Adding methods to the model instance
@@ -151,9 +156,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
         delete findOptions.select;
       }
       const key = keyGenerator!({ metadata, id });
-      const { value } = await collection.get(key, findOptions);
+      const { value } = await collection().get(key, findOptions);
       const ModelFactory = ottoman.getModel(modelName);
-      const document = new ModelFactory({ ...value });
+      const document = new ModelFactory({ ...value }, { strict: false, strategy: CAST_STRATEGY.KEEP });
       if (populate) {
         return await document._populate(populate);
       }
@@ -175,6 +180,11 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const instance = new _Model({ ...data });
       await instance.save();
       return instance;
+    };
+
+    static createMany = async (docs: Record<string, unknown>[] | Record<string, unknown>) => {
+      const _docs = Array.isArray(docs) ? docs : [docs];
+      return await createMany(metadata)(_docs);
     };
 
     static updateById = async (id: string, data) => {

@@ -16,7 +16,7 @@ export interface CreateModelOptions {
   scopeName: string;
   idKey: string;
   modelKey: string;
-  maxExpiry: string;
+  maxExpiry?: string;
   keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
 }
 

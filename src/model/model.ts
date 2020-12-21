@@ -1,8 +1,9 @@
 import { Document } from './document';
-import { FindByIdOptions, FindOptions } from '../handler';
+import { FindByIdOptions, FindOptions, GenericManyQueryResponse } from '../handler';
 import { LogicalWhereExpr, SortType } from '../query';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
+import { CAST_STRATEGY } from '../utils/cast-strategy';
 
 export type CountOptions = {
   sort?: Record<string, SortType>;
@@ -30,7 +31,7 @@ export abstract class Model<T = any> extends Document<T> {
    * Implements schema validations, defaults, methods, static and hooks
    */
   // eslint-disable-next-line no-unused-vars
-  constructor(data: any) {
+  constructor(data: unknown, options: { strategy?: CAST_STRATEGY; strict?: boolean; skip?: string[] } = {}) {
     super();
   }
 
@@ -117,8 +118,23 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async create(data: Record<string, any>): Promise<any> {
+  static async create(doc: Record<string, any>): Promise<any> {
     return Promise.resolve({});
+  }
+
+  /**
+   * Allows to create many document at once
+   *
+   * @example
+   * ```javascript
+   * const user = await User.createMany([{name: "John Doe"}, {name: "Jane Doe"}]);
+   * ```
+   */
+  // eslint-disable-next-line no-unused-vars
+  static async createMany(docs: Record<string, any>[] | Record<string, any>): Promise<GenericManyQueryResponse> {
+    return Promise.resolve(
+      new GenericManyQueryResponse('SUCCESS', { modified: 0, errors: [], match_number: docs.length }),
+    );
   }
 
   /**

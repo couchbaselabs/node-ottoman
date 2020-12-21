@@ -1,7 +1,5 @@
-import { applyDefaultValue, castSchema, ValidationError, BuildSchemaError } from '../src';
-import { Schema } from '../src/schema/schema';
+import { applyDefaultValue, validate, ValidationError, BuildSchemaError, Schema } from '../src';
 import { isOttomanType } from '../src/schema/helpers';
-import { VALIDATION_STRATEGY } from '../src/utils';
 
 const validData = {
   firstName: 'John',
@@ -35,10 +33,7 @@ const schemaDef = {
 };
 
 describe('Schema Types with Strict Strategy', () => {
-  const schemaOptions = {
-    validationStrategy: VALIDATION_STRATEGY.STRICT,
-  };
-  const schema = new Schema(schemaDef, schemaOptions);
+  const schema = new Schema(schemaDef, { strict: true });
   test('should allow to add the preHooks from the schema constructor', () => {
     const options = {
       preHooks: {
@@ -88,10 +83,7 @@ describe('Schema Types with Strict Strategy', () => {
     expect(new Schema({ name: String }, options2)).toBeInstanceOf(Schema);
   });
   test('should return the data according to the type defined in the schema when they are valid.', () => {
-    expect(castSchema(validData, schema)).toEqual(validData);
-  });
-  test('should throw an error when data are not exactly type.', () => {
-    expect(() => castSchema(dataUnCasted, schema)).toThrow(ValidationError);
+    expect(validate(validData, schema)).toEqual(validData);
   });
 });
 
@@ -126,8 +118,8 @@ describe('Schema Types', () => {
   });
   test('should return the data according to the type defined in the schema when they are valid.', () => {
     const schema = new Schema(schemaDef);
-    expect(castSchema(validData, schema)).toEqual(validData);
-    expect(castSchema(dataUnCasted, schema)).toEqual(validData);
+    expect(validate(validData, schema)).toEqual(validData);
+    expect(validate(dataUnCasted, schema)).toEqual(validData);
   });
   test('should apply correctly the default values', () => {
     const personSchema = {
@@ -162,7 +154,7 @@ describe('Schema Types', () => {
     const data = {
       firstName: 'Peter',
     };
-    expect(() => castSchema(data, schema)).toThrow('Only John is allowed');
+    expect(() => validate(data, schema)).toThrow('Only John is allowed');
 
     const schemaWithRegex = {
       firstName: {
@@ -173,7 +165,7 @@ describe('Schema Types', () => {
         },
       },
     };
-    expect(() => castSchema(data, schemaWithRegex)).toThrow(ValidationError);
+    expect(() => validate(data, schemaWithRegex)).toThrow(ValidationError);
   });
   test('should return the same schema when it is passed to create', () => {
     const schema = new Schema({ name: String, hasChild: Boolean, age: { type: Number, intVal: true } });
@@ -208,7 +200,7 @@ describe('Schema Types', () => {
     const schema = new Schema({
       created: Date,
     });
-    const data = castSchema({ created: dateString }, schema);
+    const data = validate({ created: dateString }, schema);
     expect(data.created).toBeDefined();
     expect(data.created.toISOString()).toBe(dateString);
     expect(data.created instanceof Date).toBe(true);

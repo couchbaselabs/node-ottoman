@@ -1,5 +1,6 @@
-import { Schema, model, isDocumentNotFoundError, getDefaultInstance } from '../src';
+import { getDefaultInstance, isDocumentNotFoundError, model, Schema } from '../src';
 import { delay, startInTest } from './testData';
+
 const accessDoc2 = {
   type: 'hooks',
   isActive: false,

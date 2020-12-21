@@ -1,6 +1,4 @@
-import { castSchema, ValidationError, BuildSchemaError } from '../src';
-import { registerType } from '../src/schema/helpers';
-import { Schema, IOttomanType } from '../src/schema';
+import { validate, ValidationError, BuildSchemaError, Schema, IOttomanType, registerType } from '../src';
 
 describe('Schema Types', () => {
   describe('Schema Array Types', () => {
@@ -29,14 +27,14 @@ describe('Schema Types', () => {
         const data = {
           names: ['John Due', 'Due John'],
         };
-        expect(castSchema(data, schemaString)).toEqual(data);
+        expect(validate(data, schemaString)).toEqual(data);
         const schemaNumber = {
           amounts: [{ type: Number, max: { val: 10, message: 'Not a valid value' } }],
         };
         const amountsData = {
           amounts: [2, 3, 4, 10],
         };
-        expect(castSchema(amountsData, schemaNumber)).toEqual(amountsData);
+        expect(validate(amountsData, schemaNumber)).toEqual(amountsData);
       });
       test('should throw an error when an item of the array is invalid', () => {
         const schemaString = {
@@ -45,7 +43,7 @@ describe('Schema Types', () => {
         const data = {
           names: ['John Due', 'Due John23', '32323'],
         };
-        expect(() => castSchema(data, schemaString)).toThrow(new ValidationError('Only letters allowed'));
+        expect(() => validate(data, schemaString)).toThrow(new ValidationError('Only letters allowed'));
 
         const schemaNumber = {
           amounts: [{ type: Number, max: { val: 10, message: 'Not a valid value' } }],
@@ -53,7 +51,7 @@ describe('Schema Types', () => {
         const amountsData = {
           amounts: [20, 13, 54, 10],
         };
-        expect(() => castSchema(amountsData, schemaNumber)).toThrow(new ValidationError('Not a valid value'));
+        expect(() => validate(amountsData, schemaNumber)).toThrow(new ValidationError('Not a valid value'));
       });
       test('should cast to the same object when array property is empty', () => {
         const schema = {
@@ -64,7 +62,7 @@ describe('Schema Types', () => {
           amount: 0,
         };
 
-        expect(castSchema(data, schema)).toEqual(data);
+        expect(validate(data, schema)).toEqual(data);
       });
       test('should throw an error when the array property is not an array', () => {
         const schema = {
@@ -76,7 +74,7 @@ describe('Schema Types', () => {
           names: {},
         };
 
-        expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property names must be of type Array'));
+        expect(() => validate(data, schema)).toThrow(new ValidationError('Property names must be of type Array'));
       });
     });
   });
@@ -120,8 +118,7 @@ describe('Schema Types', () => {
       const data = {
         birthday: Date.now(),
       };
-
-      expect(castSchema(data, schema)).toEqual(data);
+      expect(validate(data, schema)).toEqual({ birthday: new Date(data.birthday) });
     });
     test('should throw an error when the embedded property is not embedded', () => {
       const schema = {
@@ -135,7 +132,7 @@ describe('Schema Types', () => {
         names: 'John Doe',
         birthday: Date.now(),
       };
-      expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property names must be of type Embed'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError('Property names must be of type Embed'));
     });
   });
   describe('Schema Model Ref Types', () => {
@@ -157,7 +154,7 @@ describe('Schema Types', () => {
       const data = {
         user: { name: 'John Doe' },
       };
-      expect(castSchema(data, schema)).toEqual(data);
+      expect(validate(data, schema)).toEqual(data);
     });
     test('should throw an error validation when validating schema with another model', () => {
       const UserSchema = new Schema({ name: String });
@@ -165,7 +162,7 @@ describe('Schema Types', () => {
       const data = {
         user: { name: { age: 35 } },
       };
-      expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property name must be of type String'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError('Property name must be of type String'));
     });
     test('should create a schema with an array of references', () => {
       const commentSchema = new Schema({
@@ -201,30 +198,7 @@ describe('Schema Types', () => {
           '2132131323',
         ],
       };
-      expect(castSchema(data, postSchemaDef)).toEqual(data);
-    });
-    test('should throw an error when validated with schema and a bad array of references', () => {
-      const commentSchema = new Schema({
-        title: String,
-        description: String,
-        published: Boolean,
-      });
-      const postSchemaDef = new Schema({
-        postTitle: String,
-        comments: [{ type: commentSchema, ref: 'Comment' }],
-      });
-      const data = {
-        postTitle: 'Test',
-        comments: [
-          {
-            title: { age: 34 },
-            description: 'I like',
-            published: true,
-          },
-          '22132131323',
-        ],
-      };
-      expect(() => castSchema(data, postSchemaDef)).toThrow(ValidationError);
+      expect(validate(data, postSchemaDef)).toEqual(data);
     });
     test('should throw an error when the ref property is not ref', () => {
       const UserSchema = new Schema({ name: String });
@@ -232,7 +206,7 @@ describe('Schema Types', () => {
       const data = {
         user: 34,
       };
-      expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property user must be of type Reference'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError('Property user must be of type Reference'));
     });
   });
   describe('Schema Add Custom Types', () => {
@@ -242,6 +216,10 @@ describe('Schema Types', () => {
       }
 
       cast(): unknown {
+        return undefined;
+      }
+
+      validate(): unknown {
         return undefined;
       }
     }
@@ -292,7 +270,7 @@ describe('Schema Types', () => {
         },
       };
 
-      expect(castSchema(data, UserSchema)).toEqual(data);
+      expect(validate(data, UserSchema)).toEqual(data);
     });
 
     test('should throw an error when some required schema properties are missing', () => {
@@ -315,7 +293,7 @@ describe('Schema Types', () => {
         },
       };
 
-      expect(() => castSchema(data, UserSchema)).toThrow(ValidationError);
+      expect(() => validate(data, UserSchema)).toThrow(ValidationError);
 
       const UserSchema2 = new Schema({
         type: { type: String, required: { val: true, message: 'Required!' } },
@@ -328,7 +306,7 @@ describe('Schema Types', () => {
         card: { type: CardSchema, ref: 'Card' },
         cat: { type: CatSchema, ref: 'Cat' },
       });
-      expect(() => castSchema(data, UserSchema2)).toThrow(new ValidationError('Required!'));
+      expect(() => validate(data, UserSchema2)).toThrow(new ValidationError('Required!'));
     });
   });
 });

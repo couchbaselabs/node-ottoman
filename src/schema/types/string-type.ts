@@ -1,27 +1,35 @@
 import { CoreType } from './core-type';
 import { generateUUID } from '../../utils/generate-uuid';
 import { is } from '../../utils/is-type';
-import { ValidationError } from '../errors';
-import { CoreTypeOptions } from '../interfaces/schema.types';
+import { BuildSchemaError, ValidationError } from '../errors';
+import { AutoFunction, CoreTypeOptions } from '../interfaces/schema.types';
+import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 
 type FunctionsString = () => string[];
 
 export interface StringTypeOptions {
   enum?: string[] | FunctionsString;
+  auto?: string;
 }
 
 /**
  * @inheritDoc
  * @param options.enum defines a list of allowed values.
+ * @param options.auto that will generate the initial value of the field. It allows the value 'uuid' or a function. It cannot be used combined with default.
  */
 export class StringType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & StringTypeOptions) {
     super(name, String.name, options);
+    this._checkIntegrity();
   }
 
   get enumValues(): unknown {
     const _options = this.options as StringTypeOptions;
     return _options.enum;
+  }
+
+  get auto(): string | AutoFunction | undefined {
+    return (this.options as StringType)?.auto;
   }
 
   buildDefault(): string | undefined {
@@ -32,8 +40,17 @@ export class StringType extends CoreType {
     return typeof _value === 'undefined' ? _value : String(_value);
   }
 
-  cast(value: unknown, strategy) {
-    super.cast(value, strategy);
+  cast(value: unknown, strategy = CAST_STRATEGY.DEFAULT_OR_DROP) {
+    const castedValue = String(value);
+    if (is(castedValue, String) && !is(value, Object)) {
+      return castedValue;
+    } else {
+      return checkCastStrategy(value, strategy, this);
+    }
+  }
+
+  validate(value: unknown, strategy) {
+    super.validate(value, strategy);
     const _wrongType = this.isStrictStrategy(strategy) ? !is(value, String) : is(value, Object);
     if (_wrongType) {
       throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
@@ -57,6 +74,17 @@ export class StringType extends CoreType {
       const _enumValues = typeof this.enumValues === 'function' ? this.enumValues() : this.enumValues;
       if (!_enumValues.includes(value)) {
         return `Property ${this.name} value must be ${_enumValues.join(',')}`;
+      }
+    }
+  }
+
+  private _checkIntegrity() {
+    if (this.auto !== undefined) {
+      if (this.default !== undefined) {
+        throw new BuildSchemaError(`Auto and default values cannot be used at the same time in property ${this.name}.`);
+      }
+      if (this.auto === 'uuid' && this.typeName !== String.name) {
+        throw new BuildSchemaError('Automatic uuid properties must be string typed.');
       }
     }
   }

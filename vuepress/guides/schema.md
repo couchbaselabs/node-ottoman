@@ -49,7 +49,6 @@ Schemas not only define the structure of your document and casting of properties
 they also define document instance methods, static Model methods, 
 compound indexes, plugins and document lifecycle hooks.
 
-
 ## Creating a model
 To use our schema definition, we need to convert our blogSchema into a Model we can work with. 
 To do so, we pass it into `model(modelName, schema)`:
@@ -380,6 +379,121 @@ const user = new UserModel(...);
 // Pre save hooks will be execute and it will log the document just before save it to Couchbase server.
 await user.save();
 ```
+
+## Strict Mode
+
+The strict option, (enabled by default), 
+ensures that values passed to our model constructor that were not specified in our schema do not get saved to the db.
+
+```javascript
+const userSchema = new Schema({...})
+const User = model('User', userSchema);
+const user = new User({ iAmNotInTheSchema: true });
+user.save(); // iAmNotInTheSchema is not saved to the db
+
+// set to false..
+const userSchema = new Schema({...}, { strict: false });
+const user = new User({ iAmNotInTheSchema: true });
+user.save(); // iAmNotInTheSchema is now saved to the db!!
+```
+
+This value can be overridden at the model instance level by passing as second argument:
+
+```javascript
+const User = model('User', userSchema);
+const user = new User(doc, {strict: true});  // enables strict mode
+const user = new User(doc, {strict: false}); // disables strict mode
+```
+
+## Schema Helpful Methods
+
+Each `Schema` instance have two helpful methods `cast` and `validate`.
+
+### Cast method
+The `cast` method get a Javascript Object as first parameter and enforce schema types for each field in the schema definition.
+
+```javascript
+const schema = new Schema({
+    name: String,
+    price: Number,
+    createdAt: Date
+})
+
+const result = schema.cast({
+    name: 'TV',
+    price: '345.99',
+    createdAt: '2020-12-20T16:00:00.000Z'
+})
+
+// result variable now look like this:
+{
+    name: 'TV',
+    price: 345.99, // price was casted to Number
+    createdAt: 2020-12-20T16:00:00.000Z //createdAt was casted to Date
+}
+```
+
+#### Cast method options
+
+`cast` method have a few useful options:
+
+```typescript
+interface CastOptions {
+  strict?: boolean;
+  skip?: string[];
+  strategy?: CAST_STRATEGY;
+}
+```
+- `strict` will remove field not defined in the schema. The default value is set to true.
+- `skip` will be a string array with values of the key you may want to prevent to cast. The default value is empty [].
+- `strategy` when cast action fail, defined strategy is apply. The default strategy is set to `defaultOrDrop`
+
+Available strategies are:
+```javascript
+CAST_STRATEGY {
+  KEEP = 'keep', // will return original value
+  DROP = 'DROP', // will remove the field
+  THROW = 'throw', // will throw an exception
+  DEFAULT_OR_DROP = 'defaultOrDrop', // use default or remove the field if no default was provided
+  DEFAULT_OR_KEEP = 'defaultOrKeep', // use default or return original value
+}
+```
+
+### Validate method
+
+The `validate` method get a Javascript Object as first parameter and enforce schema types, rules and validations for each field in the schema definition.
+If something fail an exception will be throw up, else the `validate` method will return a valid object for the current Schema.
+
+```javascript
+const schema = new Schema({
+    name: String,
+    price: Number,
+    createdAt: Date
+})
+
+const result = schema.validate({
+    name: 'TV',
+    price: '345.99',
+    createdAt: '2020-12-20T16:00:00.000Z'
+})
+
+// result variable now look like this:
+{
+    name: 'TV',
+    price: 345.99, // price was casted to Number
+    createdAt: 2020-12-20T16:00:00.000Z //createdAt was casted to Date
+}
+```
+
+#### Validate method options
+
+`validate` method have 1 options:
+```javascript
+{
+  strict: boolean // strict set to true, will remove field not defined in the schema.
+}
+```
+By default, it will get the `strict` option value set via the Schema constructor.
 
 ## Next Up
 

@@ -3,6 +3,8 @@ import { DateFunction, DateOption, validateMaxDate, validateMinDate } from '../h
 import { ValidationError } from '../errors';
 import { CoreTypeOptions } from '../interfaces/schema.types';
 import { is } from '../../utils/is-type';
+import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
+import { isDateValid } from '../../utils/type-helpers';
 
 interface DateTypeOptions {
   min?: Date | DateOption | DateFunction | string;
@@ -34,12 +36,25 @@ class DateType extends CoreType {
     }
     return _max;
   }
-  buildDefault(): Date {
-    const result = super.buildDefault();
-    return !(result instanceof Date) ? new Date(String(result)) : (result as Date);
+
+  buildDefault(): Date | undefined {
+    const result: any = super.buildDefault();
+    if (result) {
+      return !(result instanceof Date) ? new Date(String(result)) : (result as Date);
+    }
+    return result;
   }
-  cast(value: unknown, strategy) {
-    value = super.cast(value, strategy);
+
+  cast(value: any, strategy = CAST_STRATEGY.DEFAULT_OR_DROP) {
+    if (isDateValid(value)) {
+      return new Date(value);
+    } else {
+      return checkCastStrategy(value, strategy, this);
+    }
+  }
+
+  validate(value: unknown, strategy) {
+    value = super.validate(value, strategy);
     if (this.isEmpty(value)) return value;
     const _value = this.isStrictStrategy(strategy)
       ? is(value, Date)

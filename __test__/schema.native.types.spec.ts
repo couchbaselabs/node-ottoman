@@ -1,14 +1,8 @@
-import { applyDefaultValue, castSchema, ValidationError, BuildSchemaError } from '../src';
+import { applyDefaultValue, validate, ValidationError, BuildSchemaError } from '../src';
 import { Schema } from '../src/schema';
 
 describe('Schema Native Types', () => {
   describe('Schema String Type', () => {
-    test('should throw an error when defining auto uuid value and it is not a String type ', () => {
-      const schema = {
-        firstName: { type: Boolean, auto: 'uuid' },
-      };
-      expect(() => new Schema(schema)).toThrow(new BuildSchemaError('Automatic uuid properties must be string typed.'));
-    });
     test('should return a schema instance when auto uuid value is defined and its type is String', () => {
       const schema = {
         firstName: { type: String, auto: 'uuid' },
@@ -18,21 +12,21 @@ describe('Schema Native Types', () => {
     test('should throw an error when the field is an enum string and the value is not contained', () => {
       const schema = { color: { type: String, enum: ['Blue', 'Green', 'Yellow'] } };
       const data = { color: 'Black' };
-      expect(() => castSchema(data, schema)).toThrow(ValidationError);
+      expect(() => validate(data, schema)).toThrow(ValidationError);
     });
     test('should return true when the field is an enum string and the value is contained', () => {
       const schema = { color: { type: String, enum: ['Blue', 'Green', 'Yellow'] } };
       const data = { color: 'Green' };
-      expect(castSchema(data, schema)).toEqual(data);
+      expect(validate(data, schema)).toEqual(data);
 
       const schemaWithFunction = { color: { type: String, enum: () => ['Blue', 'Green', 'Yellow'] } };
-      expect(castSchema(data, schemaWithFunction)).toEqual(data);
+      expect(validate(data, schemaWithFunction)).toEqual(data);
     });
   });
   describe('Schema Boolean Type', () => {
     test('should throw an error when defining default value and auto value', () => {
       const schema = {
-        hasFirstName: { type: Boolean, default: true, auto: () => false },
+        hasFirstName: { type: String, default: true, auto: () => false },
       };
       expect(() => new Schema(schema)).toThrow(BuildSchemaError);
     });
@@ -46,7 +40,7 @@ describe('Schema Native Types', () => {
         names: 'John Doe',
       };
 
-      expect(() => castSchema(data, schema)).toThrow(
+      expect(() => validate(data, schema)).toThrow(
         new ValidationError('Property hasFirstName must be of type Boolean'),
       );
     });
@@ -59,19 +53,17 @@ describe('Schema Native Types', () => {
       const schemaWithObject = {
         age: { type: Number, min: { val: 30, message: 'Only 30 or more years allowed' } },
       };
-      expect(() => castSchema(data, schemaWithObject)).toThrow(new ValidationError('Only 30 or more years allowed'));
+      expect(() => validate(data, schemaWithObject)).toThrow(new ValidationError('Only 30 or more years allowed'));
 
       const validator1 = () => {
         return { val: 30, message: 'Only 30 or more years allowed' };
       };
       const schemaWithFunctionObj = { age: { type: Number, min: validator1 } };
-      expect(() => castSchema(data, schemaWithFunctionObj)).toThrow(
-        new ValidationError('Only 30 or more years allowed'),
-      );
+      expect(() => validate(data, schemaWithFunctionObj)).toThrow(new ValidationError('Only 30 or more years allowed'));
 
       const validator2 = () => 30;
       const schemaWithFunctionNum = { age: { type: Number, min: validator2 } };
-      expect(() => castSchema(data, schemaWithFunctionNum)).toThrow(new ValidationError('23 is less than 30'));
+      expect(() => validate(data, schemaWithFunctionNum)).toThrow(new ValidationError('23 is less than 30'));
     });
     test('should throw an error when the value is more than max', () => {
       const data = {
@@ -80,19 +72,17 @@ describe('Schema Native Types', () => {
       const schemaWithObject = {
         age: { type: Number, max: { val: 30, message: 'Only 30 or less years allowed' } },
       };
-      expect(() => castSchema(data, schemaWithObject)).toThrow(new ValidationError('Only 30 or less years allowed'));
+      expect(() => validate(data, schemaWithObject)).toThrow(new ValidationError('Only 30 or less years allowed'));
 
       const validator1 = () => {
         return { val: 30, message: 'Only 30 or less years allowed' };
       };
       const schemaWithFunctionObj = { age: { type: Number, max: validator1 } };
-      expect(() => castSchema(data, schemaWithFunctionObj)).toThrow(
-        new ValidationError('Only 30 or less years allowed'),
-      );
+      expect(() => validate(data, schemaWithFunctionObj)).toThrow(new ValidationError('Only 30 or less years allowed'));
 
       const validator2 = () => 30;
       const schemaWithFunctionNum = { age: { type: Number, max: validator2 } };
-      expect(() => castSchema(data, schemaWithFunctionNum)).toThrow(new ValidationError('35 is more than 30'));
+      expect(() => validate(data, schemaWithFunctionNum)).toThrow(new ValidationError('35 is more than 30'));
     });
     test('should throw an error when the value is not an integer', () => {
       const data = {
@@ -101,7 +91,7 @@ describe('Schema Native Types', () => {
       const schema = {
         age: { type: Number, intVal: true },
       };
-      expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property age only allows Integer values'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError('Property age only allows Integer values'));
     });
     test('should return true when the value is allowed by schema def', () => {
       const dataInteger = {
@@ -110,7 +100,7 @@ describe('Schema Native Types', () => {
       const schemaInteger = {
         age: { type: Number, intVal: true, min: 4, max: 100 },
       };
-      expect(castSchema(dataInteger, schemaInteger)).toEqual(dataInteger);
+      expect(validate(dataInteger, schemaInteger)).toEqual(dataInteger);
 
       const dataDecimal = {
         age: 35.45,
@@ -118,12 +108,12 @@ describe('Schema Native Types', () => {
       const schemaDecimalWithoutDefIntVal = {
         age: { type: Number, min: 4, max: 100 },
       };
-      expect(castSchema(dataDecimal, schemaDecimalWithoutDefIntVal)).toEqual(dataDecimal);
+      expect(validate(dataDecimal, schemaDecimalWithoutDefIntVal)).toEqual(dataDecimal);
 
       const schemaDecimalWithDefIntVal = {
         age: { type: Number, intVal: false, min: 4, max: 100 },
       };
-      expect(castSchema(dataDecimal, schemaDecimalWithDefIntVal)).toEqual(dataDecimal);
+      expect(validate(dataDecimal, schemaDecimalWithDefIntVal)).toEqual(dataDecimal);
     });
     test('should throw an error when the number property is not number', () => {
       const schema = {
@@ -135,7 +125,7 @@ describe('Schema Native Types', () => {
         names: 'John Doe',
       };
 
-      expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property age must be of type Number'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError('Property age must be of type Number'));
     });
   });
   describe('Schema Date Types', () => {
@@ -177,18 +167,18 @@ describe('Schema Native Types', () => {
       });
     });
     const validationsFailAssertions = (data, schema1, schema2, schema3, schema4, schema5, opts) => {
-      expect(() => castSchema(data, schema1)).toThrow(ValidationError);
-      expect(() => castSchema(data, schema2)).toThrow(ValidationError);
-      expect(() => castSchema(data, schema3)).toThrow(ValidationError);
-      expect(() => castSchema(data, schema4)).toThrow(new ValidationError(opts.message));
-      expect(() => castSchema(data, schema5)).toThrow(new ValidationError(opts.message));
+      expect(() => validate(data, schema1)).toThrow(ValidationError);
+      expect(() => validate(data, schema2)).toThrow(ValidationError);
+      expect(() => validate(data, schema3)).toThrow(ValidationError);
+      expect(() => validate(data, schema4)).toThrow(new ValidationError(opts.message));
+      expect(() => validate(data, schema5)).toThrow(new ValidationError(opts.message));
     };
     const validationsSuccessAssertions = (data, schema1, schema2, schema3, schema4, schema5) => {
-      expect(castSchema(data, schema1)).toEqual(data);
-      expect(castSchema(data, schema2)).toEqual(data);
-      expect(castSchema(data, schema3)).toEqual(data);
-      expect(castSchema(data, schema4)).toEqual(data);
-      expect(castSchema(data, schema5)).toEqual(data);
+      expect(validate(data, schema1)).toEqual(data);
+      expect(validate(data, schema2)).toEqual(data);
+      expect(validate(data, schema3)).toEqual(data);
+      expect(validate(data, schema4)).toEqual(data);
+      expect(validate(data, schema5)).toEqual(data);
     };
     describe('Min Validation', () => {
       const _minDate = new Date('1999-12-31');
@@ -248,7 +238,7 @@ describe('Schema Native Types', () => {
         name: 'John Doe',
       };
 
-      expect(castSchema(data, schema)).toEqual(data);
+      expect(validate(data, schema)).toEqual(data);
     });
     test('should throw an error when the date property is not a date', () => {
       const schema = {
@@ -260,7 +250,7 @@ describe('Schema Native Types', () => {
         birthday: {},
       };
 
-      expect(() => castSchema(data, schema)).toThrow(new ValidationError('Property birthday must be of type Date'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError('Property birthday must be of type Date'));
     });
   });
 });

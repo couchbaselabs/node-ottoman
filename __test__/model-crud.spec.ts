@@ -142,7 +142,6 @@ describe('Test Document Access Functions', () => {
       return `method: getType -> ${this.type}`;
     };
     const UserModel = model('User', UserSchema);
-    await startInTest(getDefaultInstance());
     const user = new UserModel(accessDoc2);
     expect(user.getType()).toBe(`method: getType -> ${accessDoc2.type}`);
   });

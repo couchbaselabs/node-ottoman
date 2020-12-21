@@ -8,12 +8,10 @@ import {
   referenceTypeFactory,
   stringTypeFactory,
 } from './types';
-import { isMetadataKey } from '../utils/is-metadata';
-import { BuildSchemaError, ValidationError } from './errors';
-import { VALIDATION_STRATEGY } from '..';
+import { BuildSchemaError } from './errors';
 import { SchemaIndex, SchemaQuery } from '../model/index/types/index.types';
 import { getGlobalPlugins } from '../plugins/global-plugin-handler';
-import { buildFields } from './helpers';
+import { buildFields, validate } from './helpers';
 import { HOOKS, HookTypes } from '../utils/hooks';
 import {
   IOttomanType,
@@ -25,6 +23,7 @@ import {
   SupportType,
 } from './interfaces/schema.types';
 import { HookHandler } from './interfaces/schema.types';
+import { cast, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
 
 export class Schema {
   static Types: SupportType = {
@@ -43,8 +42,8 @@ export class Schema {
   postHooks: any = {};
   index: SchemaIndex = {};
   queries: SchemaQuery = {};
-  validationStrategy: VALIDATION_STRATEGY;
-  public fields: FieldMap;
+  fields: FieldMap;
+  options: SchemaOptions;
 
   /**
    * @summary Creates an instance of Schema
@@ -54,7 +53,7 @@ export class Schema {
    *
    * @param obj Schema definition
    * @param options Settings to build schema
-   * @param options.validationStrategy to apply in validations
+   * @param options.strict will remove fields if they aren't defined in the schema
    * @param options.preHooks initialization of preHooks since Schema constructor
    * @param options.postHooks initialization of postHooks since Schema constructor
    * @returns Schema
@@ -64,13 +63,13 @@ export class Schema {
    *  const schema = new Schema({name: String, age: {type: Number, intVal: true, min: 18}});
    * ```
    */
-  constructor(obj: SchemaDef | Schema, options?: SchemaOptions) {
-    const validationStrategy = options?.validationStrategy;
+  constructor(obj: SchemaDef | Schema, options: SchemaOptions = { strict: true }) {
     const preHooks = options?.preHooks;
     const postHooks = options?.postHooks;
-    this.fields = buildFields(obj, validationStrategy);
+    this.options = options;
+    const strict = options?.strict || false;
+    this.fields = buildFields(obj, strict);
     this.plugin(...getGlobalPlugins());
-    this.validationStrategy = validationStrategy ?? VALIDATION_STRATEGY.EQUAL;
     if (preHooks !== undefined) {
       this._initPreHooks(HOOKS.VALIDATE, preHooks[HOOKS.VALIDATE]);
       this._initPreHooks(HOOKS.SAVE, preHooks[HOOKS.SAVE]);
@@ -85,36 +84,42 @@ export class Schema {
     }
   }
   /**
-   * Casts a model instance using the definition of the schema
+   * Validate a model instance using the definition of the schema
    * @method
    * @public
    *
    * @example
    * ```ts
    *   const schema = new Schema({name: String, age: {type: Number, intVal: true, min: 18}});
+   *   const result = schema.validate({name: 'John Doe', age: '34'});
+   *   console.log(result)
+   * ```
+   * > {name: 'John Doe', age: 34}
+   */
+  validate(data: unknown, options: { strict?: boolean } = {}) {
+    const _options = {
+      strategy: CAST_STRATEGY.THROW,
+      strict: options.strict !== undefined ? options.strict : this.options.strict,
+    };
+    return validate(data, this, _options);
+  }
+
+  /**
+   * Cast a model instance using schema definition
+   * @method
+   * @public
+   *
+   * @example
+   * ```ts
+   *   const schema = new Schema({name: String, age: {type: Number}});
    *   const result = schema.cast({name: 'John Doe', age: '34'});
    *   console.log(result)
    * ```
    * > {name: 'John Doe', age: 34}
    */
-  cast(object) {
-    const errors: string[] = [];
-    for (const key in this.fields) {
-      const type = this.fields[key];
-      if (!isMetadataKey(type.name)) {
-        try {
-          const value = object[type.name];
-          object[type.name] = type.cast(value, this.validationStrategy);
-        } catch (e) {
-          errors.push(e.message);
-        }
-      }
-    }
-
-    if (errors.length > 0) {
-      throw new ValidationError(errors.join(', '));
-    }
-    return object;
+  cast(data: unknown, options: CastOptions = {}) {
+    options.strict = options.strict !== undefined ? options.strict : this.options.strict;
+    return cast(data, this, options);
   }
 
   /**

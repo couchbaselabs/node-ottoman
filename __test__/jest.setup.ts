@@ -1,7 +1,8 @@
 import { Ottoman, close } from '../src';
 import { connectUri } from './testData';
-beforeAll(async () => {
-  let options = {};
+
+beforeEach(async () => {
+  let options = { collectionName: '_default' };
   if (process.env.OTTOMAN_LEGACY_TEST) {
     options = { collectionName: '_default' };
   }
@@ -9,6 +10,6 @@ beforeAll(async () => {
   ottoman.connect(connectUri);
 });
 
-afterAll(async () => {
+afterEach(async () => {
   close();
 });

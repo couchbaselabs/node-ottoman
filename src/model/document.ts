@@ -1,7 +1,7 @@
 import couchbase from 'couchbase';
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
-import { castSchema } from '../schema';
+import { validate } from '../schema';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { getModelMetadata } from './utils/model.utils';
 import { storeLifeCycle } from './utils/store-life-cycle';
@@ -91,7 +91,7 @@ export abstract class Document<T> {
     } else {
       try {
         key = keyGenerator!({ metadata, id });
-        const { cas, value: oldData } = await collection.get(key);
+        const { cas, value: oldData } = await collection().get(key);
         const oldRefKeys = getModelRefKeys(oldData, prefix, ottoman);
         refKeys.add = arrayDiff(newRefKeys, oldRefKeys);
         refKeys.remove = arrayDiff(oldRefKeys, newRefKeys);
@@ -308,7 +308,7 @@ export abstract class Document<T> {
    * ```
    */
   _validate() {
-    return castSchema(this, this.$.schema);
+    return validate(this, this.$.schema);
   }
 
   /**

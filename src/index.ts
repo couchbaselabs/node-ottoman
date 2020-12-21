@@ -6,13 +6,14 @@ export {
   close,
   getDefaultInstance,
   getOttomanIntances,
+  getModel,
   Ottoman,
 } from './ottoman/ottoman';
 export { Model } from './model/model';
 export { getModelMetadata } from './model/utils/model.utils';
 export { ViewIndexOptions } from './model/index/view/view-index-options';
 export {
-  castSchema,
+  validate,
   applyDefaultValue,
   registerType,
   addValidators,

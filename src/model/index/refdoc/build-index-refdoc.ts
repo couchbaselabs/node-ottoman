@@ -5,7 +5,7 @@ export const buildViewRefdoc = (metadata: ModelMetadata, Model, fields, prefix) 
   values = Array.isArray(values) ? values : [values];
   const key = buildRefKey(fields, values, prefix);
   const { collection } = metadata;
-  const result = await collection.get(key, options);
+  const result = await collection().get(key, options);
   if (result && result.value) {
     return Model.findById(result.value);
   }

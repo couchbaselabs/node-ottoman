@@ -1,9 +1,9 @@
-import { Schema, model, getDefaultInstance } from '../src';
+import { getDefaultInstance, model, Schema } from '../src';
 import { startInTest } from './testData';
 
 describe('Test Model-Schema Integration and Validations', () => {
   const CardSchema = new Schema({
-    number: String,
+    cardNumber: String,
     zipCode: String,
   });
 
@@ -66,16 +66,16 @@ describe('Test Model-Schema Integration and Validations', () => {
     expect(jane.dogs).toBe(0);
   });
 
-  test('test default values', async () => {
-    const schema = new Schema({ name: String, dogs: { type: Number, default: 0 } });
+  test('test not to apply default values in query result', async () => {
+    const schema = new Schema({ name: String, dogs: { type: Number, default: 1 } });
     const Person = model('Person', schema, { idKey: 'name' });
     await startInTest(getDefaultInstance());
     const john = new Person({ name: 'John' });
-    expect(john.dogs).toBe(0);
+    expect(john.dogs).toBe(1);
     delete john.dogs;
     await john.save();
     const johnFetched = await Person.findById('John');
-    expect(johnFetched.dogs).toBe(0);
+    expect(johnFetched.dogs).toBe(1);
   });
 
   test('cast value in model constructor', () => {
