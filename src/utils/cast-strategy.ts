@@ -15,7 +15,7 @@ import { CoreType } from '../schema/types';
  */
 export enum CAST_STRATEGY {
   KEEP = 'keep',
-  DROP = 'DROP',
+  DROP = 'drop',
   THROW = 'throw',
   DEFAULT_OR_DROP = 'defaultOrDrop',
   DEFAULT_OR_KEEP = 'defaultOrKeep',

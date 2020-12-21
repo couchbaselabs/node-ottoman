@@ -449,13 +449,15 @@ interface CastOptions {
 - `strategy` when cast action fail, defined strategy is apply. The default strategy is set to `defaultOrDrop`
 
 Available strategies are:
+
 ```javascript
-CAST_STRATEGY {
+CAST_STRATEGY
+{
   KEEP = 'keep', // will return original value
-  DROP = 'DROP', // will remove the field
-  THROW = 'throw', // will throw an exception
-  DEFAULT_OR_DROP = 'defaultOrDrop', // use default or remove the field if no default was provided
-  DEFAULT_OR_KEEP = 'defaultOrKeep', // use default or return original value
+    drop = 'DROP', // will remove the field
+    THROW = 'throw', // will throw an exception
+    DEFAULT_OR_DROP = 'defaultOrDrop', // use default or remove the field if no default was provided
+    DEFAULT_OR_KEEP = 'defaultOrKeep', // use default or return original value
 }
 ```
 
