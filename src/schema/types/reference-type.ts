@@ -11,7 +11,19 @@ interface ReferenceOptions {
 }
 
 /**
- * @inheritDoc
+ * The `Reference` type creates a relationship between two schemas.
+ *
+ * @example
+ * ```typescript
+ * const Cat = model('Cat', {name: String});
+ * const schema = new Schema({
+ *     type: String,
+ *     isActive: Boolean,
+ *     name: String,
+ *     cats: [{ type: CatSchema, ref: 'Cat' }],
+ *   });
+ * const User = model('User', schema);
+ * ```
  */
 export class ReferenceType extends CoreType {
   constructor(name: string, public schema: Schema, public refModel: string, options?: CoreTypeOptions) {

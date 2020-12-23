@@ -6,15 +6,24 @@ import { is } from '../../utils';
 import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 import { isDateValid } from '../../utils/type-helpers';
 
+/**
+ * @field `min` date value that will be accepted
+ * @field `max` date value that will be accepted
+ * */
 interface DateTypeOptions {
   min?: Date | DateOption | DateFunction | string;
   max?: Date | DateOption | DateFunction | string;
 }
 
 /**
- * @inheritDoc
- * @param options.min date value that will be accepted
- * @param options.max date value that will be accepted
+ * `Date` are plain javascript date
+ * @example
+ * ```typescript
+ * const userSchema =  new Schema({
+ *   birthday: {type: Date, min: '1990-12-31', max: new Date()},
+ *   hired: Schema.Types.Date
+ * })
+ * ```
  */
 export class DateType extends CoreType {
   constructor(name: string, options?: DateTypeOptions & CoreTypeOptions) {

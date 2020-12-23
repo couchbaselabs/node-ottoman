@@ -7,15 +7,28 @@ import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 
 type FunctionsString = () => string[];
 
+/**
+ * Schema String Type Options
+ *
+ * @field `enum` defines a list of allowed values.
+ * @field `auto` that will generate the initial value of the field. It allows the value 'uuid' or a function. It cannot be used combined with default.
+ * */
 export interface StringTypeOptions {
   enum?: string[] | FunctionsString;
   auto?: string;
 }
 
 /**
- * @inheritDoc
- * @param options.enum defines a list of allowed values.
- * @param options.auto that will generate the initial value of the field. It allows the value 'uuid' or a function. It cannot be used combined with default.
+ * `String` are plain javascript string
+ *
+ * @example
+ * ```typescript
+ * const userSchema =  new Schema({
+ *   name: { type:String, auto: 'uuid' },
+ *   gender: { type: String, enum: ['M', 'F'] }
+ *   lastname: Schema.Types.String
+ * })
+ * ```
  */
 export class StringType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & StringTypeOptions) {

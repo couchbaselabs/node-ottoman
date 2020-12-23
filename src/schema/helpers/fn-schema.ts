@@ -78,10 +78,21 @@ const _parseType = (value, strict = true): ParseResult => {
   }
 };
 
+/**
+ * Create the Structure of schema object.
+ * @private
+ * @param type of the field
+ * @param options of the schema
+ * */
 const _makeParseResult = (type: string, options): ParseResult => {
   return { type, options };
 };
 
+/**
+ * Get the string type of a field
+ * @private
+ * @param type of the field
+ * */
 const _getFieldType = (type: any): any => {
   if (type) {
     return type.name || type.constructor['sName'] || undefined;
@@ -94,6 +105,7 @@ const _getFieldType = (type: any): any => {
  * @private
  * @param name of the field
  * @param def result of parsing the field schema
+ * @throws BuildSchemaError
  */
 const _makeField = (name: string, def: ParseResult): IOttomanType => {
   const typeFactory = Schema.FactoryTypes[String(def.type)];

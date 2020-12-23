@@ -13,7 +13,7 @@ import { cast, CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strateg
  * ```javascript
  * const userSchema = new Schema({
  *   name: String,
- *   email: String,
+ *   email: Schema.Types.String,
  *   createAt: Date,
  * });
  *

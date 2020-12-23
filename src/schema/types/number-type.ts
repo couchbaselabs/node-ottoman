@@ -6,16 +6,25 @@ import { is } from '../../utils';
 import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 import { isNumber } from '../../utils/type-helpers';
 
+/**
+ * @field `intVal` flag that will allow only integer values
+ * @field `min` numeric value that will be accepted
+ * @field `max` numeric value that will be accepted
+ * */
 interface NumberTypeOptions {
   intVal?: boolean;
   min?: number | NumberFunction | MinmaxOption;
   max?: number | NumberFunction | MinmaxOption;
 }
 /**
- * @inheritDoc
- * @param options.intVal flag that will allow only integer values
- * @param options.min numeric value that will be accepted
- * @param options.max numeric value that will be accepted
+ * `Number` are plain javascript number
+ *
+ * @example
+ * ```typescript
+ * const userSchema =  new Schema({
+ *   age: Number,
+ * })
+ * ```
  */
 export class NumberType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & NumberTypeOptions) {
