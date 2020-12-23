@@ -4,7 +4,14 @@ import { CoreTypeOptions } from '../interfaces/schema.types';
 import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 
 /**
- * @inheritDoc
+ * `Boolean` are plain javascript booleans
+ * @example
+ * ```typescript
+ * const userSchema =  new Schema({
+ *   isActive: Boolean,
+ *   isSomething: Schema.Types.Boolean
+ * })
+ * ```
  */
 export class BooleanType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions) {

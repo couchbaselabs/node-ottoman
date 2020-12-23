@@ -5,7 +5,14 @@ import { CoreTypeOptions, IOttomanType } from '../interfaces/schema.types';
 import { CAST_STRATEGY, checkCastStrategy, ensureArrayItemsType } from '../../utils/cast-strategy';
 
 /**
- * @inheritDoc
+ * Array type supports arrays of [SchemaTypes](/classes/schema.html#static-types) and arrays of subdocuments.
+ * @example
+ * ```typescript
+ * const postSchemaDef = new Schema({
+ *   postTags: [String],
+ *   comments: [{ type: commentSchema, ref: 'Comment' }],
+ * });
+ * ```
  */
 export class ArrayType extends CoreType {
   constructor(name: string, public itemType: IOttomanType, options?: CoreTypeOptions) {
