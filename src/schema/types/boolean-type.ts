@@ -1,5 +1,5 @@
 import { CoreType } from './core-type';
-import { is } from '../../utils/is-type';
+import { is } from '../../utils';
 import { CoreTypeOptions } from '../interfaces/schema.types';
 import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 
@@ -8,8 +8,9 @@ import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
  */
 export class BooleanType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions) {
-    super(name, Boolean.name, options);
+    super(name, BooleanType.sName, options);
   }
+  static sName = Boolean.name;
 
   cast(value, strategy = CAST_STRATEGY.DEFAULT_OR_DROP) {
     const castedValue = Boolean(value);

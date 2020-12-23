@@ -1,7 +1,7 @@
 import { CoreType } from './core-type';
 import { Schema } from '../schema';
 import { isModel } from '../../utils/is-model';
-import { is } from '../../utils/is-type';
+import { is } from '../../utils';
 import { ValidationError } from '../errors';
 import { CoreTypeOptions } from '../interfaces/schema.types';
 import { cast, CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
@@ -38,10 +38,11 @@ import { cast, CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strateg
  * @tip
  * `EmbedType` will allow you to reuse easily your existing schemas into new one using composition.
  */
-class EmbedType extends CoreType {
+export class EmbedType extends CoreType {
   constructor(name: string, public schema: Schema, options?: CoreTypeOptions) {
-    super(name, 'Embed', options);
+    super(name, EmbedType.sName, options);
   }
+  static sName = 'Embed';
 
   cast(value: unknown, strategy = CAST_STRATEGY.DEFAULT_OR_DROP): unknown {
     if (!is(value, Object) && !isModel(value)) {

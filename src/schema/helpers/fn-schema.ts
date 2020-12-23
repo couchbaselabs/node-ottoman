@@ -1,6 +1,7 @@
-import { is } from '../../utils/is-type';
+import { is, isSchemaFactoryType } from '../../utils';
 import { BuildSchemaError, ValidationError } from '../errors';
 import { Schema } from '../schema';
+import { CoreType } from '../types';
 import { CustomValidations, FactoryFunction, FieldMap, IOttomanType, SchemaDef } from '../interfaces/schema.types';
 import { cast, CAST_STRATEGY } from '../../utils/cast-strategy';
 
@@ -45,54 +46,47 @@ export const buildFields = (obj: Schema | SchemaDef, strict = true): FieldMap =>
  * @function
  * @private
  * @param value that is going to parsed
+ * @param strict Schema Validation Strategy Strict
  * @throws BuildSchemaError
  */
 const _parseType = (value, strict = true): ParseResult => {
   if (value instanceof Schema) {
-    return {
-      type: 'Embed',
-      options: value,
-    };
-  } else if (is(value, Object)) {
-    if (typeof value.ref !== 'undefined') {
-      return {
-        type: 'Reference',
-        options: {
-          schema: new Schema(value.type, { strict }),
-          refModel: value.ref,
-        },
-      };
-    } else if (is(value.type, Array)) {
-      const childType = _parseType(value.type[0], strict);
-      return {
-        type: Array.name,
-        options: _makeField('', childType),
-      };
-    } else if (typeof value.type !== 'undefined') {
-      return {
-        type: value.type.name,
-        options: value,
-      };
-    } else {
-      return {
-        type: 'Embed',
-        options: new Schema(value, { strict }),
-      };
-    }
+    return _makeParseResult('Embed', value);
   } else if (is(value, Array)) {
-    const childType = _parseType(value[0], strict);
-    return {
-      type: Array.name,
-      options: _makeField('', childType),
-    };
-  } else if (value.name !== undefined) {
-    return {
-      type: value.name,
-      options: {},
-    };
+    return _makeParseResult(Array.name, _makeField('', _parseType(value[0], strict)));
+  } else if (value instanceof CoreType || isSchemaFactoryType(value, Schema.FactoryTypes)) {
+    return _makeParseResult(_getFieldType(value), {});
+  } else if (is(value, Object)) {
+    if (Object.keys(value).length === 0) {
+      return _makeParseResult('Mixed', value);
+    } else if (value.ref) {
+      const options = {
+        schema: new Schema(value.type, { strict }),
+        refModel: value.ref,
+      };
+      return _makeParseResult('Reference', options);
+    } else if (typeof value.type !== 'undefined') {
+      if (is(value.type, Array)) {
+        return _makeParseResult(Array.name, _makeField('', _parseType(value.type[0], strict)));
+      }
+      return { ..._parseType(value.type, strict), ...{ options: value } };
+    } else {
+      return _makeParseResult('Embed', new Schema(value, { strict }));
+    }
   } else {
-    return value;
+    return _makeParseResult('Unknown', value);
   }
+};
+
+const _makeParseResult = (type: string, options): ParseResult => {
+  return { type, options };
+};
+
+const _getFieldType = (type: any): any => {
+  if (type) {
+    return type.name || type.constructor['sName'] || undefined;
+  }
+  return undefined;
 };
 
 /**
@@ -102,7 +96,7 @@ const _parseType = (value, strict = true): ParseResult => {
  * @param def result of parsing the field schema
  */
 const _makeField = (name: string, def: ParseResult): IOttomanType => {
-  const typeFactory = Schema.Types[String(def.type)];
+  const typeFactory = Schema.FactoryTypes[String(def.type)];
   if (typeFactory === undefined) {
     throw new BuildSchemaError(`Unsupported type specified in the property "${name}"`);
   }
@@ -195,10 +189,10 @@ export const applyDefaultValue = (obj, schema: Schema | SchemaDef): any => {
  *  ```
  */
 export const registerType = (name: string, factory: FactoryFunction): void => {
-  if (Schema.Types[name] !== undefined) {
+  if (Schema.FactoryTypes[name] !== undefined) {
     throw new Error('A type with this name has already been registered');
   }
-  Schema.Types[name] = factory;
+  Schema.FactoryTypes[name] = factory;
 };
 
 /**

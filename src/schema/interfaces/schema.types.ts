@@ -1,4 +1,5 @@
 import { HOOKS } from '../../utils/hooks';
+import { CoreType } from '../types';
 import { CAST_STRATEGY } from '../../utils/cast-strategy';
 
 export type SchemaDef = Record<string, any>;
@@ -8,9 +9,11 @@ export type FactoryFunction = (name, options) => IOttomanType;
 /**
  * Should throw all errors detected
  */
+export type OttomanSchemaTypes = 'String' | 'Boolean' | 'Number' | 'Date' | 'Array' | 'Reference' | 'Embed' | 'Mixed';
 export type ValidatorFunction = (value: unknown) => void;
 export type AutoFunction = () => unknown;
-export type SupportType = { [key: string]: FactoryFunction };
+export type SupportFactoryTypes = { [key in OttomanSchemaTypes]: FactoryFunction };
+export type SupportTypes = { [key in OttomanSchemaTypes]: CoreType };
 export type CustomValidations = { [key: string]: ValidatorFunction };
 export type RequiredFunction = () => boolean | RequiredOption;
 export type HookHandler = (IDocument) => void;

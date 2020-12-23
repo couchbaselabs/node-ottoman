@@ -7,6 +7,15 @@ import {
   numberTypeFactory,
   referenceTypeFactory,
   stringTypeFactory,
+  mixedTypeFactory,
+  EmbedType,
+  ArrayType,
+  DateType,
+  NumberType,
+  BooleanType,
+  StringType,
+  MixedType,
+  ReferenceType,
 } from './types';
 import { BuildSchemaError } from './errors';
 import { SchemaIndex, SchemaQuery } from '../model/index/types/index.types';
@@ -20,13 +29,14 @@ import {
   PluginConstructor,
   SchemaDef,
   SchemaOptions,
-  SupportType,
+  SupportFactoryTypes,
+  SupportTypes,
 } from './interfaces/schema.types';
 import { HookHandler } from './interfaces/schema.types';
 import { cast, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
 
 export class Schema {
-  static Types: SupportType = {
+  static FactoryTypes: SupportFactoryTypes = {
     String: stringTypeFactory,
     Boolean: booleanTypeFactory,
     Number: numberTypeFactory,
@@ -34,6 +44,17 @@ export class Schema {
     Array: arrayTypeFactory,
     Reference: referenceTypeFactory,
     Embed: embedTypeFactory,
+    Mixed: mixedTypeFactory,
+  };
+  static Types: SupportTypes = {
+    String: StringType.prototype,
+    Boolean: BooleanType.prototype,
+    Number: NumberType.prototype,
+    Date: DateType.prototype,
+    Array: ArrayType.prototype,
+    Reference: ReferenceType.prototype,
+    Embed: EmbedType.prototype,
+    Mixed: MixedType.prototype,
   };
   static validators: CustomValidations = {};
   statics: any = {};

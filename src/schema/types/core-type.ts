@@ -21,7 +21,12 @@ import { VALIDATION_STRATEGY } from '../../utils';
 export abstract class CoreType extends IOttomanType {
   protected constructor(name: string, typeName: string, public options?: CoreTypeOptions) {
     super(name, typeName);
+    this.name = name;
+    this.typeName = typeName;
   }
+
+  static sName;
+
   get required(): boolean | RequiredOption | RequiredFunction {
     return this.options?.required || false;
   }

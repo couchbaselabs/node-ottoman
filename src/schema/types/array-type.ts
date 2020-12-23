@@ -1,5 +1,5 @@
 import { CoreType } from './core-type';
-import { is } from '../../utils/is-type';
+import { is } from '../../utils';
 import { ValidationError } from '../errors';
 import { CoreTypeOptions, IOttomanType } from '../interfaces/schema.types';
 import { CAST_STRATEGY, checkCastStrategy, ensureArrayItemsType } from '../../utils/cast-strategy';
@@ -9,8 +9,10 @@ import { CAST_STRATEGY, checkCastStrategy, ensureArrayItemsType } from '../../ut
  */
 export class ArrayType extends CoreType {
   constructor(name: string, public itemType: IOttomanType, options?: CoreTypeOptions) {
-    super(name, Array.name, options);
+    super(name, ArrayType.sName, options);
   }
+
+  static sName = Array.name;
 
   cast(value: unknown, strategy = CAST_STRATEGY.DEFAULT_OR_DROP): unknown {
     if (is(value, Array)) {

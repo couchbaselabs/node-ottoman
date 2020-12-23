@@ -2,7 +2,7 @@ import { CoreType } from './core-type';
 import { DateFunction, DateOption, validateMaxDate, validateMinDate } from '../helpers';
 import { ValidationError } from '../errors';
 import { CoreTypeOptions } from '../interfaces/schema.types';
-import { is } from '../../utils/is-type';
+import { is } from '../../utils';
 import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 import { isDateValid } from '../../utils/type-helpers';
 
@@ -16,10 +16,12 @@ interface DateTypeOptions {
  * @param options.min date value that will be accepted
  * @param options.max date value that will be accepted
  */
-class DateType extends CoreType {
+export class DateType extends CoreType {
   constructor(name: string, options?: DateTypeOptions & CoreTypeOptions) {
-    super(name, Date.name, options);
+    super(name, DateType.sName, options);
   }
+
+  static sName = Date.name;
 
   get min(): Date | DateOption | DateFunction | undefined {
     const _min = (this.options as DateTypeOptions).min;
