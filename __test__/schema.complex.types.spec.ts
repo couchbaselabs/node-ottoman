@@ -1,4 +1,5 @@
 import { validate, ValidationError, BuildSchemaError, Schema, IOttomanType, registerType } from '../src';
+import { MixedType } from '../src/schema/types';
 
 describe('Schema Types', () => {
   describe('Schema Array Types', () => {
@@ -307,6 +308,88 @@ describe('Schema Types', () => {
         cat: { type: CatSchema, ref: 'Cat' },
       });
       expect(() => validate(data, UserSchema2)).toThrow(new ValidationError('Required!'));
+    });
+  });
+  describe('Schema Mixed Type', () => {
+    test('Check Mixed Schema Type Variants', () => {
+      const UserSchema = new Schema({
+        inline: Schema.Types.Mixed,
+        type: { type: Schema.Types.Mixed, required: true },
+        any: Object,
+        other: {},
+      });
+      const data = {
+        inline: { name: 'george' },
+        type: {
+          email: 'george@gmail.com',
+        },
+        any: 'Hello',
+        other: { hello: 'hello' },
+      };
+
+      expect(validate(data, UserSchema)).toEqual(data);
+    });
+
+    test('Check Mixed Schema Type Variants if is MixedType', () => {
+      const UserSchema = new Schema({
+        inline: Schema.Types.Mixed,
+        type: { type: Schema.Types.Mixed, required: true },
+        any: Object,
+        other: {},
+      });
+
+      expect(UserSchema.fields.inline).toBeInstanceOf(MixedType);
+    });
+
+    test('Check Mixed Schema Type required validation', () => {
+      const UserSchema = new Schema({
+        type: { type: Schema.Types.Mixed, required: true },
+        any: Object,
+      });
+      const data = {
+        any: 'Hello',
+      };
+      const run = () => validate(data, UserSchema);
+      expect(run).toThrow('Property type is required');
+    });
+
+    test('Check Mixed Schema Type custom validation', () => {
+      const validator = (val) => {
+        if (!val.hasOwnProperty('hello')) {
+          throw new Error('Property "hello" is required');
+        }
+      };
+      const UserSchema = new Schema({
+        type: { type: Schema.Types.Mixed, validator },
+      });
+      const data = {
+        type: { helio: 'helio' },
+      };
+      const run = () => validate(data, UserSchema);
+      expect(run).toThrow('Property "hello" is required');
+    });
+  });
+  describe('Test internal Ottoman Schema Types', () => {
+    test('Check Basic Internal Types', () => {
+      const CustomSchema = new Schema({
+        number: Schema.Types.Number,
+        string: Schema.Types.String,
+        array: [Schema.Types.Number],
+        date: Schema.Types.Date,
+        boolean: Schema.Types.Boolean,
+        mixed: { type: Schema.Types.Mixed },
+      });
+
+      const data = {
+        number: 10,
+        string: 'hello',
+        date: new Date(),
+        array: [1, 2, 3],
+        boolean: false,
+        mixed: { hello: 'hello' },
+      };
+
+      expect(validate(data, CustomSchema)).toEqual(data);
     });
   });
 });

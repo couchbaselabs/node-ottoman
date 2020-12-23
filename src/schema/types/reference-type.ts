@@ -1,6 +1,6 @@
 import { CoreType } from './core-type';
 import { Schema } from '../schema';
-import { is } from '../../utils/is-type';
+import { is } from '../../utils';
 import { isModel } from '../../utils/is-model';
 import { ValidationError } from '../errors';
 import { CoreTypeOptions } from '../interfaces/schema.types';
@@ -15,8 +15,9 @@ interface ReferenceOptions {
  */
 export class ReferenceType extends CoreType {
   constructor(name: string, public schema: Schema, public refModel: string, options?: CoreTypeOptions) {
-    super(name, 'Reference', options);
+    super(name, ReferenceType.sName, options);
   }
+  static sName = 'Reference';
 
   cast(value) {
     return value;

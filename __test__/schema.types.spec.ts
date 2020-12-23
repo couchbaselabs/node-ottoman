@@ -178,7 +178,7 @@ describe('Schema Types', () => {
       age: { type: Number, intVal: true },
       amount: { min: 23, max: 24 },
     };
-    expect(() => new Schema(schema)).toThrow(new BuildSchemaError('Property min is a required type'));
+    expect(() => new Schema(schema)).toThrow(new BuildSchemaError('Unsupported type specified in the property "min"'));
 
     const schemaWithNull = {
       name: String,

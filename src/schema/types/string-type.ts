@@ -1,6 +1,6 @@
 import { CoreType } from './core-type';
 import { generateUUID } from '../../utils/generate-uuid';
-import { is } from '../../utils/is-type';
+import { is } from '../../utils';
 import { BuildSchemaError, ValidationError } from '../errors';
 import { AutoFunction, CoreTypeOptions } from '../interfaces/schema.types';
 import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
@@ -19,9 +19,11 @@ export interface StringTypeOptions {
  */
 export class StringType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & StringTypeOptions) {
-    super(name, String.name, options);
+    super(name, StringType.sName, options);
     this._checkIntegrity();
   }
+
+  static sName = String.name;
 
   get enumValues(): unknown {
     const _options = this.options as StringTypeOptions;

@@ -2,7 +2,7 @@ import { CoreType } from './core-type';
 import { MinmaxOption, NumberFunction, validateMaxLimit, validateMinLimit } from '../helpers';
 import { ValidationError } from '../errors';
 import { CoreTypeOptions } from '../interfaces/schema.types.js';
-import { is } from '../../utils/is-type';
+import { is } from '../../utils';
 import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 import { isNumber } from '../../utils/type-helpers';
 
@@ -17,10 +17,11 @@ interface NumberTypeOptions {
  * @param options.min numeric value that will be accepted
  * @param options.max numeric value that will be accepted
  */
-class NumberType extends CoreType {
+export class NumberType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions & NumberTypeOptions) {
-    super(name, Number.name, options);
+    super(name, NumberType.sName, options);
   }
+  static sName = Number.name;
 
   get max(): number | NumberFunction | MinmaxOption | undefined {
     const _options = this.options as NumberTypeOptions;
