@@ -11,7 +11,7 @@ import {
   MODEL_KEY,
   DEFAULT_ID_KEY,
 } from '../utils/constants';
-import { getModelMetadata } from '..';
+import { getModelMetadata, SearchConsistency } from '..';
 import { isDebugMode } from '../utils/is-debug-mode';
 import { ModelOptions, CreateModelOptions } from '../model/interfaces/create-model.interface';
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
@@ -35,7 +35,8 @@ interface OttomanConfig {
   scopeName?: string;
   modelKey?: string;
   populateMaxDeep?: number;
-  maxExpiry?: string;
+  searchConsistency?: SearchConsistency;
+  maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata; id: string }) => string;
 }
 
@@ -93,8 +94,15 @@ export class Ottoman {
   /**
    * CollectionManager allows the management of collections within a Bucket.
    */
-  get collectionManager() {
+  get collectionManager(): CollectionManager {
     return this.bucket.collections();
+  }
+
+  /**
+   * Gets a bucket manager for this cluster
+   */
+  get bucketManager(): BucketManager {
+    return this.cluster.buckets();
   }
 
   /**
@@ -116,7 +124,7 @@ export class Ottoman {
    */
   models = {};
 
-  public _cluster;
+  private _cluster;
 
   /**
    * Cluster represents an entire Couchbase Server cluster.
@@ -187,6 +195,34 @@ export class Ottoman {
     const ModelFactory = createModel({ name, schemaDraft: schema, options: modelOptions, ottoman: this });
     this.models[name] = ModelFactory;
     return ModelFactory;
+  }
+
+  /**
+   * dropCollection drops a collection from a scope in a bucket.
+   * @param name
+   * @param scopeName
+   * @param options
+   */
+  dropCollection(collectionName, scopeName: string, options: { timeout?: number } = {}): Promise<boolean> {
+    return this.collectionManager.dropCollection(collectionName, scopeName, options);
+  }
+
+  /**
+   * dropScope drops a scope from a bucket.
+   * @param scopeName
+   * @param options
+   */
+  dropScope(scopeName: string, options: { timeout?: number } = {}): Promise<boolean> {
+    return this.collectionManager.dropScope(scopeName, options);
+  }
+
+  /**
+   * dropBucket drops a bucket from the cluster.
+   * @param bucketName
+   * @param options
+   */
+  dropBucket(bucketName: string, options: { timeout?: number } = {}): Promise<boolean> {
+    return this.bucketManager.dropBucket(bucketName, options);
   }
 
   /**
@@ -268,14 +304,13 @@ export class Ottoman {
         }
 
         if (collectionName !== '_default') {
-          const _maxExpiry = maxExpiry ? +maxExpiry : undefined;
           collectionPromises.set(
             `${scopeName}${collectionName}`,
             this.collectionManager
               .createCollection({
                 name: collectionName,
                 scopeName,
-                maxExpiry: _maxExpiry,
+                maxExpiry: maxExpiry ? +maxExpiry : DEFAULT_MAX_EXPIRY,
               })
               .then(() => console.log(`collection created: ${scopeName}/${collectionName}`))
               .catch((e) => {
