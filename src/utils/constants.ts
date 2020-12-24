@@ -23,4 +23,4 @@ export const DEFAULT_COLLECTION = '_default';
 
 export const KEY_GENERATOR = ({ metadata, id }) => `${metadata.scopeName}$${metadata.collectionName}::${id}`;
 
-export const DEFAULT_MAX_EXPIRY = '300000';
+export const DEFAULT_MAX_EXPIRY = 300000;

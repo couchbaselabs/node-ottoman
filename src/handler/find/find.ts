@@ -51,7 +51,8 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
     query = query.orderBy(sort);
   }
   const queryOptions: Record<string, unknown> = {};
-  switch (consistency) {
+  const _consistency = consistency || ottoman.config.searchConsistency || SearchConsistency.NONE;
+  switch (_consistency) {
     case SearchConsistency.GLOBAL:
     case SearchConsistency.LOCAL:
       queryOptions.scanConsistency = couchbase.QueryScanConsistency.RequestPlus;

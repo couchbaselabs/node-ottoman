@@ -2,7 +2,7 @@ import { Ottoman, close } from '../src';
 import { connectUri } from './testData';
 
 beforeEach(async () => {
-  let options = { collectionName: '_default' };
+  let options = {};
   if (process.env.OTTOMAN_LEGACY_TEST) {
     options = { collectionName: '_default' };
   }

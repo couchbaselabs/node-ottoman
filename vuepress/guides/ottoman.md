@@ -196,6 +196,13 @@ Ottoman class will provide 3 main methods in order to bootstrap the app:
 - `ensureIndexes` will attempt to create all indexes defined in the schema definition.
 - `start` method is just a shortcut to run `ensureCollections` and `ensureIndexes`.
   Notice: It's not required to execute the `start` method to Ottoman work.
+  
+## Helper functions
+
+Ottoman provides some helpers functions:
+- [dropBucket](/classes/ottoman.html#dropbucket) drops a bucket from the cluster.
+- [dropScope](/classes/ottoman.html#dropscope) drops a scope from a bucket.
+- [dropCollection](/classes/ottoman.html#dropcollection) drops a collection from a scope in a bucket.
 
 ## Next Up
 

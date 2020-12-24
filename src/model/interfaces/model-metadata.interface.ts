@@ -10,6 +10,6 @@ export interface ModelMetadata {
   ID_KEY: string;
   ottoman: Ottoman;
   modelKey: string;
-  maxExpiry: string | undefined;
+  maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
 }
