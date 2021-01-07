@@ -94,14 +94,14 @@ export class Ottoman {
   /**
    * CollectionManager allows the management of collections within a Bucket.
    */
-  get collectionManager(): CollectionManager {
+  get collectionManager() {
     return this.bucket.collections();
   }
 
   /**
    * Gets a bucket manager for this cluster
    */
-  get bucketManager(): BucketManager {
+  get bucketManager() {
     return this.cluster.buckets();
   }
 
