@@ -28,12 +28,13 @@ The available configurations are:
 
 ```typescript
 interface OttomanConfig {
-    collectionName?: string;
-    scopeName?: string;
-    modelKey?: string;
-    populateMaxDeep?: number;
-    maxExpiry?: string;
-    keyGenerator?: (params: { metadata: ModelMetadata; id: string }) => string;
+  collectionName?: string;
+  scopeName?: string;
+  modelKey?: string;
+  populateMaxDeep?: number;
+  searchConsistency?: SearchConsistency;
+  maxExpiry?: number;
+  keyGenerator?: (params: { metadata: ModelMetadata; id: string }) => string;
 }
 ```
 
@@ -41,6 +42,7 @@ interface OttomanConfig {
 - `scopeName`: store value to use for each Model if it doesn't provide any. The default value is `_default`
 - `modelKey`: define the key to store the model name into the document. The default value is `_type`
 - `populateMaxDeep`: set default value for population. Default value is `1`.
+- `searchConsistency`: define default Search Consistency Strategy. The default value is `SearchConsistency.NONE`
 - `maxExpiry`: value used to create a collection for this instance. The default value is `300000`.
 - `keyGenerator`: function to generate the key to store documents.
 
