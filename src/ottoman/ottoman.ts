@@ -377,9 +377,7 @@ export const close = () => {
   }
 };
 export const start = () => __ottoman && __ottoman.start();
-export const getModel = (name: string) => {
-  __ottoman && __ottoman.getModel(name);
-};
+export const getModel = (name: string) => __ottoman && __ottoman.getModel(name);
 export const getCollection = (collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) =>
   __ottoman && __ottoman.getCollection(collectionName, scopeName);
 export const model = (name: string, schema: Schema | Record<string, unknown>, options?) =>
