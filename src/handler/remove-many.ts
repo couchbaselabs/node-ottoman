@@ -1,6 +1,6 @@
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
 import { batchProcessQueue } from './utils';
-import { StatusExecution } from './types';
+import { GenericManyQueryResponse, StatusExecution } from './types';
 
 /**
  * Async Function
@@ -11,7 +11,7 @@ import { StatusExecution } from './types';
  *
  * @return (GenericManyQueryResponse)[(/classes/queryresponse.html)]
  */
-export const removeMany = (metadata: ModelMetadata) => async (ids) => {
+export const removeMany = (metadata: ModelMetadata) => async (ids): Promise<GenericManyQueryResponse> => {
   return await batchProcessQueue(metadata)(ids, removeCallback, {}, 100);
 };
 
@@ -20,6 +20,7 @@ export const removeMany = (metadata: ModelMetadata) => async (ids) => {
  */
 export const removeCallback = (id: string, metadata: ModelMetadata): Promise<StatusExecution> => {
   const model = metadata.ottoman.getModel(metadata.modelName);
+
   return model
     .removeById(id)
     .then(() => {
@@ -27,6 +28,6 @@ export const removeCallback = (id: string, metadata: ModelMetadata): Promise<Sta
     })
     .catch(() => {
       /* istanbul ignore next */
-      return Promise.reject(new StatusExecution(id, 'FAILED'));
+      return Promise.resolve(new StatusExecution(id, 'FAILED'));
     });
 };

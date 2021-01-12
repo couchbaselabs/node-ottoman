@@ -223,7 +223,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
         if (response.hasOwnProperty('rows') && response.rows.length > 0) {
           return removeMany(metadata)(response.rows.map((v) => v[ID_KEY]));
         }
-        throw new (couchbase as any).DocumentNotFoundError();
+        return new GenericManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
       } catch (e) {
         throw e;
       }
@@ -242,9 +242,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
           if (options.upsert) {
             const ModelFactory = ottoman.getModel(modelName);
             await ModelFactory.create(doc);
-            return new GenericManyQueryResponse('SUCCESS', { modified: 1, match_number: 0, errors: [] });
+            return new GenericManyQueryResponse('SUCCESS', { success: 1, match_number: 0, errors: [] });
           } else {
-            throw new (couchbase as any).DocumentNotFoundError();
+            return new GenericManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
           }
         }
       } catch (e) {

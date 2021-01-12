@@ -35,19 +35,19 @@ export const batchProcessQueue = (metadata: ModelMetadata) => async (
 ) => {
   const chunks = chunkArray([...items], throttle);
   const chunkPromises = chunks.map((data) => Promise.resolve(data));
-  const result: GenericManyResponse = { modified: 0, match_number: items.length, errors: [] };
+  const result: GenericManyResponse = { success: 0, match_number: items.length, errors: [] };
   for await (const chunk of chunkPromises) {
     try {
       for await (const r of processBatch(chunk, fn, metadata, extra)) {
         if (r.status === 'FAILED') {
           result.errors.push(r.id);
         } else {
-          result.modified = result.modified + 1;
+          result.success = result.success + 1;
         }
       }
     } catch (e) {
       throw e;
     }
   }
-  return new GenericManyQueryResponse(result.modified === 0 ? 'FAILED' : 'SUCCESS', result);
+  return new GenericManyQueryResponse(result.success === 0 ? 'FAILED' : 'SUCCESS', result);
 };

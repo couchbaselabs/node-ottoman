@@ -1,6 +1,6 @@
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
 import { batchProcessQueue } from './utils';
-import { StatusExecution } from './types';
+import { GenericManyQueryResponse, StatusExecution } from './types';
 import { ModelTypes } from '../model/model.types';
 
 /**
@@ -13,7 +13,10 @@ import { ModelTypes } from '../model/model.types';
  *
  * @return (GenericManyQueryResponse)[(/classes/queryresponse.html)]
  */
-export const updateMany = (metadata: ModelMetadata) => async (documents: ModelTypes[], doc: Partial<ModelTypes>) => {
+export const updateMany = (metadata: ModelMetadata) => async (
+  documents: ModelTypes[],
+  doc: Partial<ModelTypes>,
+): Promise<GenericManyQueryResponse> => {
   return await batchProcessQueue(metadata)(documents, updateCallback, doc, 100);
 };
 
