@@ -6,7 +6,7 @@ test('createMany', async () => {
   await startInTest(getDefaultInstance());
   const docs = [{ name: 'Xbox' }, { name: 'Yellow Box' }];
   const queryResult = await Box.createMany(docs);
-  expect(queryResult.message.modified).toBe(docs.length);
+  expect(queryResult.message.success).toBe(docs.length);
   const boxs = await Box.find({}, { consistency: SearchConsistency.LOCAL });
   expect(boxs.rows.length).toBeGreaterThanOrEqual(2);
 });

@@ -1,4 +1,3 @@
-import couchbase from 'couchbase';
 import { batchProcessQueue, chunkArray, StatusExecution } from '../src/handler';
 import { getDefaultInstance, model, Schema } from '../src';
 import { ModelMetadata } from '../src/model/interfaces/model-metadata.interface';
@@ -19,7 +18,7 @@ describe('Test Document Remove Many', () => {
       .map((u, i) => i.toString());
     // @ts-ignore
     const items = await batchProcessQueue({ collection: null } as ModelMetadata)(stack, removeCallback, 100);
-    expect(items.message.modified).toBe(38);
+    expect(items.message.success).toBe(38);
     expect(items.message.errors.length).toBe(167);
   });
   test('Test ChunkArray Function', () => {
@@ -47,7 +46,7 @@ describe('Test Document Remove Many', () => {
     await batchCreate();
     await delay(500);
     const response = await Cat.removeMany({ name: { $like: '%Cat%' } });
-    expect(response.message.modified).toBe(4);
+    expect(response.message.success).toBe(4);
     expect(response.message.match_number).toBe(4);
   });
 
@@ -58,8 +57,9 @@ describe('Test Document Remove Many', () => {
     });
     const Cat = model('Cat', CatSchema);
     startInTest(getDefaultInstance());
-
-    const run = async () => await Cat.removeMany({ name: { $like: 'DummyCatName91' } });
-    await expect(run).rejects.toThrow((couchbase as any).DocumentNotFoundError);
+    const response = await Cat.removeMany({ name: { $like: 'DummyCatName91' } });
+    expect(response.message.success).toBe(0);
+    expect(response.message.match_number).toBe(0);
+    expect(response.message.errors).toEqual([]);
   });
 });

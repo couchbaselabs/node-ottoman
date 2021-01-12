@@ -1,4 +1,3 @@
-import couchbase from 'couchbase';
 import { getDefaultInstance, model, Schema } from '../src';
 import { delay, startInTest } from './testData';
 
@@ -20,7 +19,7 @@ describe('Test Document Update Many', () => {
     await batchCreate();
     await delay(500);
     const response = await Cat.updateMany({ name: { $like: '%Cat%' } }, { name: 'Cats' });
-    expect(response.message.modified).toBe(4);
+    expect(response.message.success).toBe(4);
     expect(response.message.match_number).toBe(4);
     await delay(500);
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
@@ -35,8 +34,10 @@ describe('Test Document Update Many', () => {
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
 
-    const run = async () => await Cat.updateMany({ name: { $like: 'DummyCatName91' } }, { name: 'Cats' });
-    await expect(run).rejects.toThrow((couchbase as any).DocumentNotFoundError);
+    const response = await Cat.updateMany({ name: { $like: 'DummyCatName91' } }, { name: 'Cats' });
+    expect(response.message.success).toBe(0);
+    expect(response.message.match_number).toBe(0);
+    expect(response.message.errors).toEqual([]);
   });
   test('Test Update Many Function Upsert', async () => {
     const CatSchema = new Schema({
@@ -52,7 +53,7 @@ describe('Test Document Update Many', () => {
       { upsert: true },
     );
     expect(response.message.match_number).toBe(0);
-    expect(response.message.modified).toBe(1);
+    expect(response.message.success).toBe(1);
     await delay(500);
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();

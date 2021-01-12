@@ -29,10 +29,14 @@ export class StatusExecution {
 
 /**
  * Message of a Many Query Response
+ *
+ * @field match_number Number of items that matched the filter
+ * @field success Number of successful operations
+ * @field errors Array of items that could not complete the operation
  * */
 export interface GenericManyResponse {
   match_number: number;
-  modified: number;
+  success: number;
   errors: string[];
 }
 

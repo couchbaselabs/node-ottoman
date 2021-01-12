@@ -133,7 +133,7 @@ export abstract class Model<T = any> extends Document<T> {
   // eslint-disable-next-line no-unused-vars
   static async createMany(docs: Record<string, any>[] | Record<string, any>): Promise<GenericManyQueryResponse> {
     return Promise.resolve(
-      new GenericManyQueryResponse('SUCCESS', { modified: 0, errors: [], match_number: docs.length }),
+      new GenericManyQueryResponse('SUCCESS', { success: 0, errors: [], match_number: docs.length }),
     );
   }
 
