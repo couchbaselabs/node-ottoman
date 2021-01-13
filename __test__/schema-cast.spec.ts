@@ -1,5 +1,4 @@
-import { Schema } from '../src';
-import { is } from '../src/utils/is-type';
+import { is, model, Schema, SearchConsistency } from '../src';
 import { cast, CAST_STRATEGY } from '../src/utils/cast-strategy';
 import { ArrayType } from '../src/schema/types';
 
@@ -75,4 +74,43 @@ test('test strict schema using default', () => {
   const user = schema.validate({ name: 'testing', score: 99 }, { strict: true });
   expect(user.age).toBe(15);
   expect(user.score).toBe(undefined);
+});
+
+test('test strict schema model create', async () => {
+  const schema = new Schema({
+    name: String,
+  });
+  const Model = model('strictSchema', schema);
+  const name = `name-${Date.now()}`;
+  const doc = new Model({ name, notInSchema: true });
+  await doc.save();
+
+  expect(doc.name).toBe(name);
+  expect(doc.notInSchema).toBe(undefined);
+
+  const docs = await Model.find({ name }, { consistency: SearchConsistency.LOCAL });
+  const findDoc = docs.rows[0];
+  expect(findDoc.name).toBe(name);
+  expect(findDoc.notInSchema).toBe(undefined);
+});
+
+test('test strict false schema model create', async () => {
+  const schema = new Schema(
+    {
+      name: String,
+    },
+    { strict: false },
+  );
+  const Model = model('strictSchema', schema);
+  const name = `name-strict-${Date.now()}`;
+  const doc = new Model({ name, notInSchema: true });
+  await doc.save();
+
+  expect(doc.name).toBe(name);
+  expect(doc.notInSchema).toBe(true);
+
+  const docs = await Model.find({ name }, { consistency: SearchConsistency.LOCAL });
+  const findDoc = docs.rows[0];
+  expect(findDoc.name).toBe(name);
+  expect(findDoc.notInSchema).toBe(true);
 });

@@ -14,7 +14,11 @@ export const storeLifeCycle = async ({ key, id, data, options, metadata, refKeys
   let document = data;
   const _colleciton = collection();
   await execHooks(schema, 'preHooks', HOOKS.VALIDATE, document);
-  document = validate(document, schema, { strict: true, strategy: CAST_STRATEGY.THROW, skip: [modelKey, ID_KEY] });
+  document = validate(document, schema, {
+    strict: schema.options.strict,
+    strategy: CAST_STRATEGY.THROW,
+    skip: [modelKey, ID_KEY],
+  });
 
   await execHooks(schema, 'postHooks', HOOKS.VALIDATE, document);
 
