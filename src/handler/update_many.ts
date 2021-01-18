@@ -1,6 +1,6 @@
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
 import { batchProcessQueue } from './utils';
-import { GenericManyQueryResponse, StatusExecution } from './types';
+import { ManyQueryResponse, StatusExecution } from './types';
 import { ModelTypes } from '../model/model.types';
 
 /**
@@ -11,12 +11,12 @@ import { ModelTypes } from '../model/model.types';
  * @param documents List of documents to update
  * @param doc Fields to update.
  *
- * @return (GenericManyQueryResponse)[(/classes/queryresponse.html)]
+ * @return (ManyQueryResponse)[(/classes/queryresponse.html)]
  */
 export const updateMany = (metadata: ModelMetadata) => async (
   documents: ModelTypes[],
   doc: Partial<ModelTypes>,
-): Promise<GenericManyQueryResponse> => {
+): Promise<ManyQueryResponse> => {
   return await batchProcessQueue(metadata)(documents, updateCallback, doc, 100);
 };
 
@@ -34,8 +34,9 @@ export const updateCallback = (
     .then(() => {
       return Promise.resolve(new StatusExecution(document[metadata.ID_KEY], 'SUCCESS'));
     })
-    .catch(() => {
-      /* istanbul ignore next */
-      return Promise.reject(new StatusExecution(document[metadata.ID_KEY], 'FAILED'));
+    .catch((error) => {
+      return Promise.reject(
+        new StatusExecution(document[metadata.ID_KEY], 'FAILED', error.constructor.name, error.message),
+      );
     });
 };

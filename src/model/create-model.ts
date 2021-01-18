@@ -3,7 +3,7 @@ import { CountOptions, Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
 import { DEFAULT_MAX_EXPIRY } from '../utils/constants';
 import { extractSelect } from '../utils/query/extract-select';
-import { find, FindOptions, GenericManyQueryResponse, removeMany, updateMany } from '../handler';
+import { find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
 import { CreateModel } from './interfaces/create-model.interface';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { FindByIdOptions, IFindOptions } from '../handler/';
@@ -223,7 +223,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
         if (response.hasOwnProperty('rows') && response.rows.length > 0) {
           return removeMany(metadata)(response.rows.map((v) => v[ID_KEY]));
         }
-        return new GenericManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
+        return new ManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
       } catch (e) {
         throw e;
       }
@@ -242,9 +242,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
           if (options.upsert) {
             const ModelFactory = ottoman.getModel(modelName);
             await ModelFactory.create(doc);
-            return new GenericManyQueryResponse('SUCCESS', { success: 1, match_number: 0, errors: [] });
+            return new ManyQueryResponse('SUCCESS', { success: 1, match_number: 0, errors: [] });
           } else {
-            return new GenericManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
+            return new ManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
           }
         }
       } catch (e) {

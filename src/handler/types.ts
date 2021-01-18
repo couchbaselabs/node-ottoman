@@ -19,32 +19,48 @@ export class QueryResponse<M> {
  * Status of a Query Execution
  * */
 export class StatusExecution {
-  id: string;
+  payload: string | Record<string, unknown>;
   status: Status;
-  constructor(id: string, status: Status) {
-    this.id = id;
+  exception?: string;
+  message?: string;
+  /**
+   * @param payload Receive id when updateMany or removeMany is used, receive object in case of createMany.
+   * @param status Status of Execution ('SUCCESS' | 'FAILED')
+   * @param exception Couchbase exception
+   * @param message Couchbase exception message
+   * */
+  constructor(payload: string | Record<string, unknown>, status: Status, exception = '', message = '') {
+    this.payload = payload;
     this.status = status;
+    this.exception = exception;
+    this.message = message;
   }
 }
 
 /**
  * Message of a Many Query Response
  *
- * @field match_number Number of items that matched the filter
+ * @field match_number Number of items that matched the filter, in case of createMany represent the number of documents to create.
  * @field success Number of successful operations
- * @field errors Array of items that could not complete the operation
+ * @field errors List of errors thrown in the execution
  * */
-export interface GenericManyResponse {
+export interface ManyResponse {
   match_number: number;
   success: number;
-  errors: string[];
+  errors: StatusExecution[];
 }
 
 /**
- * Generic class of Many Query Response
+ * Response Class for bulk operations
  * */
-export class GenericManyQueryResponse extends QueryResponse<GenericManyResponse> {
-  constructor(status: Status, message: GenericManyResponse) {
+export class ManyQueryResponse extends QueryResponse<ManyResponse> {
+  /**
+   * @param status Status of Execution ('SUCCESS' | 'FAILED')
+   * @param message: Message of Response see [ManyResponse](/interfaces/manyresponse.html)
+   *
+   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+   * */
+  constructor(status: Status, message: ManyResponse) {
     super(status, message);
   }
 }

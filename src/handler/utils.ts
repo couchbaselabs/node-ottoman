@@ -1,5 +1,5 @@
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
-import { GenericManyQueryResponse, GenericManyResponse, StatusExecution } from './types';
+import { ManyQueryResponse, ManyResponse, StatusExecution } from './types';
 
 /**
  * @ignore
@@ -35,12 +35,12 @@ export const batchProcessQueue = (metadata: ModelMetadata) => async (
 ) => {
   const chunks = chunkArray([...items], throttle);
   const chunkPromises = chunks.map((data) => Promise.resolve(data));
-  const result: GenericManyResponse = { success: 0, match_number: items.length, errors: [] };
+  const result: ManyResponse = { success: 0, match_number: items.length, errors: [] };
   for await (const chunk of chunkPromises) {
     try {
       for await (const r of processBatch(chunk, fn, metadata, extra)) {
         if (r.status === 'FAILED') {
-          result.errors.push(r.id);
+          result.errors.push(r);
         } else {
           result.success = result.success + 1;
         }
@@ -49,5 +49,5 @@ export const batchProcessQueue = (metadata: ModelMetadata) => async (
       throw e;
     }
   }
-  return new GenericManyQueryResponse(result.success === 0 ? 'FAILED' : 'SUCCESS', result);
+  return new ManyQueryResponse(result.errors.length > 0 ? 'FAILED' : 'SUCCESS', result);
 };

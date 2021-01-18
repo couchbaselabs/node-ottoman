@@ -9,7 +9,7 @@ import { ModelTypes } from '../model/model.types';
  *
  * @param documents List of documents to create
  *
- * @return (GenericManyQueryResponse)[(/classes/queryresponse.html)]
+ * @return (ManyQueryResponse)[(/classes/queryresponse.html)]
  */
 export const createMany = (metadata: ModelMetadata) => async (documents: unknown[]) => {
   return await batchProcessQueue(metadata)(documents, createManyCallback, {}, 100);
@@ -24,8 +24,8 @@ export const createManyCallback = (document: ModelTypes, metadata: ModelMetadata
     .then(() => {
       return Promise.resolve(new StatusExecution(document[metadata.ID_KEY], 'SUCCESS'));
     })
-    .catch(() => {
+    .catch((error) => {
       /* istanbul ignore next */
-      return Promise.reject(new StatusExecution(document[metadata.ID_KEY], 'FAILED'));
+      return Promise.reject(new StatusExecution(document, 'FAILED', error.constructor.name, error.message));
     });
 };
