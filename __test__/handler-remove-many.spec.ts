@@ -1,7 +1,8 @@
-import { batchProcessQueue, chunkArray, StatusExecution } from '../src/handler';
-import { getDefaultInstance, model, Schema } from '../src';
+import { batchProcessQueue, chunkArray, StatusExecution, removeCallback } from '../src/handler';
+import { getDefaultInstance, getModelMetadata, model, Schema } from '../src';
 import { ModelMetadata } from '../src/model/interfaces/model-metadata.interface';
 import { delay, startInTest } from './testData';
+import couchbase from 'couchbase';
 
 describe('Test Document Remove Many', () => {
   test('Test Process Query Stack Function', async () => {
@@ -61,5 +62,24 @@ describe('Test Document Remove Many', () => {
     expect(response.message.success).toBe(0);
     expect(response.message.match_number).toBe(0);
     expect(response.message.errors).toEqual([]);
+  });
+
+  test('Update Many Response Errors', async () => {
+    const CatSchema = new Schema({
+      name: String,
+      age: Number,
+    });
+    const Cat = model('Cat', CatSchema);
+    const metadata = getModelMetadata(Cat);
+    try {
+      await removeCallback('dummy_id', metadata);
+    } catch (error) {
+      const dnf = new (couchbase as any).DocumentNotFoundError();
+      expect(error.exception).toBe(dnf.constructor.name);
+      expect(error.message).toBe(dnf.message);
+      expect(error.status).toBe('FAILED');
+      const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
+      await cleanUp();
+    }
   });
 });

@@ -121,6 +121,10 @@ See the [API](/classes/model.html#static-createmany) docs for more detail.
 User.createMany([{ name: 'John' }, { name: 'Jane' }]);
 ```
 
+::: tip
+The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+:::
+
 ## Querying
 
 Finding documents is easy with Ottoman, powered by the built-in Query Builder.
@@ -190,9 +194,13 @@ User.removeById('userId');
 Models have static removeMany() function to remove all documents matching the given condition.
 See the [API](/classes/model.html#static-removemany) docs for more detail.
 
+
 ```javascript
 User.removeMany({ name: { $like: '%JohnDoe%' } });
 ```
+::: tip
+The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+:::
 
 ## Updating
 
@@ -210,6 +218,9 @@ See the [API](/classes/model.html#static-updatemany) docs for more detail.
 ```javascript
 User.updateMany({ name: { $like: '%JohnDoe%' } }, { name: 'John' });
 ```
+::: tip
+The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+:::
 
 Models have static `findOneAndUpdate` function to finds a document that matches the conditions of the collection and updates it.
 See the [API](/classes/model.html#static-findoneandupdate) docs for more detail.

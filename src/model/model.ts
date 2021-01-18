@@ -1,5 +1,5 @@
 import { Document } from './document';
-import { FindByIdOptions, FindOptions, GenericManyQueryResponse } from '../handler';
+import { FindByIdOptions, FindOptions, ManyQueryResponse } from '../handler';
 import { LogicalWhereExpr, SortType } from '../query';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
@@ -123,7 +123,9 @@ export abstract class Model<T = any> extends Document<T> {
   }
 
   /**
-   * Allows to create many document at once
+   * Allows to create many document at once.
+   *
+   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
    *
    * @example
    * ```javascript
@@ -131,10 +133,8 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async createMany(docs: Record<string, any>[] | Record<string, any>): Promise<GenericManyQueryResponse> {
-    return Promise.resolve(
-      new GenericManyQueryResponse('SUCCESS', { success: 0, errors: [], match_number: docs.length }),
-    );
+  static async createMany(docs: Record<string, any>[] | Record<string, any>): Promise<ManyQueryResponse> {
+    return Promise.resolve(new ManyQueryResponse('SUCCESS', { success: 0, errors: [], match_number: docs.length }));
   }
 
   /**
@@ -195,7 +195,9 @@ export abstract class Model<T = any> extends Document<T> {
   }
 
   /**
-   * Deletes all of the documents that match conditions from the collection
+   * Deletes all of the documents that match conditions from the collection.
+   *
+   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
    *
    * @example
    * ```javascript
@@ -205,17 +207,17 @@ export abstract class Model<T = any> extends Document<T> {
    * @param filter Filter Condition [Where Expression](/classes/query.html#where)
    * @param options [Find Options](/classes/findoptions.html#class-findoptions)
    *
-   * Return a [QueryResponse](/classes/queryresponse.html) if any items matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/DocumentNotFoundError.html) will be thrown
-   *
    *
    */
   // eslint-disable-next-line no-unused-vars
-  static async removeMany(filter: LogicalWhereExpr = {}, options: FindOptions = {}): Promise<any> {
-    return Promise.resolve({});
+  static async removeMany(filter: LogicalWhereExpr = {}, options: FindOptions = {}): Promise<ManyQueryResponse> {
+    return Promise.resolve(new ManyQueryResponse('SUCCESS', { success: 0, errors: [], match_number: 0 }));
   }
 
   /**
-   * Update all of the documents that match conditions from the collection
+   * Update all of the documents that match conditions from the collection.
+   *
+   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
    *
    * @example
    * ```javascript
@@ -226,9 +228,6 @@ export abstract class Model<T = any> extends Document<T> {
    * @param doc Values for the fields to update.
    * @param options [Update Many Options](/interfaces/updatemanyoptions.html)
    *
-   * Return a [QueryResponse](/classes/queryresponse.html) if any items matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/DocumentNotFoundError.html) will be thrown
-   *
-   *
    */
   static async updateMany(
     // eslint-disable-next-line no-unused-vars
@@ -236,8 +235,8 @@ export abstract class Model<T = any> extends Document<T> {
     doc: Record<string, unknown>,
     // eslint-disable-next-line no-unused-vars
     options: UpdateManyOptions = {},
-  ): Promise<any> {
-    return Promise.resolve({});
+  ): Promise<ManyQueryResponse> {
+    return Promise.resolve(new ManyQueryResponse('SUCCESS', { success: 0, errors: [], match_number: 0 }));
   }
 
   /**

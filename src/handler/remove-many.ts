@@ -1,6 +1,6 @@
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
 import { batchProcessQueue } from './utils';
-import { GenericManyQueryResponse, StatusExecution } from './types';
+import { ManyQueryResponse, StatusExecution } from './types';
 
 /**
  * Async Function
@@ -9,9 +9,9 @@ import { GenericManyQueryResponse, StatusExecution } from './types';
  *
  * @param ids List of ids of the documents to delete
  *
- * @return (GenericManyQueryResponse)[(/classes/queryresponse.html)]
+ * @return (ManyQueryResponse)[(/classes/queryresponse.html)]
  */
-export const removeMany = (metadata: ModelMetadata) => async (ids): Promise<GenericManyQueryResponse> => {
+export const removeMany = (metadata: ModelMetadata) => async (ids): Promise<ManyQueryResponse> => {
   return await batchProcessQueue(metadata)(ids, removeCallback, {}, 100);
 };
 
@@ -26,8 +26,7 @@ export const removeCallback = (id: string, metadata: ModelMetadata): Promise<Sta
     .then(() => {
       return Promise.resolve(new StatusExecution(id, 'SUCCESS'));
     })
-    .catch(() => {
-      /* istanbul ignore next */
-      return Promise.resolve(new StatusExecution(id, 'FAILED'));
+    .catch((error) => {
+      return Promise.reject(new StatusExecution(id, 'FAILED', error.constructor.name, error.message));
     });
 };
