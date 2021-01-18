@@ -197,11 +197,19 @@ User.removeMany({ name: { $like: '%JohnDoe%' } });
 ## Updating
 
 Each `model` has its own `updateById` method for modifying documents in the database without returning them to your application.
-See the [API](/classes/model.html#static-update) docs for more detail.
+See the [API](/classes/model.html#static-updatebyid) docs for more detail.
 
 ```javascript
 User.updateById('userId', { age: 30 });
 // update document with id equal to 'userId' with age 30.
+```
+
+Models have static `replaceById` Same as **updateById**,except replace the existing document with the given document.
+See the [API](/classes/model.html#static-replacebyid) docs for more detail.
+
+```javascript
+User.replaceById('userId', { age: 30, name: 'John' });
+// replace document with id equal to 'userId' with age 30 and name John.
 ```
 
 Models have static `updateMany` function to update all documents matching the given condition.

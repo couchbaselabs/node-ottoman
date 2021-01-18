@@ -190,22 +190,29 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static updateById = async (id: string, data) => {
       const key = id || data[ID_KEY];
       const value = await _Model.findById(key);
-      const updated = {
-        ...value,
-        ...data,
-        ...{ [modelKey]: value[modelKey] },
-      };
-      const instance = new _Model({ ...updated });
-      return instance.save();
+      if (value.id) {
+        const updated = {
+          ...value,
+          ...data,
+          ...{ [modelKey]: value[modelKey] },
+        };
+        const instance = new _Model({ ...updated });
+        return instance.save();
+      }
+      throw new (couchbase as any).DocumentNotFoundError();
     };
 
-    static replace = (data, id?: string) => {
+    static replaceById = async (id: string, data) => {
       const key = id || data[ID_KEY];
-      const instance = new _Model({
-        ...data,
-        ...{ [ID_KEY]: key, [modelKey]: modelName },
-      });
-      return instance.save();
+      const value = await _Model.findById(key);
+      if (value.id) {
+        const instance = new _Model({
+          ...data,
+          ...{ [ID_KEY]: key, [modelKey]: modelName },
+        });
+        return instance.save();
+      }
+      throw new (couchbase as any).DocumentNotFoundError();
     };
 
     static removeById = (id: string) => {

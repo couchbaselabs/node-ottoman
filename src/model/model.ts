@@ -151,15 +151,17 @@ export abstract class Model<T = any> extends Document<T> {
   }
 
   /**
-   * Allows to replace a document
+   * Same as **updateById**,except replace the existing document with the given document.
    *
    * @example
    * ```javascript
-   * const user = await User.replace({name: "John Doe"}, 'userId');
+   * const user = await User.replaceById('userId', {name: "John Doe"});
    * ```
+   *
+   * @throws DocumentNotFoundError if the document not exist.
    */
   // eslint-disable-next-line no-unused-vars
-  static async replace(data: any, id?: string): Promise<any> {
+  static async replaceById(id: string, data: any): Promise<any> {
     return Promise.resolve({});
   }
 

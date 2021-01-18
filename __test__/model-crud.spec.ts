@@ -67,13 +67,33 @@ describe('Test Document Access Functions', () => {
     expect(user.isActive).toBe(true);
   });
 
+  test('UserModel.update -> Update a document, throw DocumentNotFound', async () => {
+    const UserModel = model('User', schema);
+    await startInTest(getDefaultInstance());
+    try {
+      await UserModel.updateById('dummyID', updateDoc);
+    } catch (e) {
+      expect(isDocumentNotFoundError(e)).toBe(true);
+    }
+  });
+
   test('UserModel.replace Replace a document', async () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const result = await UserModel.create(accessDoc);
-    await UserModel.replace(replaceDoc, result.id);
+    await UserModel.replaceById(result.id, replaceDoc);
     const user = await UserModel.findById(result.id);
     expect(user.type).toBe('airlineZ Replace');
+  });
+
+  test('UserModel.replace -> Replace a document, throw DocumentNotFound', async () => {
+    const UserModel = model('User', schema);
+    await startInTest(getDefaultInstance());
+    try {
+      await UserModel.replaceById('dummyID', updateDoc);
+    } catch (e) {
+      expect(isDocumentNotFoundError(e)).toBe(true);
+    }
   });
 
   test('Document.save Save and update a document', async () => {
