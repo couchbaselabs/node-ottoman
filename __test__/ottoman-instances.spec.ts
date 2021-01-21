@@ -29,7 +29,7 @@ describe('Test ottoman instances', () => {
     const instance = new Ottoman();
     instance.connect(connectUri);
     const defaultCollection = instance.getCollection();
-    expect(defaultCollection._name).toBe('_default');
+    expect(defaultCollection._name).toBe('');
     instance.close();
   });
 

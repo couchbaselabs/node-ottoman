@@ -242,7 +242,9 @@ export class Ottoman {
    * Or default collection if collectionName is missing
    */
   getCollection(collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) {
-    return this.bucket.scope(scopeName).collection(collectionName);
+    return this.bucket
+      .scope(scopeName === '_default' ? '' : scopeName)
+      .collection(collectionName === '_default' ? '' : collectionName);
   }
 
   /**

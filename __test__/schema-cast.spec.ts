@@ -1,6 +1,7 @@
-import { is, model, Schema, SearchConsistency } from '../src';
+import { getDefaultInstance, is, model, Schema, SearchConsistency } from '../src';
 import { cast, CAST_STRATEGY } from '../src/utils/cast-strategy';
 import { ArrayType } from '../src/schema/types';
+import { startInTest } from './testData';
 
 test('cast schema', () => {
   const childSchema = new Schema({ name: String, age: Number });
@@ -81,6 +82,7 @@ test('test strict schema model create', async () => {
     name: String,
   });
   const Model = model('strictSchema', schema);
+  await startInTest(getDefaultInstance());
   const name = `name-${Date.now()}`;
   const doc = new Model({ name, notInSchema: true });
   await doc.save();
@@ -102,6 +104,7 @@ test('test strict false schema model create', async () => {
     { strict: false },
   );
   const Model = model('strictSchema', schema);
+  await startInTest(getDefaultInstance());
   const name = `name-strict-${Date.now()}`;
   const doc = new Model({ name, notInSchema: true });
   await doc.save();
