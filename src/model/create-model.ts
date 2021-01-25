@@ -196,7 +196,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
           ...data,
           ...{ [modelKey]: value[modelKey] },
         };
-        const instance = new _Model({ ...updated });
+        const instance = new _Model({ ...updated }, { strategy: CAST_STRATEGY.THROW });
         return instance.save();
       }
       throw new (couchbase as any).DocumentNotFoundError();

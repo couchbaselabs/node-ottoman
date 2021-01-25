@@ -83,4 +83,26 @@ describe('Test Document Update Many', () => {
       await cleanUp();
     }
   });
+
+  test('Test Update Many Model Strict and Model Strategy', async () => {
+    const CatSchema = new Schema({
+      name: String,
+      age: Number,
+    });
+    const Cat = model('Cat', CatSchema);
+    await startInTest(getDefaultInstance());
+
+    await Cat.create({ name: 'Cat0', age: 27 });
+    await Cat.create({ name: 'Cat1', age: 28 });
+    await delay(500);
+
+    const response = await Cat.updateMany({ name: { $like: '%Cat%' } }, { age: 'Cats' });
+
+    expect(response.status).toBe('FAILED');
+    expect(response.message.errors[0].exception).toBe('ValidationError');
+
+    await delay(500);
+    const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
+    await cleanUp();
+  });
 });
