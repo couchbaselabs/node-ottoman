@@ -299,7 +299,7 @@ export class Ottoman {
               .then(() => console.log('Scope created: ', scopeName))
               .catch((e) => {
                 if (!(e instanceof (couchbase as any).ScopeExistsError)) {
-                  console.error(e);
+                  throw e;
                 }
               }),
           );
@@ -317,7 +317,7 @@ export class Ottoman {
               .then(() => console.log(`collection created: ${scopeName}/${collectionName}`))
               .catch((e) => {
                 if (!(e instanceof (couchbase as any).CollectionExistsError)) {
-                  console.error(e);
+                  throw e;
                 }
               }),
           );

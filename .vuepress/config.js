@@ -6,11 +6,22 @@ module.exports = {
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Quick Start', link: '/guides/quick-start.md' },
-      { text: 'Ottoman', link: '/guides/ottoman.md' },
-      { text: 'Schema', link: '/guides/schema.md' },
-      { text: 'Model', link: '/guides/model.md' },
-      { text: 'Document', link: '/guides/document.md' },
-      { text: 'Query Builder', link: '/guides/query-builder.md' },
+      {
+        text: 'Basic',
+        items: [
+          { text: 'Ottoman', link: '/guides/ottoman.md' },
+          { text: 'Schema', link: '/guides/schema.md' },
+          { text: 'Model', link: '/guides/model.md' },
+          { text: 'Document', link: '/guides/document.md' },
+          { text: 'Query Builder', link: '/guides/query-builder.md' },
+        ],
+      },
+      {
+        text: 'Advanced',
+        items: [
+          { text: 'How Ottoman work', link: '/advanced/how-ottoman-work.md' },
+        ]
+      },
       { text: 'Example', link: '/guides/first-app.md' },
       {
         text: 'API',
