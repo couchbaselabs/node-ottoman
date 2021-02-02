@@ -97,8 +97,8 @@ interface ConnectOptions {
   username: string;
   password: string;
   bucketName: string;
-  clientCertificate?: string;
-  certificateChain?: string;
+  authenticator?: CertificateAuthenticator;
+  trustStorePath?: string;
   transcoder?: unknown;
   logFunc?: unknown;
 }
@@ -126,6 +126,50 @@ This way ottoman will save for you the Ottoman instance to work in any place of 
 
 Example `model` instead of `ottoman.model`.
 Also there are `start`, `close`, `connect`, `getDefaultInstance`' functions are available for Ottoman default instance.
+
+## Certificate Authentication
+
+Couchbase Server supports the use of X.509 certificates to authenticate clients
+(only available in the Enterprise Edition, not the Community Edition).
+This allows authenticated users to access specific resources by means of the data service,
+in Couchbase Server 5.1 and up, and all other services in more recent releases of Couchbase Data Platform.
+
+The process relies on a certificate authority, for the issuing of certificates that validate identities.
+A certificate includes information such as the name of the entity it identifies,
+an expiration date, the name of the authority that issued the certificate, 
+and the digital signature of the authority.
+A client attempting to access Couchbase Server can present a certificate to the server,
+allowing the server to check the validity of the certificate.
+If the certificate is valid, the user under whose identity the client is running, and the roles assigned that user,
+are verified. If the assigned roles are appropriate for the level of access requested to the specified resource,
+access is granted.
+
+For a more detailed conceptual description of using certificates, see [Certificates](https://docs.couchbase.com/server/6.5/learn/security/certificates.html1).
+
+### Authenticating Ottoman by Certificate
+
+For sample procedures whereby certificates can be generated and deployed,
+see [Manage Certificates](https://docs.couchbase.com/server/6.5/manage/manage-security/manage-certificates.html).
+The rest of this document assumes that the processes there,
+or something similar, have been followed. That is, 
+a cluster certificate has been created and installed on the server,
+a client certificate has been created, and it is stored in a JVM keystore along with the cluster’s certificate.
+
+```typescript
+import { Ottoman, CertificateAuthenticator } from 'ottoman';
+const ottoman = new Ottoman();
+
+ottoman.connect({
+  connectionString: 'couchbase://localhost',
+  bucketName: 'travel-sample',
+  authenticator: new CertificateAuthenticator(
+          "/path/to/client/certificate.pem",
+          "/path/to/client/key.pem"
+  ),
+  trustStorePath: "/path/to/ca/certificates.pem",
+})
+```
+
 
 ## Multiple ottoman instances
 
