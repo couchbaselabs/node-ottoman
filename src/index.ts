@@ -65,3 +65,4 @@ export {
 } from './query';
 export { getProjectionFields } from './utils/query/extract-select';
 export { SearchConsistency } from './utils/search-consistency';
+export * from './exceptions/exceptions';
