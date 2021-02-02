@@ -1,7 +1,7 @@
 /**
  * Status of Query Response
  * */
-export type Status = 'SUCCESS' | 'FAILED';
+export type Status = 'SUCCESS' | 'FAILURE';
 
 /**
  * Generic class of Query Response
@@ -25,7 +25,7 @@ export class StatusExecution {
   message?: string;
   /**
    * @param payload Receive id when updateMany or removeMany is used, receive object in case of createMany.
-   * @param status Status of Execution ('SUCCESS' | 'FAILED')
+   * @param status Status of Execution ('SUCCESS' | 'FAILURE')
    * @param exception Couchbase exception
    * @param message Couchbase exception message
    * */
@@ -55,10 +55,10 @@ export interface ManyResponse {
  * */
 export class ManyQueryResponse extends QueryResponse<ManyResponse> {
   /**
-   * @param status Status of Execution ('SUCCESS' | 'FAILED')
+   * @param status Status of Execution ('SUCCESS' | 'FAILURE')
    * @param message: Message of Response see [ManyResponse](/interfaces/manyresponse.html)
    *
-   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
    * */
   constructor(status: Status, message: ManyResponse) {
     super(status, message);

@@ -36,7 +36,7 @@ export const updateCallback = (
     })
     .catch((error) => {
       return Promise.reject(
-        new StatusExecution(document[metadata.ID_KEY], 'FAILED', error.constructor.name, error.message),
+        new StatusExecution(document[metadata.ID_KEY], 'FAILURE', error.constructor.name, error.message),
       );
     });
 };

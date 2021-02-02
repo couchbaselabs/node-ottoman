@@ -122,7 +122,7 @@ User.createMany([{ name: 'John' }, { name: 'Jane' }]);
 ```
 
 ::: tip
-The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
 :::
 
 ## Querying
@@ -199,7 +199,7 @@ See the [API](/classes/model.html#static-removemany) docs for more detail.
 User.removeMany({ name: { $like: '%JohnDoe%' } });
 ```
 ::: tip
-The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
 :::
 
 ## Updating
@@ -227,7 +227,7 @@ See the [API](/classes/model.html#static-updatemany) docs for more detail.
 User.updateMany({ name: { $like: '%JohnDoe%' } }, { name: 'John' });
 ```
 ::: tip
-The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
 :::
 
 Models have static `findOneAndUpdate` function to finds a document that matches the conditions of the collection and updates it.

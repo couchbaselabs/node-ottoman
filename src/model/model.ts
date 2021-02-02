@@ -125,7 +125,7 @@ export abstract class Model<T = any> extends Document<T> {
   /**
    * Allows to create many document at once.
    *
-   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
    *
    * @example
    * ```javascript
@@ -199,7 +199,7 @@ export abstract class Model<T = any> extends Document<T> {
   /**
    * Deletes all of the documents that match conditions from the collection.
    *
-   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
    *
    * @example
    * ```javascript
@@ -219,7 +219,7 @@ export abstract class Model<T = any> extends Document<T> {
   /**
    * Update all of the documents that match conditions from the collection.
    *
-   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILED**.
+   * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
    *
    * @example
    * ```javascript

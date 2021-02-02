@@ -39,7 +39,7 @@ export const batchProcessQueue = (metadata: ModelMetadata) => async (
   for await (const chunk of chunkPromises) {
     try {
       for await (const r of processBatch(chunk, fn, metadata, extra)) {
-        if (r.status === 'FAILED') {
+        if (r.status === 'FAILURE') {
           result.errors.push(r);
         } else {
           result.success = result.success + 1;
@@ -49,5 +49,5 @@ export const batchProcessQueue = (metadata: ModelMetadata) => async (
       throw e;
     }
   }
-  return new ManyQueryResponse(result.errors.length > 0 ? 'FAILED' : 'SUCCESS', result);
+  return new ManyQueryResponse(result.errors.length > 0 ? 'FAILURE' : 'SUCCESS', result);
 };
