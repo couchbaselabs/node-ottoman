@@ -26,6 +26,6 @@ export const createManyCallback = (document: ModelTypes, metadata: ModelMetadata
     })
     .catch((error) => {
       /* istanbul ignore next */
-      return Promise.reject(new StatusExecution(document, 'FAILED', error.constructor.name, error.message));
+      return Promise.reject(new StatusExecution(document, 'FAILURE', error.constructor.name, error.message));
     });
 };

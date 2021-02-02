@@ -27,6 +27,6 @@ export const removeCallback = (id: string, metadata: ModelMetadata): Promise<Sta
       return Promise.resolve(new StatusExecution(id, 'SUCCESS'));
     })
     .catch((error) => {
-      return Promise.reject(new StatusExecution(id, 'FAILED', error.constructor.name, error.message));
+      return Promise.reject(new StatusExecution(id, 'FAILURE', error.constructor.name, error.message));
     });
 };

@@ -11,7 +11,7 @@ describe('Test Document Remove Many', () => {
       if (id.indexOf('9') !== -1) {
         return Promise.resolve(new StatusExecution(id, 'SUCCESS'));
       } else {
-        return Promise.reject(new StatusExecution(id, 'FAILED'));
+        return Promise.reject(new StatusExecution(id, 'FAILURE'));
       }
     };
     const stack = Array(205)
@@ -77,7 +77,7 @@ describe('Test Document Remove Many', () => {
       const dnf = new (couchbase as any).DocumentNotFoundError();
       expect(error.exception).toBe(dnf.constructor.name);
       expect(error.message).toBe(dnf.message);
-      expect(error.status).toBe('FAILED');
+      expect(error.status).toBe('FAILURE');
       const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
       await cleanUp();
     }

@@ -78,7 +78,7 @@ describe('Test Document Update Many', () => {
       const dnf = new (couchbase as any).DocumentNotFoundError();
       expect(error.exception).toBe(dnf.constructor.name);
       expect(error.message).toBe(dnf.message);
-      expect(error.status).toBe('FAILED');
+      expect(error.status).toBe('FAILURE');
       const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
       await cleanUp();
     }
@@ -98,7 +98,7 @@ describe('Test Document Update Many', () => {
 
     const response = await Cat.updateMany({ name: { $like: '%Cat%' } }, { age: 'Cats' });
 
-    expect(response.status).toBe('FAILED');
+    expect(response.status).toBe('FAILURE');
     expect(response.message.errors[0].exception).toBe('ValidationError');
 
     await delay(500);
