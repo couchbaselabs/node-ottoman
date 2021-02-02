@@ -1,4 +1,4 @@
-import couchbase from 'couchbase';
+import * as couchbase from 'couchbase';
 import { extractConnectionString } from '../utils/extract-connection-string';
 import { Schema } from '../schema';
 import { createModel } from '../model/create-model';
@@ -24,8 +24,8 @@ export interface ConnectOptions {
   username: string;
   password: string;
   bucketName: string;
-  clientCertificate?: string;
-  certificateChain?: string;
+  authenticator?: CertificateAuthenticator;
+  trustStorePath?: string;
   transcoder?: unknown;
   logFunc?: unknown;
 }
@@ -38,6 +38,19 @@ interface OttomanConfig {
   searchConsistency?: SearchConsistency;
   maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata; id: string }) => string;
+}
+
+/**
+ * CertificateAuthenticator provides an authenticator implementation
+ * which uses TLS Certificate Authentication.
+ */
+export class CertificateAuthenticator {
+  /**
+   *
+   * @param {string} certificatePath
+   * @param {string} keyPath
+   */
+  constructor(public certificatePath, public keyPath) {}
 }
 
 /**
@@ -163,9 +176,9 @@ export class Ottoman {
    * ```
    */
   connect = (connectOptions: ConnectOptions | string) => {
-    const { connectionString, password, username, bucketName } =
-      typeof connectOptions === 'object' ? connectOptions : extractConnectionString(connectOptions);
-    this._cluster = new (couchbase as any).Cluster(connectionString, { username, password });
+    const options = typeof connectOptions === 'object' ? connectOptions : extractConnectionString(connectOptions);
+    const { connectionString, bucketName, ..._options } = options;
+    this._cluster = new (couchbase as any).Cluster(connectionString, _options);
     this.bucketName = bucketName;
     this.couchbase = couchbase;
     this.bucket = this._cluster.bucket(bucketName);
