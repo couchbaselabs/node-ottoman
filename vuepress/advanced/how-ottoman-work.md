@@ -3,37 +3,38 @@ This section is for those who want to understand how Ottoman works in depth.
 ## Key Generation Layer
 
 Ottoman provides an abstraction layer to handle the `keys` that will be used to store/access the documents on the Database Server.
+
 Developers will only have to work with the `document` ids while ottoman handles the keys automatically for them.
 
 ## keyGenerator function
 
-`keyGenerator` function will be used to generate every `key` that Ottoman used.
+The default `keyGenerator` function is used to generate all keys by Ottoman in your Couchbase datastore.
 
-The default `keyGenerator` function is:
-```typescript
+```javascript
 const keyGenerator =
-    ({metadata, id}) => `${metadata.scopeName}$${metadata.collectionName}::${id}`
+    ({metadata}) => `${metadata.modelName}`
 ```
+
+Using the default `keyGenerator` function that `Ottoman` provides and assuming your `modelName` is 'User', the key for your document would look like:
+
+- `User::0477024c`
+
+::: Note
+This resulted key is a combination of the prefix as provided by the default  `keyGenerator` function (`${metadata.modelName}`) appended with an ID.
+:::
 
 ### Override keyGenerator function
 
-```typescript
-const keyGenerator = ({metadata, id}) => `${metadata.collectionName}::${id}`
+The `keyGenerator` function allows you to only override the prefix for a key, or completely remove the prefix such that the key always matches the ID of the document generated.
+
+```javascript
+const keyGenerator = ({metadata}) => `${metadata.scopeName}`
 const User = model('User', schema, { keyGenerator, scopeName: 'myScope' })
 ```
 
-Now the keys generated for the User Model will be structured in this way:
-- `User::0477024c`
+In this example we are overiding the `keyGenerator` function and replacing the `${metadata.modelName}` with `${metadata.scopeName}`. Using this override, the key for your document would look like:
 
-If you were using the `keyGenerator` function that `Ottoman` provides by default the result would be:
-- `myScope$User::0477024c`
-
-::: tip Notice
-When we overwrite the `keyGenerator` function we removed the scopeName, therefore the new keys will not have this information,
-they will only have collectionName and id separated by ::
-:::
-
-See the example below to understand how `Ottoman` handle the keys using the `keyGenerator` function.
+- `myScope::0477024c`
 
 ### Defining a `Model`
 ```typescript
