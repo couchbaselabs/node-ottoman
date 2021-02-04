@@ -37,7 +37,8 @@ In this example we are overiding the `keyGenerator` function and replacing the `
 - `myScope::0477024c`
 
 ### Defining a `Model`
-```typescript
+
+```javascript
 ...
 const userSchema = new Schema({ name: string });
 const User = model('User', userSchema);
@@ -64,7 +65,6 @@ See the picture below to understand how it works.
 
 ![How to Use](./findById.jpg)
 
-
 ### Caution: While Overwrite keyGenerator
 
 ::: danger Danger
@@ -77,7 +77,9 @@ You must ensure 2 things:
 The following cases are bad implementations of `keyGenerator` and Ottoman will don't work as expected.
 
 Case 1: keyGenerator returning always the same value with different inputs.
-```typescript
+
+```javascript
+
 // Assume that the `random` function returns a random integer, for this example, the first execution returns 1234.
 const myId = random(); 
 
@@ -88,7 +90,8 @@ const keyGenerator =
 ```
 
 Case 2: keyGenerator never returns the same value for the same inputs.
-```typescript
+
+```javascript
 
 const keyGenerator =
         ({metadata, id}) => `${metadata.collectionName}::${random()}`
