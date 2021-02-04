@@ -36,6 +36,8 @@ In this example we are overiding the `keyGenerator` function and replacing the `
 
 - `myScope::0477024c`
 
+To understand how ID differs from keys in Ottoman we need to explore creating a model, understand how Ottoman deals with IDs which affect your key and then how to retrieve your document by ID.
+
 ### Defining a `Model`
 
 ```javascript
@@ -54,49 +56,12 @@ Let see how Ottoman handles a new document creation.
 ![How to Use](./create.jpg)
 
 ::: tip Notice
-Using `Ottoman` you only need to think about `id` in order to execute CRUD Operation over documents.
-All the `key` management will be automated by `Ottoman`.
+Using `Ottoman` you only need to think about `id` in order to execute CRUD Operations over documents.
+All the `key` management will be automatically handled by `Ottoman`.
 :::
 
 ### Retrieving a document
 
-Ottoman provides a `findById` method at the `Model` level to retrieve a document by `id`.
-See the picture below to understand how it works.
+Ottoman provides a `findById` method at the `Model` level to retrieve a document by `id`. See the picture below to understand how it works.
 
 ![How to Use](./findById.jpg)
-
-### Caution: While Overwrite keyGenerator
-
-::: danger Danger
-There is a real danger when overwriting the `keyGenerator` function. Don't do this if you're not sure what are you doing.
-
-You must ensure 2 things:
-1. The result will be always the same for the same inputs.
-2. The result will be always distinct for different inputs.
-
-The following cases are bad implementations of `keyGenerator` and Ottoman will don't work as expected.
-
-Case 1: keyGenerator returning always the same value with different inputs.
-
-```javascript
-
-// Assume that the `random` function returns a random integer, for this example, the first execution returns 1234.
-const myId = random(); 
-
-const keyGenerator = 
-    ({metadata, id}) => `${metadata.collectionName}::${myId}`
-// Notice: `myId` is already created then it will have the same value for every execution of `keyGenerator`
-// for collectionName `User` it will always return User::1234
-```
-
-Case 2: keyGenerator never returns the same value for the same inputs.
-
-```javascript
-
-const keyGenerator =
-        ({metadata, id}) => `${metadata.collectionName}::${random()}`
-// Now we are using `random()` inside the keyGenerator function, therefore every single execution will return a different value,
-// Ottoman will be unable to retrieve documents because the stored document key was `User::1234`,
-// but keyGenerator will not return this key anymore.
-```
-:::
