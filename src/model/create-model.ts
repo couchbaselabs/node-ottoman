@@ -1,7 +1,7 @@
 import couchbase from 'couchbase';
 import { CountOptions, Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
-import { DEFAULT_MAX_EXPIRY } from '../utils/constants';
+import { _keyGenerator, DEFAULT_MAX_EXPIRY } from '../utils/constants';
 import { extractSelect } from '../utils/query/extract-select';
 import { find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
 import { CreateModel } from './interfaces/create-model.interface';
@@ -155,7 +155,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
         findOptions['project'] = extractSelect(findOptions.select, { noCollection: true }, false, modelKey);
         delete findOptions.select;
       }
-      const key = keyGenerator!({ metadata, id });
+      const key = _keyGenerator!(keyGenerator, { metadata, id });
       const { value } = await collection().get(key, findOptions);
       const ModelFactory = ottoman.getModel(modelName);
       const document = new ModelFactory({ ...value }, { strict: false, strategy: CAST_STRATEGY.KEEP });
@@ -178,7 +178,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
 
     static create = async (data: Record<string, any>): Promise<any> => {
       const instance = new _Model({ ...data });
-      await instance.save();
+      await instance.save(true);
       return instance;
     };
 

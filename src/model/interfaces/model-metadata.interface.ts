@@ -1,4 +1,4 @@
-import { Schema } from '../../schema/schema';
+import { Schema } from '../../schema';
 import { Ottoman } from '../../ottoman/ottoman';
 
 export interface ModelMetadata {
@@ -11,5 +11,5 @@ export interface ModelMetadata {
   ottoman: Ottoman;
   modelKey: string;
   maxExpiry?: number;
-  keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
+  keyGenerator?: (params: { metadata: ModelMetadata }) => string;
 }

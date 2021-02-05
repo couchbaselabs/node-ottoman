@@ -4,7 +4,7 @@ import { isModel } from '../src/utils/is-model';
 import { extractConnectionString } from '../src/utils/extract-connection-string';
 import { is } from '../src/utils/is-type';
 import { isMetadataKey } from '../src/utils/is-metadata';
-import { MODEL_KEY } from '../src/utils/constants';
+import { _keyGenerator, KEY_GENERATOR, MODEL_KEY } from '../src/utils/constants';
 import { canBePopulated } from '../src/utils/populate/can-be-populated';
 
 test('Build connection options from string', () => {
@@ -89,4 +89,9 @@ describe('Metadata', () => {
 test('util.canBePopulated', async () => {
   expect(canBePopulated('name', ['name', 'email'])).toBe(true);
   expect(canBePopulated('age', ['name', 'email'])).toBe(false);
+});
+
+test('_keyGenerator', async () => {
+  const key = _keyGenerator(KEY_GENERATOR, { metadata: { modelName: 'keyGen' }, id: 123 });
+  expect(key).toBe('keyGen::123');
 });
