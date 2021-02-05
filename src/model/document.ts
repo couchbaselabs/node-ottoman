@@ -1,4 +1,4 @@
-import couchbase from 'couchbase';
+import { DocumentExistsError, DocumentNotFoundError } from '../exceptions/exceptions';
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
 import { validate } from '../schema';
@@ -9,6 +9,7 @@ import { removeLifeCycle } from './utils/remove-life-cycle';
 import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
 import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
+import { _keyGenerator } from '../utils/constants';
 
 /**
  * Document class represent a database document
@@ -66,9 +67,12 @@ export abstract class Document<T> {
    * const user = new User({name: "John Doe"}); //user document created, it's not saved yet
    *
    * await user.save(); // user saved into the DB
+   *
+   * You also can force save function to only create new Documents by passing true as argument
+   * await user.save(true); // ensure to execute a insert operation
    * ```
    */
-  async save() {
+  async save(onlyCreate = false) {
     const { scopeName, collectionName, modelKey, collection, keyGenerator, modelName, ottoman } = this.$;
     const data = extractDataFromModel(this);
     const options: any = {};
@@ -83,15 +87,18 @@ export abstract class Document<T> {
     let key = '';
     if (!id) {
       id = generateUUID();
-      key = keyGenerator!({ metadata, id });
+      key = _keyGenerator!(keyGenerator, { metadata, id });
       if (!data[this._getIdField()]) {
         data[this._getIdField()] = id;
       }
       refKeys.add = newRefKeys;
     } else {
       try {
-        key = keyGenerator!({ metadata, id });
+        key = _keyGenerator!(keyGenerator, { metadata, id });
         const { cas, value: oldData } = await collection().get(key);
+        if (cas && onlyCreate) {
+          throw new DocumentExistsError();
+        }
         const oldRefKeys = getModelRefKeys(oldData, prefix, ottoman);
         refKeys.add = arrayDiff(newRefKeys, oldRefKeys);
         refKeys.remove = arrayDiff(oldRefKeys, newRefKeys);
@@ -99,7 +106,7 @@ export abstract class Document<T> {
           options.cas = cas;
         }
       } catch (e) {
-        if (e instanceof (couchbase as any).DocumentNotFoundError) {
+        if (e instanceof DocumentNotFoundError) {
           refKeys.add = newRefKeys;
         }
       }
@@ -130,7 +137,7 @@ export abstract class Document<T> {
       remove: getModelRefKeys(data, prefix, ottoman),
     };
     const idValue = this._getId();
-    const id = keyGenerator!({ metadata, id: idValue });
+    const id = _keyGenerator!(keyGenerator, { metadata, id: idValue });
     const { result, document } = await removeLifeCycle({ id, options, metadata, refKeys, data });
     this._applyData(document);
     return result;

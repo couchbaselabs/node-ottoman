@@ -8,7 +8,7 @@ export interface ModelOptions {
   idKey?: string;
   modelKey?: string;
   maxExpiry?: number;
-  keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
+  keyGenerator?: (params: { metadata: ModelMetadata }) => string;
 }
 
 export interface CreateModelOptions {
@@ -17,7 +17,7 @@ export interface CreateModelOptions {
   idKey: string;
   modelKey: string;
   maxExpiry?: number;
-  keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
+  keyGenerator?: (params: { metadata: ModelMetadata }) => string;
 }
 
 export interface CreateModel {
