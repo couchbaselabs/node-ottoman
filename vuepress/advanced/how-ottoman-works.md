@@ -19,7 +19,7 @@ Using the default `keyGenerator` function that `Ottoman` provides and assuming y
 - `User::0477024c`
 
 ::: tip Notice
-This resulted key is a combination of the prefix as provided by the default  `keyGenerator` function (`${metadata.modelName}`) appended with an ID (`0477024c`).
+This resulted key is a combination of the prefix as provided by the default  `keyGenerator` function (`${metadata.modelName}`) [appended with an ID](/guides/model.html#model-id) (`0477024c`).
 :::
 
 ### Override keyGenerator function
