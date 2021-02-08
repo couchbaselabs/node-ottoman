@@ -34,7 +34,7 @@ interface OttomanConfig {
   populateMaxDeep?: number;
   searchConsistency?: SearchConsistency;
   maxExpiry?: number;
-  keyGenerator?: (params: { metadata: ModelMetadata; id: string }) => string;
+  keyGenerator?: (params: { metadata: ModelMetadata}) => string;
 }
 ```
 
@@ -48,7 +48,7 @@ interface OttomanConfig {
 
 The default implementation for `keyGenerator` function is:
 ```typescript
-KEY_GENERATOR = ({ metadata, id }) => `${metadata.scopeName}$${metadata.collectionName}::${id}`;
+KEY_GENERATOR = ({ metadata }) => `${metadata.modelName}`;
 ```
 `keyGenerator` can be overridden for each `Model` if you want, check this in [model options](/guides/model.html#model-options)
 

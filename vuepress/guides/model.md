@@ -60,7 +60,7 @@ interface ModelOptions {
   idKey?: string;
   modelKey?: string;
   maxExpiry?: string;
-  keyGenerator?: (params: { metadata: ModelMetadata; id: any }) => string;
+  keyGenerator?: (params: { metadata: ModelMetadata }) => string;
 }
 ```
 - `collectionName`: define the collection name to be use in the Couchbase Server. The default value will be the Model's name.

@@ -21,6 +21,21 @@ export const DEFAULT_SCOPE = '_default';
  */
 export const DEFAULT_COLLECTION = '_default';
 
-export const KEY_GENERATOR = ({ metadata, id }) => `${metadata.scopeName}$${metadata.collectionName}::${id}`;
+/**
+ * Default KeyGenerator function
+ */
+export const KEY_GENERATOR = ({ metadata }) => `${metadata.modelName}`;
+
+/**
+ * Internal KeyGenerator function
+ * @param keyGen
+ * @param metadata
+ * @param id
+ */
+export const _keyGenerator = (keyGen, { metadata, id }) => {
+  const prefix = keyGen({ metadata });
+  const key = prefix ? `::${id}` : id;
+  return `${prefix}${key}`;
+};
 
 export const DEFAULT_MAX_EXPIRY = 300000;

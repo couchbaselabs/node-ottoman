@@ -37,7 +37,7 @@ interface OttomanConfig {
   populateMaxDeep?: number;
   searchConsistency?: SearchConsistency;
   maxExpiry?: number;
-  keyGenerator?: (params: { metadata: ModelMetadata; id: string }) => string;
+  keyGenerator?: (params: { metadata: ModelMetadata }) => string;
 }
 
 /**

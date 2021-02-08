@@ -1,5 +1,11 @@
-import { model, Schema, SearchConsistency, getDefaultInstance } from '../src';
-import { isDocumentNotFoundError } from '../src/utils/is-not-found';
+import {
+  model,
+  Schema,
+  SearchConsistency,
+  getDefaultInstance,
+  DocumentExistsError,
+  isDocumentNotFoundError,
+} from '../src';
 import { startInTest } from './testData';
 
 const accessDoc = {
@@ -248,8 +254,9 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel create with arbitrary id', async () => {
     const UserModel = model('User', schema);
+    const id = `Airline-Key-${Date.now()}`;
     const user = await UserModel.create({
-      id: 'Airline-2',
+      id,
       type: 'airline',
       isActive: false,
       name: 'Ottoman Access List',
@@ -259,18 +266,40 @@ describe('Test Document Access Functions', () => {
   });
 
   test('UserModel custom idKey and keyGenerator', async () => {
-    const keyGenerator = ({ metadata, id }) => `${metadata.scopeName}--${metadata.collectionName}::${id}`;
+    const keyGenerator = ({ metadata }) => `${metadata.scopeName}--${metadata.collectionName}`;
     const idKey = 'airlineKey';
+    const key = `Airline-Key-${Date.now()}`;
     const UserModel = model('Airlines', schema, { keyGenerator, idKey });
     startInTest(getDefaultInstance());
     const user = await UserModel.create({
-      [idKey]: 'Airline-Key-2',
+      [idKey]: key,
       type: 'airline',
       isActive: false,
       name: 'Ottoman Access List',
     });
     const document = await UserModel.findById(user[idKey]);
     expect(document[idKey]).toBe(user[idKey]);
-    expect(document[idKey]).toBe('Airline-Key-2');
+    expect(document[idKey]).toBe(key);
+  });
+
+  test('UserModel save enforce createOnly', async () => {
+    const keyGenerator = ({ metadata }) => `${metadata.scopeName}--${metadata.collectionName}`;
+    const idKey = 'airlineKey';
+    const key = `Airline-Key-${Date.now()}`;
+    const document = {
+      [idKey]: key,
+      type: 'airline',
+      isActive: false,
+      name: 'Ottoman Access List',
+    };
+    const Airlines = model('Airlines', schema, { keyGenerator, idKey });
+    startInTest(getDefaultInstance());
+    const airline = await Airlines.create(document);
+    expect(document[idKey]).toBe(airline[idKey]);
+    try {
+      await Airlines.create(document);
+    } catch (e) {
+      expect(e).toBeInstanceOf(DocumentExistsError);
+    }
   });
 });
