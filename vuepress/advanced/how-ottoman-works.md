@@ -11,8 +11,7 @@ Developers will only have to work with the `document` ids while ottoman handles 
 The default `keyGenerator` function is used to generate all keys by Ottoman in your Couchbase datastore.
 
 ```javascript
-const keyGenerator =
-    ({metadata}) => `${metadata.modelName}`
+const keyGenerator = ({metadata}) => `${metadata.modelName}`
 ```
 
 Using the default `keyGenerator` function that `Ottoman` provides and assuming your `modelName` is 'User', the key for your document would look like:
@@ -20,7 +19,7 @@ Using the default `keyGenerator` function that `Ottoman` provides and assuming y
 - `User::0477024c`
 
 ::: tip Notice
-This resulted key is a combination of the prefix as provided by the default  `keyGenerator` function (`${metadata.modelName}`) appended with an ID.
+This resulted key is a combination of the prefix as provided by the default  `keyGenerator` function (`${metadata.modelName}`) appended with an ID (`0477024c`).
 :::
 
 ### Override keyGenerator function
