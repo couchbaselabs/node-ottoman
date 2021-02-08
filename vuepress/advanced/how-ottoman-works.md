@@ -52,7 +52,7 @@ const User = model('User', userSchema);
 
 Let see how Ottoman handles a new document creation.
 
-![How to Use](./create.jpg)
+![How to Use](./create.png)
 
 ::: tip Notice
 Using `Ottoman` you only need to think about `id` in order to execute CRUD Operations over documents.
@@ -63,4 +63,4 @@ All the `key` management will be automatically handled by `Ottoman`.
 
 Ottoman provides a `findById` method at the `Model` level to retrieve a document by `id`. See the picture below to understand how it works.
 
-![How to Use](./findById.jpg)
+![How to Use](./findById.png)
