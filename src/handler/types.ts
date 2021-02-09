@@ -15,10 +15,17 @@ export class QueryResponse<M> {
   }
 }
 
+export interface IStatusExecution {
+  payload: string | Record<string, unknown>;
+  status: Status;
+  exception?: string;
+  message?: string;
+}
+
 /**
  * Status of a Query Execution
  * */
-export class StatusExecution {
+export class StatusExecution implements IStatusExecution {
   payload: string | Record<string, unknown>;
   status: Status;
   exception?: string;
@@ -50,10 +57,15 @@ export interface ManyResponse {
   errors: StatusExecution[];
 }
 
+export interface IManyQueryResponse {
+  status: Status;
+  message: ManyResponse;
+}
+
 /**
  * Response Class for bulk operations
  * */
-export class ManyQueryResponse extends QueryResponse<ManyResponse> {
+export class ManyQueryResponse extends QueryResponse<ManyResponse> implements IManyQueryResponse {
   /**
    * @param status Status of Execution ('SUCCESS' | 'FAILURE')
    * @param message: Message of Response see [ManyResponse](/interfaces/manyresponse.html)

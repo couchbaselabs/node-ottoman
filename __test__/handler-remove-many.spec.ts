@@ -1,4 +1,4 @@
-import { batchProcessQueue, chunkArray, StatusExecution, removeCallback } from '../src/handler';
+import { batchProcessQueue, chunkArray, StatusExecution, removeCallback, IManyQueryResponse } from '../src/handler';
 import { getDefaultInstance, getModelMetadata, model, Schema } from '../src';
 import { ModelMetadata } from '../src/model/interfaces/model-metadata.interface';
 import { delay, startInTest } from './testData';
@@ -46,7 +46,7 @@ describe('Test Document Remove Many', () => {
     };
     await batchCreate();
     await delay(500);
-    const response = await Cat.removeMany({ name: { $like: '%Cat%' } });
+    const response: IManyQueryResponse = await Cat.removeMany({ name: { $like: '%Cat%' } });
     expect(response.message.success).toBe(4);
     expect(response.message.match_number).toBe(4);
   });
@@ -58,7 +58,7 @@ describe('Test Document Remove Many', () => {
     });
     const Cat = model('Cat', CatSchema);
     startInTest(getDefaultInstance());
-    const response = await Cat.removeMany({ name: { $like: 'DummyCatName91' } });
+    const response: IManyQueryResponse = await Cat.removeMany({ name: { $like: 'DummyCatName91' } });
     expect(response.message.success).toBe(0);
     expect(response.message.match_number).toBe(0);
     expect(response.message.errors).toEqual([]);

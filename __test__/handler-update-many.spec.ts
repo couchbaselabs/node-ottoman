@@ -1,6 +1,6 @@
 import couchbase from 'couchbase';
 
-import { getDefaultInstance, getModelMetadata, model, Schema } from '../src';
+import { getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema } from '../src';
 import { updateCallback } from '../src/handler';
 import { delay, startInTest } from './testData';
 
@@ -21,7 +21,7 @@ describe('Test Document Update Many', () => {
     };
     await batchCreate();
     await delay(500);
-    const response = await Cat.updateMany({ name: { $like: '%Cat%' } }, { name: 'Cats' });
+    const response: IManyQueryResponse = await Cat.updateMany({ name: { $like: '%Cat%' } }, { name: 'Cats' });
     expect(response.message.success).toBe(4);
     expect(response.message.match_number).toBe(4);
     await delay(500);
@@ -37,7 +37,7 @@ describe('Test Document Update Many', () => {
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
 
-    const response = await Cat.updateMany({ name: { $like: 'DummyCatName91' } }, { name: 'Cats' });
+    const response: IManyQueryResponse = await Cat.updateMany({ name: { $like: 'DummyCatName91' } }, { name: 'Cats' });
     expect(response.message.success).toBe(0);
     expect(response.message.match_number).toBe(0);
     expect(response.message.errors).toEqual([]);
@@ -50,7 +50,7 @@ describe('Test Document Update Many', () => {
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
 
-    const response = await Cat.updateMany(
+    const response: IManyQueryResponse = await Cat.updateMany(
       { name: { $like: 'DummyCatName91' } },
       { name: 'Cats', age: 20 },
       { upsert: true },
@@ -96,7 +96,7 @@ describe('Test Document Update Many', () => {
     await Cat.create({ name: 'Cat1', age: 28 });
     await delay(500);
 
-    const response = await Cat.updateMany({ name: { $like: '%Cat%' } }, { age: 'Cats' });
+    const response: IManyQueryResponse = await Cat.updateMany({ name: { $like: '%Cat%' } }, { age: 'Cats' });
 
     expect(response.status).toBe('FAILURE');
     expect(response.message.errors[0].exception).toBe('ValidationError');
