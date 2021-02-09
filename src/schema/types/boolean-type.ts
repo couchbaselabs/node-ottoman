@@ -1,5 +1,4 @@
 import { CoreType } from './core-type';
-import { is } from '../../utils';
 import { CoreTypeOptions } from '../interfaces/schema.types';
 import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 
@@ -12,6 +11,20 @@ import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
  *   isSomething: Schema.Types.Boolean
  * })
  * ```
+ *
+ * ### Ottoman cast the following values to true:
+ * * true
+ * * 'true'
+ * * 1
+ * * '1'
+ * * 'yes'
+ *
+ * ### Ottoman cast the following values to false:
+ * * false
+ * * 'false'
+ * * 0
+ * * '0'
+ * * 'no'
  */
 export class BooleanType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions) {
@@ -19,10 +32,14 @@ export class BooleanType extends CoreType {
   }
   static sName = Boolean.name;
 
+  static convertToTrue = new Set([true, 'true', 1, '1', 'yes']);
+  static convertToFalse = new Set([false, 'false', 0, '0', 'no']);
+
   cast(value, strategy = CAST_STRATEGY.DEFAULT_OR_DROP) {
-    const castedValue = Boolean(value);
-    if (is(castedValue, Boolean) && !is(value, Object)) {
-      return castedValue;
+    if (BooleanType.convertToTrue.has(value)) {
+      return true;
+    } else if (BooleanType.convertToFalse.has(value)) {
+      return false;
     } else {
       return checkCastStrategy(value, strategy, this);
     }

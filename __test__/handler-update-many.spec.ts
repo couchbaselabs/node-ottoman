@@ -1,6 +1,6 @@
 import couchbase from 'couchbase';
 
-import { getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema } from '../src';
+import { getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema, SearchConsistency } from '../src';
 import { updateCallback } from '../src/handler';
 import { delay, startInTest } from './testData';
 
@@ -101,6 +101,31 @@ describe('Test Document Update Many', () => {
     expect(response.status).toBe('FAILURE');
     expect(response.message.errors[0].exception).toBe('ValidationError');
 
+    await delay(500);
+    const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
+    await cleanUp();
+  });
+  test('Test Update Many Function Wrong Value', async () => {
+    const CatSchema = new Schema({
+      name: String,
+      age: Number,
+      isActive: Boolean,
+    });
+    const Cat = model('Cat', CatSchema);
+    await startInTest(getDefaultInstance());
+
+    const batchCreate = async () => {
+      await Cat.create({ name: 'Cat0', age: 27, isActive: true });
+    };
+    await batchCreate();
+    await delay(500);
+    const response = await Cat.updateMany(
+      { name: { $like: '%Cat%' } },
+      { isActive: 'active' },
+      { consistency: SearchConsistency.LOCAL },
+    );
+    expect(response.status).toBe('FAILURE');
+    expect(response.message.errors[0].exception).toBe('ValidationError');
     await delay(500);
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
