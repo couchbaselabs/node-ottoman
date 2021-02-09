@@ -23,7 +23,7 @@ export {
   ValidationError,
   BuildSchemaError,
 } from './schema';
-export { FindByIdOptions, FindOptions } from './handler';
+export { FindByIdOptions, FindOptions, IManyQueryResponse, IStatusExecution } from './handler';
 export * from './utils';
 export {
   ReturnResultDict,
