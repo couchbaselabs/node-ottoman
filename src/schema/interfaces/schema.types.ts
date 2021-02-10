@@ -33,6 +33,7 @@ export interface RequiredOption {
 
 export interface CoreTypeOptions {
   required?: boolean | RequiredOption | RequiredFunction;
+  immutable?: boolean;
   default?: unknown;
   validator?: ValidatorOption | ValidatorFunction | string;
 }
