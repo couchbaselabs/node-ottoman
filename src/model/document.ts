@@ -10,6 +10,7 @@ import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
 import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
 import { _keyGenerator } from '../utils/constants';
+import { CAST_STRATEGY } from '../utils/cast-strategy';
 
 /**
  * Document class represent a database document
@@ -32,6 +33,60 @@ export abstract class Document<T> {
    * @ignore
    */
   [key: string]: any;
+
+  /**
+   * @ignore
+   */
+  protected constructor() {
+    const { get, set, getStrategy, setStrategy, hasOwnProperty } = (function immutables() {
+      const i = {};
+      let strategy: CAST_STRATEGY | undefined;
+      return {
+        get(key: string) {
+          return i[key];
+        },
+        set(key: string, value: any) {
+          i[key] = value;
+        },
+        hasOwnProperty(key: string): boolean {
+          return i.hasOwnProperty(key);
+        },
+        getStrategy() {
+          return strategy;
+        },
+        setStrategy(value?: CAST_STRATEGY) {
+          strategy = value;
+        },
+      };
+    })();
+    Object.defineProperties(this, {
+      setImmutable: {
+        value: function (key: string, value: any): void {
+          set(key, value);
+        },
+      },
+      getImmutable: {
+        value: function (key: string): any {
+          return get(key);
+        },
+      },
+      immutableHasOwnProperty: {
+        value: function (key: string): boolean {
+          return hasOwnProperty(key);
+        },
+      },
+      getCurrentStrategy: {
+        value: function () {
+          return getStrategy();
+        },
+      },
+      setCurrentStrategy: {
+        value: function (value?: CAST_STRATEGY) {
+          setStrategy(value);
+        },
+      },
+    });
+  }
 
   /**
    * @ignore
@@ -295,9 +350,25 @@ export abstract class Document<T> {
    * console.log(user) // {name: "Jane Doe"}
    * ```
    */
-  _applyData(data) {
+  _applyData(data, strategy?: CAST_STRATEGY) {
+    this.setCurrentStrategy(strategy);
+    const strict = this.$.schema.options.strict;
     for (const key in data) {
       this[key] = data[key];
+      const isImmutable = (this.$.schema.fields[key] as any)?.options?.immutable;
+      if (!this.immutableHasOwnProperty(key) && isImmutable && strict) {
+        this.setImmutable(key, data[key]);
+        Object.defineProperty(this, key, {
+          get() {
+            return this.getImmutable(key);
+          },
+          set(value) {
+            if (this.getCurrentStrategy() === CAST_STRATEGY.THROW && this.getImmutable(key) !== value) {
+              throw new Error(`Field '${key}' is immutable and current cast strategy is set to 'throw'`);
+            }
+          },
+        });
+      }
     }
   }
 
