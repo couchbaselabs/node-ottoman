@@ -10,6 +10,7 @@ export class FindOptions {
   select?: ISelectType[] | string | string[];
   consistency?: SearchConsistency;
   noCollection?: boolean;
+  lean?: boolean;
   constructor(data: FindOptions) {
     for (const key in data) {
       this[key] = data[key];
@@ -26,4 +27,5 @@ export interface IFindOptions {
   select?: ISelectType[] | string | string[];
   consistency?: SearchConsistency;
   noCollection?: boolean;
+  lean?: boolean;
 }
