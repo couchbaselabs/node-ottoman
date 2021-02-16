@@ -157,6 +157,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
       }
       const key = _keyGenerator!(keyGenerator, { metadata, id });
       const { value } = await collection().get(key, findOptions);
+      if (options.lean) {
+        return value;
+      }
       const ModelFactory = ottoman.getModel(modelName);
       const document = new ModelFactory({ ...value }, { strict: false, strategy: CAST_STRATEGY.KEEP });
       if (populate) {

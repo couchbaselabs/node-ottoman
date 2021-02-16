@@ -4,6 +4,7 @@ export class FindByIdOptions {
   withExpiry?: boolean;
   transcoder?: any;
   timeout?: number;
+  lean?: boolean;
   constructor(data: FindByIdOptions) {
     for (const key in data) {
       this[key] = data[key];

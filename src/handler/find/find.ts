@@ -14,7 +14,7 @@ import { CAST_STRATEGY } from '../../utils/cast-strategy';
  * @ignore
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
-  const { skip, limit, sort, populate, select, noCollection, populateMaxDeep, consistency } = options;
+  const { skip, limit, sort, populate, select, noCollection, populateMaxDeep, consistency, lean } = options;
   const { ottoman, collectionName, modelKey, scopeName, modelName } = metadata;
   const { bucketName, cluster, couchbase } = ottoman;
   let fromClause = bucketName;
@@ -64,7 +64,7 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   const result = cluster.query(query.build(), queryOptions);
 
   return result.then(async (r: { rows: unknown[] }) => {
-    if (select !== 'RAW COUNT(*) as count') {
+    if (select !== 'RAW COUNT(*) as count' && (!lean || populate)) {
       const Model = ottoman.getModel(modelName);
       r.rows = r.rows.map((row) => new Model(row, { strict: false, strategy: CAST_STRATEGY.KEEP }));
       if (populate) {
@@ -74,7 +74,7 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
             await execPopulation(r.rows, toPopulate, ottoman, modelName, populateMaxDeep);
           }
         }
-        return r;
+        return lean ? r.rows.map((value: any) => value?.toObject()) : r;
       }
     }
     return r;
