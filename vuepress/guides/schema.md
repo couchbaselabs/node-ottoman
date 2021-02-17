@@ -511,6 +511,26 @@ const result = schema.validate({
 
 By default, it will get the `strict` option value set via the Schema constructor.
 
+## Extend Schemas
+
+### Add method
+
+The `add` method allows adding extra fields or extending properties of other schemas.
+
+```ts
+const plane = new Schema({ name: String });
+const boeing = new Schema({ price: Number });
+boeing.add(plane);
+
+// You can add also add fields to this schema
+boeing.add({ status: Boolean });
+```
+
+::: tip
+When a schema is added, the following properties are copied: fields, statics, indexes, methods, and hooks.
+Properties that already exist in the schema(fields, statics, indexes, methods) are overwritten by those of the added schema, except for hooks that are combined.
+:::
+
 ## Next Up
 
 Nice, now we'll can see how [Models](/guides/model) works.

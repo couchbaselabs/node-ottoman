@@ -34,6 +34,7 @@ import {
 } from './interfaces/schema.types';
 import { HookHandler } from './interfaces/schema.types';
 import { cast, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
+import { mergeHooks } from './helpers/fn-schema';
 
 export class Schema {
   static FactoryTypes: SupportFactoryTypes = {
@@ -267,5 +268,46 @@ export class Schema {
         }
       }
     }
+  }
+
+  /**
+   * Adds fields/schema type pairs to this schema.
+   * @example
+   * ```ts
+   *   const plane = new Schema({ name: String});
+   *   const boeing = new Schema({price: Number});
+   *   boeing.add(plane);
+   *
+   *   // You can add also add fields to this schema
+   *   boeing.add({status: Boolean});
+   * ```
+   * @param obj Plain object to add, or another schema
+   * @return Schema
+   */
+  public add(obj: Record<string, unknown> | Schema): Schema {
+    if (obj instanceof Schema) {
+      this._addSchema(obj);
+    } else if (typeof obj === 'object') {
+      this._addObject(obj);
+    } else {
+      throw TypeError('Wrong type, must be Object or Schema');
+    }
+    return this;
+  }
+
+  private _addObject(obj: Record<string, unknown>): void {
+    const strict = this.options?.strict || false;
+    const objFields = buildFields(obj, strict);
+    this.fields = { ...this.fields, ...objFields };
+  }
+
+  private _addSchema(obj: Schema): void {
+    this.fields = { ...this.fields, ...obj.fields };
+    this.queries = { ...this.queries, ...obj.queries };
+    this.index = { ...this.index, ...obj.index };
+    this.methods = { ...this.methods, ...obj.methods };
+    this.statics = { ...this.statics, ...obj.statics };
+    this.preHooks = mergeHooks(this.preHooks, obj.preHooks);
+    this.postHooks = mergeHooks(this.postHooks, obj.postHooks);
   }
 }
