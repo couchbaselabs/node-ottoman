@@ -242,3 +242,13 @@ export const addValidators = (validators: CustomValidations): void => {
     Schema.validators[prop] = validator;
   }
 };
+
+export const mergeHooks = (hook: Record<string, unknown[]>, other: Record<string, unknown[]>) => {
+  const _hook = { ...hook };
+  Object.keys(_hook).forEach((value: string) => {
+    if (other.hasOwnProperty(value)) {
+      _hook[value] = [..._hook[value], ...other[value]];
+    }
+  });
+  return _hook;
+};
