@@ -1,5 +1,4 @@
 import jsonpath from 'jsonpath';
-// const jsonpath = require('jsonpath');
 
 export const jpParse = (pathStr: string) => {
   // Temporary fix until we have our own parser.

@@ -2,10 +2,12 @@ import { bucketName, connectionString, connectUri, password, username } from './
 import { model } from '../src';
 import { isModel } from '../src/utils/is-model';
 import { extractConnectionString } from '../src/utils/extract-connection-string';
-import { is } from '../src/utils/is-type';
+import { is } from '../src';
 import { isMetadataKey } from '../src/utils/is-metadata';
 import { _keyGenerator, KEY_GENERATOR, MODEL_KEY } from '../src/utils/constants';
 import { canBePopulated } from '../src/utils/populate/can-be-populated';
+import { pathToN1QL, PathToN1QLItemType } from '../src/utils/path-to-n1ql';
+import { PathN1qlError } from '../src/exceptions/ottoman-errors';
 
 test('Build connection options from string', () => {
   const result = extractConnectionString(connectUri);
@@ -94,4 +96,69 @@ test('util.canBePopulated', async () => {
 test('_keyGenerator', async () => {
   const key = _keyGenerator(KEY_GENERATOR, { metadata: { modelName: 'keyGen' }, id: 123 });
   expect(key).toBe('keyGen::123');
+});
+
+describe('pathToN1QL', () => {
+  const pathTestMember = {
+    expression: { type: 'dummyIdentifierType', value: 'email' },
+    operation: 'member',
+  };
+  const pathTestSubscript = {
+    expression: { type: 'dummyIdentifierType', value: 'email' },
+    operation: 'subscript',
+  };
+  const pathTestNoOperation = {
+    expression: { type: 'dummyIdentifierType', value: 'email' },
+    operation: 'dummyOperationType',
+  };
+  const pathTestMemberValid: PathToN1QLItemType[] = [
+    {
+      operation: 'member',
+      expression: { type: 'identifier', value: 'card' },
+    },
+    {
+      expression: { type: 'identifier', value: 'cardNumber' },
+      operation: 'member',
+    },
+  ];
+  const pathTestSubscriptValid: PathToN1QLItemType = {
+    expression: { type: 'string_literal', value: 'email' },
+    operation: 'subscript',
+  };
+  test('operations -> throw error member', () => {
+    try {
+      pathToN1QL([pathTestMember] as any);
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(PathN1qlError);
+      expect(message).toBe(`Unexpected member expression type 'dummyIdentifierType'.`);
+    }
+  });
+  test('operations -> throw error subscript', () => {
+    try {
+      pathToN1QL([pathTestSubscript] as any);
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(PathN1qlError);
+      expect(message).toBe(`Unexpected subscript expression type 'dummyIdentifierType'.`);
+    }
+  });
+  test('operations -> throw error no operation type', () => {
+    try {
+      pathToN1QL([pathTestNoOperation] as any);
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(PathN1qlError);
+      expect(message).toBe(`Unexpected path operation type 'dummyOperationType'.`);
+    }
+  });
+
+  test('operations -> member', () => {
+    const result = pathToN1QL(pathTestMemberValid);
+    expect(result).toBe('`card`.`cardNumber`');
+  });
+  test('operations -> subscript', () => {
+    const result = pathToN1QL([pathTestSubscriptValid]);
+    expect(result).toBe('`email`');
+  });
 });

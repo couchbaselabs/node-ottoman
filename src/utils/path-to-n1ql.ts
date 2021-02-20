@@ -1,19 +1,33 @@
-export const pathToN1QL = (path) => {
+import { PathN1qlError } from '../exceptions/ottoman-errors';
+
+type PathToN1QLOperationType = 'member' | 'subscript';
+type PathToN1QLExpressionType = 'identifier' | 'string_literal';
+
+export type PathToN1QLItemType = {
+  operation: PathToN1QLOperationType;
+  expression: {
+    type: PathToN1QLExpressionType;
+    value: string;
+  };
+};
+
+export const pathToN1QL = (path: PathToN1QLItemType[]): string => {
   const fields: string[] = [];
-  for (let k = 0; k < path.length; ++k) {
-    if (path[k].operation === 'member') {
-      if (path[k].expression.type !== 'identifier') {
-        throw new Error('Unexpected member expression type.');
+  for (const { operation, expression } of path) {
+    const { type: eType, value: eValue } = expression;
+    switch (operation) {
+      case 'member': {
+        if (eType !== 'identifier') throw new PathN1qlError(`Unexpected member expression type '${eType}'.`);
+        break;
       }
-      fields.push(`\`${path[k].expression.value}\``);
-    } else if (path[k].operation === 'subscript') {
-      if (path[k].expression.type !== 'string_literal') {
-        throw new Error('Unexpected subscript expression type.');
+      case 'subscript': {
+        if (eType !== 'string_literal') throw new PathN1qlError(`Unexpected subscript expression type '${eType}'.`);
+        break;
       }
-      fields.push(`\`${path[k].expression.value}\``);
-    } else {
-      throw new Error('Unexpected path operation type.');
+      default:
+        throw new PathN1qlError(`Unexpected path operation type '${operation}'.`);
     }
+    fields.push(`\`${eValue}\``);
   }
   return fields.join('.');
 };

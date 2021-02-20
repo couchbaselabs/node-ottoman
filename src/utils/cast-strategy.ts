@@ -48,7 +48,7 @@ export const cast = (
   const strategy = options.strategy || CAST_STRATEGY.DEFAULT_OR_DROP;
   const strict = options.strict || false;
   if (strict && (strategy === CAST_STRATEGY.KEEP || strategy === CAST_STRATEGY.DEFAULT_OR_KEEP)) {
-    throw new Error(`Cast Strategy 'keep' or 'defaulOrKeep' isn't support when strict is set to true.`);
+    throw new ValidationError(`Cast Strategy 'keep' or 'defaultOrKeep' isn't support when strict is set to true.`);
   }
   const result: any = {};
   let _data = { ...data };
@@ -93,7 +93,7 @@ export const checkCastStrategy = (value, strategy, type: CoreType) => {
     case CAST_STRATEGY.DEFAULT_OR_KEEP:
       return value;
     case CAST_STRATEGY.THROW:
-      throw new ValidationError(`Property ${type.name} must be of type ${type.typeName}`);
+      throw new ValidationError(`Property '${type.name}' must be of type '${type.typeName}'`);
     case CAST_STRATEGY.DROP:
     case CAST_STRATEGY.DEFAULT_OR_DROP:
     default:

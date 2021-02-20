@@ -1,5 +1,6 @@
-import { applyDefaultValue, validate, ValidationError, BuildSchemaError, Schema } from '../src';
+import { applyDefaultValue, validate, ValidationError, BuildSchemaError, Schema, IOttomanType } from '../src';
 import { isOttomanType } from '../src/schema/helpers';
+import { DateType, EmbedType, NumberType, StringType, ArrayType } from '../src/schema/types';
 
 const validData = {
   firstName: 'John',
@@ -98,7 +99,7 @@ describe('Schema Types', () => {
       firstName: { type: String, default: 'John', auto: 'uuid' },
     };
     expect(() => new Schema(schema)).toThrow(
-      new BuildSchemaError('Auto and default values cannot be used at the same time in property firstName.'),
+      new BuildSchemaError(`Auto and default values cannot be used at the same time in property 'firstName'.`),
     );
   });
   test('should return an instance of IOttomanType when using a valid path value', () => {
@@ -204,5 +205,29 @@ describe('Schema Types', () => {
     expect(data.created).toBeDefined();
     expect(data.created.toISOString()).toBe(dateString);
     expect(data.created instanceof Date).toBe(true);
+  });
+
+  test('String -> should throw a ValidationError', () => {
+    const element = new StringType('name', { enum: undefined });
+    expect(() => element.validate({}, true)).toThrow(new ValidationError(`Property 'name' must be of type 'String'`));
+  });
+  test('Number -> should throw a ValidationError', () => {
+    const element = new NumberType('number');
+    expect(() => element.validate({}, true)).toThrow(new ValidationError(`Property 'number' must be of type 'Number'`));
+  });
+  test('Date -> should throw a ValidationError', () => {
+    const element = new DateType('date');
+    expect(() => element.validate({}, false)).toThrow(new ValidationError(`Property 'date' must be of type 'Date'`));
+  });
+  test('Array -> should throw a ValidationError', () => {
+    const element = new ArrayType('array', {} as IOttomanType);
+    expect(() => element.validate({}, false)).toThrow(new ValidationError(`Property 'array' must be of type 'Array'`));
+  });
+  test('Embed -> should throw a ValidationError', () => {
+    const schema = new Schema({ name: String });
+    const element = new EmbedType('name', schema);
+    expect(() => element.validate('name', true)).toThrow(
+      new ValidationError(`Property 'name' must be of type 'Embed'`),
+    );
   });
 });

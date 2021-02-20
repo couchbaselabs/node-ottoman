@@ -41,7 +41,7 @@ describe('Schema Native Types', () => {
       };
 
       expect(() => validate(data, schema)).toThrow(
-        new ValidationError('Property hasFirstName must be of type Boolean'),
+        new ValidationError(`Property 'hasFirstName' must be of type 'Boolean'`),
       );
     });
   });
@@ -125,7 +125,7 @@ describe('Schema Native Types', () => {
         names: 'John Doe',
       };
 
-      expect(() => validate(data, schema)).toThrow(new ValidationError('Property age must be of type Number'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError(`Property 'age' must be of type 'Number'`));
     });
   });
   describe('Schema Date Types', () => {
@@ -250,7 +250,7 @@ describe('Schema Native Types', () => {
         birthday: {},
       };
 
-      expect(() => validate(data, schema)).toThrow(new ValidationError('Property birthday must be of type Date'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError(`Property 'birthday' must be of type 'Date'`));
     });
   });
 });

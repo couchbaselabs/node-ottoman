@@ -1,3 +1,5 @@
+import { GlobalPluginHandlerError } from './global-plugin-handler-error';
+
 type PluginFunctions = () => void;
 
 /**
@@ -13,7 +15,7 @@ export const registerGlobalPlugin = (...plugins) => {
     if (plugin && typeof plugin === 'function') {
       __plugins.push(plugin);
     } else {
-      throw new Error('Unable to register the global plugin, only functions are allowed');
+      throw new GlobalPluginHandlerError('Unable to register the global plugin, only functions are allowed');
     }
   }
 };

@@ -1,5 +1,3 @@
-export class BuildSchemaError extends Error {
-  constructor(message?: string) {
-    super(message);
-  }
-}
+import { OttomanError } from '../../exceptions/ottoman-errors';
+
+export class BuildSchemaError extends OttomanError {}

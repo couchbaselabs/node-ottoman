@@ -11,6 +11,7 @@ import { getModelRefKeys } from './utils/get-model-ref-keys';
 import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
 import { _keyGenerator } from '../utils/constants';
 import { CAST_STRATEGY } from '../utils/cast-strategy';
+import { ImmutableError } from '../exceptions/ottoman-errors';
 
 /**
  * Document class represent a database document
@@ -364,7 +365,7 @@ export abstract class Document<T> {
           },
           set(value) {
             if (this.getCurrentStrategy() === CAST_STRATEGY.THROW && this.getImmutable(key) !== value) {
-              throw new Error(`Field '${key}' is immutable and current cast strategy is set to 'throw'`);
+              throw new ImmutableError(`Field '${key}' is immutable and current cast strategy is set to 'throw'`);
             }
           },
         });

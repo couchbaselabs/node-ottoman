@@ -56,7 +56,7 @@ export class EmbedType extends CoreType {
     value = super.validate(value, strategy);
     if (this.isEmpty(value)) return value;
     if (!is(value, Object) && !isModel(value)) {
-      throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
+      throw new ValidationError(`Property '${this.name}' must be of type '${this.typeName}'`);
     }
     this.checkValidator(value);
     return this.schema.validate(value);

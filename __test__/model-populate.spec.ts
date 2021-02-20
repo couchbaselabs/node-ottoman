@@ -93,6 +93,37 @@ describe('Test populate feature', () => {
     expect(result).toBeDefined();
   });
 
+  test('findById.option.populate Card and Cat references', async () => {
+    const Card = model('Card', CardSchema);
+    const Cat = model('Cat', CatSchema);
+    const schema = new Schema({
+      type: String,
+      isActive: Boolean,
+      name: String,
+      card: { type: CardSchema, ref: 'Card' },
+      cats: [{ type: CatSchema, ref: 'Cat' }],
+    });
+    const User = model('User', schema);
+
+    await startInTest(getDefaultInstance());
+
+    const cardCreated = await Card.create(cardInfo);
+    const catCreated = await Cat.create(myCat);
+    const user = new User(populateDoc);
+    user.card = cardCreated.id;
+    user.cats = [catCreated.id];
+    const saved = await user.save();
+    await delay(500);
+    const { card, cats } = await User.findById(saved.id, { populate: '*' });
+    await Card.removeById(cardCreated.id);
+    await Cat.removeById(catCreated.id);
+    await User.removeById(saved.id);
+
+    expect(card.id).toBe(cardCreated.id);
+    expect(cats.length).toBe(1);
+    expect(cats[0].id).toBe(catCreated.id);
+  });
+
   test('Find.populate Card and Cat  references', async () => {
     const Issue = model('Issue', IssueSchema);
     const Card = model('Card', CardSchema);

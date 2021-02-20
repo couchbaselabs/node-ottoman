@@ -79,7 +79,7 @@ export class DateType extends CoreType {
       ? new Date(Number(value))
       : undefined;
     if (_value === undefined) {
-      throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
+      throw new ValidationError(`Property '${this.name}' must be of type '${this.typeName}'`);
     }
     this.checkValidator(_value);
     let errors: string[] = [];

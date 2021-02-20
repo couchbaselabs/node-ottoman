@@ -1,5 +1,6 @@
 import { jpParse } from '../../../utils/jp-parse';
 import { pathToN1QL } from '../../../utils/path-to-n1ql';
+import { BuildIndexQueryError } from '../../../exceptions/ottoman-errors';
 
 export const extractIndexFieldNames = (gsi: { fields: string[] }) => {
   const fieldNames: string[] = [];
@@ -9,7 +10,7 @@ export const extractIndexFieldNames = (gsi: { fields: string[] }) => {
     for (let k = 0; k < path.length; ++k) {
       if (path[k].operation === 'subscript' && path[k].expression.type === 'wildcard') {
         if (wildCardAt !== -1) {
-          throw new Error('Cannot create an index with more than one wildcard in path');
+          throw new BuildIndexQueryError('Cannot create an index with more than one wildcard in path');
         }
         wildCardAt = k;
       }

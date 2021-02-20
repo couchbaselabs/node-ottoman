@@ -19,7 +19,8 @@ import { SearchConsistency } from '..';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { cast, CAST_STRATEGY } from '../utils/cast-strategy';
-import { createMany } from '../handler/create-many';
+import { createMany } from '../handler';
+import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 
 /**
  * @ignore
@@ -80,7 +81,9 @@ export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel
           ottoman.registerRefdocIndex(fields, prefix);
           break;
         default:
-          throw new Error(`Unexpected index type in index ${key}`);
+          throw new BuildIndexQueryError(
+            `Unexpected index type '${type}' in index '${key}', was expected 'refdoc', 'n1ql' or 'view'`,
+          );
       }
     }
   }
@@ -112,7 +115,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
         if (by && of) {
           const QueryModel = ottoman.getModel(of);
           if (!QueryModel) {
-            throw new Error(`Collection ${of} does not exist.`);
+            throw new BuildIndexQueryError(`Collection ${of} does not exist.`);
           }
           const queryMetadata = getModelMetadata(QueryModel);
           let indexName = `${ottoman.bucketName}_${scopeName}_${of}$${indexFieldsName([by])}`;
@@ -123,7 +126,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
           // Register index to sync later with the server
           ottoman.registerIndex(indexName, [by], of);
         } else {
-          throw new Error('The "by" and "of" properties are required to build the queries.');
+          throw new BuildIndexQueryError('The "by" and "of" properties are required to build the queries.');
         }
       }
     }
@@ -144,7 +147,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
         return response.rows[0];
       }
-      throw new Error('The query did not return any results.');
+      throw new OttomanError('The query did not return any results.');
     };
 
     static findById = async (id: string, options: FindByIdOptions = {}) => {
@@ -193,19 +196,18 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static updateById = async (id: string, data) => {
       const key = id || data[ID_KEY];
       const value = await _Model.findById(key);
-      if (value.id) {
+      if (value[ID_KEY]) {
         const strategy = CAST_STRATEGY.THROW;
         value._applyData({ ...value, ...data, ...{ [modelKey]: value[modelKey] } }, strategy);
         const instance = new _Model({ ...value }, { strategy });
         return instance.save();
       }
-      throw new (couchbase as any).DocumentNotFoundError();
     };
 
     static replaceById = async (id: string, data) => {
       const key = id || data[ID_KEY];
       const value = await _Model.findById(key);
-      if (value.id) {
+      if (value[ID_KEY]) {
         value._applyData({
           ...data,
           ...{ [ID_KEY]: key, [modelKey]: modelName },
@@ -213,7 +215,6 @@ export const _buildModel = (metadata: ModelMetadata) => {
         const instance = new _Model({ ...value });
         return instance.save();
       }
-      throw new (couchbase as any).DocumentNotFoundError();
     };
 
     static removeById = (id: string) => {
@@ -226,15 +227,11 @@ export const _buildModel = (metadata: ModelMetadata) => {
     }
 
     static removeMany = async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
-      try {
-        const response = await find(metadata)(filter, options);
-        if (response.hasOwnProperty('rows') && response.rows.length > 0) {
-          return removeMany(metadata)(response.rows.map((v) => v[ID_KEY]));
-        }
-        return new ManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
-      } catch (e) {
-        throw e;
+      const response = await find(metadata)(filter, options);
+      if (response.hasOwnProperty('rows') && response.rows.length > 0) {
+        return removeMany(metadata)(response.rows.map((v) => v[ID_KEY]));
       }
+      return new ManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
     };
 
     static updateMany = async (
@@ -242,22 +239,15 @@ export const _buildModel = (metadata: ModelMetadata) => {
       doc: Record<string, unknown>,
       options: UpdateManyOptions = {},
     ) => {
-      try {
-        const response = await find(metadata)(filter, options);
-        if (response.hasOwnProperty('rows') && response.rows.length > 0) {
-          return updateMany(metadata)(response.rows, doc);
-        } else {
-          if (options.upsert) {
-            const ModelFactory = ottoman.getModel(modelName);
-            await ModelFactory.create(doc);
-            return new ManyQueryResponse('SUCCESS', { success: 1, match_number: 0, errors: [] });
-          } else {
-            return new ManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
-          }
-        }
-      } catch (e) {
-        throw e;
+      const response = await find(metadata)(filter, options);
+      if (response.hasOwnProperty('rows') && response.rows.length > 0) {
+        return updateMany(metadata)(response.rows, doc);
       }
+      if (options.upsert) {
+        const ModelFactory = ottoman.getModel(modelName);
+        await ModelFactory.create(doc);
+      }
+      return new ManyQueryResponse('SUCCESS', { success: options.upsert ? 1 : 0, match_number: 0, errors: [] });
     };
 
     static findOneAndUpdate = async (
@@ -271,10 +261,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
         afterToUpdate._applyData({ ...doc });
         const after = await afterToUpdate.save();
         return options.new ? after : before;
-      } else {
-        if (options.upsert) {
-          return await _Model.create(doc);
-        }
+      }
+      if (options.upsert) {
+        return await _Model.create(doc);
       }
       throw new (couchbase as any).DocumentNotFoundError();
     };

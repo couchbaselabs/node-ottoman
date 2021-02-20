@@ -10,6 +10,7 @@ import {
   IIndexWithParams,
   buildIndexExpr,
 } from '../src';
+import { CollectionInWithInExceptions } from '../src/query/exceptions';
 
 describe('Test Query Builder functions', () => {
   test('Check select clause parameter types', async () => {
@@ -110,5 +111,41 @@ describe('Test Query Builder functions', () => {
     expect(index).toStrictEqual(
       'CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample`.callsing["ASC"]) WHERE `travel-sample`.callsign LIKE "%57-59%" USING GSI WITH {"nodes": [],"defer_build": true,"num_replica": 0}',
     );
+  });
+
+  test('buildWhereClauseExpr -> should throw a CollectionInWithInExceptions', async () => {
+    const where: LogicalWhereExpr = {
+      $any: {
+        $expr: [{ $dummyIn: { search_expr: 'search', target_expr: 'address' } }],
+        $satisfied: { address: '10' },
+      },
+    };
+    try {
+      buildWhereClauseExpr('', where);
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(CollectionInWithInExceptions);
+      expect(message).toBe(
+        'The Collection Operator needs to have the following clauses declared (IN | WITHIN) and SATISFIES.',
+      );
+    }
+  });
+
+  test('extractIndexFieldNames -> should throw a BuildIndexQueryError', async () => {
+    const where: LogicalWhereExpr = {
+      $any: {
+        $expr: [{ $dummyIn: { search_expr: 'search', target_expr: 'address' } }],
+        $satisfied: { address: '10' },
+      },
+    };
+    try {
+      buildWhereClauseExpr('', where);
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(CollectionInWithInExceptions);
+      expect(message).toBe(
+        'The Collection Operator needs to have the following clauses declared (IN | WITHIN) and SATISFIES.',
+      );
+    }
   });
 });
