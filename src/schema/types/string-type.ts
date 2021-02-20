@@ -68,7 +68,7 @@ export class StringType extends CoreType {
     super.validate(value, strategy);
     const _wrongType = this.isStrictStrategy(strategy) ? !is(value, String) : is(value, Object);
     if (_wrongType) {
-      throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
+      throw new ValidationError(`Property '${this.name}' must be of type '${this.typeName}'`);
     }
     if (value === null || value === undefined) {
       return value;
@@ -96,7 +96,9 @@ export class StringType extends CoreType {
   private _checkIntegrity() {
     if (this.auto !== undefined) {
       if (this.default !== undefined) {
-        throw new BuildSchemaError(`Auto and default values cannot be used at the same time in property ${this.name}.`);
+        throw new BuildSchemaError(
+          `Auto and default values cannot be used at the same time in property '${this.name}'.`,
+        );
       }
       if (this.auto === 'uuid' && this.typeName !== String.name) {
         throw new BuildSchemaError('Automatic uuid properties must be string typed.');

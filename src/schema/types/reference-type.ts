@@ -42,7 +42,7 @@ export class ReferenceType extends CoreType {
       return String(value);
     }
     if (!is(value, Object) && !isModel(value)) {
-      throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
+      throw new ValidationError(`Property '${this.name}' must be of type '${this.typeName}'`);
     }
     this.checkValidator(value);
     return this.schema.validate(value);

@@ -1,5 +1,5 @@
 import { validate, ValidationError, BuildSchemaError, Schema, IOttomanType, registerType } from '../src';
-import { MixedType } from '../src/schema/types';
+import { MixedType } from '../src/schema';
 
 describe('Schema Types', () => {
   describe('Schema Array Types', () => {
@@ -75,7 +75,7 @@ describe('Schema Types', () => {
           names: {},
         };
 
-        expect(() => validate(data, schema)).toThrow(new ValidationError('Property names must be of type Array'));
+        expect(() => validate(data, schema)).toThrow(new ValidationError(`Property 'names' must be of type 'Array'`));
       });
     });
   });
@@ -133,7 +133,7 @@ describe('Schema Types', () => {
         names: 'John Doe',
         birthday: Date.now(),
       };
-      expect(() => validate(data, schema)).toThrow(new ValidationError('Property names must be of type Embed'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError(`Property 'names' must be of type 'Embed'`));
     });
   });
   describe('Schema Model Ref Types', () => {
@@ -163,7 +163,7 @@ describe('Schema Types', () => {
       const data = {
         user: { name: { age: 35 } },
       };
-      expect(() => validate(data, schema)).toThrow(new ValidationError('Property name must be of type String'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError(`Property 'name' must be of type 'String'`));
     });
     test('should create a schema with an array of references', () => {
       const commentSchema = new Schema({
@@ -207,7 +207,7 @@ describe('Schema Types', () => {
       const data = {
         user: 34,
       };
-      expect(() => validate(data, schema)).toThrow(new ValidationError('Property user must be of type Reference'));
+      expect(() => validate(data, schema)).toThrow(new ValidationError(`Property 'user' must be of type 'Reference'`));
     });
   });
   describe('Schema Add Custom Types', () => {
@@ -237,7 +237,7 @@ describe('Schema Types', () => {
       try {
         registerType(Int8.name, (fieldName) => new Int8(fieldName));
       } catch (e) {
-        expect(e).toEqual(new Error('A type with this name has already been registered'));
+        expect(e).toEqual(new ValidationError(`A type with name 'Int8' has already been registered`));
       }
     });
   });

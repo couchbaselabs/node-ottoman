@@ -63,7 +63,7 @@ export class NumberType extends CoreType {
     let errors: string[] = [];
     const _wrongType = this.isStrictStrategy(strategy) ? !is(value, Number) : isNaN(_value);
     if (_wrongType) {
-      throw new ValidationError(`Property ${this.name} must be of type ${this.typeName}`);
+      throw new ValidationError(`Property '${this.name}' must be of type '${this.typeName}'`);
     }
 
     if (this.intVal && _value % 1 !== 0) {

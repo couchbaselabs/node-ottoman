@@ -1,6 +1,7 @@
 import { Ottoman } from '../src';
 import { connectionString, username, connectUri, bucketName, password } from './testData';
 import { isModel } from '../src/utils/is-model';
+import { OttomanError } from '../src/exceptions/ottoman-errors';
 
 describe('Test ottoman instances', () => {
   test('Multiple instances with string param', () => {
@@ -40,5 +41,29 @@ describe('Test ottoman instances', () => {
     const testCollection = instance.getCollection(collectionName);
     expect(testCollection._name).toBe(collectionName);
     instance.close();
+  });
+
+  test('Get cluster -> throw error', () => {
+    const instance = new Ottoman();
+    try {
+      instance.cluster;
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(OttomanError);
+      expect(message).toBe('No active connection detected, please try to connect.');
+    }
+  });
+
+  test('model -> throw error already been registered', () => {
+    const instance = new Ottoman();
+    instance.model('User', { name: String });
+
+    try {
+      instance.model('User', { lastname: String });
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(OttomanError);
+      expect(message).toBe(`A model with name 'User' has already been registered.`);
+    }
   });
 });

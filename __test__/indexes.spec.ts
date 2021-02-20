@@ -1,5 +1,6 @@
 import { Schema, model, getDefaultInstance, ViewIndexOptions } from '../src';
 import { delay, startInTest } from './testData';
+import { BuildIndexQueryError } from '../src/exceptions/ottoman-errors';
 
 describe('Indexes', () => {
   const UserSchema = new Schema({
@@ -15,6 +16,7 @@ describe('Indexes', () => {
   UserSchema.index.findN1qlByName = { by: 'name', options: { limit: 4, select: 'name' } };
   UserSchema.index.findN1qlByCardNumber = { by: 'card.cardNumber', type: 'n1ql' };
   UserSchema.index.findN1qlByRoles = { by: 'roles[*].name', type: 'n1ql' };
+
   UserSchema.index.findN1qlByNameandEmail = {
     by: ['name', 'email'],
     options: { limit: 4, select: 'name, email' },
@@ -55,13 +57,15 @@ describe('Indexes', () => {
     try {
       await User.findByName();
     } catch (e) {
-      expect(e.message).toBe('Function findByName received wrong number of arguments');
+      expect(e.message).toBe(`Function 'findByName' received wrong argument value, 'undefined' wasn't expected`);
     }
 
     try {
       await User.findByName(['must', 'fail']);
     } catch (e) {
-      expect(e.message).toBe('Function findByName received wrong number of arguments');
+      expect(e.message).toBe(
+        `Function 'findByName' received wrong number of arguments, '1:[name]' argument(s) was expected and '2:[must,fail]' were received`,
+      );
     }
 
     const viewIndexOptions = new ViewIndexOptions({ limit: 1 });
@@ -70,5 +74,24 @@ describe('Indexes', () => {
 
     const userRefdoc = await User.findRefName(userData.name);
     expect(userRefdoc.name).toBe(userData.name);
+  });
+  test('Testing indexes -> should throw a BuildIndexQueryError -> more than one wildcard in path ', async () => {
+    UserSchema.index.findN1qlByRolesException = { by: 'roles[*].name[*].first', type: 'n1ql' };
+    try {
+      const User = model('User', UserSchema);
+      const userData = {
+        name: `index`,
+        email: 'index@email.com',
+        card: { cardNumber: '424242425252', zipCode: '42424' },
+        roles: [{ name: 'admin' }],
+      };
+      const user = new User(userData);
+      await startInTest(getDefaultInstance());
+      await user.save();
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(BuildIndexQueryError);
+      expect(message).toBe('Cannot create an index with more than one wildcard in path');
+    }
   });
 });

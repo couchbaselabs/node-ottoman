@@ -1,6 +1,9 @@
 /* istanbul ignore file */
 declare module 'couchbase' {
   export class CouchbaseError extends Error {
+    cause: any;
+    context: any;
+    name = this.constructor.name;
     constructor(errtext?, baseerr?, context?, ...args);
   }
   export class TimeoutError extends CouchbaseError {}

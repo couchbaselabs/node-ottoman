@@ -5,19 +5,21 @@ import { createModel } from '../model/create-model';
 import { ModelTypes } from '../model/model.types';
 import {
   DEFAULT_COLLECTION,
+  DEFAULT_ID_KEY,
   DEFAULT_MAX_EXPIRY,
   DEFAULT_SCOPE,
   KEY_GENERATOR,
   MODEL_KEY,
-  DEFAULT_ID_KEY,
 } from '../utils/constants';
 import { getModelMetadata, SearchConsistency } from '..';
 import { isDebugMode } from '../utils/is-debug-mode';
-import { ModelOptions, CreateModelOptions } from '../model/interfaces/create-model.interface';
+import { CreateModelOptions, ModelOptions } from '../model/interfaces/create-model.interface';
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
 import { ensureN1qlIndexes } from '../model/index/n1ql/ensure-n1ql-indexes';
 import { buildMapViewIndexFn } from '../model/index/view/build-map-view-index-fn';
 import { ensureViewIndexes } from '../model/index/view/ensure-view-indexes';
+import { OttomanError } from '../exceptions/ottoman-errors';
+import { parseError } from '../utils/parse-errors';
 
 export interface ConnectOptions {
   connectionString: string;
@@ -144,7 +146,7 @@ export class Ottoman {
    */
   get cluster() {
     if (!this._cluster) {
-      throw new Error('No active connection detected, please try to connect.');
+      throw new OttomanError('No active connection detected, please try to connect.');
     }
     return this._cluster;
   }
@@ -175,7 +177,7 @@ export class Ottoman {
    *  const connection = connect("couchbase://localhost/travel-sample@admin:password");
    * ```
    */
-  connect = (connectOptions: ConnectOptions | string) => {
+  connect = (connectOptions: ConnectOptions | string): Ottoman => {
     const options = typeof connectOptions === 'object' ? connectOptions : extractConnectionString(connectOptions);
     const { connectionString, bucketName, ..._options } = options;
     this._cluster = new (couchbase as any).Cluster(connectionString, _options);
@@ -195,7 +197,7 @@ export class Ottoman {
    */
   model(name: string, schema: Schema | Record<string, unknown>, options: ModelOptions = {}) {
     if (this.models[name]) {
-      throw new Error(`A model with name '${name}' has already been registered.`);
+      throw new OttomanError(`A model with name '${name}' has already been registered.`);
     }
     const modelOptions = options as CreateModelOptions;
     modelOptions.collectionName = options.collectionName || this.config.collectionName || name;
@@ -212,12 +214,20 @@ export class Ottoman {
 
   /**
    * dropCollection drops a collection from a scope in a bucket.
-   * @param name
+   * @param collectionName
    * @param scopeName
    * @param options
    */
-  dropCollection(collectionName, scopeName: string, options: { timeout?: number } = {}): Promise<boolean> {
-    return this.collectionManager.dropCollection(collectionName, scopeName, options);
+  async dropCollection(
+    collectionName: string,
+    scopeName: string,
+    options: { timeout?: number } = {},
+  ): Promise<boolean | undefined> {
+    try {
+      return await this.collectionManager.dropCollection(collectionName, scopeName, options);
+    } catch (e) {
+      parseError(e, { collectionName, scopeName });
+    }
   }
 
   /**
@@ -225,8 +235,12 @@ export class Ottoman {
    * @param scopeName
    * @param options
    */
-  dropScope(scopeName: string, options: { timeout?: number } = {}): Promise<boolean> {
-    return this.collectionManager.dropScope(scopeName, options);
+  async dropScope(scopeName: string, options: { timeout?: number } = {}): Promise<boolean | undefined> {
+    try {
+      return await this.collectionManager.dropScope(scopeName, options);
+    } catch (e) {
+      parseError(e, { scopeName });
+    }
   }
 
   /**
@@ -234,8 +248,12 @@ export class Ottoman {
    * @param bucketName
    * @param options
    */
-  dropBucket(bucketName: string, options: { timeout?: number } = {}): Promise<boolean> {
-    return this.bucketManager.dropBucket(bucketName, options);
+  async dropBucket(bucketName: string, options: { timeout?: number } = {}): Promise<boolean | undefined> {
+    try {
+      return await this.bucketManager.dropBucket(bucketName, options);
+    } catch (e) {
+      parseError(e, { bucketName });
+    }
   }
 
   /**

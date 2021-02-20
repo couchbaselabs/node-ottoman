@@ -12,6 +12,8 @@ import {
 } from './interface/query.types';
 import { IndexParamsOnExceptions, IndexParamsUsingGSIExceptions, MultipleQueryTypesException } from './exceptions';
 import { buildIndexExpr, selectBuilder } from './helpers';
+import { ValidationError } from '../schema';
+import { BuildIndexQueryError } from '../exceptions/ottoman-errors';
 
 export class Query extends BaseQuery {
   /**
@@ -149,7 +151,7 @@ export class Query extends BaseQuery {
   index(type: IndexType, name: string): Query {
     if (this.queryType === undefined) {
       if (name.search(/^[A-Za-z][A-Za-z0-9#_]*$/g) === -1) {
-        throw new Error(
+        throw new ValidationError(
           'Valid GSI index names can contain any of the following characters: A-Z a-z 0-9 # _, and must start with a letter, [A-Z a-z]',
         );
       }
@@ -220,7 +222,7 @@ export class Query extends BaseQuery {
       this.indexWith = value;
       return this;
     }
-    throw new Error('The WITH clause is only available for Indexes');
+    throw new BuildIndexQueryError('The WITH clause is only available for Indexes');
   }
 
   /**

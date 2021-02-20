@@ -5,8 +5,10 @@ import {
   getDefaultInstance,
   DocumentExistsError,
   isDocumentNotFoundError,
+  DocumentNotFoundError,
 } from '../src';
-import { startInTest } from './testData';
+import { delay, startInTest } from './testData';
+import { OttomanError } from '../src/exceptions/ottoman-errors';
 
 const accessDoc = {
   type: 'airlineR',
@@ -58,9 +60,8 @@ describe('Test Document Access Functions', () => {
     const key = 'not-found';
     try {
       await UserModel.findById(key);
-      throw new Error('Fail');
     } catch (e) {
-      expect(isDocumentNotFoundError(e)).toBe(true);
+      expect(e).toBeInstanceOf(DocumentNotFoundError);
     }
   });
 
@@ -79,7 +80,7 @@ describe('Test Document Access Functions', () => {
     try {
       await UserModel.updateById('dummyID', updateDoc);
     } catch (e) {
-      expect(isDocumentNotFoundError(e)).toBe(true);
+      expect(e).toBeInstanceOf(DocumentNotFoundError);
     }
   });
 
@@ -98,8 +99,42 @@ describe('Test Document Access Functions', () => {
     try {
       await UserModel.replaceById('dummyID', updateDoc);
     } catch (e) {
-      expect(isDocumentNotFoundError(e)).toBe(true);
+      expect(e).toBeInstanceOf(DocumentNotFoundError);
     }
+  });
+
+  test('UserModel.replace -> Replace a document with custom idKey', async () => {
+    const CUSTOM_ID_KEY = 'userListId';
+    const UserModel = model('User', schema, { idKey: CUSTOM_ID_KEY });
+    await startInTest(getDefaultInstance());
+    const result = await UserModel.create({
+      type: 'airline',
+      isActive: false,
+      name: 'Ottoman Access List Custom ID',
+    });
+    await delay(500);
+    const document = await UserModel.replaceById(result[CUSTOM_ID_KEY], result);
+    await UserModel.removeById(document[CUSTOM_ID_KEY]);
+    expect(document).toBeDefined();
+    expect(typeof document[CUSTOM_ID_KEY]).toBe('string');
+    expect(result[CUSTOM_ID_KEY]).toStrictEqual(document[CUSTOM_ID_KEY]);
+  });
+
+  test('UserModel.updateById -> Replace a document with custom idKey', async () => {
+    const CUSTOM_ID_KEY = 'userListId';
+    const UserModel = model('User', schema, { idKey: CUSTOM_ID_KEY });
+    await startInTest(getDefaultInstance());
+    const result = await UserModel.create({
+      type: 'airline',
+      isActive: false,
+      name: 'Ottoman Access List Custom ID',
+    });
+    await delay(500);
+    const document = await UserModel.updateById(result[CUSTOM_ID_KEY], result);
+    await UserModel.removeById(document[CUSTOM_ID_KEY]);
+    expect(document).toBeDefined();
+    expect(typeof document[CUSTOM_ID_KEY]).toBe('string');
+    expect(result[CUSTOM_ID_KEY]).toStrictEqual(document[CUSTOM_ID_KEY]);
   });
 
   test('Document.save Save and update a document', async () => {
@@ -187,6 +222,18 @@ describe('Test Document Access Functions', () => {
     await UserModel.create(accessDoc);
     const count = await UserModel.count();
     expect(count).toBeGreaterThan(0);
+  });
+
+  test('UserModel count function no result errors', async () => {
+    const UserModel = model('User', schema);
+    await startInTest(getDefaultInstance());
+    try {
+      await UserModel.count({ count: { $like: 'UserModelTestError' } }, { limit: 1, skip: 1 });
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(OttomanError);
+      expect(message).toBe('The query did not return any results.');
+    }
   });
 
   test('UserModel findOne function, also check return correct custom idKey', async () => {

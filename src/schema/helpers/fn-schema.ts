@@ -94,10 +94,7 @@ const _makeParseResult = (type: string, options): ParseResult => {
  * @param type of the field
  * */
 const _getFieldType = (type: any): any => {
-  if (type) {
-    return type.name || type.constructor['sName'] || undefined;
-  }
-  return undefined;
+  return type ? type.name || type.constructor['sName'] || undefined : undefined;
 };
 
 /**
@@ -202,7 +199,7 @@ export const applyDefaultValue = (obj, schema: Schema | SchemaDef): any => {
  */
 export const registerType = (name: string, factory: FactoryFunction): void => {
   if (Schema.FactoryTypes[name] !== undefined) {
-    throw new Error('A type with this name has already been registered');
+    throw new ValidationError(`A type with name '${name}' has already been registered`);
   }
   Schema.FactoryTypes[name] = factory;
 };

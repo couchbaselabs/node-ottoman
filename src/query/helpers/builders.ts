@@ -30,6 +30,7 @@ import {
   ReturnResultDict,
 } from './dictionary';
 import {
+  CollectionInWithInExceptions,
   InWithinOperatorExceptions,
   QueryGroupByParamsException,
   QueryOperatorNotFoundException,
@@ -37,6 +38,7 @@ import {
   WhereClauseException,
 } from '../exceptions';
 import { escapeReservedWords } from '../utils';
+import { BuildQueryError } from '../../exceptions/ottoman-errors';
 
 // select expressions functions
 /**
@@ -406,9 +408,7 @@ const stringifyValues = (value: unknown) => {
 const _buildCollectionInWithIn = (collection: CollectionInWithinOperatorType) => {
   const op = collection.$in ? '$in' : collection.$within ? '$within' : undefined;
   if (!op) {
-    throw new Error(
-      'The Collection Operator needs to have the following clauses declared (IN | WITHIN) and SATISFIES.',
-    );
+    throw new CollectionInWithInExceptions();
   }
   return `${_buildCollectionInWithinOperator(op, collection[op] as CollectionInWithinOperatorValue, true)}`;
 };
@@ -481,6 +481,7 @@ const buildOnSortExpr = (onExpr?: IIndexOnParams) => {
  * @ignore
  * */
 const buildWithExpr = (withExpr?: IIndexWithParams) => {
+  let expr = '';
   if (withExpr) {
     const resultExpr = Object.keys(withExpr)
       .map((value: string) => {
@@ -491,13 +492,13 @@ const buildWithExpr = (withExpr?: IIndexWithParams) => {
           case 'num_replica':
             return `"${value}": ${withExpr[value]}`;
           default:
-            throw new Error('The WITH clause has an incorrect syntax');
+            throw new BuildQueryError('The WITH clause has an incorrect syntax');
         }
       })
       .join(',');
-    return !!resultExpr ? `WITH {${resultExpr}}` : '';
+    expr = !!resultExpr ? `WITH {${resultExpr}}` : '';
   }
-  return '';
+  return expr;
 };
 
 /**
