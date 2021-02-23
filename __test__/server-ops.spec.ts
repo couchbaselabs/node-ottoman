@@ -67,34 +67,13 @@ describe('Ottoman.dropScope', () => {
       expect(message).toBe(`failed to drop scope, scope 'DummyScopeTestError' not found`);
     }
   });
-  test(`-> should throw CouchbaseError cluster closed`, async () => {
-    const ottoman = getDefaultInstance();
-    try {
-      if (process.env.OTTOMAN_LEGACY_TEST) {
-        const error = new couchbase['CouchbaseError']('parent cluster object has been closed');
-        parseError(error, {});
-        return;
-      }
-      ottoman.close();
-      await ottoman.dropScope('DummyScopeTestError');
-    } catch (e) {
-      const { message } = e;
-      expect(e).toBeInstanceOf(couchbase['CouchbaseError']);
-      expect(message).toBe('parent cluster object has been closed');
-    }
-  });
   test(`-> on legacy should throw CouchbaseError`, async () => {
     const ottoman = getDefaultInstance();
     try {
-      if (process.env.OTTOMAN_LEGACY_TEST) {
-        await ottoman.dropScope('DummyScopeTestError');
-      } else {
-        expect(1).toBe(1);
-      }
+      ottoman.close();
+      await ottoman.dropScope('DummyScopeTestError');
     } catch (e) {
-      const { message } = e;
       expect(e).toBeInstanceOf(couchbase['CouchbaseError']);
-      expect(message).toBe(`feature not available`);
     }
   });
 });
@@ -135,15 +114,10 @@ describe('Ottoman.dropCollection', () => {
   test(`-> on legacy should throw CouchbaseError`, async () => {
     const ottoman = getDefaultInstance();
     try {
-      if (process.env.OTTOMAN_LEGACY_TEST) {
-        await ottoman.dropCollection('DummyCollectionTestError', 'DummyScopeTestError');
-      } else {
-        expect(1).toBe(1);
-      }
+      ottoman.close();
+      await ottoman.dropCollection('DummyCollectionTestError', 'DummyScopeTestError');
     } catch (e) {
-      const { message } = e;
       expect(e).toBeInstanceOf(couchbase['CouchbaseError']);
-      expect(message).toBe(`feature not available`);
     }
   });
 });
