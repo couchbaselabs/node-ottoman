@@ -31,15 +31,30 @@ Supported version are:
 
 ## Getting started
 
-```typescript
-import { connect, model } from "ottoman";
+```javascript
+const { connect, model, start, close } = require('ottoman');
 connect("couchbase://localhost/travel-sample@admin:password");
 
 const User = model('User', { name: String });
 
-const user = new User({name:'Jane Doe'});
-user.save().then(() => console.log('Nice Job!'));
+const user = new User({ name: 'Jane Doe' });
+user.save()
+    .then(() => console.log('Nice Job!'))
+    .finally(() => close());
+
+start();
 ```
+
+You should see results similar to the following:
+
+```
+Nice Job!
+```
+
+::: tip Note
+If you are using legacy database must check out this [ottomanjs.com](https://ottomanjs.com/)
+:::
+
 
 ## Ottoman v2 main goals
 
@@ -52,15 +67,12 @@ user.save().then(() => console.log('Nice Job!'));
 
 ## Documentation
 
-To check out `examples` and docs, visit [v2.ottomanjs.com](http://v2.ottomanjs.com).
+Checkout our [examples](./guides/first-app.html)  and [docs](./guides/quick-start.html) for typescript and javascript implementation.
 
 ## Questions
 
 For questions and support please use [the official forum](https://forums.couchbase.com/) or [contact community](http://couchbase.com/communities/nodejs).
-
-## Issues
-
-Please make sure to read the [Issue Reporting Checklist](http://issues.couchbase.com/) before opening an issue.
+Please make sure to read the [Issue Reporting Checklist](https://github.com/couchbaselabs/node-ottoman/issues) before opening an issue.
 
 ## Changelog
 
@@ -72,12 +84,16 @@ Detailed changes for each release are documented in the [release notes](https://
 
 ## Contributions
 
-Please make sure to read the `Contributing Guide` before making a pull request.
 Thank you to all the people who already contributed to Couchbase Ottoman!
 
 ### Guide for Developers
 
 1. [Install Couchbase Server Using Docker](https://docs.couchbase.com/server/current/install/getting-started-docker.html).
+
+::: tip Note
+Check results on [http://localhost:8091/](http://localhost:8091/) couchbase web client.
+:::
+
 
 2. Get the repo and install dependencies
 
@@ -99,8 +115,6 @@ $ yarn docs
 $ yarn docs:dev
 ```
 
-Check results on [http://localhost:8091/](http://localhost:8091/) couchbase web client
-
 ## Deploying Ottoman to NPM
 
 - Pull master branch from repo
@@ -112,7 +126,7 @@ Check results on [http://localhost:8091/](http://localhost:8091/) couchbase web 
 
 ## License
 
-© Copyright 2013 Couchbase Inc.
+© Copyright 2021 Couchbase Inc.
 
 Licensed under the Apache License, Version 2.0.
 See [the Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).

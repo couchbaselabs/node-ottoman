@@ -122,6 +122,13 @@ start({ useCollections }).then(() => {
 Below are some quick notes on the types of indexes available, and their pros and cons. For a more in-depth discussion, consider
 reading [Couchbasics: How Functional and Performance Needs Determine Data Access in Couchbase](https://blog.couchbase.com/determine-data-access-in-couchbase/)
 
+### `n1ql`
+
+These indexes uses the new SQL-like query language available from Couchbase Server 4.0.0. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
+
+N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html). If you need flexibility of queries and
+speed, this is the way to go.
+
 ### `refdoc`
 
 These indexes are the most performant, but the least flexible. They allow only a single document to occupy any particular value and do direct key-value lookups using a referential document to identify a matching document in Couchbase.
@@ -136,13 +143,6 @@ These indexes are the default and use map-reduce views. This type of index is al
 Because views use map-reduce, certain types of queries can be faster as the query can be parallelized over all nodes in the cluster, with each node
 returning only partial results. One of the cons of views is that they are eventually consistent by default, and incur a performance
 penalty if you want consistency in the result.
-
-### `n1ql`
-
-These indexes uses the new SQL-like query language available from Couchbase Server 4.0.0. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
-
-N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html). If you need flexibility of queries and
-speed, this is the way to go.
 
 ## Instance methods
 
