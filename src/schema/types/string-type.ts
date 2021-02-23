@@ -19,7 +19,16 @@ export interface StringTypeOptions {
 }
 
 /**
- * `String` are plain javascript string
+ * `String` are plain javascript string and accepts the following options
+ *
+ * ## Options
+ *
+ * - **required** flag to define if the field is mandatory
+ * - **validator** that will be applied to the field, allowed function, object or string with the name of the custom validator
+ * - **default** that will define the initial value of the field, allowed and value or function to generate it
+ *  - **immutable** that will define this field as immutable. Ottoman prevents you from changing immutable fields if the schema as configure like strict
+ * - **enum** defines a list of allowed values
+ * - **auto** that will generate the initial value of the field. It allows the value 'uuid' or a function. It cannot be used combined with default
  *
  * @example
  * ```typescript

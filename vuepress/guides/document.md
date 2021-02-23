@@ -4,7 +4,7 @@ Ottoman documents represent a one-to-one mapping to documents as stored in Couch
 
 ## Documents vs Models
 
-Document and [Model](/guides/model) are distinct classes in Ottoman. The Model class is a subclass of the Document class. 
+[Document](/classes/document.html) and [Model](/classes/model.html) are distinct classes in Ottoman. The Model class is a subclass of the Document class. 
 When you use the Model constructor, you create a new document.
 
 ```javascript

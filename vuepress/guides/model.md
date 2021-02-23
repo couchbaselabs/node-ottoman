@@ -63,6 +63,7 @@ interface ModelOptions {
   keyGenerator?: (params: { metadata: ModelMetadata }) => string;
 }
 ```
+
 - `collectionName`: define the collection name to be use in the Couchbase Server. The default value will be the Model's name.
 - `scopeName`: define the scope where the collection will be placed. The default value is `_default`
 - `idKey`: it's the value of the key to save your id. The default value is set to 'id'.
@@ -114,6 +115,7 @@ Every model has an associated connection. When you use [model()](/classes/ottoma
 your model will use the default Ottoman connection.
 
 ### Create Many
+
 Also you can use `createMany` static function to create multiples documents at once.
 See the [API](/classes/model.html#static-createmany) docs for more detail.
 
@@ -166,6 +168,15 @@ export interface IFindOptions {
 }
 ```
 
+### Advanced use of select parameter.
+You can select nested objects using the structure defined in the N1QL Language documentation [Link]([https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/constructionops.html)
+
+```typescript
+User.find({name: 'john'}, {select: '{"latLon": {geo.lat, geo.lon}, geo.lat} as geo  }'})
+
+```
+
+
 ### Advanced use of filter parameter.
 
 ```javascript
@@ -194,10 +205,10 @@ User.removeById('userId');
 Models have static removeMany() function to remove all documents matching the given condition.
 See the [API](/classes/model.html#static-removemany) docs for more detail.
 
-
 ```javascript
 User.removeMany({ name: { $like: '%JohnDoe%' } });
 ```
+
 ::: tip
 The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
 :::
@@ -212,13 +223,16 @@ User.updateById('userId', { age: 30 });
 // update document with id equal to 'userId' with age 30.
 ```
 
-Models have static `replaceById` Same as **updateById**,except replace the existing document with the given document.
+Models have static method `replaceById` which has the same behavior as **updateById**, except that the replaceById replaces the existing document with the given document.
 See the [API](/classes/model.html#static-replacebyid) docs for more detail.
 
 ```javascript
 User.replaceById('userId', { age: 30, name: 'John' });
-// replace document with id equal to 'userId' with age 30 and name John.
 ```
+
+::: warning
+The replaceById method completely replaces the existing document as long as the new document complies with the schema rules.
+:::
 
 Models have static `updateMany` function to update all documents matching the given condition.
 See the [API](/classes/model.html#static-updatemany) docs for more detail.
@@ -226,6 +240,7 @@ See the [API](/classes/model.html#static-updatemany) docs for more detail.
 ```javascript
 User.updateMany({ name: { $like: '%JohnDoe%' } }, { name: 'John' });
 ```
+
 ::: tip
 The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
 :::
@@ -244,6 +259,7 @@ If options.new is **true** return the document after update otherwise by default
 
 If options.upsert is **true** insert a document if the document does not exist.
 :::
+
 ## Handling multilpes Models
 
 When you create a new `Model` Ottoman will register it by name.
@@ -253,8 +269,8 @@ const User = model('User', userSchema);
 
 // Ottoman under the hood will register in a dictionary object with a key set to model name.
 const models = {
-    "User": UserModel
-}
+  User: UserModel,
+};
 ```
 
 ::: warning
@@ -266,23 +282,25 @@ Duplicate Model's name will throw an exception notifying about the register mode
 You can retrieve a registered Model using the `getModel` function.
 
 ```javascript
-import {getModel, model} from "ottoman";
+import { getModel, model } from 'ottoman';
 
-const User = model('User', {name: string});
+const User = model('User', { name: string });
 
 //anywhere else in the app.
 const User = getModel('User');
 ```
+
 If the name provided doesn't match any registered model `undefined` value will be returned.
 
 :::tip
 Maybe you want to get an existing model and if it's don't exist then attempt to create, the next example could be helpful.
 
 ```javascript
-import {getModel, model} from "ottoman";
+import { getModel, model } from 'ottoman';
 
 const User = getModel('User') || model('User', userSchema);
 ```
+
 :::
 
 ## Next Up

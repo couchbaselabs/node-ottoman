@@ -45,7 +45,7 @@ describe('Test Document Remove Many', () => {
       await Cat.create({ name: 'Cat3', age: 30 });
     };
     await batchCreate();
-    await delay(500);
+    await delay(1000);
     const response: IManyQueryResponse = await Cat.removeMany({ name: { $like: '%Cat%' } });
     expect(response.message.success).toBe(4);
     expect(response.message.match_number).toBe(4);
