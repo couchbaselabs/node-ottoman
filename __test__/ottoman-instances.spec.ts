@@ -1,4 +1,4 @@
-import { Ottoman } from '../src';
+import { getModelMetadata, Ottoman } from '../src';
 import { connectionString, username, connectUri, bucketName, password } from './testData';
 import { isModel } from '../src/utils/is-model';
 import { OttomanError } from '../src/exceptions/ottoman-errors';
@@ -65,5 +65,23 @@ describe('Test ottoman instances', () => {
       expect(e).toBeInstanceOf(OttomanError);
       expect(message).toBe(`A model with name 'User' has already been registered.`);
     }
+  });
+
+  test('Change idKey at global level', () => {
+    const idKey = '_id';
+    const instance = new Ottoman({ idKey });
+    instance.connect({
+      bucketName,
+      password,
+      connectionString,
+      username,
+    });
+    expect(instance.bucket).toBeDefined();
+    instance.model('Dog', { name: String });
+    const ModelDog = instance.getModel('Dog');
+    const metadata = getModelMetadata(ModelDog);
+    expect(metadata.ID_KEY).toBe(idKey);
+    instance.close();
+    expect(isModel(ModelDog)).toBe(true);
   });
 });

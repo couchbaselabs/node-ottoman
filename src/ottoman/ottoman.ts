@@ -35,6 +35,7 @@ export interface ConnectOptions {
 interface OttomanConfig {
   collectionName?: string;
   scopeName?: string;
+  idKey?: string;
   modelKey?: string;
   populateMaxDeep?: number;
   searchConsistency?: SearchConsistency;
@@ -204,7 +205,7 @@ export class Ottoman {
     modelOptions.scopeName = options.scopeName || this.config.scopeName || DEFAULT_SCOPE;
     modelOptions.keyGenerator = options.keyGenerator || this.config.keyGenerator || KEY_GENERATOR;
     modelOptions.modelKey = options.modelKey || this.config.modelKey || MODEL_KEY;
-    modelOptions.idKey = options.idKey || DEFAULT_ID_KEY;
+    modelOptions.idKey = options.idKey || this.config.idKey || DEFAULT_ID_KEY;
     modelOptions.maxExpiry = options.maxExpiry || this.config.maxExpiry || DEFAULT_MAX_EXPIRY;
 
     const ModelFactory = createModel({ name, schemaDraft: schema, options: modelOptions, ottoman: this });
