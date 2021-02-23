@@ -326,4 +326,17 @@ describe('Test Query Builder SELECT clause', () => {
       'SELECT beer.name FROM `beer-sample` brewery JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_")) ',
     );
   });
+
+  test('Test Nested Select clause', () => {
+    const query = new Query({}, 'travel-sample a');
+    const result = query
+      .select([{ $field: { name: '{"latLon": {geo.lat, geo.lon} }', as: 'geo' } }])
+      .where({
+        'a.type': 'hotel',
+      })
+      .build();
+    expect(result).toStrictEqual(
+      'SELECT {"latLon": {geo.lat, geo.lon} } AS geo FROM `travel-sample` a WHERE a.type="hotel"',
+    );
+  });
 });

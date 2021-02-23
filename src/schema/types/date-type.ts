@@ -17,6 +17,16 @@ interface DateTypeOptions {
 
 /**
  * `Date` are plain javascript date
+ *
+ * ## Options
+ *
+ * - **required** flag to define if the field is mandatory
+ * - **validator** that will be applied to the field a validation function, validation object or string with the name of the custom validator
+ * - **default** that will define the initial value of the field, this option allows a value or a function
+ * - **immutable** that will define this field as immutable. Ottoman prevents you from changing immutable fields if the schema as configure like strict
+ * - **min** minimum date value that will be accepted
+ * - **max** maximum date value that will be accepted
+ *
  * @example
  * ```typescript
  * const userSchema =  new Schema({

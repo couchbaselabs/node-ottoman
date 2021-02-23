@@ -9,6 +9,13 @@ import { cast, CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strateg
 /**
  * `EmbedType` will allow you to declare a path as another schema, set type to the sub-schema's instance.
  *
+ * ## Options
+ *
+ * - **required** flag to define if the field is mandatory
+ * - **validator** that will be applied to the field a validation function, validation object or string with the name of the custom validator
+ * - **default** that will define the initial value of the field, this option allows a value or a function
+ * - **immutable** that will define this field as immutable. Ottoman prevents you from changing immutable fields if the schema as configure like strict
+ *
  * @example
  * ```javascript
  * const userSchema = new Schema({
