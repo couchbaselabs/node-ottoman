@@ -30,16 +30,18 @@ The available configurations are:
 interface OttomanConfig {
   collectionName?: string;
   scopeName?: string;
+  idKey?: string;
   modelKey?: string;
   populateMaxDeep?: number;
   searchConsistency?: SearchConsistency;
   maxExpiry?: number;
-  keyGenerator?: (params: { metadata: ModelMetadata}) => string;
+  keyGenerator?: (params: { metadata: ModelMetadata }) => string;
 }
 ```
 
 - `collectionName`: store value to use for each Model if it doesn't provide any. The default value will be the Model's name.
 - `scopeName`: store value to use for each Model if it doesn't provide any. The default value is `_default`
+- `idKey`: it's the value of the key to save your id. The default value is set to `id`
 - `modelKey`: define the key to store the model name into the document. The default value is `_type`
 - `populateMaxDeep`: set default value for population. Default value is `1`.
 - `searchConsistency`: define default Search Consistency Strategy. The default value is `SearchConsistency.NONE`
@@ -103,6 +105,11 @@ interface ConnectOptions {
   logFunc?: unknown;
 }
 ```
+
+`transcoder`: Transcoder provides an interface for performing custom transcoding of document contents being retrieved and stored to the cluster.
+More details [here](https://docs.couchbase.com/nodejs-sdk/current/howtos/transcoders-nonjson.html).
+`logFunc`: it's a callback function that receive the 
+[entry](https://docs.couchbase.com/sdk-api/couchbase-node-client/global.html#LoggingEntry) variable as paramater.
 
 ## Using the default ottoman instance functions
 
