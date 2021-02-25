@@ -12,10 +12,120 @@ type FunctionsString = () => string[];
  *
  * @field `enum` defines a list of allowed values.
  * @field `auto` that will generate the initial value of the field. It allows the value 'uuid' or a function. It cannot be used combined with default.
+ * @field `lowercase` that will generate the lowercase value of the field. It cannot be used combined with uppercase.
+ * @field `uppercase` that will generate the uppercase value of the field. It cannot be used combined with lowercase.
+ * @field `trim` that will removes leading and trailing whitespace from the value.
+ * @field `minLength` numeric value that will add a validator that ensures the given string's length is at least the given number
+ * @field `maxLength` numeric value that will add a validator that ensures the given string's length is at most the given number
+ *
+ * ::: tip Note
+ * Next examples would throw the following error:
+ *
+ *  _**BuildSchemaError**: '**lowercase**' and '**uppercase**' options cannot be used at the same time within
+ *   property '**name**' definition._
+ *
+ * ```typescript
+ * //...
+ * const schema = new Schema({ name: {
+ *    type: String,
+ *    uppercase: true,
+ *    lowercase: true
+ * } })
+ *
+ * //...
+ * const stringType = new StringType('name', { uppercase: true, lowercase: true });
+ *
+ * ```
+ * :::
  * */
-export interface StringTypeOptions {
+export interface StringTypeOptions extends CoreTypeOptions {
   enum?: string[] | FunctionsString;
   auto?: string;
+  /**
+   * @example
+   * ```typescript
+   * // using `lowercase` with StringType.cast
+   * //...
+   * const element = new StringType('name', { lowercase: true });
+   * const result = element.cast('LOWER');
+   * console.log(result); // lower
+   * //...
+   *
+   * // using `lowercase` with Schema
+   * //...
+   * const schema = new Schema({ email: { type: String, lowercase: true } });
+   * const User = model('User', schema);
+   * const user = await User.create({ email: 'Dummy.ExamPle@Email.CoM' });
+   * console.log(user.email); // dummy.example@email.com
+   * //...
+   * ```
+   */
+  lowercase?: boolean;
+  /**
+   * @example
+   * ```typescript
+   * // using `uppercase` with StringType.cast
+   * //...
+   * const element = new StringType('code', { uppercase: true });
+   * const result = element.cast('upper');
+   * console.log(result); // UPPER
+   * //...
+   *
+   * // using `uppercase` with Schema
+   * //...
+   * const schema = new Schema({ code: { type: String, uppercase: true } });
+   * const Card = model('Card', schema);
+   * const card = await Card.create({ code: 'upper' });
+   * console.log(card.code); // UPPER
+   * //...
+   * ```
+   */
+  uppercase?: boolean;
+  /**
+   * @example
+   * ```typescript
+   * // using `trim` with StringType.cast
+   * //...
+   * const element = new StringType('value', { trim: true });
+   * const result = element.cast(' some text ');
+   * console.log(result); // some text (without leading and trailing whitespace )
+   * //...
+   *
+   * // using `trim` with Schema
+   * //...
+   * const schema = new Schema({ name: { type: String, trim: true } });
+   * const User = model('User', schema);
+   * const user = await User.create({ name: ' John Poe ' });
+   * console.log(user.email); // John Poe (without leading and trailing whitespace )
+   *
+   * //...
+   * ```
+   */
+  trim?: boolean;
+  /**
+   * @example
+   * ```typescript
+   * //...
+   * const element = new StringType('value', { minLength: 5 });
+   * element.validate('four');
+   *
+   * // ValidationError: Property 'value' is shorter than the minimum allowed length '5'
+   * //...
+   * ```
+   */
+  minLength?: number;
+  /**
+   * @example
+   * ```typescript
+   * //...
+   * const element = new StringType('value', { maxLength: 5 });
+   * element.validate('eleven');
+   *
+   * // ValidationError: Property 'value' is longer than the maximum allowed length '5'
+   * //...
+   * ```
+   */
+  maxLength?: number;
 }
 
 /**
@@ -33,14 +143,15 @@ export interface StringTypeOptions {
  * @example
  * ```typescript
  * const userSchema =  new Schema({
- *   name: { type:String, auto: 'uuid' },
+ *   name: { type: String, auto: 'uuid', trim: true },
  *   gender: { type: String, enum: ['M', 'F'] }
- *   lastname: Schema.Types.String
+ *   lastname: Schema.Types.String,
+ *   user: { type: String, lowercase: true, minLength: 4, maxLength: 7 }
  * })
  * ```
  */
 export class StringType extends CoreType {
-  constructor(name: string, options?: CoreTypeOptions & StringTypeOptions) {
+  constructor(name: string, public options = {} as StringTypeOptions) {
     super(name, StringType.sName, options);
     this._checkIntegrity();
   }
@@ -48,12 +159,29 @@ export class StringType extends CoreType {
   static sName = String.name;
 
   get enumValues(): unknown {
-    const _options = this.options as StringTypeOptions;
-    return _options.enum;
+    return this.options.enum;
   }
 
   get auto(): string | AutoFunction | undefined {
-    return (this.options as StringType)?.auto;
+    return this.options.auto;
+  }
+
+  private get lowercase(): boolean {
+    return !!this.options.lowercase;
+  }
+
+  private get uppercase(): boolean {
+    return !!this.options.uppercase;
+  }
+
+  private get trim(): boolean {
+    return !!this.options.trim;
+  }
+  private get minLength(): number | undefined {
+    return this.options.minLength;
+  }
+  private get maxLength(): number | undefined {
+    return this.options.maxLength;
   }
 
   buildDefault(): string | undefined {
@@ -65,12 +193,20 @@ export class StringType extends CoreType {
   }
 
   cast(value: unknown, strategy = CAST_STRATEGY.DEFAULT_OR_DROP) {
-    const castedValue = String(value);
+    let castedValue = String(value);
     if (is(castedValue, String) && !is(value, Object)) {
+      if (this.lowercase) {
+        castedValue = castedValue.toLowerCase();
+      }
+      if (this.uppercase) {
+        castedValue = castedValue.toUpperCase();
+      }
+      if (this.trim) {
+        castedValue = castedValue.trim();
+      }
       return castedValue;
-    } else {
-      return checkCastStrategy(value, strategy, this);
     }
+    return checkCastStrategy(value, strategy, this);
   }
 
   validate(value: unknown, strategy) {
@@ -79,26 +215,41 @@ export class StringType extends CoreType {
     if (_wrongType) {
       throw new ValidationError(`Property '${this.name}' must be of type '${this.typeName}'`);
     }
-    if (value === null || value === undefined) {
+    if (value == null) {
       return value;
     }
-    let errors: string[] = [];
+    const errors: string[] = [];
     const _value = String(value);
-    errors.push(this._checkEnum(_value) || '');
+    this._checkEnum(_value, errors);
+    this._checkMinLength(_value, errors);
+    this._checkMaxLength(_value, errors);
     this.checkValidator(_value);
-    errors = errors.filter((e) => e !== '');
-    if (errors.length > 0) {
+    if (errors.length) {
       throw new ValidationError(errors.join('\n'));
     }
     return _value;
   }
 
-  private _checkEnum(value: string): string | void {
+  private _checkEnum(value: string, errors: string[]): void {
     if (typeof this.enumValues !== 'undefined') {
       const _enumValues = typeof this.enumValues === 'function' ? this.enumValues() : this.enumValues;
       if (!_enumValues.includes(value)) {
-        return `Property ${this.name} value must be ${_enumValues.join(',')}`;
+        errors.push(`Property ${this.name} value must be ${_enumValues.join(',')}`);
       }
+    }
+  }
+
+  private _checkMinLength(value: string, errors: string[]): void {
+    const length = this.minLength as any;
+    if (is(length, Number) && value.length < length) {
+      errors.push(`Property '${this.name}' is shorter than the minimum allowed length '${length}'`);
+    }
+  }
+
+  private _checkMaxLength(value: string, errors: string[]): void {
+    const length = this.maxLength as any;
+    if (is(length, Number) && value.length > length) {
+      errors.push(`Property '${this.name}' is longer than the maximum allowed length '${length}'`);
     }
   }
 
@@ -113,6 +264,11 @@ export class StringType extends CoreType {
         throw new BuildSchemaError('Automatic uuid properties must be string typed.');
       }
     }
+    if (this.lowercase && this.uppercase) {
+      throw new BuildSchemaError(
+        `'lowercase' and 'uppercase' options cannot be used at the same time within property '${this.name}' definition.`,
+      );
+    }
   }
 
   isEmpty(value: string): boolean {
@@ -120,5 +276,4 @@ export class StringType extends CoreType {
   }
 }
 
-export const stringTypeFactory = (key: string, opts: StringTypeOptions & CoreTypeOptions): StringType =>
-  new StringType(key, opts);
+export const stringTypeFactory = (key: string, opts: StringTypeOptions): StringType => new StringType(key, opts);

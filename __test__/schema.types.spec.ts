@@ -1,6 +1,7 @@
-import { applyDefaultValue, validate, ValidationError, BuildSchemaError, Schema, IOttomanType } from '../src';
+import { applyDefaultValue, BuildSchemaError, IOttomanType, model, Schema, validate, ValidationError } from '../src';
 import { isOttomanType } from '../src/schema/helpers';
-import { DateType, EmbedType, NumberType, StringType, ArrayType } from '../src/schema/types';
+import { ArrayType, DateType, EmbedType, NumberType, StringType } from '../src/schema/types';
+import { delay } from './testData';
 
 const validData = {
   firstName: 'John',
@@ -229,5 +230,66 @@ describe('Schema Types', () => {
     expect(() => element.validate('name', true)).toThrow(
       new ValidationError(`Property 'name' must be of type 'Embed'`),
     );
+  });
+});
+
+describe('SchemaTypes -> String', () => {
+  const element = new StringType('name');
+  test('Option -> Min/Max length should throw ValidationError', async () => {
+    element.options = { minLength: 2 };
+    expect(() => element.validate('a', true)).toThrow(
+      new ValidationError(`Property 'name' is shorter than the minimum allowed length '2'`),
+    );
+    element.options = { maxLength: 2 };
+    expect(() => element.validate('aaa', true)).toThrow(
+      new ValidationError(`Property 'name' is longer than the maximum allowed length '2'`),
+    );
+    element.options = { maxLength: 1, minLength: 3 };
+    expect(() => element.validate('', true)).toThrow(
+      new ValidationError(`Property 'name' is shorter than the minimum allowed length '3'`),
+    );
+    element.options = { maxLength: 1, minLength: 3 };
+    expect(() => element.validate(11, true)).toThrow(
+      new ValidationError(
+        `Property 'name' is shorter than the minimum allowed length '3'\nProperty 'name' is longer than the maximum allowed length '1'`,
+      ),
+    );
+  });
+  test('Option -> Uppercase/Lowercase', async () => {
+    element.options = { uppercase: true };
+    expect(element.cast('upper')).toBe('UPPER');
+
+    element.options = { lowercase: true };
+    expect(element.cast('LOWER')).toBe('lower');
+
+    const schema = new Schema({
+      email: { type: String, lowercase: true },
+      code: { type: String, uppercase: true },
+    });
+    const User = model('User', schema);
+    const user = await User.create({
+      email: 'Dummy.ExamPle@Email.CoM',
+      code: 'asd',
+    });
+    await delay(500);
+    await User.removeById(user.id);
+    expect(user.email).toBe('dummy.example@email.com');
+    expect(user.code).toBe('ASD');
+
+    expect(() => new Schema({ value: { type: String, uppercase: true, lowercase: true } })).toThrow(
+      new BuildSchemaError(
+        `'lowercase' and 'uppercase' options cannot be used at the same time within property 'value' definition.`,
+      ),
+    );
+
+    expect(() => new StringType('value', { uppercase: true, lowercase: true })).toThrow(
+      new BuildSchemaError(
+        `'lowercase' and 'uppercase' options cannot be used at the same time within property 'value' definition.`,
+      ),
+    );
+  });
+  test('Option -> Trim', async () => {
+    element.options = { trim: true };
+    expect(element.cast(' trim trim ')).toBe('trim trim');
   });
 });
