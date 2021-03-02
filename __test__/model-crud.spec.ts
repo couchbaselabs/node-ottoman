@@ -43,6 +43,7 @@ describe('Test Document Access Functions', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const result = await UserModel.create(accessDoc);
+    await delay(500);
     expect(result.id).toBeDefined();
   });
 
@@ -50,6 +51,7 @@ describe('Test Document Access Functions', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const result = await UserModel.create(accessDoc);
+    await delay(500);
     const user = await UserModel.findById(result.id);
     expect(user.name).toBeDefined();
   });
