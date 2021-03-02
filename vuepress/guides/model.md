@@ -303,6 +303,29 @@ const User = getModel('User') || model('User', userSchema);
 
 :::
 
+### Drop Collection
+
+Ottoman's `Models` provide a `dropCollection` static method to remove a collection.
+
+```typescript
+...
+const User = model('User', schema, {scopeName: 'scopeA'});
+
+// dropCollection without parameter will drop it's own collection. 
+// This case User Collection in the scopeA will be removed
+User.dropCollection()
+
+// dropCollection with collectionName parameter will drop the collection in the same scope. 
+// This case Cat Collection in the scopeA will be removed
+User.dropCollection('Cat')
+
+// dropCollection can even drop a collection from another scope, if it's provide explicitly. 
+// This case Cat Collection in the scopeB will be removed
+User.dropCollection('Cat', 'scopeB')
+```
+
+To check the dropCollection API click [here](/classes/model.html#static-dropcollection)
+
 ## Next Up
 
 Now that we've covered `Models`, let's take a look at [Documents](/guides/document).

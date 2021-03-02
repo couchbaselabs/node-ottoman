@@ -24,6 +24,7 @@ export {
   BuildSchemaError,
 } from './schema';
 export { FindByIdOptions, FindOptions, IManyQueryResponse, IStatusExecution } from './handler';
+export { registerGlobalPlugin } from './plugins/global-plugin-handler';
 export * from './utils';
 export {
   ReturnResultDict,

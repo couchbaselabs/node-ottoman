@@ -137,6 +137,22 @@ export const _buildModel = (metadata: ModelMetadata) => {
 
     static collection = collection;
 
+    /**
+     * dropCollection drops a collection from a scope in a bucket.
+     * @param collectionName
+     * @param scopeName
+     * @param options
+     */
+    static dropCollection(
+      collectionName?: string,
+      scopeName?: string,
+      options: { timeout?: number } = {},
+    ): Promise<boolean | undefined> {
+      const _collectionName = collectionName || metadata.collectionName;
+      const _scopeName = scopeName || metadata.scopeName;
+      return ottoman.dropCollection(_scopeName, _collectionName, options);
+    }
+
     static count = async (filter: LogicalWhereExpr = {}, options: CountOptions = {}) => {
       const response = await find(metadata)(filter, {
         ...options,

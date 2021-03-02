@@ -1,4 +1,5 @@
-import { __plugins, getGlobalPlugins, registerGlobalPlugin } from '../src/plugins/global-plugin-handler';
+import { registerGlobalPlugin } from '../src';
+import { __plugins, getGlobalPlugins } from '../src/plugins/global-plugin-handler';
 import { GlobalPluginHandlerError } from '../src/plugins/global-plugin-handler-error';
 
 describe('Global Plugin', () => {
