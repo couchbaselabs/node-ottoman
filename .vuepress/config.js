@@ -19,7 +19,8 @@ module.exports = {
       {
         text: 'Advanced',
         items: [
-          { text: 'How Ottoman works', link: '/advanced/how-ottoman-works.md' },
+          { text: 'How Ottoman work', link: '/advanced/how-ottoman-work.md' },
+          { text: 'Ottoman', link: '/advanced/ottoman.md' },
         ]
       },
       { text: 'Example', link: '/guides/first-app.md' },

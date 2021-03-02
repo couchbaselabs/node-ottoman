@@ -269,4 +269,19 @@ export abstract class Model<T = any> extends Document<T> {
   ): Promise<any> {
     return Promise.resolve({});
   }
+
+  /**
+   * dropCollection drops a collection from a scope in a bucket.
+   * @param collectionName
+   * @param scopeName
+   * @param options
+   */
+  static dropCollection(
+    collectionName?: string,
+    scopeName?: string,
+    // eslint-disable-next-line no-unused-vars
+    options: { timeout?: number } = {},
+  ): Promise<boolean | undefined> {
+    return Promise.resolve(true);
+  }
 }
