@@ -86,7 +86,7 @@ describe('Test Model-Schema Integration and Validations', () => {
     const User = model('User', schema);
     const user = new User({ created: dateString });
     expect(user.created).toBeDefined();
-    expect(user.created.toISOString()).toBe(dateString);
-    expect(user.created instanceof Date).toBe(true);
+    expect((user.created as any).toISOString()).toBe(dateString);
+    expect((user.created as any) instanceof Date).toBe(true);
   });
 });

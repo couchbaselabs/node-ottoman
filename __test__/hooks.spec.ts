@@ -72,6 +72,7 @@ test('Hook update', async () => {
   expect(user.name).toBe(accessDoc2.name);
   await user.save();
   expect(user.name).toBe('async pre update');
+  await delay(500);
   const userUpdated = await UserModel.findById(user.id);
   expect(userUpdated.name).toBe('async pre update');
   expect(user.document).toBeDefined();
