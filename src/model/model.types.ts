@@ -1,7 +1,8 @@
 import { Model } from './model';
-import { CAST_STRATEGY } from '../utils/cast-strategy';
+import { CastOptions } from '../utils/cast-strategy';
 
-export interface ModelTypes extends Function {
-  [key: string]: any;
-  new <T>(data: T, options?: { strategy?: CAST_STRATEGY; strict?: boolean }): Model<T> & T;
-}
+type WhateverTypes = { [key: string]: any };
+type DocumentModelType = { [K in keyof typeof Model]: typeof Model[K] };
+type ModelInstanceType = { new <T>(data: T, options?: CastOptions): Model<T> & T };
+
+export type ModelTypes = WhateverTypes & DocumentModelType & ModelInstanceType;

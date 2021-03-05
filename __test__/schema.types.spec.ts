@@ -2,6 +2,7 @@ import { applyDefaultValue, BuildSchemaError, IOttomanType, model, Schema, valid
 import { isOttomanType } from '../src/schema/helpers';
 import { ArrayType, DateType, EmbedType, NumberType, StringType } from '../src/schema/types';
 import { delay } from './testData';
+import { StringTypeOptions } from '../src/schema/types/string-type';
 
 const validData = {
   firstName: 'John',
@@ -255,6 +256,29 @@ describe('SchemaTypes -> String', () => {
       ),
     );
   });
+
+  test('Option -> Min/Max length should throw ValidationError maxlengh', async () => {
+    const schema = new Schema(
+      {
+        email: { type: String, lowercase: true, maxLength: 4 },
+        code: { type: String, uppercase: true },
+      },
+      { strict: false },
+    );
+    const User = model('User', schema);
+
+    try {
+      await User.create({
+        email: 'Dummy.ExamPle@Email.CoM',
+        code: 'asd',
+      });
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(ValidationError);
+      expect(message).toBe(`Property 'email' is longer than the maximum allowed length '4'`);
+    }
+  });
+
   test('Option -> Uppercase/Lowercase', async () => {
     element.options = { uppercase: true };
     expect(element.cast('upper')).toBe('UPPER');

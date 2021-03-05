@@ -110,6 +110,18 @@ export interface StringTypeOptions extends CoreTypeOptions {
    * element.validate('four');
    *
    * // ValidationError: Property 'value' is shorter than the minimum allowed length '5'
+   *
+   *
+   * //This is another example with schema
+   * const UserSchema = new Schema({
+   *   name: { type: String, minLength: 4 },
+   * });
+   * const User = model('User', UserSchema);
+   * const user = await User.create({
+   *   name: 'Doe'
+   * });
+   *
+   * // ValidationError: Property 'name' is shorter than the minimum allowed length '4'
    * //...
    * ```
    */
@@ -122,6 +134,19 @@ export interface StringTypeOptions extends CoreTypeOptions {
    * element.validate('eleven');
    *
    * // ValidationError: Property 'value' is longer than the maximum allowed length '5'
+   *
+   *
+   * //This is another example with schema
+   * const UserSchema = new Schema({
+   *   name: { type: String, maxLength: 4 },
+   * });
+   * const User = model('User', UserSchema);
+   * const user = await User.create({
+   *   name: 'John Doe'
+   * });
+   *
+   * // ValidationError: Property 'name' is longer than the maximum allowed length '4'
+   *
    * //...
    * ```
    */

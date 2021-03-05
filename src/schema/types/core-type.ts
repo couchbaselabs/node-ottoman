@@ -17,7 +17,7 @@ import { VALIDATION_STRATEGY } from '../../utils';
  *  @param options.required flag to define if the field is mandatory
  *  @param options.validator that will be applied to the field, allowed function, object or string with the name of the custom validator
  *  @param options.default that will define the initial value of the field, this option allows a value or a function
- *  @param options.inmutable that will define this field as immutable. Ottoman prevents you from changing immutable fields if the schema as configure like strict
+ *  @param options.immutable that will define this field as immutable. Ottoman prevents you from changing immutable fields if the schema as configure like strict
  */
 export abstract class CoreType extends IOttomanType {
   protected constructor(name: string, typeName: string, public options?: CoreTypeOptions) {
