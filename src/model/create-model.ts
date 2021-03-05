@@ -3,7 +3,7 @@ import { CountOptions, Model } from './model';
 import { nonenumerable } from '../utils/noenumarable';
 import { _keyGenerator, DEFAULT_MAX_EXPIRY } from '../utils/constants';
 import { extractSelect } from '../utils/query/extract-select';
-import { find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
+import { createMany, find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
 import { CreateModel } from './interfaces/create-model.interface';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { FindByIdOptions, IFindOptions } from '../handler/';
@@ -18,8 +18,7 @@ import { ModelTypes } from './model.types';
 import { SearchConsistency } from '..';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
-import { cast, CAST_STRATEGY } from '../utils/cast-strategy';
-import { createMany } from '../handler';
+import { cast, CAST_STRATEGY, CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
 import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 
 /**
@@ -94,13 +93,13 @@ export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel
 export const _buildModel = (metadata: ModelMetadata) => {
   const { schema, collection, ID_KEY, modelKey, scopeName, ottoman, modelName, keyGenerator } = metadata;
   return class _Model<T> extends Model<T> {
-    constructor(data, options: { strategy?: CAST_STRATEGY; strict?: boolean; skip?: string[] } = {}) {
+    constructor(data, options: CastOptions = {}) {
       super(data);
       const strategy = options.strategy || CAST_STRATEGY.DEFAULT_OR_DROP;
       const strict = options.strict !== undefined ? options.strict : schema.options.strict;
       const skip = options.skip || [modelKey, ID_KEY];
       const schemaData = cast(data, schema, { strategy, strict, skip });
-      this._applyData(schemaData, strategy);
+      this._applyData(schemaData, strategy === CAST_STRATEGY.THROW ? CAST_STRATEGY.THROW : true);
 
       // Adding methods to the model instance
       if (schema?.methods) {
@@ -166,7 +165,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       throw new OttomanError('The query did not return any results.');
     };
 
-    static findById = async (id: string, options: FindByIdOptions = {}) => {
+    static findById = async (id: string, options: FindByIdOptions = {}): Promise<Model> => {
       const findOptions = options;
       const populate = options.populate;
       delete options.populate;
@@ -209,25 +208,32 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return await createMany(metadata)(_docs);
     };
 
-    static updateById = async (id: string, data) => {
+    static updateById = async (
+      id: string,
+      data,
+      options: MutationFunctionOptions = { strict: CAST_STRATEGY.THROW },
+    ) => {
       const key = id || data[ID_KEY];
       const value = await _Model.findById(key);
       if (value[ID_KEY]) {
         const strategy = CAST_STRATEGY.THROW;
-        value._applyData({ ...value, ...data, ...{ [modelKey]: value[modelKey] } }, strategy);
+        value._applyData({ ...value, ...data, ...{ [modelKey]: value[modelKey] } }, options.strict);
         const instance = new _Model({ ...value }, { strategy });
         return instance.save();
       }
     };
 
-    static replaceById = async (id: string, data) => {
+    static replaceById = async (id: string, data, options?: MutationFunctionOptions) => {
       const key = id || data[ID_KEY];
       const value = await _Model.findById(key);
       if (value[ID_KEY]) {
-        value._applyData({
-          ...data,
-          ...{ [ID_KEY]: key, [modelKey]: modelName },
-        });
+        value._applyData(
+          {
+            ...data,
+            ...{ [ID_KEY]: key, [modelKey]: modelName },
+          },
+          options?.strict,
+        );
         const instance = new _Model({ ...value });
         return instance.save();
       }
@@ -253,11 +259,11 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static updateMany = async (
       filter: LogicalWhereExpr = {},
       doc: Record<string, unknown>,
-      options: UpdateManyOptions = {},
+      options: UpdateManyOptions = { strict: true },
     ) => {
       const response = await find(metadata)(filter, options);
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
-        return updateMany(metadata)(response.rows, doc);
+        return updateMany(metadata)(response.rows, doc, options?.strict ?? true);
       }
       if (options.upsert) {
         const ModelFactory = ottoman.getModel(modelName);
@@ -269,14 +275,16 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static findOneAndUpdate = async (
       filter: LogicalWhereExpr = {},
       doc: Record<string, unknown>,
-      options: FindOneAndUpdateOption = {},
+      options: FindOneAndUpdateOption = { strict: true },
     ) => {
       const before = await _Model.findOne(filter, options);
       if (before) {
+        if (!options.new) {
+          return before;
+        }
         const afterToUpdate = _Model.fromData({ ...before });
-        afterToUpdate._applyData({ ...doc });
-        const after = await afterToUpdate.save();
-        return options.new ? after : before;
+        afterToUpdate._applyData({ ...doc }, options.strict);
+        return await afterToUpdate.save();
       }
       if (options.upsert) {
         return await _Model.create(doc);

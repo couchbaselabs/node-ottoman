@@ -7,11 +7,11 @@ import { CoreType } from '../schema/types';
  *
  *  @desc
  *  When trying to cast a value to a given type if it fail Cast Strategy will behave this ways for:
- * 'keep' -> The original value will be returned
- * 'drop' -> Return undefined and the object field will be removed.
- * 'throw' -> Throw execption 'Value couldn't be casted to given type'
- * 'defaultOrDrop' -> Try to return default value if exists, if no default value was provided for the current field then it will be removed
- * 'defaultOrDrop' -> Try to return default value if exists, if no default value was provided for the current field then it will keep original value.
+ *  + 'keep' -> The original value will be returned
+ *  + 'drop' -> Return undefined and the object field will be removed.
+ *  + 'throw' -> Throw exception 'Value couldn't be casted to given type'
+ *  + 'defaultOrDrop' -> Try to return default value if exists, if no default value was provided for the current field then it will be removed
+ *  + 'defaultOrDrop' -> Try to return default value if exists, if no default value was provided for the current field then it will keep original value.
  */
 export enum CAST_STRATEGY {
   KEEP = 'keep',
@@ -34,6 +34,23 @@ export interface CastOptions {
   strict?: boolean;
   skip?: string[];
 }
+
+/**
+ *  @desc
+ *  Used when trying to apply a value to a given immutable property:
+ *  + **false** -> Allow apply the new value
+ *  + **true** -> Don't allow apply the new value
+ *  + **'throw'** -> Throw exception "ImmutableError: Field 'field_name' is immutable and current cast strategy is set to 'throw'"
+ */
+export type ApplyStrategy = boolean | CAST_STRATEGY.THROW;
+
+/**
+ *  @desc
+ *  Used by the mutations functions to apply the defined strategy
+ */
+export type MutationFunctionOptions = {
+  strict?: ApplyStrategy;
+};
 
 export const cast = (
   data,

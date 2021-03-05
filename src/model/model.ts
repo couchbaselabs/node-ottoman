@@ -3,7 +3,7 @@ import { FindByIdOptions, FindOptions, ManyQueryResponse } from '../handler';
 import { LogicalWhereExpr, SortType } from '../query';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
-import { CAST_STRATEGY } from '../utils/cast-strategy';
+import { CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
 
 export type CountOptions = {
   sort?: Record<string, SortType>;
@@ -31,7 +31,7 @@ export abstract class Model<T = any> extends Document<T> {
    * Implements schema validations, defaults, methods, static and hooks
    */
   // eslint-disable-next-line no-unused-vars
-  constructor(data: unknown, options: { strategy?: CAST_STRATEGY; strict?: boolean; skip?: string[] } = {}) {
+  constructor(data: unknown, options: CastOptions = {}) {
     super();
   }
 
@@ -141,12 +141,48 @@ export abstract class Model<T = any> extends Document<T> {
    * Allows to update a document
    *
    * @example
-   * ```javascript
+   * ```typescript
    * const user = await User.updateById('userId', {name: "John Doe"});
    * ```
+   *
+   * @example Using updateById on immutable properties
+   * ```typescript
+   * const cardData = {
+   *  cardNumber: '5678 5678 5678 5678',
+   *  zipCode: '56789',
+   * };
+   *
+   * const cardDataUpdate = {
+   *  cardNumber: '4321 4321 4321 4321',
+   *  zipCode: '43210',
+   * };
+   *
+   * const CardSchema = new Schema({
+   *  cardNumber: { type: String, immutable: true },
+   *  zipCode: String,
+   * });
+   * const Card = model('Card', CardSchema);
+   * const {id} = await Card.create(cardData);
+   *
+   * // with strategy:CAST_STRATEGY.THROW
+   * await Card.updateById(id, cardDataUpdate, { strict: CAST_STRATEGY.THROW });
+   * // ImmutableError: Field 'cardNumber' is immutable and current cast strategy is set to 'throw'
+   *
+   * // with strategy:true (default)
+   * await Card.updateById(id, cardDataUpdate, { strict: true });
+   * const result = await Card.findById(id);
+   * console.log(result); // {cardNumber:'5678 5678 5678 5678', zipCode:'43210'} only zipCode was changed
+   *
+   * // with strategy:false
+   * await Card.updateById(id, cardDataUpdate, { strict: false });
+   * const result = await Card.findById(id);
+   * console.log(result); // {cardNumber:'4321 4321 4321 4321', zipCode:'43210'} all properties were changed
+   * ```
+   *
+   * @throws **ImmutableError** if updateById is strict:CAST_STRATEGY.THROW and try to modify a immutable property.
    */
   // eslint-disable-next-line no-unused-vars
-  static async updateById(id: string, data: any): Promise<any> {
+  static async updateById(id: string, data: any, options: MutationFunctionOptions = { strict: true }): Promise<any> {
     return Promise.resolve({});
   }
 
@@ -158,10 +194,45 @@ export abstract class Model<T = any> extends Document<T> {
    * const user = await User.replaceById('userId', {name: "John Doe"});
    * ```
    *
-   * @throws DocumentNotFoundError if the document not exist.
+   * @example Using replaceById on immutable properties
+   * ```typescript
+   * const cardData = {
+   *  cardNumber: '5678 5678 5678 5678',
+   *  zipCode: '56789',
+   * };
+   *
+   * const cardDataUpdate = {
+   *  cardNumber: '4321 4321 4321 4321',
+   *  zipCode: '43210',
+   * };
+   *
+   * const CardSchema = new Schema({
+   *  cardNumber: { type: String, immutable: true },
+   *  zipCode: String,
+   * });
+   * const Card = model('Card', CardSchema);
+   * const {id} = await Card.create(cardData);
+   *
+   * // with strategy:CAST_STRATEGY.THROW
+   * await Card.replaceById(id, cardDataUpdate, { strict: CAST_STRATEGY.THROW });
+   * // ImmutableError: Field 'cardNumber' is immutable and current cast strategy is set to 'throw'
+   *
+   * // with strategy:true (default)
+   * await Card.replaceById(id, cardDataUpdate, { strict: true });
+   * const result = await Card.findById(id);
+   * console.log(result); // {cardNumber:'5678 5678 5678 5678', zipCode:'43210'} only zipCode was changed
+   *
+   * // with strategy:false
+   * await Card.replaceById(id, cardDataUpdate, { strict: false });
+   * const result = await Card.findById(id);
+   * console.log(result); // {cardNumber:'4321 4321 4321 4321', zipCode:'43210'} all properties were changed
+   * ```
+   *
+   * @throws **DocumentNotFoundError** if the document not exist.
+   * @throws **ImmutableError** if replaceById is strict:CAST_STRATEGY.THROW and try to modify a immutable property.
    */
   // eslint-disable-next-line no-unused-vars
-  static async replaceById(id: string, data: any): Promise<any> {
+  static async replaceById(id: string, data: any, options: MutationFunctionOptions = { strict: true }): Promise<any> {
     return Promise.resolve({});
   }
 
@@ -226,6 +297,103 @@ export abstract class Model<T = any> extends Document<T> {
    * const result = await User.updateMany({ name: { $like: '%John Doe%' } })
    * ```
    *
+   * @example Using immutable properties
+   * ```typescript
+   *
+   *  // Function helper for example
+   * async function updateManyHelper(result: any[], strict: ApplyStrategy = true) {
+   *  // First define the schema
+   *  const CardSchema = new Schema({
+   *    cardNumber: String,
+   *    zipCode: { type: String, immutable: true },
+   *  });
+   *
+   *  //The model is created
+   *  const Card = model('CardMany', CardSchema);
+   *
+   *  // Created elements are stored here
+   *  let card1;
+   *  let card2;
+   *
+   *  const batchCreate = async () => {
+   *    card1 = await Card.create({ cardNumber: '5678 5678 1111 1111', zipCode: '11111' });
+   *    card2 = await Card.create({ cardNumber: '5678 5678 2222 2222', zipCode: '22222' });
+   *  };
+   *
+   *  // Create elements
+   *  await batchCreate();
+   *
+   *  // Update by some criteria
+   *  const response: IManyQueryResponse = await Card.updateMany(
+   *       { cardNumber: { $like: '%5678 5678%' } },
+   *       { zipCode: '12345', cardNumber: '0000 0000 0000 0000' },
+   *       { strict },
+   *    );
+   *    const result1 = await Card.findById(card1.id);
+   *    const result2 = await Card.findById(card2.id);
+   *
+   *    // Reset data before end test round
+   *    const cleanUp = async () => await Card.removeMany({ _type: 'CardMany' });
+   *    await cleanUp();
+   *
+   *    // Return results and response
+   *    result.push(result1, result2, response);
+   *  }
+   *
+   *  // Here store data to check response on each round
+   * let result: any[] = [];
+   *
+   * async function testRounds(){
+   *
+   *  // Round 1: updateMany with strategy:false
+   *  await updateManyHelper(result, false);
+   *  const [result1, result2, response] = result;
+   *  console.log(result1);  // {"cardNumber":"0000 0000 0000 0000","zipCode":"12345"} both properties have been changed
+   *  console.log(result2);  // {"cardNumber":"0000 0000 0000 0000","zipCode":"12345"} both properties have been changed
+   *  console.log(response); // {"status":"SUCCESS","message":{"success":2,"match_number":2,"errors":[]}}
+   *  result = [];
+   *
+   *  // Round 2: updateMany with strategy:true
+   *  await updateManyHelper(result, true);
+   *  const [result1, result2, response] = result;
+   *  console.log(result1);  // {"cardNumber":"0000 0000 0000 0000","zipCode":"11111"} only cardNumber has changed
+   *  console.log(result2);  // {"cardNumber":"0000 0000 0000 0000","zipCode":"22222"} only cardNumber has changed
+   *  console.log(response); // {"status":"SUCCESS","message":{"success":2,"match_number":2,"errors":[]}}
+   *  result = [];
+   *
+   *  // Round 3: updateMany with strategy:CAST_STRATEGY.THROW
+   *  await updateManyHelper(result, CAST_STRATEGY.THROW);
+   *  const [result1, result2, response] = result;
+   *  console.log(result1);  // {"cardNumber":"5678 5678 1111 1111","zipCode":"11111"} only cardNumber has changed
+   *  console.log(result2);  // {"cardNumber":"5678 5678 2222 2222","zipCode":"22222"} only cardNumber has changed
+   *  console.log(response); // {"status":"SUCCESS","message":{"success":2,"match_number":2,"errors":[]}}
+   *  result = [];
+   *
+   *  // RESPONSE FAILURE
+   *  // {
+   *  //   "status": "FAILURE",
+   *  //   "message": {
+   *  //       "success": 0,
+   *  //       "match_number": 2,
+   *  //       "errors": [
+   *  //           {
+   *  //               "status": "FAILURE",
+   *  //               "exception": "ImmutableError",
+   *  //               "message": "Field 'zipCode' is immutable and current cast strategy is set to 'throw'"
+   *  //           },
+   *  //           {
+   *  //               "status": "FAILURE",
+   *  //               "exception": "ImmutableError",
+   *  //               "message": "Field 'zipCode' is immutable and current cast strategy is set to 'throw'"
+   *  //           }
+   *  //       ]
+   *  //   }
+   *  // }
+   *  }
+   * // Test rounds are run
+   * testRounds();
+   * ```
+   *
    * @param filter Filter Condition [Where Expression](/classes/query.html#where)
    * @param doc Values for the fields to update.
    * @param options [Update Many Options](/interfaces/updatemanyoptions.html)
@@ -236,7 +404,7 @@ export abstract class Model<T = any> extends Document<T> {
     filter: LogicalWhereExpr = {},
     doc: Record<string, unknown>,
     // eslint-disable-next-line no-unused-vars
-    options: UpdateManyOptions = {},
+    options: UpdateManyOptions = { strict: true },
   ): Promise<ManyQueryResponse> {
     return Promise.resolve(new ManyQueryResponse('SUCCESS', { success: 0, errors: [], match_number: 0 }));
   }
@@ -257,15 +425,59 @@ export abstract class Model<T = any> extends Document<T> {
    * Return a [Model](/classes/model.html) if at least one item matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/DocumentNotFoundError.html) will be thrown.
    * If options.new is **true** return the document after update otherwise by default return the document before update.
    * If options.upsert is **true** insert a document if the document does not exist.
+   * options.strict used for strategy to apply on immutables properties
    *
+   * @example Using findOneAndUpdate on immutable properties
+   * ```typescript
+   * const cardData = {
+   *  cardNumber: '5678 5678 5678 5678',
+   *  zipCode: '56789',
+   * };
    *
+   * const cardDataUpdate = {
+   *  cardNumber: '4321 4321 4321 4321',
+   *  zipCode: '43210',
+   * };
+   *
+   * const CardSchema = new Schema({
+   *  cardNumber: { type: String, immutable: true },
+   *  zipCode: String,
+   * });
+   * const Card = model('Card', CardSchema);
+   * const {id} = await Card.create(cardData);
+   *
+   * // with strategy:CAST_STRATEGY.THROW
+   * await Card.findOneAndUpdate({ cardNumber: { $like: '%5678 5678 5678 5678%' } }, cardDataUpdate, {
+   *   new: true,
+   *   strict: CAST_STRATEGY.THROW,
+   * });
+   * // ImmutableError: Field 'cardNumber' is immutable and current cast strategy is set to 'throw'
+   *
+   * // with strategy:true (default)
+   * await Card.findOneAndUpdate({ cardNumber: { $like: '%5678 5678 5678 5678%' } }, cardDataUpdate, {
+   *   new: true,
+   *   strict: true,
+   * });
+   * const result = await Card.findById(id);
+   * console.log(result); // {cardNumber:'5678 5678 5678 5678', zipCode:'43210'} only zipCode was changed
+   *
+   * // with strategy:false
+   * await Card.findOneAndUpdate({ cardNumber: { $like: '%5678 5678 5678 5678%' } }, cardDataUpdate, {
+   *   new: true,
+   *   strict: false,
+   * });
+   * const result = await Card.findById(id);
+   * console.log(result); // {cardNumber:'4321 4321 4321 4321', zipCode:'43210'} all properties were changed
+   * ```
+   *
+   * @throws **ImmutableError** if findOneAndUpdate is strict:CAST_STRATEGY.THROW and try to modify a immutable property.
    */
   static async findOneAndUpdate(
     // eslint-disable-next-line no-unused-vars
     filter: LogicalWhereExpr = {},
     doc: Record<string, unknown>,
     // eslint-disable-next-line no-unused-vars
-    options: FindOneAndUpdateOption = {},
+    options: FindOneAndUpdateOption = { strict: true },
   ): Promise<any> {
     return Promise.resolve({});
   }

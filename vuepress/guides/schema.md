@@ -103,18 +103,35 @@ which will be used with the most optimal configuration for them and will build t
 This method must be called after all models are defined, and it is a good idea to call this only when needed rather than any time your server is started.
 
 ```javascript
-// index.js
-import express from 'express';
-import { start } from 'ottoman';
-import { UserRoutes } from './users/users.controller';
-const app = express();
+const {connect, model, start, close} = require('ottoman');
+connect('couchbase://localhost/travel-sample@admin:password');
 
-app.use('/users', UserRoutes);
-const useCollections = false; // set this to true to create scopes/collections.
-start({ useCollections }).then(() => {
-  console.log('Ottoman is ready!');
-  app.listen(5000);
-});
+async function createUser() {
+    const User = model('User', { name: String } );
+    const user = new User( { name: 'Jane Doe' } );
+
+    try {
+        await start();
+        console.log("Ottoman is ready!")
+
+        const newUser = await user.save();
+
+        await close();
+        console.log(`User '${ newUser.name }' successfully created`);
+    }
+    catch (e) {
+        console.log(`ERROR: ${e.message}`);
+    }
+}
+
+createUser();
+```
+
+You should see results similar to the following:
+
+```
+Ottoman is ready!
+User 'Jane Doe' successfully created
 ```
 
 ## Index Types
@@ -135,6 +152,12 @@ These indexes are the most performant, but the least flexible. They allow only a
 
 In short, if you need to look up a document by a single value of a single attribute quickly (e.g. key lookups), this is the way to go. But you cannot combine multiple refdoc indexes to speed up finding
 something like "all customers with first name 'John' last name 'Smith'".
+
+::: warning
+**Refdoc Index** is not managed by couchbase but strictly by Ottoman and doesn't guarantee consistency if the keys that are a part of. These indexes are updated by an external operation for example N1QL. 
+
+**_Needs to be used with caution!!!_**
+:::
 
 ### `view`
 

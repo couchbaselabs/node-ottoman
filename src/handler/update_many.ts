@@ -2,6 +2,7 @@ import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
 import { batchProcessQueue } from './utils';
 import { ManyQueryResponse, StatusExecution } from './types';
 import { ModelTypes } from '../model/model.types';
+import { ApplyStrategy } from '../utils/cast-strategy';
 
 /**
  * Async Function
@@ -16,8 +17,12 @@ import { ModelTypes } from '../model/model.types';
 export const updateMany = (metadata: ModelMetadata) => async (
   documents: ModelTypes[],
   doc: Partial<ModelTypes>,
+  strict: ApplyStrategy,
 ): Promise<ManyQueryResponse> => {
-  return await batchProcessQueue(metadata)(documents, updateCallback, doc, 100);
+  async function cb(document: ModelTypes, metadata: ModelMetadata, extra: Record<string, unknown>) {
+    return updateCallback(document, metadata, extra, strict);
+  }
+  return await batchProcessQueue(metadata)(documents, cb, doc, 100);
 };
 
 /**
@@ -27,10 +32,11 @@ export const updateCallback = (
   document: ModelTypes,
   metadata: ModelMetadata,
   extra: Record<string, unknown>,
+  strict: ApplyStrategy = true,
 ): Promise<StatusExecution> => {
   const model = metadata.ottoman.getModel(metadata.modelName);
   return model
-    .updateById(document[metadata.ID_KEY], { ...document, ...extra })
+    .updateById(document[metadata.ID_KEY], { ...document, ...extra }, { strict })
     .then(() => {
       return Promise.resolve(new StatusExecution(document[metadata.ID_KEY], 'SUCCESS'));
     })

@@ -10,7 +10,7 @@ import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
 import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
 import { _keyGenerator } from '../utils/constants';
-import { CAST_STRATEGY } from '../utils/cast-strategy';
+import { ApplyStrategy, CAST_STRATEGY } from '../utils/cast-strategy';
 import { ImmutableError } from '../exceptions/ottoman-errors';
 
 /**
@@ -41,7 +41,7 @@ export abstract class Document<T> {
   protected constructor() {
     const { get, set, getStrategy, setStrategy, hasOwnProperty } = (function immutables() {
       const i = {};
-      let strategy: CAST_STRATEGY | undefined;
+      let strategy: ApplyStrategy | undefined;
       return {
         get(key: string) {
           return i[key];
@@ -55,7 +55,7 @@ export abstract class Document<T> {
         getStrategy() {
           return strategy;
         },
-        setStrategy(value?: CAST_STRATEGY) {
+        setStrategy(value?: ApplyStrategy) {
           strategy = value;
         },
       };
@@ -82,7 +82,7 @@ export abstract class Document<T> {
         },
       },
       setCurrentStrategy: {
-        value: function (value?: CAST_STRATEGY) {
+        value: function (value?: ApplyStrategy) {
           setStrategy(value);
         },
       },
@@ -344,14 +344,36 @@ export abstract class Document<T> {
    * Allows to easily apply data from an object to current document.
    *
    * @example
-   * ```javascript
+   * ```typescript
    * const user = new User({name: "John Doe"});
    *
    * user._applyData({name: "Jane Doe"});
    * console.log(user) // {name: "Jane Doe"}
    * ```
+   *
+   * @example With strategies on immutable properties
+   * ```typescript
+   * const User = model('Card', { name: { type: String, immutable: true } });
+   * const user = new User({ name: 'John Doe' });
+   *
+   *  // with strategy:false is like above example
+   *  user._applyData({ name: 'Jane Doe' }, false);
+   *  console.log(user); // {name: "Jane Doe"}
+   *
+   *  // with strategy:true remains immutable
+   *  user._applyData({ name: 'Jane Doe' }, true);
+   *  console.log(user); // {name: "John Doe"}
+   *
+   *  // trying to update it directly
+   *  user.name = 'Jane Doe';
+   *  console.log(user); // {name: "John Doe"}
+   *
+   *  // with strategy:CAST_STRATEGY.THROW
+   *  user._applyData({ name: 'Jane Doe' }, CAST_STRATEGY.THROW);
+   *  // ImmutableError: Field 'name' is immutable and current cast strategy is set to 'throw'
+   * ```
    */
-  _applyData(data, strategy?: CAST_STRATEGY) {
+  _applyData(data, strategy: ApplyStrategy = true) {
     this.setCurrentStrategy(strategy);
     const strict = this.$.schema.options.strict;
     for (const key in data) {
@@ -364,8 +386,12 @@ export abstract class Document<T> {
             return this.getImmutable(key);
           },
           set(value) {
-            if (this.getCurrentStrategy() === CAST_STRATEGY.THROW && this.getImmutable(key) !== value) {
+            const currentStrategy = this.getCurrentStrategy();
+            if (currentStrategy === CAST_STRATEGY.THROW && this.getImmutable(key) !== value) {
               throw new ImmutableError(`Field '${key}' is immutable and current cast strategy is set to 'throw'`);
+            }
+            if (typeof currentStrategy === 'boolean' && !currentStrategy) {
+              this.setImmutable(key, value);
             }
           },
         });

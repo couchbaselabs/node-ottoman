@@ -3,7 +3,7 @@ import { BuildSchemaError, ValidationError } from '../errors';
 import { Schema } from '../schema';
 import { CoreType } from '../types';
 import { CustomValidations, FactoryFunction, FieldMap, IOttomanType, SchemaDef } from '../interfaces/schema.types';
-import { cast, CAST_STRATEGY } from '../../utils/cast-strategy';
+import { cast, CAST_STRATEGY, CastOptions } from '../../utils/cast-strategy';
 
 type ParseResult = {
   [key in 'type' | 'options']: unknown;
@@ -141,7 +141,7 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
 export const validate = (
   data,
   schema: Schema | SchemaDef,
-  options: { strategy?: CAST_STRATEGY; strict?: boolean; skip?: string[] } = {
+  options: CastOptions = {
     strategy: CAST_STRATEGY.THROW,
     strict: true,
     skip: [],
