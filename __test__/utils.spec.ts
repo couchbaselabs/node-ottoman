@@ -1,5 +1,5 @@
 import { bucketName, connectionString, connectUri, password, username } from './testData';
-import { model } from '../src';
+import { model, set, ValidationError } from '../src';
 import { isModel } from '../src/utils/is-model';
 import { extractConnectionString } from '../src/utils/extract-connection-string';
 import { is } from '../src';
@@ -161,4 +161,27 @@ describe('pathToN1QL', () => {
     const result = pathToN1QL([pathTestSubscriptValid]);
     expect(result).toBe('`email`');
   });
+});
+
+test('set function', async () => {
+  const envVariable = 'debugging';
+  set(envVariable, true);
+  expect(process.env[envVariable]).toBe('true');
+
+  set(envVariable, 1);
+  expect(process.env[envVariable]).toBe('1');
+
+  set(envVariable, 'true');
+  expect(process.env[envVariable]).toBe('true');
+});
+
+test('set function fail', async () => {
+  const envVariable = 'failing';
+  try {
+    //@ts-ignore
+    set(envVariable, { flag: true });
+  } catch (e) {
+    expect(e).toBeInstanceOf(ValidationError);
+    expect(e.message).toBe('set second argument must be number | string | boolean value');
+  }
 });

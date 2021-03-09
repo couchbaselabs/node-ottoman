@@ -344,7 +344,11 @@ export class Ottoman {
             scopeName,
             this.collectionManager
               .createScope(scopeName)
-              .then(() => console.log('Scope created: ', scopeName))
+              .then(() => {
+                if (isDebugMode()) {
+                  console.info('Scope created: ', scopeName);
+                }
+              })
               .catch((e) => {
                 if (!(e instanceof (couchbase as any).ScopeExistsError)) {
                   throw e;
@@ -362,7 +366,11 @@ export class Ottoman {
                 scopeName,
                 maxExpiry: maxExpiry ? +maxExpiry : DEFAULT_MAX_EXPIRY,
               })
-              .then(() => console.log(`collection created: ${scopeName}/${collectionName}`))
+              .then(() => {
+                if (isDebugMode()) {
+                  console.info(`collection created: ${scopeName}/${collectionName}`);
+                }
+              })
               .catch((e) => {
                 if (!(e instanceof (couchbase as any).CollectionExistsError)) {
                   throw e;
@@ -372,18 +380,15 @@ export class Ottoman {
         }
       }
     }
+
+    // eslint-disable-next-line no-unused-vars
     for await (const scope of scopePromises.values()) {
-      if (isDebugMode()) {
-        console.log(scope);
-      }
     }
 
     delay(1000);
 
+    // eslint-disable-next-line no-unused-vars
     for await (const collection of collectionPromises.values()) {
-      if (isDebugMode()) {
-        console.log(collection);
-      }
     }
   }
 
