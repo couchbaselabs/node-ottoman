@@ -118,7 +118,7 @@ import { connect, model } from 'ottoman';
 // connecting to server
 connect('couchbase://localhost/travel-sample@admin:password');
 
-// Now you can use the model function to create Models in the default connection.
+// Now you can use the model function to create Models in the default instance.
 const User = model('User', { name: String });
 ```
 
@@ -188,7 +188,7 @@ ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
 const ottoman2 = new Ottoman();
 ottoman2.connect('couchbase://localhost/other-bucket@admin:password');
 
-// After connect you can create an explicitly Model from a given connection
+// After connect you can create an explicitly Model from a given instance
 
 //Creating UserModel from ottoman1
 const UserModel = ottoman1.model('User', { name: String });
@@ -204,9 +204,9 @@ import { Ottoman, getDefaultInstance } from 'ottoman';
 const ottoman1 = new Ottoman();
 const ottoman2 = new Ottoman();
 
-// Getting default connection
-const defaultConnection = getDefaultConnection();
-// defaultConnection = ottoman1;
+// Getting default instance
+const defaultInstance = getDefaultInstance();
+// defaultInstance = ottoman1;
 ```
 
 The first ottoman instance created will be set as the default instance and
@@ -249,6 +249,20 @@ Ottoman class will provide 3 main methods in order to bootstrap the app:
 - `ensureIndexes` will attempt to create all indexes defined in the schema definition.
 - `start` method is just a shortcut to run `ensureCollections` and `ensureIndexes`.
   Notice: It's not required to execute the `start` method to Ottoman work.
+  
+## Setting environment variables
+
+Ottoman provide a `set` function to help you define environment variables. 
+The next example will show how to set debug mode:
+
+```typescript
+import { set } from 'ottoman';
+
+// Setting Ottoman in debuggin mode
+set('DEBUG', true);
+```
+
+Remember: You must define your environment variables at the very beginning.
   
 ## Helper functions
 
