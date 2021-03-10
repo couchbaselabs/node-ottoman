@@ -13,17 +13,51 @@ import { CoreTypeOptions } from '../interfaces/schema.types';
  *
  * @example
  * ```typescript
- * const customSchema = new Schema({
- *   empty: {},
+ * const schema = new Schema({
+ *   inline: Schema.Types.Mixed,
+ *   types: { type: Schema.Types.Mixed, required: true },
  *   obj: Object,
- *   mixed: Schema.Types.Mixed,
+ *   empty: {},
  * });
+ *
+ *
+ * schema.fields.inline instanceof MixedType; // true
+ * schema.fields.types instanceof MixedType;  // true
+ * schema.fields.obj instanceof MixedType;    // true
+ * schema.fields.empty instanceof MixedType;  // true
+ *
+ * const data = {
+ *  inline: { name: 'george' },
+ *  types: {
+ *    email: 'george@gmail.com',
+ *  },
+ *  obj: 'Hello',
+ *  empty: { hello: 'hello' },
+ * };
+ *
+ * const result = validate(data, schema);
+ * console.log(result);
+ *
+ * // Output!!!
+ * // {
+ * //     "inline": {
+ * //         "name": "george"
+ * //     },
+ * //     "types": {
+ * //         "email": "george@gmail.com"
+ * //     },
+ * //     "obj": "Hello",
+ * //     "empty": {
+ * //         "hello": "hello"
+ * //     }
+ * // }
  * ```
  */
 export class MixedType extends CoreType {
   constructor(name: string, options?: CoreTypeOptions) {
     super(name, MixedType.sName, options);
   }
+
   static sName = 'Mixed';
 
   cast(value: unknown, strategy) {
