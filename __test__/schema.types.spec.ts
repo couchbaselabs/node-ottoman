@@ -2,7 +2,6 @@ import { applyDefaultValue, BuildSchemaError, IOttomanType, model, Schema, valid
 import { isOttomanType } from '../src/schema/helpers';
 import { ArrayType, DateType, EmbedType, NumberType, StringType } from '../src/schema/types';
 import { delay } from './testData';
-import { StringTypeOptions } from '../src/schema/types/string-type';
 
 const validData = {
   firstName: 'John',

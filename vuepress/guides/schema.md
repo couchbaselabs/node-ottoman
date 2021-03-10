@@ -141,10 +141,61 @@ reading [Couchbasics: How Functional and Performance Needs Determine Data Access
 
 ### `n1ql`
 
-These indexes uses the new SQL-like query language available from Couchbase Server 4.0.0. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
+These indexes uses the new SQL-like query language available from Couchbase Server 4.0.0. When  start or ensureIndexes functions are executed, Ottoman automatically creates several secondary indexes so that the models can make queries to the database. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
 
 N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html). If you need flexibility of queries and
 speed, this is the way to go.
+
+``` typescript Example
+const UserSchema = new Schema({
+  name: String,
+  email: String,
+  card: {
+    cardNumber: String,
+    zipCode: String,
+  },
+  roles: [{ name: String }],
+});
+
+// N1QL index declaration
+UserSchema.index.findN1qlByNameandEmail = {
+  by: ['name', 'email'],
+  options: { limit: 4, select: 'name, email' },
+  type: 'n1ql',
+};
+
+// Model declaration
+const User = model('User', UserSchema);
+
+// Some data to test
+const userData = {
+  name: `index`,
+  email: 'index@email.com',
+  card: { cardNumber: '424242425252', zipCode: '42424' },
+  roles: [{ name: 'admin' }],
+};
+
+// Create new user instance
+const user = new User(userData);
+// Save data
+await user.save();
+
+// Call findN1qlByNameandEmail index
+const usersN1ql = await User.findN1qlByNameandEmail([userData.name, userData.email]);
+console.log(usersN1ql.rows);
+
+```
+
+```
+// Output!!!
+[
+  {
+    "_type": "User",
+    "email": "index@email.com",
+    "name": "index"
+  }
+]
+```
 
 ### `refdoc`
 
@@ -153,8 +204,62 @@ These indexes are the most performant, but the least flexible. They allow only a
 In short, if you need to look up a document by a single value of a single attribute quickly (e.g. key lookups), this is the way to go. But you cannot combine multiple refdoc indexes to speed up finding
 something like "all customers with first name 'John' last name 'Smith'".
 
+```typescript
+const UserSchema = new Schema({
+	name: String,
+	email: String,
+	card: {
+	  cardNumber: String,
+	  zipCode: String,
+	},
+	roles: [{ name: String }],
+});
+
+// Refdoc index declaration
+UserSchema.index.findRefName = { by: 'name', type: 'refdoc' };
+
+// Model declaration
+const User = model('User', UserSchema);
+
+// Some data to test
+const userData = {
+  name: `index`,
+  email: 'index@email.com',
+  card: { cardNumber: '424242425252', zipCode: '42424' },
+  roles: [{ name: 'admin' }],
+};
+
+// Create new user instance
+const user = new User(userData);
+// Save data
+await user.save();
+
+// Call findRefName index
+const userRefdoc = await User.findRefName(userData.name);
+console.log(userRefdoc);
+```
+
+```
+// Output!!!
+// {
+//     "name": "index",
+//     "email": "index@email.com",
+//     "card": {
+//         "cardNumber": "424242425252",
+//         "zipCode": "42424"
+//     },
+//     "roles": [
+//         {
+//             "name": "admin"
+//         }
+//     ],
+//     "id": "66c2d0dd-76ab-4b91-83b4-353893e3ede3",
+//     "_type": "User"
+// }
+```
+
 ::: warning
-**Refdoc Index** is not managed by couchbase but strictly by Ottoman and doesn't guarantee consistency if the keys that are a part of. These indexes are updated by an external operation for example N1QL. 
+**Refdoc Index** is not managed by couchbase but strictly by Ottoman and doesn't guarantee consistency if the keys that are a part of these indexes are updated by an external operation for example N1QL. 
 
 **_Needs to be used with caution!!!_**
 :::
@@ -166,6 +271,41 @@ These indexes are the default and use map-reduce views. This type of index is al
 Because views use map-reduce, certain types of queries can be faster as the query can be parallelized over all nodes in the cluster, with each node
 returning only partial results. One of the cons of views is that they are eventually consistent by default, and incur a performance
 penalty if you want consistency in the result.
+
+```typescript
+const UserSchema = new Schema({
+	name: String,
+	email: String,
+	card: {
+	  cardNumber: String,
+	  zipCode: String,
+	},
+	roles: [{ name: String }],
+});
+
+// View index declaration
+UserSchema.index.findByName = { by: 'name', type: 'view' };
+
+// Model declaration
+const User = model('User', UserSchema);
+
+// Some data to test
+const userData = {
+  name: `index`,
+  email: 'index@email.com',
+  card: { cardNumber: '424242425252', zipCode: '42424' },
+  roles: [{ name: 'admin' }],
+};
+
+// Create new user instance
+const user = new User(userData);
+// Save data
+await user.save();
+
+// Call findByName index
+const viewIndexOptions = new ViewIndexOptions({ limit: 1 });
+const usersView = await User.findByName(userData.name, viewIndexOptions);
+```
 
 ## Instance methods
 
