@@ -19,7 +19,7 @@ module.exports = {
       {
         text: 'Advanced',
         items: [
-          { text: 'How Ottoman work', link: '/advanced/how-ottoman-work.md' },
+          { text: 'How Ottoman Works', link: '/advanced/how-ottoman-works.md' },
           { text: 'Ottoman', link: '/advanced/ottoman.md' },
         ]
       },
