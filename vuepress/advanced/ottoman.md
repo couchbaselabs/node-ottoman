@@ -22,7 +22,7 @@ interface OttomanConfig {
 - `populateMaxDeep`: set default value for population. Default value is `1`.
 - `searchConsistency`: define default Search Consistency Strategy. The default value is `SearchConsistency.NONE`
 - `maxExpiry`: value used to create a collection for this instance. The default value is `300000`.
-- `keyGenerator`: a complete new section is available to show how this work check it [here](advanced/how-ottoman-work.html#key-generation-layer)
+- `keyGenerator`: a complete new section is available to show how this work check it [here](advanced/how-ottoman-works.html#key-generation-layer)
 
 ### PopulateMaxDeep Option
 
