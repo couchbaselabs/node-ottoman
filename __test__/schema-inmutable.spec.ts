@@ -1,7 +1,7 @@
 import { getDefaultInstance, IManyQueryResponse, model, Schema } from '../src';
-import { delay, startInTest } from './testData';
 import { StatusExecution } from '../src/handler';
 import { ApplyStrategy, CAST_STRATEGY } from '../src/utils/cast-strategy';
+import { delay, startInTest } from './testData';
 
 describe('Test Schema Immutable', () => {
   const CardSchemaBase = new Schema({
@@ -70,7 +70,7 @@ describe('Test Schema Immutable', () => {
     const card = await Card.findById(id);
     await Card.removeById(id);
     expect(card.cardNumber).toBe('5678 5678 5678 5678');
-    expect(card.zipCode).toBe('56789');
+    expect(card.zipCode).toBe('43210');
   });
   test('Test Schema Immutable integration -> Replace a document', async () => {
     const Card = model('Card', CardSchemaBase);

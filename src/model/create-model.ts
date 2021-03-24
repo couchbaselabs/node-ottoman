@@ -208,11 +208,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return await createMany(metadata)(_docs);
     };
 
-    static updateById = async (
-      id: string,
-      data,
-      options: MutationFunctionOptions = { strict: CAST_STRATEGY.THROW },
-    ) => {
+    static updateById = async (id: string, data, options: MutationFunctionOptions = { strict: true }) => {
       const key = id || data[ID_KEY];
       const value = await _Model.findById(key);
       if (value[ID_KEY]) {
