@@ -64,7 +64,7 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   const result = cluster.query(query.build(), queryOptions);
 
   return result.then(async (r: { rows: unknown[] }) => {
-    if (select !== 'RAW COUNT(*) as count' && (!lean || populate)) {
+    if (select !== 'RAW COUNT(*) as count') {
       const Model = ottoman.getModel(modelName);
       r.rows = r.rows.map((row) => new Model(row, { strict: false, strategy: CAST_STRATEGY.KEEP }));
       if (populate) {
@@ -74,8 +74,10 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
             await execPopulation(r.rows, toPopulate, ottoman, modelName, populateMaxDeep);
           }
         }
-        return lean ? r.rows.map((value: any) => value?.toObject()) : r;
       }
+    }
+    if (lean) {
+      r.rows = r.rows.map((value: any) => value.toObject());
     }
     return r;
   });

@@ -1,4 +1,4 @@
-import { FindByIdOptions, getDefaultInstance, model, Model, Schema, SearchConsistency } from '../src';
+import { getDefaultInstance, model, Model, Schema, SearchConsistency } from '../src';
 import { delay, startInTest } from './testData';
 import { Document } from '../src/model/document';
 
@@ -110,9 +110,9 @@ describe('Test Support Query Lean', () => {
     user.cats = [catCreated.id, catCreated2.id];
     const saved = await user.save();
 
-    const options = new FindByIdOptions({ select: 'card, cats, name', populate: '*', lean: true });
+    const options = { select: 'card, cats, name', populate: '*', lean: true };
     const document = await User.findById(saved.id, options);
-    delete options.lean;
+    options.lean = false;
     const document1 = await User.findById(saved.id, options);
     validation(document, document1, User);
   });
@@ -122,6 +122,7 @@ describe('Test Support Query Lean', () => {
     instanceOfValidations(document1, model, true);
     expect(document).toBeInstanceOf(Object);
     expect(document.constructor.name).toBe('Object');
+    expect(document).not.toStrictEqual(document1);
     expect(JSON.stringify(document1)).toEqual(JSON.stringify(document));
   }
 

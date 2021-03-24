@@ -166,22 +166,23 @@ export const _buildModel = (metadata: ModelMetadata) => {
     };
 
     static findById = async (id: string, options: FindByIdOptions = {}): Promise<Model> => {
-      const findOptions = options;
-      const populate = options.populate;
-      delete options.populate;
+      const findOptions = { ...options };
+      const populate = findOptions.populate;
+      delete findOptions.populate;
       if (findOptions.select) {
         findOptions['project'] = extractSelect(findOptions.select, { noCollection: true }, false, modelKey);
         delete findOptions.select;
       }
       const key = _keyGenerator!(keyGenerator, { metadata, id });
       const { value } = await collection().get(key, findOptions);
-      if (options.lean) {
-        return value;
-      }
+
       const ModelFactory = ottoman.getModel(modelName);
-      const document = new ModelFactory({ ...value }, { strict: false, strategy: CAST_STRATEGY.KEEP });
+      let document = new ModelFactory({ ...value }, { strict: false, strategy: CAST_STRATEGY.KEEP });
       if (populate) {
-        return await document._populate(populate);
+        document = await document._populate(populate);
+      }
+      if (findOptions.lean) {
+        document = document.toObject();
       }
       return document;
     };
