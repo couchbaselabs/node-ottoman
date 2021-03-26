@@ -91,12 +91,12 @@ export class NumberType extends CoreType {
   }
   private _checkMin(val: number): string {
     const _min = typeof this.min === 'function' ? this.min() : this.min;
-    return validateMinLimit(val, _min) || '';
+    return validateMinLimit(val, _min, this.name) || '';
   }
 
   private _checkMax(val: number): string {
     const _max = typeof this.max === 'function' ? this.max() : this.max;
-    return validateMaxLimit(val, _max) || '';
+    return validateMaxLimit(val, _max, this.name) || '';
   }
 }
 
