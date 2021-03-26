@@ -107,7 +107,7 @@ export class DateType extends CoreType {
     if (_min === undefined) {
       return '';
     }
-    return validateMinDate(val, _min) || '';
+    return validateMinDate(val, _min, this.name) || '';
   }
 
   private _checkMaxDate(val: Date): string {
@@ -115,7 +115,7 @@ export class DateType extends CoreType {
     if (_max === undefined) {
       return '';
     }
-    return validateMaxDate(val, _max) || '';
+    return validateMaxDate(val, _max, this.name) || '';
   }
 }
 

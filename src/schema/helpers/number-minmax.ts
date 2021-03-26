@@ -5,10 +5,15 @@ export interface MinmaxOption {
 
 export type NumberFunction = () => number | MinmaxOption;
 
-export const validateMinLimit = (val: number, min: number | MinmaxOption | undefined): string | void => {
+export const validateMinLimit = (
+  val: number,
+  min: number | MinmaxOption | undefined,
+  property: string,
+): string | void => {
   if (typeof min === 'number' && min > val) {
-    return `${val} is less than ${min}`;
-  } else if (typeof min !== 'undefined') {
+    return `Property '${property}' is less than the minimum allowed value ${min}`;
+  }
+  if (typeof min !== 'undefined') {
     const _obj = min as MinmaxOption;
     if (_obj.val > val) {
       return _obj.message;
@@ -16,10 +21,15 @@ export const validateMinLimit = (val: number, min: number | MinmaxOption | undef
   }
 };
 
-export const validateMaxLimit = (val: number, max: number | MinmaxOption | undefined): string | void => {
+export const validateMaxLimit = (
+  val: number,
+  max: number | MinmaxOption | undefined,
+  property: string,
+): string | void => {
   if (typeof max === 'number' && max < val) {
-    return `${val} is more than ${max}`;
-  } else if (typeof max !== 'undefined') {
+    return `Property '${property}' is more than the maximum allowed value ${max}`;
+  }
+  if (typeof max !== 'undefined') {
     const _obj = max as MinmaxOption;
     if (_obj.val < val) {
       return _obj.message;

@@ -1,5 +1,4 @@
-import { applyDefaultValue, validate, ValidationError, BuildSchemaError } from '../src';
-import { Schema } from '../src/schema';
+import { applyDefaultValue, BuildSchemaError, Schema, validate, ValidationError } from '../src';
 
 describe('Schema Native Types', () => {
   describe('Schema String Type', () => {
@@ -63,7 +62,10 @@ describe('Schema Native Types', () => {
 
       const validator2 = () => 30;
       const schemaWithFunctionNum = { age: { type: Number, min: validator2 } };
-      expect(() => validate(data, schemaWithFunctionNum)).toThrow(new ValidationError('23 is less than 30'));
+
+      expect(() => validate(data, schemaWithFunctionNum)).toThrow(
+        new ValidationError(`Property 'age' is less than the minimum allowed value 30`),
+      );
     });
     test('should throw an error when the value is more than max', () => {
       const data = {
@@ -82,7 +84,9 @@ describe('Schema Native Types', () => {
 
       const validator2 = () => 30;
       const schemaWithFunctionNum = { age: { type: Number, max: validator2 } };
-      expect(() => validate(data, schemaWithFunctionNum)).toThrow(new ValidationError('35 is more than 30'));
+      expect(() => validate(data, schemaWithFunctionNum)).toThrow(
+        new ValidationError(`Property 'age' is more than the maximum allowed value 30`),
+      );
     });
     test('should throw an error when the value is not an integer', () => {
       const data = {
