@@ -117,7 +117,7 @@ describe('Test Query Builder functions', () => {
     const where: LogicalWhereExpr = {
       $any: {
         $expr: [{ $dummyIn: { search_expr: 'search', target_expr: 'address' } }],
-        $satisfied: { address: '10' },
+        $satisfies: { address: '10' },
       },
     };
     try {
@@ -135,7 +135,7 @@ describe('Test Query Builder functions', () => {
     const where: LogicalWhereExpr = {
       $any: {
         $expr: [{ $dummyIn: { search_expr: 'search', target_expr: 'address' } }],
-        $satisfied: { address: '10' },
+        $satisfies: { address: '10' },
       },
     };
     try {
@@ -147,5 +147,30 @@ describe('Test Query Builder functions', () => {
         'The Collection Operator needs to have the following clauses declared (IN | WITHIN) and SATISFIES.',
       );
     }
+  });
+
+  test('buildWhereClauseExpr -> ANY X SATISFIES Clause ', async () => {
+    const filter = {
+      $and: [
+        {
+          $any: {
+            $expr: [{ $in: { search_expr: 'visibility', target_expr: 'network_visibility' } }],
+            $satisfies: { $in: { search_expr: 'visibility', target_expr: [2] } },
+          },
+        },
+        {
+          $any: {
+            $expr: [{ $in: { search_expr: 'visibility', target_expr: 'network_visibility' } }],
+            $satisfies: { visibility: [2] },
+          },
+        },
+      ],
+    };
+
+    const result = buildWhereClauseExpr('', filter);
+
+    expect(result).toBe(
+      '(ANY visibility IN network_visibility SATISFIES visibility IN [2] END AND ANY visibility IN network_visibility SATISFIES visibility=[2] END)',
+    );
   });
 });

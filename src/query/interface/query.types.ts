@@ -96,14 +96,14 @@ export type CollectionInWithinOperatorType = {
  * */
 export interface CollectionExpressionType {
   $expr: CollectionInWithinOperatorType[];
-  $satisfied: FieldWhereExpr;
+  $satisfies: FieldWhereExpr;
 }
 /**
  * Structure of the collection in within operator
  *
  * @example
  * ```
- * {$any: {$expr: [{$in:{search_expr: 'search', target_expr: 'address', $not: true} }], $satisfied:{address: '10'}}}
+ * {$any: {$expr: [{$in:{search_expr: 'search', target_expr: 'address', $not: true} }], $satisfies:{address: '10'}}}
  * ```
  * */
 export type CollectionSelectOperatorType = {

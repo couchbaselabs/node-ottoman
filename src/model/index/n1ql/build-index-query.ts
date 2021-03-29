@@ -24,7 +24,7 @@ export const buildIndexQuery = (Model, fields, indexFnName, indexOptions = {}) =
         const [target, targetField] = field.split('[*].');
         filter['$any'] = {
           $expr: [{ $in: { search_expr: 'x', target_expr: target } }],
-          $satisfied: { [`x.${targetField}`]: values[i] },
+          $satisfies: { [`x.${targetField}`]: values[i] },
         };
       } else {
         filter[field] = values[i];
