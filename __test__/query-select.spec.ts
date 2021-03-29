@@ -256,7 +256,7 @@ describe('Test Query Builder SELECT clause', () => {
     const where: LogicalWhereExpr = {
       $any: {
         $expr: [{ $in: { search_expr: 'search', target_expr: 'address' } }],
-        $satisfied: { address: '10' },
+        $satisfies: { address: '10' },
       },
     };
     const query = new Query({}, bucketName).select().where(where).limit(10).build();

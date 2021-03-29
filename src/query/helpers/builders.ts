@@ -267,7 +267,7 @@ export const buildWhereExpr = (expr: LogicalWhereExpr | undefined, clause?: stri
 export const verifyWhereObjectKey = (clause: LogicalWhereExpr) => {
   let exist = false;
   for (const key in clause) {
-    if (['$and', '$or', '$not', '$any', '$$every', '$in', '$within'].includes(key)) {
+    if (['$and', '$or', '$not', '$any', '$every', '$in', '$within'].includes(key)) {
       exist = true;
       break;
     }
@@ -322,7 +322,7 @@ const _buildFieldClauseExpr = (field: Record<string, string | number | boolean |
   try {
     const expr = Object.keys(field).map((value: string) => {
       if (typeof field[value] === 'object' && !Array.isArray(field[value])) {
-        return `${_buildComparisionClauseExpr(value, field[value] as ComparisonWhereExpr)}`;
+        return `${_buildComparisonClauseExpr(value, field[value] as ComparisonWhereExpr)}`;
       }
       if (!value.includes('$')) {
         if (typeof field[value] === 'string') {
@@ -346,7 +346,7 @@ const _buildFieldClauseExpr = (field: Record<string, string | number | boolean |
 /**
  * @ignore
  * */
-const _buildComparisionClauseExpr = (fieldName: string, comparison: ComparisonWhereExpr) => {
+const _buildComparisonClauseExpr = (fieldName: string, comparison: ComparisonWhereExpr) => {
   try {
     const expr = Object.keys(comparison)
       .map((value: string) => {
@@ -419,7 +419,7 @@ const _buildCollectionInWithIn = (collection: CollectionInWithinOperatorType) =>
 const _buildWhereCollectionExpr = (op: CollectionSelectOperator, expr: CollectionExpressionType) => {
   return `${CollectionSelectOperatorDict[op]} ${expr.$expr.map((value) => _buildCollectionInWithIn(value)).join(',')} ${
     CollectionSatisfiesOperatorDict['$satisfies']
-  } ${buildWhereClauseExpr('', expr.$satisfied)} END`;
+  } ${buildWhereClauseExpr('', expr.$satisfies)} END`;
 };
 
 // end where expression functions

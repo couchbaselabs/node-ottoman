@@ -34,7 +34,7 @@ const params = {
     ],
     $any: {
       $expr: [{ $in: { search_expr: 'search', target_expr: 'address' } }],
-      $satisfied: { address: '10' },
+      $satisfies: { address: '10' },
     },
     $in: { search_expr: 'search', target_expr: ['address'] },
   },
