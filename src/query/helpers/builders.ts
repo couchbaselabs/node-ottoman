@@ -348,21 +348,32 @@ const _buildFieldClauseExpr = (field: Record<string, string | number | boolean |
  * */
 const _buildComparisonClauseExpr = (fieldName: string, comparison: ComparisonWhereExpr) => {
   try {
-    const expr = Object.keys(comparison)
+    let ignorecase = false;
+    const keys = Object.keys(comparison).filter((key) => {
+      if (key === '$ignorecase') {
+        ignorecase = true;
+        return false;
+      }
+      return true;
+    });
+
+    const expr = keys
       .map((value: string) => {
         if (!!comparison[value]) {
           if (ComparisonEmptyOperatorDict.hasOwnProperty(value)) {
             return `${escapeReservedWords(fieldName)} ${ComparisonEmptyOperatorDict[value]}`;
           }
           if (ComparisonSingleOperatorDict.hasOwnProperty(value)) {
-            return `${escapeReservedWords(fieldName)}${ComparisonSingleOperatorDict[value]}${stringifyValues(
-              comparison[value],
-            )}`;
+            const name = escapeReservedWords(fieldName);
+            const operator = ComparisonSingleOperatorDict[value];
+            const endValue = stringifyValues(comparison[value]);
+            return ignorecase ? `LOWER(${name})${operator}LOWER(${endValue})` : `${name}${operator}${endValue}`;
           }
           if (ComparisonSingleStringOperatorDict.hasOwnProperty(value)) {
-            return `${escapeReservedWords(fieldName)} ${ComparisonSingleStringOperatorDict[value]} ${stringifyValues(
-              comparison[value],
-            )}`;
+            const name = escapeReservedWords(fieldName);
+            const operator = ComparisonSingleStringOperatorDict[value];
+            const endValue = stringifyValues(comparison[value]);
+            return ignorecase ? `LOWER(${name}) ${operator} LOWER(${endValue})` : `${name} ${operator} ${endValue}`;
           }
           if (ComparisonMultipleOperatorDict.hasOwnProperty(value) && Array.isArray(comparison[value])) {
             return `${escapeReservedWords(fieldName)} ${ComparisonMultipleOperatorDict[value]} ${comparison[value]

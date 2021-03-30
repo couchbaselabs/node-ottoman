@@ -59,6 +59,61 @@ export abstract class Model<T = any> extends Document<T> {
    * User.find(filter)
    * // Returns a list of the elements that match the applied filters.
    * ```
+   *
+   *
+   * This is other example using ignore case:
+   * ``` typescript
+   * // Define schema
+   * const CitySchema = {
+   *    type: String,
+   *    name: String,
+   *  };
+   *
+   * // Define data
+   * const cityData1 = {
+   *    name: 'San Francisco City',
+   * };
+   * const cityData2 = {
+   *    name: 'SAN FRANCISCO CITY',
+   * };
+   *
+   * // Create model
+   * const CityModel = model('City', CitySchema);
+   *
+   * // Get ottoman instance and start
+   * const ottoman = getDefaultInstance();
+   * await ottoman.start();
+   *
+   * // Create document and save
+   * await CityModel.create(cityData1);
+   * await CityModel.create(cityData2);
+   *
+   * // Define filter applying ignore case
+   * const filter =  { name: { $eq: 'san FRANCISCO city', $ignorecase: true } };
+   *
+   *  // The query is executed
+   * const { rows: documents } = await CityModel.find( filter , { lean: true });
+   *
+   * // Close connection
+   * ottoman.close();
+   *
+   * // Print results
+   * console.log(documents);
+   * // You will get something like this
+   * // [
+   * //   {
+   * //     _type: 'City',
+   * //     id: '4bdbf3a6-c5f0-44c5-8a98-13c71fe9d21f',
+   * //     name: 'SAN FRANCISCO CITY',
+   * //   },
+   * //   {
+   * //     _type: 'City',
+   * //     id: 'dd9d897d-d0a3-49e1-8d46-91029a9477d0',
+   * //     name: 'San Francisco City',
+   * //   },
+   * // ];
+   * ```
+   *
    */
   // eslint-disable-next-line no-unused-vars
   static async find(filter: LogicalWhereExpr = {}, options: FindOptions = {}): Promise<any> {
