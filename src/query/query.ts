@@ -232,7 +232,7 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const expr_where = {$or: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }]};
+   *   const expr_where = {$or: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }, {name: { $eq: 'John', $ignoreCase: true }}]};
    *   const query = new Query({}, 'travel-sample');
    *   const result = query.select([{$field: 'address'}]).where(expr_where).build()
    *   console.log(result)

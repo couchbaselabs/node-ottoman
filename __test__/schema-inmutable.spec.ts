@@ -40,7 +40,7 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     await Card.create(cardInfo);
-    await delay(500);
+    await delay(1500);
     const result = await Card.findOne({ cardNumber: '5678 5678 5678 5678' });
     result.cardNumber = '80';
     await Card.removeById(result.id);

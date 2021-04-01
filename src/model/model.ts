@@ -54,6 +54,7 @@ export abstract class Model<T = any> extends Document<T> {
    * $and: [
    *   { price2: { $gt: 1.99, $isNotNull: true } },
    *   { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
+   *   {name: {$eq: 'John', $ignoreCase: true}}
    *  ],
    * };
    * User.find(filter)

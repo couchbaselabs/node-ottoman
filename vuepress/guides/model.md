@@ -138,6 +138,10 @@ User.find({ name: 'Jane' });
 
 User.find({ name: 'Jane' }, { limit: 10 });
 // will return a list of all users with the name "Jane" and limited to 10 items
+
+User.find({ name: {$eq: 'Jane', $ignoreCase: true }});
+// In some cases you need to compare without taking into account case sensitive, for this you can use the $ ignoreCase property: true
+
 ```
 
 ```javascript

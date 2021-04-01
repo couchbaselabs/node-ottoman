@@ -31,6 +31,7 @@ const params = {
     $and: [
       { price2: { $gt: 1.99, $isNotNull: true } },
       { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
+      { name: { $eq: 'John', $ignoreCase: true } },
     ],
     $any: {
       $expr: [{ $in: { search_expr: 'search', target_expr: 'address' } }],
@@ -255,6 +256,12 @@ Available COLLECTION operators:
 | \$in        | IN        |
 | \$within    | WITHIN    |
 | \$satisfies | SATISFIES |
+
+Available String Modifiers:
+
+| key          | value   |
+| ------------ | ------- |
+| \$ignoreCase | Boolean |
 
 ## N1QL JOIN clause structure (Currently the JOIN clause is only supported in string format.)
 

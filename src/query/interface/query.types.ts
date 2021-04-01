@@ -72,6 +72,11 @@ export type CollectionInWithinOperator = '$in' | '$within';
  * */
 export type CollectionSatisfiesOperator = '$satisfies';
 
+/**
+ * List of String Modifiers.
+ * */
+export type StringModifiers = '$ignoreCase';
+
 export interface CollectionInWithinOperatorValue {
   search_expr: unknown;
   target_expr: unknown;
@@ -136,7 +141,9 @@ export type ComparisonWhereExpr = {
  * ```
  *
  * */
-export type FieldWhereExpr = Record<string, string | number | boolean | ComparisonWhereExpr> | LogicalWhereExpr;
+export type FieldWhereExpr =
+  | Record<string, string | number | boolean | ComparisonWhereExpr | StringModifiers>
+  | LogicalWhereExpr;
 
 /**
  * Structure of Logical WHERE expression
