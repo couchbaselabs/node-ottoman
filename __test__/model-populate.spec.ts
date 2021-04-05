@@ -1,4 +1,12 @@
-import { model, Schema, FindByIdOptions, FindOptions, SearchConsistency, getDefaultInstance } from '../src';
+import {
+  model,
+  Schema,
+  FindByIdOptions,
+  FindOptions,
+  SearchConsistency,
+  getDefaultInstance,
+  DocumentNotFoundError,
+} from '../src';
 import { delay, startInTest } from './testData';
 
 const cardInfo = {
@@ -91,6 +99,22 @@ describe('Test populate feature', () => {
     const result = await User.findById(saved.id);
     await result._populate();
     expect(result).toBeDefined();
+  });
+
+  test('findById return DocumentNotFound', async () => {
+    const schema = new Schema({
+      type: String,
+      isActive: Boolean,
+      name: String,
+    });
+    const User = model('User', schema);
+
+    await startInTest(getDefaultInstance());
+    try {
+      await User.findById('hello');
+    } catch (e) {
+      expect(e).toBeInstanceOf(DocumentNotFoundError);
+    }
   });
 
   test('findById.option.populate Card and Cat references', async () => {

@@ -277,14 +277,19 @@ describe('Test Document Access Functions', () => {
     expect(typeof document[CUSTOM_ID_KEY]).toBe('string');
   });
 
-  test('UserModel findOne function no response', async () => {
+  test('UserModel findOne function, throw DocumentNotFoundError', async () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
-    await UserModel.create(accessDoc);
-    const element = await UserModel.findOne({
-      type: 'airlineFlyFly',
-    });
-    expect(element).toBe(null);
+    try {
+      await UserModel.findOne(
+        {
+          name: 'Search Example',
+        },
+        { consistency: SearchConsistency.LOCAL },
+      );
+    } catch (e) {
+      expect(e).toBeInstanceOf(DocumentNotFoundError);
+    }
   });
 
   test('UserModel save with arbitrary id', async () => {
