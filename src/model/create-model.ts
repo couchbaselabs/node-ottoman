@@ -195,7 +195,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
         return response.rows[0];
       }
-      return null;
+      throw new (couchbase as any).DocumentNotFoundError();
     };
 
     static create = async (data: Record<string, any>): Promise<any> => {
@@ -274,19 +274,22 @@ export const _buildModel = (metadata: ModelMetadata) => {
       doc: Record<string, unknown>,
       options: FindOneAndUpdateOption = { strict: true },
     ) => {
-      const before = await _Model.findOne(filter, options);
-      if (before) {
-        if (!options.new) {
-          return before;
+      try {
+        const before = await _Model.findOne(filter, options);
+        if (before) {
+          if (!options.new) {
+            return before;
+          }
+          const afterToUpdate = _Model.fromData({ ...before });
+          afterToUpdate._applyData({ ...doc }, options.strict);
+          return await afterToUpdate.save();
         }
-        const afterToUpdate = _Model.fromData({ ...before });
-        afterToUpdate._applyData({ ...doc }, options.strict);
-        return await afterToUpdate.save();
+      } catch (e) {
+        if (options.upsert) {
+          return await _Model.create(doc);
+        }
+        throw e;
       }
-      if (options.upsert) {
-        return await _Model.create(doc);
-      }
-      throw new (couchbase as any).DocumentNotFoundError();
     };
   };
 };
