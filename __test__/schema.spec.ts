@@ -1,5 +1,5 @@
-import { BuildSchemaError } from '../src';
-import { Schema } from '../src/schema';
+import { BuildSchemaError, Schema, model, registerGlobalPlugin } from '../src';
+import { delay } from './testData';
 
 describe('Schema', () => {
   const schema = new Schema({ name: String });
@@ -56,6 +56,27 @@ describe('Schema', () => {
     test('should apply a plugin', () => {
       const fnPlugin = (s) => expect(s).toEqual(schema);
       schema.plugin(fnPlugin);
+    });
+    test('Apply global plugin', async () => {
+      let log1 = false;
+      let log2 = false;
+      const logPluginPre1 = (schema) =>
+        schema.pre('save', () => {
+          log1 = true;
+        });
+      const logPluginPre2 = (schema) =>
+        schema.pre('save', () => {
+          log2 = true;
+        });
+      registerGlobalPlugin(...[logPluginPre1, logPluginPre2]);
+      const userSchema = new Schema({ name: String });
+      const User = model('User', userSchema);
+      const user = new User({ name: 'John' });
+      await user.save();
+      await delay(1000);
+      await user.remove();
+      expect(log1).toEqual(true);
+      expect(log2).toEqual(true);
     });
   });
 });
