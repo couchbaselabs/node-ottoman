@@ -8,6 +8,7 @@ import {
   IndexType,
   ISelectType,
   LogicalWhereExpr,
+  QueryBuildOptionsType,
   SortType,
 } from './interface/query.types';
 import { IndexParamsOnExceptions, IndexParamsUsingGSIExceptions, MultipleQueryTypesException } from './exceptions';
@@ -237,7 +238,8 @@ export class Query extends BaseQuery {
    *   const result = query.select([{$field: 'address'}]).where(expr_where).build()
    *   console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample WHERE (address LIKE '%57-59%' OR free_breakfast = true)`
+   * > SELECT address FROM `travel-sample` WHERE (address LIKE "%57-59%" OR free_breakfast=true OR (LOWER(name) = LOWER("John")))
+   *
    */
   where(value: LogicalWhereExpr): Query {
     this.whereExpr = value;
@@ -460,11 +462,30 @@ export class Query extends BaseQuery {
 
   /**
    * Build a n1ql query from the defined parameters.
+   *
+   * Can also use `ignoreCase` as part of the `build` method, this will always prioritize the `$ignoreCase` value defined in clause
+   * @example
+   * ```ts
+   *   const expr_where = {
+   *    $or: [
+   *      { address: { $like: '%57-59%', $ignoreCase: false } }, // ignoreCase will not be applied
+   *      { free_breakfast: true },
+   *      { name: 'John' } //  ignoreCase will be applied
+   *    ],
+   *  };
+   * const query = new Query({}, 'travel-sample');
+   * const result = query.select([{ $field: 'address' }])
+   *                     .where(expr_where)
+   *                     .build({ ignoreCase: true }); // ignore case is enabled for where clause elements
+   * console.log(result)
+   * ```
+   * > SELECT address FROM `travel-sample` WHERE (address LIKE "%57-59%" OR free_breakfast=true OR `(LOWER(name) = LOWER("John"))`)
+   *
    * @method
    * @public
    *
    */
-  build(): string {
+  build(options: QueryBuildOptionsType = { ignoreCase: false }): string {
     switch (this.queryType) {
       case 'INDEX':
         switch (this.indexType) {
@@ -508,6 +529,7 @@ export class Query extends BaseQuery {
             this.lettingExpr,
             this.havingExpr,
             this.plainJoinExpr,
+            options.ignoreCase,
           );
         }
     }

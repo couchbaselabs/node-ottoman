@@ -1,4 +1,11 @@
-import { IConditionExpr, ILetExpr, ISelectType, LogicalWhereExpr, SortType } from './interface/query.types';
+import {
+  IConditionExpr,
+  ILetExpr,
+  ISelectType,
+  LogicalWhereExpr,
+  QueryBuildOptionsType,
+  SortType,
+} from './interface/query.types';
 
 /**
  * Basic definition of Query Class
@@ -13,5 +20,5 @@ export abstract class BaseQuery {
   abstract offset(value: number): BaseQuery;
   abstract let(value: [ILetExpr]): BaseQuery;
   abstract useKeys(value: [string]): BaseQuery;
-  abstract build(): string;
+  abstract build(options: QueryBuildOptionsType): string;
 }

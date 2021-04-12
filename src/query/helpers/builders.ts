@@ -1,4 +1,5 @@
 import {
+  BuildFieldClauseExprType,
   CollectionExpressionType,
   CollectionInWithinOperator,
   CollectionInWithinOperatorType,
@@ -52,6 +53,7 @@ import { BuildQueryError } from '../../exceptions/ottoman-errors';
  * @param limit LIMIT Clause param
  * @param offset OFFSET Clause param
  * @param useExpr USE Clause param
+ * @param ignoreCase boolean to ignore case
  *
  * @return N1QL SELECT Query
  * */
@@ -68,6 +70,7 @@ export const selectBuilder = (
   lettingExpr?: ILetExpr[],
   havingExpr?: LogicalWhereExpr,
   plainJoinExpr?: string,
+  ignoreCase?: boolean,
 ): string => {
   try {
     let expr = '';
@@ -85,7 +88,7 @@ export const selectBuilder = (
         : `\`${collection}\``;
     return `SELECT ${expr} FROM ${_collection}${plainJoinExpr ? ` ${plainJoinExpr} ` : ''}${_buildUseKeysExpr(
       useExpr,
-    )}${_buildLetExpr(letExpr)}${buildWhereExpr(where)}${_buildGroupByExpr(
+    )}${_buildLetExpr(letExpr)}${buildWhereExpr(where, undefined, ignoreCase)}${_buildGroupByExpr(
       groupByExpr,
       lettingExpr,
       havingExpr,
@@ -254,10 +257,11 @@ const _buildGroupBy = (groupByExpr: IGroupBy[]) => {
  * Create WHERE N1QL Expressions.
  * {@link https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/where.html}
  * @param clause WHERE Clause param
+ * @param ignoreCase apply ignore case
  * @return N1QL WHERE Expression
  * */
-export const buildWhereExpr = (expr: LogicalWhereExpr | undefined, clause?: string): string => {
-  return expr ? ` ${clause ? clause : 'WHERE'} ${buildWhereClauseExpr('', expr)}` : '';
+export const buildWhereExpr = (expr: LogicalWhereExpr | undefined, clause?: string, ignoreCase = false): string => {
+  return expr ? ` ${clause ? clause : 'WHERE'} ${buildWhereClauseExpr('', expr, ignoreCase)}` : '';
 };
 
 /**
@@ -282,10 +286,10 @@ export const verifyWhereObjectKey = (clause: LogicalWhereExpr) => {
  *
  * @return N1QL WHERE Expression
  * */
-export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr): string => {
+export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr, ignoreCase = false): string => {
   try {
     if (!verifyWhereObjectKey(clause)) {
-      return _buildFieldClauseExpr(clause as Record<string, string | number | boolean | ComparisonWhereExpr>);
+      return _buildFieldClauseExpr(clause as BuildFieldClauseExprType, ignoreCase);
     }
 
     return Object.keys(clause)
@@ -300,10 +304,10 @@ export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr): st
           const prefix = key === '$not' ? `${LogicalOperatorDict[key]} ` : '';
           const joinOp = key === '$not' ? ` AND ` : ` ${LogicalOperatorDict[key]} `;
           return `${prefix}(${clause[key]
-            .map((value) => buildWhereClauseExpr(n1ql, value as LogicalWhereExpr))
+            .map((value) => buildWhereClauseExpr(n1ql, value as LogicalWhereExpr, ignoreCase))
             .join(joinOp)})`;
         } else {
-          return `${buildWhereClauseExpr(n1ql, { [key]: clause[key] })}`;
+          return `${buildWhereClauseExpr(n1ql, { [key]: clause[key] }, ignoreCase)}`;
         }
       })
       .join(' AND ');
@@ -318,15 +322,19 @@ export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr): st
 /**
  * @ignore
  * */
-const _buildFieldClauseExpr = (field: Record<string, string | number | boolean | ComparisonWhereExpr>) => {
+const _buildFieldClauseExpr = (field: BuildFieldClauseExprType, ignoreCase = false) => {
   try {
     const expr = Object.keys(field).map((value: string) => {
       if (typeof field[value] === 'object' && !Array.isArray(field[value])) {
-        return `${_buildComparisonClauseExpr(value, field[value] as ComparisonWhereExpr)}`;
+        return `${_buildComparisonClauseExpr(value, field[value] as ComparisonWhereExpr, ignoreCase)}`;
       }
       if (!value.includes('$')) {
         if (typeof field[value] === 'string') {
-          return `${escapeReservedWords(value)}=${stringifyValues(field[value])}`;
+          const comparator = escapeReservedWords(value);
+          const toCompare = stringifyValues(field[value]);
+          return ignoreCase
+            ? applyIgnoreCase(ignoreCase, comparator, '=', toCompare, true)
+            : `${comparator}=${toCompare}`;
         }
         if (typeof field[value] === 'number' || typeof field[value] === 'boolean' || Array.isArray(field[value])) {
           return `${escapeReservedWords(value)}=${stringifyValues(field[value])}`;
@@ -346,17 +354,15 @@ const _buildFieldClauseExpr = (field: Record<string, string | number | boolean |
 /**
  * @ignore
  * */
-const _buildComparisonClauseExpr = (fieldName: string, comparison: ComparisonWhereExpr) => {
+const _buildComparisonClauseExpr = (fieldName: string, comparison: ComparisonWhereExpr, ignoreCase = false) => {
   try {
-    let ignoreCase = false;
+    let ignore = ignoreCase;
     const keys = Object.keys(comparison).filter((key) => {
       if (key === '$ignoreCase') {
-        if (typeof comparison[key] === 'boolean') {
-          ignoreCase = comparison[key];
-        } else {
+        if (typeof comparison[key] !== 'boolean') {
           throw TypeError(`The data type of $ignoreCase must be Boolean`);
         }
-
+        ignore = comparison[key];
         return false;
       }
       return true;
@@ -372,13 +378,13 @@ const _buildComparisonClauseExpr = (fieldName: string, comparison: ComparisonWhe
             const name = escapeReservedWords(fieldName);
             const operator = ComparisonSingleOperatorDict[value];
             const endValue = stringifyValues(comparison[value]);
-            return applyIgnoreCase(ignoreCase, name, operator, endValue, true);
+            return applyIgnoreCase(ignore, name, operator, endValue, true);
           }
           if (ComparisonSingleStringOperatorDict.hasOwnProperty(value)) {
             const name = escapeReservedWords(fieldName);
             const operator = ComparisonSingleStringOperatorDict[value];
             const endValue = stringifyValues(comparison[value]);
-            return applyIgnoreCase(ignoreCase, name, operator, endValue);
+            return applyIgnoreCase(ignore, name, operator, endValue);
           }
           if (ComparisonMultipleOperatorDict.hasOwnProperty(value) && Array.isArray(comparison[value])) {
             return `${escapeReservedWords(fieldName)} ${ComparisonMultipleOperatorDict[value]} ${comparison[value]

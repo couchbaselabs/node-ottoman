@@ -11,6 +11,7 @@ export class FindOptions {
   consistency?: SearchConsistency;
   noCollection?: boolean;
   lean?: boolean;
+  ignoreCase?: boolean;
   constructor(data: FindOptions) {
     for (const key in data) {
       this[key] = data[key];
@@ -28,4 +29,5 @@ export interface IFindOptions {
   consistency?: SearchConsistency;
   noCollection?: boolean;
   lean?: boolean;
+  ignoreCase?: boolean;
 }

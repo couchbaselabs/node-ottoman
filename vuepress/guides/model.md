@@ -169,6 +169,8 @@ export interface IFindOptions {
   select?: ISelectType[] | string | string[];
   consistency?: SearchConsistency;
   noCollection?: boolean;
+  lean?: boolean;
+  ignoreCase?: boolean;
 }
 ```
 
@@ -183,7 +185,7 @@ User.find({name: 'john'}, {select: '{"latLon": {geo.lat, geo.lon}, geo.lat} as g
 
 ### Advanced use of filter parameter.
 
-```javascript
+```typescript
 const filter = {
   $or: [{ price: { $gt: 'amount_val', $isNotNull: true } }, { auto: { $gt: 10 } }, { amount: 10 }],
   $and: [
@@ -194,6 +196,81 @@ const filter = {
 User.find(filter);
 // Returns a list of the elements that match the applied filters.
 ```
+
+### Use of ignoreCase.
+
+```typescript 
+// Defining `User` schema
+const userSchema = {
+  name: String,
+};
+// Some test documents
+const user1 = { name: 'COUCHBASE' };
+const user2 = { name: 'couchbase' };
+
+// Create and save `User` model
+const UserModel = model('User', userSchema);
+
+await UserModel.create(user1);
+await UserModel.create(user2);
+```
+
+* Without ignoreCase
+```typescript
+const { rows: documents } = await UserModel.find({ name: { $eq: 'Couchbase' } }, { lean: true });
+console.log(`Documents: `, documents);
+```
+Will get:
+```sh
+$> Documents:  []
+```
+* Using `$ignoreCase` in filters params
+```typescript
+const { rows: documents } = await UserModel.find(
+    { name: { $eq: 'Couchbase', $ignoreCase: true } }, // Find filters
+    { lean: true } // Find ptions
+);
+console.log(`Documents: `, documents);
+```
+
+* Using `ignoreCase` in find options
+```typescript
+const { rows: documents } = await UserModel.find(
+    { name: { $like: 'Couch%' } }, // Find filters
+    { lean: true, ignoreCase: true } // Find ptions
+);
+// Could also use:
+const { rows: documents } = await UserModel.find(
+        { name: 'Couchbase' }, // Find filters
+        { lean: true, ignoreCase: true } // Find ptions 
+);
+console.log(`Documents: `, documents);
+```
+For the two previous examples will get something like this:
+```sh
+$> Documents: [
+  {
+    _type: 'User',
+    id: 'da520506-11c3-4f66-b36c-6cb38d51fd16',
+    name: 'COUCHBASE'
+  },
+  {
+    _type: 'User',
+    id: '97a3b89e-9c2e-4a75-86d0-f83a5b6f3aa3',
+    name: 'couchbase'
+  }
+]
+
+```
+::: tip Note
+Using `ignoreCase` as part of find functions options will always prioritize the value of `$ignoreCase` defined in the clause
+```typescript
+UserModel.find([
+  { address: { $like: 'NY-%', $ignoreCase: false } }, // ignoreCase will not be applied
+  { name: 'John' } //  ignoreCase will be applied
+], { ignoreCase: true });
+```
+:::
 
 See the chapter on queries for more details on how to use the [Query](/guides/query-builder) API.
 

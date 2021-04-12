@@ -14,7 +14,7 @@ import { CAST_STRATEGY } from '../../utils/cast-strategy';
  * @ignore
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
-  const { skip, limit, sort, populate, select, noCollection, populateMaxDeep, consistency, lean } = options;
+  const { skip, limit, sort, populate, select, noCollection, populateMaxDeep, consistency, lean, ignoreCase } = options;
   const { ottoman, collectionName, modelKey, scopeName, modelName } = metadata;
   const { bucketName, cluster, couchbase } = ottoman;
   let fromClause = bucketName;
@@ -61,7 +61,7 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
       queryOptions.scanConsistency = couchbase.QueryScanConsistency.NotBounded;
       break;
   }
-  const result = cluster.query(query.build(), queryOptions);
+  const result = cluster.query(query.build({ ignoreCase }), queryOptions);
 
   return result.then(async (r: { rows: unknown[] }) => {
     if (select !== 'RAW COUNT(*) as count') {
