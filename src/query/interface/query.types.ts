@@ -294,3 +294,15 @@ export interface IIndexWithParams {
   defer_build?: boolean;
   num_replica?: number;
 }
+
+/**
+ * Query build options
+ * */
+export type QueryBuildOptionsType = {
+  ignoreCase?: boolean;
+};
+
+/**
+ * @ignore
+ * */
+export type BuildFieldClauseExprType = Record<string, string | number | boolean | ComparisonWhereExpr>;

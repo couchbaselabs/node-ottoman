@@ -46,6 +46,9 @@ export abstract class Model<T = any> extends Document<T> {
    * User.find({name: "Jane"}, {limit: 10})
    * // will return a list of all users with the name "Jane" and limited to 10 items
    *
+   * User.find({name: "Jane"}, {ignoreCase: true})
+   * // will return a list of all users with the name "Jane" ignoring case
+   *
    * ```
    *
    * ```javascript
@@ -103,6 +106,9 @@ export abstract class Model<T = any> extends Document<T> {
    * ```javascript
    * User.findOne({name: "Jane"})
    * // will return a document with a User with the name "Jane" or null in case of not finding it
+   *
+   * User.findOne({name: "Jane"}, {ignoreCase: true})
+   * // will return a list of all users with the name "Jane" ignoring case
    * ```
    */
   // eslint-disable-next-line no-unused-vars
@@ -276,6 +282,8 @@ export abstract class Model<T = any> extends Document<T> {
    * @example
    * ```javascript
    * const result = await User.removeMany({ name: { $like: '%John Doe%' } })
+   * // Could also use:
+   * const result = await User.removeMany({ name:'John Doe' }, { ignoreCase: true })
    * ```
    *
    * @param filter Filter Condition [Where Expression](/classes/query.html#where)

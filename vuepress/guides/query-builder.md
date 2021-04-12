@@ -54,7 +54,7 @@ const query = new Query(params, 'travel-sample').build();
 console.log(query);
 ```
 
-> SELECT COUNT(type) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((price>amount_val AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20")) AND ANY search IN address SATISFIES address="10" END AND search IN ["address"] GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING type LIKE "%hotel%" ORDER BY type DESC LIMIT 10 OFFSET 1
+> SELECT COUNT(type) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((price>"amount_val" AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20") AND (LOWER(name) = LOWER("John"))) AND ANY search IN address SATISFIES address="10" END AND search IN ["address"] GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING type LIKE "%hotel%" ORDER BY type DESC LIMIT 10 OFFSET 1
 
 ### Build a query by using access functions
 
@@ -150,7 +150,7 @@ const where = {
       $or: [{ id: { $btw: [1, 2000] } }, { id: { $notBtw: [2001, 8000] } }],
     },
     {
-      address: { $like: '%20%' },
+      address: { $like: 'St%', $ignoreCase: true },
     },
   ],
 };
@@ -158,7 +158,39 @@ const query = new Query({}, 'travel-sample').select().where(where).limit(20).bui
 console.log(query);
 ```
 
-> SELECT \* FROM `travel-sample` WHERE (address IS NULL OR free_breakfast IS MISSING OR free_breakfast IS NOT VALUED OR id=8000 OR id!=9000 OR id>7000 OR id>=6999 OR id<5000 OR id<=4999) AND (address IS NOT NULL AND address IS NOT MISSING AND address IS VALUED) AND NOT (address LIKE '%59%' AND name NOT LIKE 'Otto%' AND (id BETWEEN 1 AND 2000 OR id NOT BETWEEN 2001 AND 8000) AND address LIKE '%20%') LIMIT 20
+> SELECT * FROM `travel-sample` WHERE (address IS NULL OR free_breakfast IS MISSING OR free_breakfast IS NOT VALUED OR id=8000 OR id!=9000 OR id>7000 OR id>=6999 OR id<5000 OR id<=4999) AND (address IS NOT NULL AND address IS NOT MISSING AND address IS VALUED) AND NOT (address LIKE "%59%" AND name NOT LIKE "Otto%" AND (id BETWEEN 1 AND 2000 OR id NOT BETWEEN 2001 AND 8000) AND (LOWER(address) LIKE LOWER("St%"))) LIMIT 20
+
+::: tip Note
+Can also use `ignoreCase` as part of the `build` method, this will always prioritize the `$ignoreCase` value defined in clause
+
+```ts
+  const expr_where = {
+   $or: [
+     { address: { $like: '%57-59%', $ignoreCase: false } }, // ignoreCase will not be applied
+     { free_breakfast: true },
+     { name: { $eq: 'John' } } //  ignoreCase will be applied
+   ],
+ };
+/**
+ * Can also use:
+ * const expr_where = {
+ *   $or: [
+ *     ...
+ *     { name:'John' } //  ignoreCase will be applied
+ *   ],
+ * };
+ * 
+ */
+const query = new Query({}, 'travel-sample');
+const result = query.select([{ $field: 'address' }])
+                    .where(expr_where)
+                    .build({ ignoreCase: true }); // ignore case is enabled for where clause elements
+console.log(result)
+```
+Would have as output:
+> SELECT address FROM `travel-sample` WHERE (address LIKE "%57-59%" OR free_breakfast=true OR `(LOWER(name) = LOWER("John"))`)
+:::
+
 
 ## N1QL SELECT clause structure
 
