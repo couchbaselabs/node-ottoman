@@ -109,11 +109,11 @@ test('test strict false schema model create', async () => {
   const doc = new Model({ name, notInSchema: true });
   await doc.save();
 
-  expect(doc.name).toBe(name);
-  expect(doc.notInSchema).toBe(true);
-
   const docs = await Model.find({ name }, { consistency: SearchConsistency.LOCAL });
   const findDoc = docs.rows[0];
+  await Model.removeMany({ name: { $like: 'name-strict-%' } });
+  expect(doc.name).toBe(name);
+  expect(doc.notInSchema).toBe(true);
   expect(findDoc.name).toBe(name);
   expect(findDoc.notInSchema).toBe(true);
 });
