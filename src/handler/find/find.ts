@@ -5,7 +5,7 @@ import { getProjectionFields } from '../../utils/query/extract-select';
 import { canBePopulated } from '../../utils/populate/can-be-populated';
 import { extractPopulate } from '../../utils/query/extract-populate';
 import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
-import { SearchConsistency } from '../..';
+import { getModelMetadata, SearchConsistency } from '../..';
 import { CAST_STRATEGY } from '../../utils/cast-strategy';
 
 /**
@@ -15,7 +15,7 @@ import { CAST_STRATEGY } from '../../utils/cast-strategy';
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
   const { skip, limit, sort, populate, select, noCollection, populateMaxDeep, consistency, lean, ignoreCase } = options;
-  const { ottoman, collectionName, modelKey, scopeName, modelName } = metadata;
+  const { ottoman, collectionName, modelKey, scopeName, modelName, ID_KEY, schema } = metadata;
   const { bucketName, cluster, couchbase } = ottoman;
   let fromClause = bucketName;
   let selectDot = bucketName;
@@ -24,11 +24,21 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
     selectDot = collectionName;
   }
   // Handling select
+  const Model = ottoman.getModel(modelName);
+  let fields: any = Object.keys(getModelMetadata(Model).schema.fields);
+
+  if (!fields.includes(ID_KEY)) {
+    fields.push(ID_KEY);
+  }
+  fields = fields.map((field) => `\`${field}\``);
+  if (select || !schema.options.strict) {
+    fields = select;
+  }
   const projectionFields = getProjectionFields(
     selectDot,
-    select,
+    fields,
     {
-      noCollection,
+      noCollection: !schema.options.strict ? noCollection : true,
     },
     modelKey,
   );
@@ -65,7 +75,6 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
 
   return result.then(async (r: { rows: unknown[] }) => {
     if (select !== 'RAW COUNT(*) as count') {
-      const Model = ottoman.getModel(modelName);
       r.rows = r.rows.map((row) => new Model(row, { strict: false, strategy: CAST_STRATEGY.KEEP }));
       if (populate) {
         const populateFields = extractPopulate(populate);
