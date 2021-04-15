@@ -12,4 +12,5 @@ export interface ModelMetadata {
   modelKey: string;
   maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata }) => string;
+  keyGeneratorDelimiter?: string;
 }

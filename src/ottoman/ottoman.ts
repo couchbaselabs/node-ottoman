@@ -9,7 +9,9 @@ import {
   DEFAULT_MAX_EXPIRY,
   DEFAULT_SCOPE,
   KEY_GENERATOR,
+  KEY_GENERATOR_DELIMITER,
   MODEL_KEY,
+  validateDelimiter,
 } from '../utils/constants';
 import { getModelMetadata, SearchConsistency } from '..';
 import { isDebugMode } from '../utils/is-debug-mode';
@@ -41,6 +43,7 @@ interface OttomanConfig {
   searchConsistency?: SearchConsistency;
   maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata }) => string;
+  keyGeneratorDelimiter?: string;
 }
 
 /**
@@ -179,6 +182,9 @@ export class Ottoman {
   couchbase;
 
   constructor(config: OttomanConfig = {}) {
+    if (config.keyGeneratorDelimiter) {
+      validateDelimiter(config.keyGeneratorDelimiter);
+    }
     this.config = config;
     if (!__ottoman) {
       __ottoman = this;
@@ -216,10 +222,15 @@ export class Ottoman {
     if (this.models[name]) {
       throw new OttomanError(`A model with name '${name}' has already been registered.`);
     }
+    if (options.keyGeneratorDelimiter) {
+      validateDelimiter(options.keyGeneratorDelimiter);
+    }
     const modelOptions = options as CreateModelOptions;
     modelOptions.collectionName = options.collectionName || this.config.collectionName || name;
     modelOptions.scopeName = options.scopeName || this.config.scopeName || DEFAULT_SCOPE;
     modelOptions.keyGenerator = options.keyGenerator || this.config.keyGenerator || KEY_GENERATOR;
+    modelOptions.keyGeneratorDelimiter =
+      options.keyGeneratorDelimiter || this.config.keyGeneratorDelimiter || KEY_GENERATOR_DELIMITER;
     modelOptions.modelKey = options.modelKey || this.config.modelKey || MODEL_KEY;
     modelOptions.idKey = options.idKey || this.config.idKey || DEFAULT_ID_KEY;
     modelOptions.maxExpiry = options.maxExpiry || this.config.maxExpiry || DEFAULT_MAX_EXPIRY;

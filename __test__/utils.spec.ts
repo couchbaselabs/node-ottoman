@@ -1,5 +1,5 @@
 import { bucketName, connectionString, connectUri, password, username } from './testData';
-import { model, set, ValidationError } from '../src';
+import { model, Ottoman, set, ValidationError } from '../src';
 import { isModel } from '../src/utils/is-model';
 import { extractConnectionString } from '../src/utils/extract-connection-string';
 import { is } from '../src';
@@ -7,7 +7,7 @@ import { isMetadataKey } from '../src/utils/is-metadata';
 import { _keyGenerator, KEY_GENERATOR, MODEL_KEY } from '../src/utils/constants';
 import { canBePopulated } from '../src/utils/populate/can-be-populated';
 import { pathToN1QL, PathToN1QLItemType } from '../src/utils/path-to-n1ql';
-import { PathN1qlError } from '../src/exceptions/ottoman-errors';
+import { BadKeyGeneratorDelimiterError, PathN1qlError } from '../src/exceptions/ottoman-errors';
 
 test('Build connection options from string', () => {
   const result = extractConnectionString(connectUri);
@@ -96,6 +96,34 @@ test('util.canBePopulated', async () => {
 test('_keyGenerator', async () => {
   const key = _keyGenerator(KEY_GENERATOR, { metadata: { modelName: 'keyGen' }, id: 123 });
   expect(key).toBe('keyGen::123');
+});
+
+test('keyGeneratorDelimiter fail not allowed characters', async () => {
+  try {
+    new Ottoman({ keyGeneratorDelimiter: ',' });
+  } catch (e) {
+    expect(e).toBeInstanceOf(BadKeyGeneratorDelimiterError);
+    expect(e.message).toBe(`Invalid keyGeneratorDelimiter value, the supported characters ~!#$%&*_-:<>?`);
+  }
+});
+
+test('keyGeneratorDelimiter fail exceed maximum allowed characters', async () => {
+  try {
+    new Ottoman({ keyGeneratorDelimiter: ':::' });
+  } catch (e) {
+    expect(e).toBeInstanceOf(BadKeyGeneratorDelimiterError);
+    expect(e.message).toBe(`keyGeneratorDelimiter only support up to 2 characters`);
+  }
+});
+
+test('keyGeneratorDelimiter at Model level fail exceed maximum allowed characters', async () => {
+  try {
+    const ottoman2 = new Ottoman();
+    ottoman2.model('Delimiter', { name: String }, { keyGeneratorDelimiter: ':::' });
+  } catch (e) {
+    expect(e).toBeInstanceOf(BadKeyGeneratorDelimiterError);
+    expect(e.message).toBe(`keyGeneratorDelimiter only support up to 2 characters`);
+  }
 });
 
 describe('pathToN1QL', () => {

@@ -36,6 +36,7 @@ interface OttomanConfig {
   searchConsistency?: SearchConsistency;
   maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata }) => string;
+  keyGeneratorDelimiter?: string;
 }
 ```
 
@@ -47,12 +48,30 @@ interface OttomanConfig {
 - `searchConsistency`: define default Search Consistency Strategy. The default value is `SearchConsistency.NONE`
 - `maxExpiry`: value used to create a collection for this instance. The default value is `300000`.
 - `keyGenerator`: function to generate the key to store documents.
+- `keyGeneratorDelimiter`: string value used to build the document key. The default value is `::`.
 
 The default implementation for `keyGenerator` function is:
 ```typescript
 KEY_GENERATOR = ({ metadata }) => `${metadata.modelName}`;
 ```
 `keyGenerator` can be overridden for each `Model` if you want, check this in [model options](/guides/model.html#model-options)
+
+`keyGeneratorDelimiter` have 2 restrictions:
+1. Only support up to 2 characters
+2. The available characters are `~!#$%&*_\-:<>?`. 
+
+:::warning Warning
+If the value provided to `keyGeneratorDelimiter` is invalid Ottoman will throw a BadKeyGeneratorDelimiterError exception.
+:::
+
+Some examples of `keyGeneratorDelimiter`:
+- `::` (Default delimiter)
+- `&`
+- `&?`
+- `_` 
+- `##` 
+
+`keyGeneratorDelimiter` can be overridden for each `Model` if you want, check this in [model options](/guides/model.html#model-options)
 
 # Connections
 

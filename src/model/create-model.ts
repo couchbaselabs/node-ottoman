@@ -27,7 +27,7 @@ import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors
 export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel) => {
   const schema = schemaDraft instanceof Schema ? schemaDraft : new Schema(schemaDraft);
 
-  const { idKey: ID_KEY, modelKey, scopeName, collectionName, keyGenerator } = options;
+  const { idKey: ID_KEY, modelKey, scopeName, collectionName, keyGenerator, keyGeneratorDelimiter } = options;
   const collection = () => ottoman.getCollection(collectionName, scopeName);
   const maxExpiry = options && options.maxExpiry ? options.maxExpiry : DEFAULT_MAX_EXPIRY;
 
@@ -42,6 +42,7 @@ export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel
     modelKey,
     keyGenerator,
     maxExpiry,
+    keyGeneratorDelimiter,
   };
 
   const ModelFactory = _buildModel(metadata);
@@ -91,7 +92,17 @@ export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel
 };
 
 export const _buildModel = (metadata: ModelMetadata) => {
-  const { schema, collection, ID_KEY, modelKey, scopeName, ottoman, modelName, keyGenerator } = metadata;
+  const {
+    schema,
+    collection,
+    ID_KEY,
+    modelKey,
+    scopeName,
+    ottoman,
+    modelName,
+    keyGenerator,
+    keyGeneratorDelimiter,
+  } = metadata;
   return class _Model<T> extends Model<T> {
     constructor(data, options: CastOptions = {}) {
       super(data);
@@ -173,7 +184,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
         findOptions['project'] = extractSelect(findOptions.select, { noCollection: true }, false, modelKey);
         delete findOptions.select;
       }
-      const key = _keyGenerator!(keyGenerator, { metadata, id });
+      const key = _keyGenerator!(keyGenerator, { metadata, id }, keyGeneratorDelimiter);
       const { value } = await collection().get(key, findOptions);
 
       const ModelFactory = ottoman.getModel(modelName);
