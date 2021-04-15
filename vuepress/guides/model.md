@@ -61,6 +61,7 @@ interface ModelOptions {
   modelKey?: string;
   maxExpiry?: string;
   keyGenerator?: (params: { metadata: ModelMetadata }) => string;
+  keyGeneratorDelimiter?: string;
 }
 ```
 
@@ -70,8 +71,9 @@ interface ModelOptions {
 - `modelKey`: define the key to store the model name into the document. The default value is `_type`
 - `maxExpiry`: value used to create a collection for this instance. The default value is `300000`.
 - `keyGenerator`: function to generate the key to store documents.
+- `keyGeneratorDelimiter`: string value used to build the document key. The default value is `::`
 
-If you don't provided a `keyGenerator` implementation it will be inherited by `Ottoman` instance options, check this in [Ottoman options](/guides/ottoman.html#ottoman-constructor-options)
+If you don't provided a `keyGenerator` or `keyGeneratorDelimiter` implementation it will be inherited by `Ottoman` instance options, check this in [Ottoman options](/guides/ottoman.html#ottoman-constructor-options)
 
 ### Model id
 

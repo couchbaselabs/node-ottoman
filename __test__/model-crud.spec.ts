@@ -1,13 +1,14 @@
 import {
+  DocumentExistsError,
+  DocumentNotFoundError,
+  getDefaultInstance,
+  isDocumentNotFoundError,
   model,
+  Ottoman,
   Schema,
   SearchConsistency,
-  getDefaultInstance,
-  DocumentExistsError,
-  isDocumentNotFoundError,
-  DocumentNotFoundError,
 } from '../src';
-import { delay, startInTest } from './testData';
+import { connectUri, delay, startInTest } from './testData';
 import { OttomanError } from '../src/exceptions/ottoman-errors';
 
 const accessDoc = {
@@ -334,6 +335,37 @@ describe('Test Document Access Functions', () => {
     const document = await UserModel.findById(user[idKey]);
     expect(document[idKey]).toBe(user[idKey]);
     expect(document[idKey]).toBe(key);
+  });
+
+  test('UserModel keyGeneratorDelimiter at Model Level', async () => {
+    const Model = model('Airlines', schema, { keyGeneratorDelimiter: '__' });
+    startInTest(getDefaultInstance());
+    const user = await Model.create({
+      type: 'airline',
+      isActive: false,
+      name: 'Ottoman Access List',
+    });
+    const result = await Model.find({ id: user.id }, { select: 'meta().id', consistency: SearchConsistency.LOCAL });
+    const document = result.rows[0];
+    expect(document).toBeDefined();
+    expect(document.id.startsWith('Airlines__')).toBeDefined();
+  });
+
+  test('UserModel keyGeneratorDelimiter at Instance Level', async () => {
+    const ottoman2 = new Ottoman({ keyGeneratorDelimiter: '__', collectionName: '_default' });
+    ottoman2.connect(connectUri);
+    const Model = ottoman2.model('Airlines', schema);
+    startInTest(ottoman2);
+    const user = await Model.create({
+      type: 'airline',
+      isActive: false,
+      name: 'Ottoman Access List',
+    });
+    const result = await Model.find({ id: user.id }, { select: 'meta().id', consistency: SearchConsistency.LOCAL });
+    const document = result.rows[0];
+    ottoman2.close();
+    expect(document).toBeDefined();
+    expect(document.id.startsWith('Airlines__')).toBeDefined();
   });
 
   test('UserModel save enforce createOnly', async () => {

@@ -129,7 +129,16 @@ export abstract class Document<T> {
    * ```
    */
   async save(onlyCreate = false) {
-    const { scopeName, collectionName, modelKey, collection, keyGenerator, modelName, ottoman } = this.$;
+    const {
+      scopeName,
+      collectionName,
+      modelKey,
+      collection,
+      keyGenerator,
+      modelName,
+      ottoman,
+      keyGeneratorDelimiter,
+    } = this.$;
     const data = extractDataFromModel(this);
     const options: any = {};
     let id = this._getId();
@@ -143,14 +152,14 @@ export abstract class Document<T> {
     let key = '';
     if (!id) {
       id = generateUUID();
-      key = _keyGenerator!(keyGenerator, { metadata, id });
+      key = _keyGenerator!(keyGenerator, { metadata, id }, keyGeneratorDelimiter);
       if (!data[this._getIdField()]) {
         data[this._getIdField()] = id;
       }
       refKeys.add = newRefKeys;
     } else {
       try {
-        key = _keyGenerator!(keyGenerator, { metadata, id });
+        key = _keyGenerator!(keyGenerator, { metadata, id }, keyGeneratorDelimiter);
         const { cas, value: oldData } = await collection().get(key);
         if (cas && onlyCreate) {
           throw new DocumentExistsError();
@@ -186,14 +195,14 @@ export abstract class Document<T> {
   async remove(options = {}) {
     const data = extractDataFromModel(this);
     const metadata = this.$;
-    const { keyGenerator, scopeName, collectionName, ottoman } = metadata;
+    const { keyGenerator, scopeName, collectionName, ottoman, keyGeneratorDelimiter } = metadata;
     const prefix = `${scopeName}${collectionName}`;
     const refKeys = {
       add: [],
       remove: getModelRefKeys(data, prefix, ottoman),
     };
     const idValue = this._getId();
-    const id = _keyGenerator!(keyGenerator, { metadata, id: idValue });
+    const id = _keyGenerator!(keyGenerator, { metadata, id: idValue }, keyGeneratorDelimiter);
     const { result, document } = await removeLifeCycle({ id, options, metadata, refKeys, data });
     this._applyData(document);
     return result;

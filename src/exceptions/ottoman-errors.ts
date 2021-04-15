@@ -13,3 +13,6 @@ export class BuildSchemaError extends OttomanError {}
 export class ImmutableError extends OttomanError {}
 export class BuildIndexQueryError extends OttomanError {}
 export class BuildQueryError extends OttomanError {}
+export class BadKeyGeneratorDelimiterError extends OttomanError {
+  name = 'BadKeyGeneratorDelimiter';
+}
