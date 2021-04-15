@@ -11,7 +11,7 @@ export const validateMinLimit = (
   property: string,
 ): string | void => {
   if (typeof min === 'number' && min > val) {
-    return `Property '${property}' is less than the minimum allowed value ${min}`;
+    return `Property '${property}' is less than the minimum allowed value of '${min}'`;
   }
   if (typeof min !== 'undefined') {
     const _obj = min as MinmaxOption;
@@ -27,7 +27,7 @@ export const validateMaxLimit = (
   property: string,
 ): string | void => {
   if (typeof max === 'number' && max < val) {
-    return `Property '${property}' is more than the maximum allowed value ${max}`;
+    return `Property '${property}' is more than the maximum allowed value of '${max}'`;
   }
   if (typeof max !== 'undefined') {
     const _obj = max as MinmaxOption;
