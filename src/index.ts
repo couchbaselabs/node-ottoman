@@ -5,7 +5,7 @@ export {
   start,
   close,
   getDefaultInstance,
-  getOttomanIntances,
+  getOttomanInstances,
   getModel,
   Ottoman,
   CertificateAuthenticator,
