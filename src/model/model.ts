@@ -105,10 +105,10 @@ export abstract class Model<T = any> extends Document<T> {
    * @example
    * ```javascript
    * User.findOne({name: "Jane"})
-   * // will return a document with a User with the name "Jane" or null in case of not finding it
+   * // will return a document with a User with the name "Jane" or throw a DocumentNotFoundError exception in case of not finding it
    *
    * User.findOne({name: "Jane"}, {ignoreCase: true})
-   * // will return a list of all users with the name "Jane" ignoring case
+   * // will return a an user with the name "Jane" ignoring case
    * ```
    */
   // eslint-disable-next-line no-unused-vars

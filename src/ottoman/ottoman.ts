@@ -429,7 +429,7 @@ const delay = (timems) =>
   });
 
 export const getDefaultInstance = () => __ottoman;
-export const getOttomanIntances = () => __ottomanInstances;
+export const getOttomanInstances = () => __ottomanInstances;
 export const connect = (connectOptions: ConnectOptions | string) => {
   if (!__ottoman) {
     new Ottoman();
