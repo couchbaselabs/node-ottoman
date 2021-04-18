@@ -1,24 +1,21 @@
-import * as couchbase from 'couchbase';
-import { BucketNotFoundError, CollectionNotFoundError, ScopeNotFoundError } from '../exceptions/ottoman-errors';
+import { BucketNotFoundError, CollectionNotFoundError, CouchbaseError, ScopeNotFoundError } from 'couchbase';
 
-export function parseError(e: couchbase.CouchbaseError, info: any): void {
-  const { message, cause } = e;
-  const response: string = cause?.response ?? '';
+export function parseError(e: CouchbaseError, info: any): void {
+  const { message, context } = e;
+  console.log(`ERROR: `, e);
+  console.log(`MESSAGE: ${JSON.stringify(message)}`);
 
-  if (response.includes('scope_not_found') || e instanceof couchbase.ScopeNotFoundError) {
-    throw new ScopeNotFoundError(
-      `${message}${message.includes('drop collection') ? ` '${info.collectionName}'` : ''}, scope '${
-        info.scopeName
-      }' not found`,
-    );
+  if (e instanceof ScopeNotFoundError) {
+    e.message = `failed to drop scope, scope '${info.scopeName}' not found`;
   }
-  if (response.includes('collection_not_found') || e instanceof couchbase.CollectionNotFoundError) {
-    throw new CollectionNotFoundError(
-      `${message}, in scope '${info.scopeName}' collection '${info.collectionName}' not found`,
-    );
+  if (e instanceof CollectionNotFoundError) {
+    e.message = `failed to drop collection, in scope '${info.scopeName}' collection '${info.collectionName}' not found`;
   }
-  if (e instanceof couchbase.BucketNotFoundError) {
-    throw new BucketNotFoundError(`failed to drop bucket, bucket '${info.bucketName}' not found`);
+  if (e instanceof BucketNotFoundError) {
+    e.message = `failed to drop bucket, bucket '${info.bucketName}' not found`;
   }
-  throw new couchbase.CouchbaseError(message);
+  if (message === 'failed to drop collection' && (context as any)?.response_body?.includes('scope_not_found')) {
+    e.message = `failed to drop collection '${info.collectionName}', scope '${info.scopeName}' not found`;
+  }
+  throw e;
 }

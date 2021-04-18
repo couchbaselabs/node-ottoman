@@ -1,30 +1,30 @@
-import couchbase from 'couchbase';
-import { CountOptions, Model } from './model';
-import { nonenumerable } from '../utils/noenumarable';
-import { _keyGenerator, DEFAULT_MAX_EXPIRY } from '../utils/constants';
-import { extractSelect } from '../utils/query/extract-select';
+import { DocumentNotFoundError } from 'couchbase';
+import { SearchConsistency } from '..';
+import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 import { createMany, find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
-import { CreateModel } from './interfaces/create-model.interface';
-import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { FindByIdOptions, IFindOptions } from '../handler/';
-import { getModelMetadata, setModelMetadata } from './utils/model.utils';
-import { buildViewIndexQuery } from './index/view/build-view-index-query';
-import { buildIndexQuery } from './index/n1ql/build-index-query';
-import { indexFieldsName } from './index/helpers/index-field-names';
-import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
 import { LogicalWhereExpr } from '../query';
 import { Schema } from '../schema';
-import { ModelTypes } from './model.types';
-import { SearchConsistency } from '..';
-import { UpdateManyOptions } from './interfaces/update-many.interface';
-import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { cast, CAST_STRATEGY, CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
-import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
+import { _keyGenerator, DEFAULT_MAX_EXPIRY } from '../utils/constants';
+import { nonenumerable } from '../utils/noenumarable';
+import { extractSelect } from '../utils/query/extract-select';
+import { indexFieldsName } from './index/helpers/index-field-names';
+import { buildIndexQuery } from './index/n1ql/build-index-query';
+import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
+import { buildViewIndexQuery } from './index/view/build-view-index-query';
+import { CreateModel } from './interfaces/create-model.interface';
+import { FindOneAndUpdateOption } from './interfaces/find.interface';
+import { ModelMetadata } from './interfaces/model-metadata.interface';
+import { UpdateManyOptions } from './interfaces/update-many.interface';
+import { CountOptions, Model } from './model';
+import { ModelTypes } from './model.types';
+import { getModelMetadata, setModelMetadata } from './utils/model.utils';
 
 /**
  * @ignore
  */
-export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel) => {
+export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel): ModelTypes => {
   const schema = schemaDraft instanceof Schema ? schemaDraft : new Schema(schemaDraft);
 
   const { idKey: ID_KEY, modelKey, scopeName, collectionName, keyGenerator, keyGeneratorDelimiter } = options;
@@ -157,7 +157,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       collectionName?: string,
       scopeName?: string,
       options: { timeout?: number } = {},
-    ): Promise<boolean | undefined> {
+    ): Promise<void> {
       const _collectionName = collectionName || metadata.collectionName;
       const _scopeName = scopeName || metadata.scopeName;
       return ottoman.dropCollection(_scopeName, _collectionName, options);
@@ -206,7 +206,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
         return response.rows[0];
       }
-      throw new (couchbase as any).DocumentNotFoundError();
+      throw new DocumentNotFoundError();
     };
 
     static create = async (data: Record<string, any>): Promise<any> => {
@@ -259,7 +259,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static removeMany = async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
       const response = await find(metadata)(filter, options);
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
-        return removeMany(metadata)(response.rows.map((v) => v[ID_KEY]));
+        return removeMany(metadata)(response.rows.map((v: any) => v[ID_KEY]));
       }
       return new ManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
     };

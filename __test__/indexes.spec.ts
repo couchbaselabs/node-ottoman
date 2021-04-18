@@ -1,6 +1,7 @@
-import { Schema, model, getDefaultInstance, ViewIndexOptions } from '../src';
-import { delay, startInTest } from './testData';
+import { ViewQueryOptions } from 'couchbase';
+import { getDefaultInstance, model, Schema } from '../src';
 import { BuildIndexQueryError } from '../src/exceptions/ottoman-errors';
+import { delay, startInTest } from './testData';
 
 describe('Indexes', () => {
   const UserSchema = new Schema({
@@ -68,7 +69,7 @@ describe('Indexes', () => {
       );
     }
 
-    const viewIndexOptions = new ViewIndexOptions({ limit: 1 });
+    const viewIndexOptions: ViewQueryOptions = { limit: 1 };
     const usersView = await User.findByName(userData.name, viewIndexOptions);
     expect(usersView).toBeDefined();
 

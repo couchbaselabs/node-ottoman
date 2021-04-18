@@ -1,22 +1,23 @@
 import { buildWhereClauseExpr, getDefaultInstance, LogicalWhereExpr, model, Query } from '../src';
 import { delay, startInTest } from './testData';
 
+const doc1 = {
+  type: 'airline',
+  isActive: false,
+  name: 'Ottoman Access Find',
+};
+const doc2 = {
+  type: 'airline',
+  isActive: false,
+  name: 'OTTOMAN ACCESS FIND',
+};
+const schema = {
+  type: String,
+  isActive: Boolean,
+  name: String,
+};
+
 describe('Options to ignore case', () => {
-  const doc1 = {
-    type: 'airline',
-    isActive: false,
-    name: 'Ottoman Access Find',
-  };
-  const doc2 = {
-    type: 'airline',
-    isActive: false,
-    name: 'OTTOMAN ACCESS FIND',
-  };
-  const schema = {
-    type: String,
-    isActive: Boolean,
-    name: String,
-  };
   test(`Ignore case with buildWhereClause`, () => {
     const where01: LogicalWhereExpr = {
       name: 'John',
@@ -49,38 +50,16 @@ describe('Options to ignore case', () => {
     expect(buildWhereClauseExpr('', where4, true)).toStrictEqual('LOWER(name) = LOWER("John")');
   });
 
-  test('Test ignoreCase false value', async () => {
+  test('Test ignoreCase false value', () => {
     const where = { name: { $eq: 'oTToman aCCess', $ignoreCase: false } };
     const result = buildWhereClauseExpr('', where);
     expect(result).toBe('(name="oTToman aCCess")');
   });
 
-  test('Test ignoreCase boolean exception', async () => {
+  test('Test ignoreCase boolean exception', () => {
     const where = { name: { $eq: 'oTToman aCCess', $ignoreCase: 'true' } };
     const test = () => buildWhereClauseExpr('', where);
     expect(test).toThrow(new TypeError('The data type of $ignoreCase must be Boolean'));
-  });
-
-  test('Using find $eq', async () => {
-    const UserModel = model('User', schema);
-    await startInTest(getDefaultInstance());
-    const { id } = await UserModel.create(doc1);
-    await delay(500);
-    const { rows: documents } = await UserModel.find({ name: { $eq: 'oTToman aCCess find', $ignoreCase: true } });
-    await UserModel.removeById(id);
-    expect(documents[0].name).toStrictEqual('Ottoman Access Find');
-  });
-
-  test('Using find $like', async () => {
-    const UserModel = model('User', schema);
-    await startInTest(getDefaultInstance());
-    const { id } = await UserModel.create(doc1);
-    await delay(500);
-    const { rows: documents } = await UserModel.find({
-      name: { $like: 'oTToman aCCess find', $ignoreCase: true },
-    });
-    await UserModel.removeById(id);
-    expect(documents[0].name).toStrictEqual('Ottoman Access Find');
   });
 
   test('Using find with ignoreCase options', async () => {
@@ -89,12 +68,7 @@ describe('Options to ignore case', () => {
     const { id } = await UserModel.create(doc1);
     await delay(1500);
 
-    const { rows: documents } = await UserModel.find(
-      {
-        name: { $like: 'oTToman aCCess find' },
-      },
-      { ignoreCase: true },
-    );
+    const { rows: documents } = await UserModel.find({ name: { $like: 'oTToman aCCess find' } }, { ignoreCase: true });
     await UserModel.removeById(id);
     expect(documents[0].name).toStrictEqual('Ottoman Access Find');
   });
@@ -115,23 +89,26 @@ describe('Options to ignore case', () => {
     expect(documents[0].name).toStrictEqual('Ottoman Access Find');
   });
 
-  test('Using find with ignoreCase option overwrite in property ', async () => {
+  test('Using find $eq', async () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
-    const { id: id1 } = await UserModel.create(doc1);
-    const { id: id2 } = await UserModel.create(doc2);
+    await UserModel.create(doc1);
     await delay(500);
+    const { rows: documents } = await UserModel.find({ name: { $eq: 'oTToman aCCess find', $ignoreCase: true } });
+    await UserModel.removeMany({ _type: 'User' });
+    expect(documents[0].name).toStrictEqual('Ottoman Access Find');
+  });
 
-    const { rows: documents } = await UserModel.find(
-      {
-        name: { $like: 'OTTOMAN ACCESS FIND', $ignoreCase: false },
-      },
-      { ignoreCase: true },
-    );
-    await UserModel.removeById(id1);
-    await UserModel.removeById(id2);
-    expect(documents[0].id).toStrictEqual(id2);
-    expect(documents[0].name).toStrictEqual('OTTOMAN ACCESS FIND');
+  test('Using find $like', async () => {
+    const UserModel = model('User', schema);
+    await startInTest(getDefaultInstance());
+    const { id } = await UserModel.create(doc1);
+    await delay(500);
+    const { rows: documents } = await UserModel.find({
+      name: { $like: 'oTToman aCCess find', $ignoreCase: true },
+    });
+    await UserModel.removeById(id);
+    expect(documents[0].name).toStrictEqual('Ottoman Access Find');
   });
 
   test('Using findOne with ignoreCase option', async () => {
@@ -140,12 +117,7 @@ describe('Options to ignore case', () => {
     const { id: idToRemove } = await UserModel.create(doc1);
     await delay(500);
 
-    const { id, name } = await UserModel.findOne(
-      {
-        name: { $like: 'oTToman aCCess find' },
-      },
-      { ignoreCase: true },
-    );
+    const { id, name } = await UserModel.findOne({ name: { $like: 'oTToman aCCess find' } }, { ignoreCase: true });
     await UserModel.removeById(idToRemove);
     expect(id).toStrictEqual(idToRemove);
     expect(name).toStrictEqual('Ottoman Access Find');
@@ -156,12 +128,7 @@ describe('Options to ignore case', () => {
     const { id: idToRemove } = await UserModel.create(doc1);
     await delay(500);
 
-    const { id, name } = await UserModel.findOne(
-      {
-        name: 'oTToman aCCess find',
-      },
-      { ignoreCase: true },
-    );
+    const { id, name } = await UserModel.findOne({ name: 'oTToman aCCess find' }, { ignoreCase: true });
     await UserModel.removeById(idToRemove);
     expect(id).toStrictEqual(idToRemove);
     expect(name).toStrictEqual('Ottoman Access Find');
@@ -197,5 +164,21 @@ describe('Options to ignore case', () => {
     expect(result).toBe(
       'SELECT address FROM `travel-sample` WHERE (LOWER(address) LIKE LOWER("%nY-CitY%") OR free_breakfast=true OR (name="John"))',
     );
+  });
+
+  test('Using find with ignoreCase option overwrite in property ', async () => {
+    const UserModel = model('User', schema);
+    await startInTest(getDefaultInstance());
+    await UserModel.create(doc1);
+    const { id: id2 } = await UserModel.create(doc2);
+    await delay(500);
+
+    const { rows: documents } = await UserModel.find(
+      { name: { $like: 'OTTOMAN ACCESS FIND', $ignoreCase: false } },
+      { ignoreCase: true },
+    );
+    await UserModel.removeMany({ _type: 'User' });
+    expect(documents[0].id).toStrictEqual(id2);
+    expect(documents[0].name).toStrictEqual('OTTOMAN ACCESS FIND');
   });
 });

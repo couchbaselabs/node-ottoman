@@ -1,5 +1,4 @@
-import couchbase from 'couchbase';
-
+import { DocumentNotFoundError } from 'couchbase';
 import { getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema, SearchConsistency } from '../src';
 import { updateCallback } from '../src/handler';
 import { delay, startInTest } from './testData';
@@ -22,11 +21,12 @@ describe('Test Document Update Many', () => {
     await batchCreate();
     await delay(500);
     const response: IManyQueryResponse = await Cat.updateMany({ name: { $like: '%Cat%' } }, { name: 'Cats' });
-    expect(response.message.success).toBe(4);
-    expect(response.message.match_number).toBe(4);
     await delay(500);
+
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
+    expect(response.message.success).toBe(4);
+    expect(response.message.match_number).toBe(4);
   });
 
   test('Test Update Many Function Document Not Found Error', async () => {
@@ -55,11 +55,12 @@ describe('Test Document Update Many', () => {
       { name: 'Cats', age: 20 },
       { upsert: true },
     );
-    expect(response.message.match_number).toBe(0);
-    expect(response.message.success).toBe(1);
+
     await delay(500);
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
+    expect(response.message.match_number).toBe(0);
+    expect(response.message.success).toBe(1);
   });
 
   test('Update Many Response Errors', async () => {
@@ -75,12 +76,12 @@ describe('Test Document Update Many', () => {
     try {
       await updateCallback({ ...doc, id: 'dummy_id' }, metadata, { name: 'Cat' });
     } catch (error) {
-      const dnf = new (couchbase as any).DocumentNotFoundError();
+      const dnf = new DocumentNotFoundError();
+      const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
+      await cleanUp();
       expect(error.exception).toBe(dnf.constructor.name);
       expect(error.message).toBe(dnf.message);
       expect(error.status).toBe('FAILURE');
-      const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
-      await cleanUp();
     }
   });
 
@@ -98,12 +99,12 @@ describe('Test Document Update Many', () => {
 
     const response: IManyQueryResponse = await Cat.updateMany({ name: { $like: '%Cat%' } }, { age: 'Cats' });
 
-    expect(response.status).toBe('FAILURE');
-    expect(response.message.errors[0].exception).toBe('ValidationError');
-
     await delay(500);
+
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
+    expect(response.status).toBe('FAILURE');
+    expect(response.message.errors[0].exception).toBe('ValidationError');
   });
   test('Test Update Many Function Wrong Value', async () => {
     const CatSchema = new Schema({
@@ -124,10 +125,10 @@ describe('Test Document Update Many', () => {
       { isActive: 'active' },
       { consistency: SearchConsistency.LOCAL },
     );
-    expect(response.status).toBe('FAILURE');
-    expect(response.message.errors[0].exception).toBe('ValidationError');
     await delay(500);
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
+    expect(response.status).toBe('FAILURE');
+    expect(response.message.errors[0].exception).toBe('ValidationError');
   });
 });

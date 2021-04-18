@@ -5,14 +5,12 @@ export {
   start,
   close,
   getDefaultInstance,
-  getOttomanIntances,
+  getOttomanInstances,
   getModel,
   Ottoman,
-  CertificateAuthenticator,
 } from './ottoman/ottoman';
 export { Model } from './model/model';
 export { getModelMetadata } from './model/utils/model.utils';
-export { ViewIndexOptions } from './model/index/view/view-index-options';
 export {
   validate,
   applyDefaultValue,
@@ -66,4 +64,3 @@ export {
 } from './query';
 export { getProjectionFields } from './utils/query/extract-select';
 export { SearchConsistency } from './utils/search-consistency';
-export * from './exceptions/exceptions';

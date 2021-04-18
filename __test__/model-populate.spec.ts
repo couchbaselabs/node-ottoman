@@ -1,12 +1,5 @@
-import {
-  model,
-  Schema,
-  FindByIdOptions,
-  FindOptions,
-  SearchConsistency,
-  getDefaultInstance,
-  DocumentNotFoundError,
-} from '../src';
+import { DocumentNotFoundError } from 'couchbase';
+import { FindByIdOptions, FindOptions, getDefaultInstance, model, Schema, SearchConsistency } from '../src';
 import { delay, startInTest } from './testData';
 
 const cardInfo = {

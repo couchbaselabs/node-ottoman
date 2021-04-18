@@ -1,7 +1,7 @@
 import { getModelMetadata, Ottoman } from '../src';
-import { connectionString, username, connectUri, bucketName, password } from './testData';
-import { isModel } from '../src/utils/is-model';
 import { OttomanError } from '../src/exceptions/ottoman-errors';
+import { isModel } from '../src/utils/is-model';
+import { bucketName, connectionString, connectUri, password, username } from './testData';
 
 describe('Test ottoman instances', () => {
   test('Multiple instances with string param', () => {
@@ -30,7 +30,7 @@ describe('Test ottoman instances', () => {
     const instance = new Ottoman();
     instance.connect(connectUri);
     const defaultCollection = instance.getCollection();
-    expect(defaultCollection._name).toBe('');
+    expect(defaultCollection.name).toBe('');
     instance.close();
   });
 
@@ -39,7 +39,7 @@ describe('Test ottoman instances', () => {
     instance.connect(connectUri);
     const collectionName = 'test';
     const testCollection = instance.getCollection(collectionName);
-    expect(testCollection._name).toBe(collectionName);
+    expect(testCollection.name).toBe(collectionName);
     instance.close();
   });
 

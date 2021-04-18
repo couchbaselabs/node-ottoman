@@ -1,22 +1,27 @@
-import { LogicalWhereExpr, Query } from '../../query';
-import { FindOptions } from './find-options';
-import { execPopulation } from '../../utils/populate/exec-populate';
-import { getProjectionFields } from '../../utils/query/extract-select';
-import { canBePopulated } from '../../utils/populate/can-be-populated';
-import { extractPopulate } from '../../utils/query/extract-populate';
-import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
+import { QueryScanConsistency } from 'couchbase';
 import { getModelMetadata, SearchConsistency } from '../..';
+import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
+import { ModelTypes } from '../../model/model.types';
+import { LogicalWhereExpr, Query } from '../../query';
 import { CAST_STRATEGY } from '../../utils/cast-strategy';
+import { canBePopulated } from '../../utils/populate/can-be-populated';
+import { execPopulation } from '../../utils/populate/exec-populate';
+import { extractPopulate } from '../../utils/query/extract-populate';
+import { getProjectionFields } from '../../utils/query/extract-select';
+import { FindOptions } from './find-options';
 
 /**
  * Find documents
  * Allows to use some filters and other useful options
  * @ignore
  */
-export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
+export const find = (metadata: ModelMetadata) => async (
+  filter: LogicalWhereExpr = {},
+  options: FindOptions = {},
+): Promise<{ rows: ModelTypes[] }> => {
   const { skip, limit, sort, populate, select, noCollection, populateMaxDeep, consistency, lean, ignoreCase } = options;
   const { ottoman, collectionName, modelKey, scopeName, modelName, ID_KEY, schema } = metadata;
-  const { bucketName, cluster, couchbase } = ottoman;
+  const { bucketName, cluster } = ottoman;
   let fromClause = bucketName;
   let selectDot = bucketName;
   if (collectionName !== '_default') {
@@ -65,15 +70,15 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   switch (_consistency) {
     case SearchConsistency.GLOBAL:
     case SearchConsistency.LOCAL:
-      queryOptions.scanConsistency = couchbase.QueryScanConsistency.RequestPlus;
+      queryOptions.scanConsistency = QueryScanConsistency.RequestPlus;
       break;
     case SearchConsistency.NONE:
-      queryOptions.scanConsistency = couchbase.QueryScanConsistency.NotBounded;
+      queryOptions.scanConsistency = QueryScanConsistency.NotBounded;
       break;
   }
   const result = cluster.query(query.build({ ignoreCase }), queryOptions);
 
-  return result.then(async (r: { rows: unknown[] }) => {
+  return result.then(async (r: { rows: any[] }) => {
     if (select !== 'RAW COUNT(*) as count') {
       r.rows = r.rows.map((row) => new Model(row, { strict: false, strategy: CAST_STRATEGY.KEEP }));
       if (populate) {

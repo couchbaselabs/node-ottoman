@@ -1,9 +1,8 @@
+import { BucketNotFoundError, CollectionNotFoundError, CouchbaseError, ScopeNotFoundError } from 'couchbase';
 import { getDefaultInstance } from '../src';
 import { DEFAULT_SCOPE } from '../src/utils/constants';
-import { delay } from './testData';
-import { BucketNotFoundError, CollectionNotFoundError, ScopeNotFoundError } from '../src/exceptions/ottoman-errors';
-import * as couchbase from 'couchbase';
 import { parseError } from '../src/utils/parse-errors';
+import { delay } from './testData';
 
 test('create and drop Collection', async () => {
   if (process.env.OTTOMAN_LEGACY_TEST) {
@@ -16,12 +15,12 @@ test('create and drop Collection', async () => {
       scopeName: DEFAULT_SCOPE,
       maxExpiry: 30000,
     });
-    expect(collectionCreated).toBe(true);
+    expect(collectionCreated).toBe(undefined);
 
     await delay(3000);
 
     const collectionDropped = await ottoman.collectionManager.dropCollection(name, DEFAULT_SCOPE);
-    expect(collectionDropped).toBe(true);
+    expect(collectionDropped).toBe(undefined);
   }
 });
 
@@ -34,21 +33,20 @@ test('create and drop Scope with Collections', async () => {
     const scopeName = 'testCreateScope6';
 
     const scopeCreated = await ottoman.collectionManager.createScope(scopeName);
-    expect(scopeCreated).toBe(true);
-
-    await delay(3000);
+    await delay(500);
 
     const collectionCreated = await ottoman.collectionManager.createCollection({
       name,
       scopeName,
       maxExpiry: 30000,
     });
-    expect(collectionCreated).toBe(true);
-
-    await delay(3000);
+    await delay(500);
 
     const scopeDropped = await ottoman.collectionManager.dropScope(scopeName);
-    expect(scopeDropped).toBe(true);
+
+    expect(scopeCreated).toBe(undefined);
+    expect(scopeDropped).toBe(undefined);
+    expect(collectionCreated).toBe(undefined);
   }
 });
 
@@ -57,7 +55,7 @@ describe('Ottoman.dropScope', () => {
     const ottoman = getDefaultInstance();
     try {
       if (process.env.OTTOMAN_LEGACY_TEST) {
-        const error = new couchbase['ScopeNotFoundError']('');
+        const error = new ScopeNotFoundError();
         error.message = 'failed to drop scope';
         parseError(error, { scopeName: 'DummyScopeTestError' });
       } else await ottoman.dropScope('DummyScopeTestError');
@@ -67,15 +65,6 @@ describe('Ottoman.dropScope', () => {
       expect(message).toBe(`failed to drop scope, scope 'DummyScopeTestError' not found`);
     }
   });
-  test(`-> on legacy should throw CouchbaseError`, async () => {
-    const ottoman = getDefaultInstance();
-    try {
-      ottoman.close();
-      await ottoman.dropScope('DummyScopeTestError');
-    } catch (e) {
-      expect(e).toBeInstanceOf(couchbase['CouchbaseError']);
-    }
-  });
 });
 
 describe('Ottoman.dropCollection', () => {
@@ -83,7 +72,7 @@ describe('Ottoman.dropCollection', () => {
     const ottoman = getDefaultInstance();
     try {
       if (process.env.OTTOMAN_LEGACY_TEST) {
-        const error = new couchbase['CollectionNotFoundError']('');
+        const error = new CollectionNotFoundError();
         error.message = 'failed to drop collection';
         parseError(error, { collectionName: 'DummyCollectionTestError', scopeName: DEFAULT_SCOPE });
       } else await ottoman.dropCollection('DummyCollectionTestError', DEFAULT_SCOPE);
@@ -99,25 +88,17 @@ describe('Ottoman.dropCollection', () => {
     const ottoman = getDefaultInstance();
     try {
       if (process.env.OTTOMAN_LEGACY_TEST) {
-        const error = new couchbase['ScopeNotFoundError']('');
-        error.message = 'failed to drop collection';
+        const error = new CouchbaseError('failed to drop collection', undefined, {
+          response_body: 'scope_not_found',
+        });
         parseError(error, { collectionName: 'DummyCollectionTestError', scopeName: 'DummyScopeTestError' });
       } else await ottoman.dropCollection('DummyCollectionTestError', 'DummyScopeTestError');
     } catch (e) {
       const { message } = e;
-      expect(e).toBeInstanceOf(ScopeNotFoundError);
+      expect(e).toBeInstanceOf(CouchbaseError);
       expect(message).toBe(
         `failed to drop collection 'DummyCollectionTestError', scope 'DummyScopeTestError' not found`,
       );
-    }
-  });
-  test(`-> on legacy should throw CouchbaseError`, async () => {
-    const ottoman = getDefaultInstance();
-    try {
-      ottoman.close();
-      await ottoman.dropCollection('DummyCollectionTestError', 'DummyScopeTestError');
-    } catch (e) {
-      expect(e).toBeInstanceOf(couchbase['CouchbaseError']);
     }
   });
 });

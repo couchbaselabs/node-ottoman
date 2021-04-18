@@ -1,17 +1,17 @@
-import { DocumentExistsError, DocumentNotFoundError } from '../exceptions/exceptions';
+import { DocumentExistsError, DocumentNotFoundError } from 'couchbase';
+import { ImmutableError } from '../exceptions/ottoman-errors';
+import { validate } from '../schema';
+import { ApplyStrategy, CAST_STRATEGY } from '../utils/cast-strategy';
+import { _keyGenerator } from '../utils/constants';
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
-import { validate } from '../schema';
+import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
-import { getModelMetadata } from './utils/model.utils';
-import { storeLifeCycle } from './utils/store-life-cycle';
-import { removeLifeCycle } from './utils/remove-life-cycle';
 import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
-import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
-import { _keyGenerator } from '../utils/constants';
-import { ApplyStrategy, CAST_STRATEGY } from '../utils/cast-strategy';
-import { ImmutableError } from '../exceptions/ottoman-errors';
+import { getModelMetadata } from './utils/model.utils';
+import { removeLifeCycle } from './utils/remove-life-cycle';
+import { storeLifeCycle } from './utils/store-life-cycle';
 
 /**
  * Document class represent a database document

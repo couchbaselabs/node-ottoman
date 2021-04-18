@@ -303,7 +303,7 @@ const user = new User(userData);
 await user.save();
 
 // Call findByName index
-const viewIndexOptions = new ViewIndexOptions({ limit: 1 });
+const viewIndexOptions:ViewQueryOptions = { limit: 1 };
 const usersView = await User.findByName(userData.name, viewIndexOptions);
 ```
 

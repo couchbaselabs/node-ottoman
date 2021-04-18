@@ -1,8 +1,8 @@
-import { batchProcessQueue, chunkArray, StatusExecution, removeCallback, IManyQueryResponse } from '../src/handler';
+import { DocumentNotFoundError } from 'couchbase';
 import { getDefaultInstance, getModelMetadata, model, Schema } from '../src';
+import { batchProcessQueue, chunkArray, IManyQueryResponse, removeCallback, StatusExecution } from '../src/handler';
 import { ModelMetadata } from '../src/model/interfaces/model-metadata.interface';
 import { delay, startInTest } from './testData';
-import couchbase from 'couchbase';
 
 describe('Test Document Remove Many', () => {
   test('Test Process Query Stack Function', async () => {
@@ -36,7 +36,7 @@ describe('Test Document Remove Many', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
 
     const batchCreate = async () => {
       await Cat.create({ name: 'Cat0', age: 27 });
@@ -57,7 +57,7 @@ describe('Test Document Remove Many', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const response: IManyQueryResponse = await Cat.removeMany({ name: { $like: 'DummyCatName91' } });
     expect(response.message.success).toBe(0);
     expect(response.message.match_number).toBe(0);
@@ -74,12 +74,12 @@ describe('Test Document Remove Many', () => {
     try {
       await removeCallback('dummy_id', metadata);
     } catch (error) {
-      const dnf = new (couchbase as any).DocumentNotFoundError();
+      const dnf = new DocumentNotFoundError();
+      const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
+      await cleanUp();
       expect(error.exception).toBe(dnf.constructor.name);
       expect(error.message).toBe(dnf.message);
       expect(error.status).toBe('FAILURE');
-      const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
-      await cleanUp();
     }
   });
 });

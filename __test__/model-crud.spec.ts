@@ -1,15 +1,7 @@
-import {
-  DocumentExistsError,
-  DocumentNotFoundError,
-  getDefaultInstance,
-  isDocumentNotFoundError,
-  model,
-  Ottoman,
-  Schema,
-  SearchConsistency,
-} from '../src';
-import { connectUri, delay, startInTest } from './testData';
+import { DocumentExistsError, DocumentNotFoundError } from 'couchbase';
+import { getDefaultInstance, model, Ottoman, Schema, SearchConsistency } from '../src';
 import { OttomanError } from '../src/exceptions/ottoman-errors';
+import { connectUri, delay, startInTest } from './testData';
 
 const accessDoc = {
   type: 'airlineR',
@@ -45,6 +37,7 @@ describe('Test Document Access Functions', () => {
     await startInTest(getDefaultInstance());
     const result = await UserModel.create(accessDoc);
     await delay(500);
+    await UserModel.removeById(result.id);
     expect(result.id).toBeDefined();
   });
 
@@ -195,7 +188,7 @@ describe('Test Document Access Functions', () => {
       try {
         await UserModel.findById(user.id);
       } catch (e) {
-        expect(isDocumentNotFoundError(e)).toBe(true);
+        expect(e).toBeInstanceOf(DocumentNotFoundError);
       }
     }
   });
@@ -325,7 +318,7 @@ describe('Test Document Access Functions', () => {
     const idKey = 'airlineKey';
     const key = `Airline-Key-${Date.now()}`;
     const UserModel = model('Airlines', schema, { keyGenerator, idKey });
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const user = await UserModel.create({
       [idKey]: key,
       type: 'airline',
@@ -339,7 +332,7 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel keyGeneratorDelimiter at Model Level', async () => {
     const Model = model('Airlines', schema, { keyGeneratorDelimiter: '__' });
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const user = await Model.create({
       type: 'airline',
       isActive: false,
@@ -355,7 +348,7 @@ describe('Test Document Access Functions', () => {
     const ottoman2 = new Ottoman({ keyGeneratorDelimiter: '__', collectionName: '_default' });
     ottoman2.connect(connectUri);
     const Model = ottoman2.model('Airlines', schema);
-    startInTest(ottoman2);
+    await startInTest(ottoman2);
     const user = await Model.create({
       type: 'airline',
       isActive: false,
@@ -363,7 +356,7 @@ describe('Test Document Access Functions', () => {
     });
     const result = await Model.find({ id: user.id }, { select: 'meta().id', consistency: SearchConsistency.LOCAL });
     const document = result.rows[0];
-    ottoman2.close();
+    await ottoman2.close();
     expect(document).toBeDefined();
     expect(document.id.startsWith('Airlines__')).toBeDefined();
   });
@@ -379,7 +372,7 @@ describe('Test Document Access Functions', () => {
       name: 'Ottoman Access List',
     };
     const Airlines = model('Airlines', schema, { keyGenerator, idKey });
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const airline = await Airlines.create(document);
     expect(document[idKey]).toBe(airline[idKey]);
     try {

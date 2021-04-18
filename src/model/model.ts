@@ -1,9 +1,9 @@
-import { Document } from './document';
 import { FindByIdOptions, FindOptions, ManyQueryResponse } from '../handler';
 import { LogicalWhereExpr, SortType } from '../query';
-import { UpdateManyOptions } from './interfaces/update-many.interface';
-import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
+import { Document } from './document';
+import { FindOneAndUpdateOption } from './interfaces/find.interface';
+import { UpdateManyOptions } from './interfaces/update-many.interface';
 
 export type CountOptions = {
   sort?: Record<string, SortType>;
@@ -502,7 +502,7 @@ export abstract class Model<T = any> extends Document<T> {
     scopeName?: string,
     // eslint-disable-next-line no-unused-vars
     options: { timeout?: number } = {},
-  ): Promise<boolean | undefined> {
-    return Promise.resolve(true);
+  ): Promise<void> {
+    return Promise.resolve();
   }
 }

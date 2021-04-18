@@ -203,9 +203,9 @@ describe('Test Schema Add Function', () => {
     await delay(1000);
     const response = await Drink.findByName('Te');
 
-    expect(response.rows).toHaveLength(1);
     const cleanUp = async () => await Drink.removeMany({ _type: 'Drink' });
     await cleanUp();
+    expect(response.rows).toHaveLength(1);
   });
 
   test('Test Schema Add Object', () => {

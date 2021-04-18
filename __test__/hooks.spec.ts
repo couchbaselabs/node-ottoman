@@ -1,4 +1,5 @@
-import { getDefaultInstance, isDocumentNotFoundError, model, Schema } from '../src';
+import { DocumentNotFoundError } from 'couchbase';
+import { getDefaultInstance, model, Schema } from '../src';
 import { delay, startInTest } from './testData';
 
 const accessDoc2 = {
@@ -99,7 +100,7 @@ test('Hook.pre.remove function', async () => {
   try {
     await UserModel.findById(user.id);
   } catch (e) {
-    expect(isDocumentNotFoundError(e)).toBe(true);
+    expect(e).toBeInstanceOf(DocumentNotFoundError);
   }
 });
 

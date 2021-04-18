@@ -1,4 +1,4 @@
-import { ViewIndexOptions } from './view-index-options';
+import { ViewQueryOptions } from 'couchbase';
 import { Ottoman } from '../../../ottoman/ottoman';
 import { BuildIndexQueryError } from '../../../exceptions/ottoman-errors';
 
@@ -7,7 +7,7 @@ import { BuildIndexQueryError } from '../../../exceptions/ottoman-errors';
  */
 export const buildViewIndexQuery = (ottoman: Ottoman, designDocName, indexName, fields, Model) => async (
   values: any | any[],
-  options: ViewIndexOptions = {},
+  options: ViewQueryOptions = {},
 ) => {
   if (!values) {
     throw new BuildIndexQueryError(

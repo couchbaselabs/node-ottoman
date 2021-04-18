@@ -1,6 +1,6 @@
-import { Schema } from '../../schema/schema';
-import { ModelMetadata } from './model-metadata.interface';
 import { Ottoman } from '../../ottoman/ottoman';
+import { Schema } from '../../schema';
+import { ModelMetadata } from './model-metadata.interface';
 
 export interface ModelOptions {
   collectionName?: string;

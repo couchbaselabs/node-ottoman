@@ -10,7 +10,7 @@ import { DEFAULT_COLLECTION } from '../../../utils/constants';
  * In addition, creates one index as primary for the bucketName
  * and one for every Ottoman model.
  */
-export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
+export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes): Promise<void> => {
   const __indexes = n1qlIndexes;
   const { bucketName, cluster, queryIndexManager } = ottoman;
   const indexes = await queryIndexManager.getAllIndexes(bucketName);
@@ -88,7 +88,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
   // All indexes were built deferred, so now kick off the actual build.
   for (const key in indexesToBuild) {
     const buildIndexes = indexesToBuild[key];
-    if (buildIndexes && buildIndexes.length > 0) {
+    if (buildIndexes?.length) {
       const buildIndexesQuery = queryBuildIndexes(key, [...new Set(buildIndexes)]);
       try {
         await cluster.query(buildIndexesQuery);
@@ -98,7 +98,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
     }
   }
 
-  return Promise.resolve(true);
+  return Promise.resolve();
 };
 
 // Create the ottoman type index, needed to make model lookups fast.

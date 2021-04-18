@@ -21,8 +21,9 @@ describe('Test Schema Immutable', () => {
     const CardSchema = new Schema(CardSchemaBase, { strict: false });
     const Card = model('Card', CardSchema);
     await startInTest(getDefaultInstance());
+    await delay(300);
     const result = await Card.create(cardInfo);
-    await delay(500);
+    await delay(300);
     result.cardNumber = '80';
     await Card.removeById(result.id);
     expect(result.cardNumber).toBe('80');
@@ -30,8 +31,8 @@ describe('Test Schema Immutable', () => {
   test('Test Schema Immutable integration on strict=true', async () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
-    const result = await Card.create(cardInfo);
     await delay(500);
+    const result = await Card.create(cardInfo);
     result.cardNumber = '80';
     await Card.removeById(result.id);
     expect(result.cardNumber).toBe(cardInfo.cardNumber);

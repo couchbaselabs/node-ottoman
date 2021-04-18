@@ -1,8 +1,28 @@
-import * as couchbase from 'couchbase';
-import { extractConnectionString } from '../utils/extract-connection-string';
-import { Schema } from '../schema';
+import {
+  Bucket,
+  BucketManager,
+  Cluster,
+  Collection,
+  CollectionExistsError,
+  CollectionManager,
+  ConnectOptions as CouchbaseConnectOptions,
+  DropBucketOptions,
+  QueryIndexManager,
+  ScopeExistsError,
+  ViewIndexManager,
+} from 'couchbase';
+import { QueryMetaData, QueryResult } from 'couchbase/dist/querytypes';
+import { StreamableRowPromise } from 'couchbase/dist/streamablepromises';
+import { getModelMetadata, SearchConsistency } from '..';
+import { OttomanError } from '../exceptions/ottoman-errors';
 import { createModel } from '../model/create-model';
+import { ensureN1qlIndexes } from '../model/index/n1ql/ensure-n1ql-indexes';
+import { buildMapViewIndexFn } from '../model/index/view/build-map-view-index-fn';
+import { ensureViewIndexes } from '../model/index/view/ensure-view-indexes';
+import { CreateModelOptions, ModelOptions } from '../model/interfaces/create-model.interface';
+import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
 import { ModelTypes } from '../model/model.types';
+import { Schema } from '../schema';
 import {
   DEFAULT_COLLECTION,
   DEFAULT_ID_KEY,
@@ -13,25 +33,13 @@ import {
   MODEL_KEY,
   validateDelimiter,
 } from '../utils/constants';
-import { getModelMetadata, SearchConsistency } from '..';
+import { extractConnectionString } from '../utils/extract-connection-string';
 import { isDebugMode } from '../utils/is-debug-mode';
-import { CreateModelOptions, ModelOptions } from '../model/interfaces/create-model.interface';
-import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
-import { ensureN1qlIndexes } from '../model/index/n1ql/ensure-n1ql-indexes';
-import { buildMapViewIndexFn } from '../model/index/view/build-map-view-index-fn';
-import { ensureViewIndexes } from '../model/index/view/ensure-view-indexes';
-import { OttomanError } from '../exceptions/ottoman-errors';
 import { parseError } from '../utils/parse-errors';
 
-export interface ConnectOptions {
+export interface ConnectOptions extends CouchbaseConnectOptions {
   connectionString: string;
-  username: string;
-  password: string;
   bucketName: string;
-  authenticator?: CertificateAuthenticator;
-  trustStorePath?: string;
-  transcoder?: unknown;
-  logFunc?: unknown;
 }
 
 interface OttomanConfig {
@@ -44,19 +52,6 @@ interface OttomanConfig {
   maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata }) => string;
   keyGeneratorDelimiter?: string;
-}
-
-/**
- * CertificateAuthenticator provides an authenticator implementation
- * which uses TLS Certificate Authentication.
- */
-export class CertificateAuthenticator {
-  /**
-   *
-   * @param {string} certificatePath
-   * @param {string} keyPath
-   */
-  constructor(public certificatePath, public keyPath) {}
 }
 
 /**
@@ -73,19 +68,19 @@ export class Ottoman {
   /**
    * @ignore
    */
-  getRefdocIndexByKey = (key) => this.refdocIndexes[key];
+  getRefdocIndexByKey = (key: string): { fields: string[] }[] => this.refdocIndexes[key];
 
   /**
    * @ignore
    */
-  registerIndex = (indexName: string, fields, modelName) => {
+  registerIndex = (indexName: string, fields: string[], modelName: string): void => {
     this.n1qlIndexes[indexName] = { fields, modelName };
   };
 
   /**
    * @ignore
    */
-  registerViewIndex = (designDocName: string, indexName: string, fields, metadata) => {
+  registerViewIndex = (designDocName: string, indexName: string, fields, metadata: ModelMetadata): void => {
     const map = buildMapViewIndexFn(metadata, fields);
     if (!this.viewIndexes[designDocName]) {
       this.viewIndexes[designDocName] = { views: {} };
@@ -96,7 +91,7 @@ export class Ottoman {
   /**
    * @ignore
    */
-  registerRefdocIndex = (fields: string[], prefix: string) => {
+  registerRefdocIndex = (fields: string[], prefix: string): void => {
     if (!this.refdocIndexes[prefix]) {
       this.refdocIndexes[prefix] = [];
     }
@@ -108,7 +103,7 @@ export class Ottoman {
   /**
    * Bucket represents a storage grouping of data within a Couchbase Server cluster.
    */
-  bucket;
+  bucket: Bucket = (undefined as unknown) as Bucket;
 
   /**
    * CollectionManager allows the management of collections within a Bucket.
@@ -117,7 +112,7 @@ export class Ottoman {
    * [Collection Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/CollectionManager.html)
    * documentation for more details.
    */
-  get collectionManager() {
+  get collectionManager(): CollectionManager {
     return this.bucket.collections();
   }
 
@@ -128,7 +123,7 @@ export class Ottoman {
    * [Bucket Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/BucketManager.html)
    * documentation for more details.
    */
-  get bucketManager() {
+  get bucketManager(): BucketManager {
     return this.cluster.buckets();
   }
 
@@ -139,7 +134,7 @@ export class Ottoman {
    * [Query Index Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/QueryIndexManager.html)
    * documentation for more details.
    */
-  get queryIndexManager() {
+  get queryIndexManager(): QueryIndexManager {
     return this.cluster.queryIndexes();
   }
 
@@ -150,7 +145,7 @@ export class Ottoman {
    * [View Index Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/ViewIndexManager.html)
    * documentation for more details.
    */
-  get viewIndexManager() {
+  get viewIndexManager(): ViewIndexManager {
     return this.bucket.viewIndexes();
   }
 
@@ -159,12 +154,12 @@ export class Ottoman {
    */
   models = {};
 
-  private _cluster;
+  private _cluster: Cluster = (undefined as unknown) as Cluster;
 
   /**
    * Cluster represents an entire Couchbase Server cluster.
    */
-  get cluster() {
+  get cluster(): Cluster {
     if (!this._cluster) {
       throw new OttomanError('No active connection detected, please try to connect.');
     }
@@ -203,9 +198,9 @@ export class Ottoman {
   connect = (connectOptions: ConnectOptions | string): Ottoman => {
     const options = typeof connectOptions === 'object' ? connectOptions : extractConnectionString(connectOptions);
     const { connectionString, bucketName, ..._options } = options;
-    this._cluster = new (couchbase as any).Cluster(connectionString, _options);
+    this._cluster = new Cluster(connectionString, _options);
     this.bucketName = bucketName;
-    this.couchbase = couchbase;
+    // this.couchbase = couchbase;
     this.bucket = this._cluster.bucket(bucketName);
     return this;
   };
@@ -218,7 +213,7 @@ export class Ottoman {
    * const User = connection.model('User', { name: String }, {collectionName: 'users'});
    * ```
    */
-  model(name: string, schema: Schema | Record<string, unknown>, options: ModelOptions = {}) {
+  model(name: string, schema: Schema | Record<string, unknown>, options: ModelOptions = {}): ModelTypes {
     if (this.models[name]) {
       throw new OttomanError(`A model with name '${name}' has already been registered.`);
     }
@@ -246,11 +241,7 @@ export class Ottoman {
    * @param scopeName
    * @param options
    */
-  async dropCollection(
-    collectionName: string,
-    scopeName: string,
-    options: { timeout?: number } = {},
-  ): Promise<boolean | undefined> {
+  async dropCollection(collectionName: string, scopeName: string, options: { timeout?: number } = {}): Promise<void> {
     try {
       return await this.collectionManager.dropCollection(collectionName, scopeName, options);
     } catch (e) {
@@ -263,7 +254,7 @@ export class Ottoman {
    * @param scopeName
    * @param options
    */
-  async dropScope(scopeName: string, options: { timeout?: number } = {}): Promise<boolean | undefined> {
+  async dropScope(scopeName: string, options: { timeout?: number } = {}): Promise<void> {
     try {
       return await this.collectionManager.dropScope(scopeName, options);
     } catch (e) {
@@ -276,7 +267,7 @@ export class Ottoman {
    * @param bucketName
    * @param options
    */
-  async dropBucket(bucketName: string, options: { timeout?: number } = {}): Promise<boolean | undefined> {
+  async dropBucket(bucketName: string, options?: DropBucketOptions): Promise<void> {
     try {
       return await this.bucketManager.dropBucket(bucketName, options);
     } catch (e) {
@@ -300,7 +291,7 @@ export class Ottoman {
    * Return a collection from the given collectionName in this bucket
    * Or default collection if collectionName is missing
    */
-  getCollection(collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) {
+  getCollection(collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE): Collection {
     return this.bucket
       .scope(scopeName === '_default' ? '' : scopeName)
       .collection(collectionName === '_default' ? '' : collectionName);
@@ -314,8 +305,8 @@ export class Ottoman {
    * connection.close().then(() => console.log('connection closed'));
    * ```
    */
-  close() {
-    this.cluster && this.cluster.close();
+  close(): Promise<void> {
+    return this.cluster?.close();
   }
 
   /**
@@ -335,14 +326,14 @@ export class Ottoman {
    * The above example will run this query:
    * > `SELECT address FROM travel-sample WHERE (address LIKE '%57-59%' OR free_breakfast = true)`
    */
-  async query(query: string) {
+  async query<TRow = never>(query: string): Promise<StreamableRowPromise<QueryResult<TRow>, TRow, QueryMetaData>> {
     return this.cluster.query(query);
   }
 
   /**
    * `ensureCollections` will attempt to create scopes and collection to map your models into Couchbase Server.
    */
-  async ensureCollections() {
+  async ensureCollections(): Promise<void> {
     const scopePromises = new Map();
     const collectionPromises = new Map();
     for (const key in this.models) {
@@ -361,7 +352,7 @@ export class Ottoman {
                 }
               })
               .catch((e) => {
-                if (!(e instanceof (couchbase as any).ScopeExistsError)) {
+                if (!(e instanceof ScopeExistsError)) {
                   throw e;
                 }
               }),
@@ -383,7 +374,7 @@ export class Ottoman {
                 }
               })
               .catch((e) => {
-                if (!(e instanceof (couchbase as any).CollectionExistsError)) {
+                if (!(e instanceof CollectionExistsError)) {
                   throw e;
                 }
               }),
@@ -396,7 +387,7 @@ export class Ottoman {
     for await (const scope of scopePromises.values()) {
     }
 
-    delay(1000);
+    await delay(1000);
 
     // eslint-disable-next-line no-unused-vars
     for await (const collection of collectionPromises.values()) {
@@ -406,7 +397,7 @@ export class Ottoman {
   /**
    * `ensureIndexes` will attempt to create indexes defined in your schemas
    */
-  async ensureIndexes() {
+  async ensureIndexes(): Promise<void> {
     await ensureN1qlIndexes(this, this.n1qlIndexes);
     await ensureViewIndexes(this, this.viewIndexes);
   }
@@ -415,7 +406,7 @@ export class Ottoman {
    * `start` method is just a shortcut to run `ensureCollections` and `ensureIndexes`.
    *  Notice: It's not required to execute the `start` method to Ottoman work.
    */
-  async start() {
+  async start(): Promise<void> {
     await this.ensureCollections();
     await this.ensureIndexes();
   }
@@ -428,23 +419,23 @@ const delay = (timems) =>
     }, timems);
   });
 
-export const getDefaultInstance = () => __ottoman;
-export const getOttomanIntances = () => __ottomanInstances;
-export const connect = (connectOptions: ConnectOptions | string) => {
+export const getDefaultInstance = (): Ottoman => __ottoman;
+export const getOttomanInstances = (): Ottoman[] => __ottomanInstances;
+export const connect = (connectOptions: ConnectOptions | string): void => {
   if (!__ottoman) {
     new Ottoman();
   }
-  __ottoman && __ottoman.connect(connectOptions);
+  __ottoman?.connect(connectOptions);
 };
-export const close = () => {
+export const close = async (): Promise<void> => {
   if (__ottoman) {
-    __ottoman.close();
-    (__ottoman as any) = undefined;
+    void (await __ottoman.close());
+    __ottoman = (undefined as unknown) as Ottoman;
   }
 };
-export const start = () => __ottoman && __ottoman.start();
-export const getModel = (name: string) => __ottoman && __ottoman.getModel(name);
-export const getCollection = (collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) =>
-  __ottoman && __ottoman.getCollection(collectionName, scopeName);
-export const model = (name: string, schema: Schema | Record<string, unknown>, options?) =>
-  __ottoman && __ottoman.model(name, schema, options);
+export const start = async (): Promise<void> => __ottoman?.start();
+export const getModel = (name: string): ModelTypes => __ottoman?.getModel(name);
+export const getCollection = (collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE): Collection =>
+  __ottoman?.getCollection(collectionName, scopeName);
+export const model = (name: string, schema: Schema | Record<string, unknown>, options?: ModelOptions): ModelTypes =>
+  __ottoman?.model(name, schema, options);
