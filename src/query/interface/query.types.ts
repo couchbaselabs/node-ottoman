@@ -141,9 +141,10 @@ export type ComparisonWhereExpr = {
  * ```
  *
  * */
-export type FieldWhereExpr =
+export type FieldWhereExpr<T = unknown> =
   | Record<string, string | number | boolean | ComparisonWhereExpr | StringModifiers>
-  | LogicalWhereExpr;
+  | LogicalWhereExpr<T>
+  | T;
 
 /**
  * Structure of Logical WHERE expression
@@ -154,16 +155,17 @@ export type FieldWhereExpr =
  * ```
  *
  * */
-export type LogicalWhereExpr =
+export type LogicalWhereExpr<T = any> =
   | {
-      [key in LogicalOperatorType]?: FieldWhereExpr[];
+      [key in LogicalOperatorType]?: FieldWhereExpr<T>[];
     }
   | {
-      [key: string]: FieldWhereExpr;
+      [key: string]: FieldWhereExpr<T>;
     }
   | {
       [key: string]: unknown;
     }
+  | T
   | CollectionSelectOperatorType
   | CollectionInWithinOperatorType;
 

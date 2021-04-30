@@ -277,7 +277,13 @@ async function updateManyHelper(result: any[], strict: ApplyStrategy = true) {
     cardNumber: String,
     zipCode: { type: String, immutable: true },
   });
-  const Card = model('CardMany', CardSchema);
+
+  interface ICard {
+    cardNumber: string;
+    zipCode: string;
+  }
+
+  const Card = model<ICard>('CardMany', CardSchema);
   await startInTest(getDefaultInstance());
 
   let card1;

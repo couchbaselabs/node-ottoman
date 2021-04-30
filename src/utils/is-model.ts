@@ -3,11 +3,11 @@
  * a Model
  * or a document built with a Model
  */
-import { Model } from '../model/model';
+import { Document } from '../model/document';
 
 export const isModel = (model): boolean => {
   if (!model) {
     return false;
   }
-  return model instanceof Model || model.prototype instanceof Model;
+  return model instanceof Document || model.prototype instanceof Document;
 };

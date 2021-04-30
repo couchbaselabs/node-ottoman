@@ -10,7 +10,7 @@ import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
 import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
 import { _keyGenerator } from '../utils/constants';
-import { ApplyStrategy, CAST_STRATEGY } from '../utils/cast-strategy';
+import { ApplyStrategy, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
 import { ImmutableError } from '../exceptions/ottoman-errors';
 
 /**
@@ -29,7 +29,7 @@ import { ImmutableError } from '../exceptions/ottoman-errors';
  * const jane = new User({name: "Jane Doe"})
  * ```
  */
-export abstract class Document<T> {
+export abstract class Document<T = any> {
   /**
    * @ignore
    */
@@ -38,7 +38,8 @@ export abstract class Document<T> {
   /**
    * @ignore
    */
-  protected constructor() {
+  // eslint-disable-next-line no-unused-vars
+  protected constructor(data, options: CastOptions = {}) {
     const { get, set, getStrategy, setStrategy, hasOwnProperty } = (function immutables() {
       const i = {};
       let strategy: ApplyStrategy | undefined;
