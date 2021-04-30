@@ -2,7 +2,6 @@ import * as couchbase from 'couchbase';
 import { extractConnectionString } from '../utils/extract-connection-string';
 import { Schema } from '../schema';
 import { createModel } from '../model/create-model';
-import { ModelTypes } from '../model/model.types';
 import {
   DEFAULT_COLLECTION,
   DEFAULT_ID_KEY,
@@ -13,7 +12,7 @@ import {
   MODEL_KEY,
   validateDelimiter,
 } from '../utils/constants';
-import { getModelMetadata, SearchConsistency } from '..';
+import { getModelMetadata, Model, SearchConsistency } from '..';
 import { isDebugMode } from '../utils/is-debug-mode';
 import { CreateModelOptions, ModelOptions } from '../model/interfaces/create-model.interface';
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
@@ -22,6 +21,8 @@ import { buildMapViewIndexFn } from '../model/index/view/build-map-view-index-fn
 import { ensureViewIndexes } from '../model/index/view/ensure-view-indexes';
 import { OttomanError } from '../exceptions/ottoman-errors';
 import { parseError } from '../utils/parse-errors';
+import { CastOptions } from '../utils/cast-strategy';
+import { Document } from '../model/document';
 
 export interface ConnectOptions {
   connectionString: string;
@@ -218,7 +219,7 @@ export class Ottoman {
    * const User = connection.model('User', { name: String }, {collectionName: 'users'});
    * ```
    */
-  model(name: string, schema: Schema | Record<string, unknown>, options: ModelOptions = {}) {
+  model<T = any>(name: string, schema: Schema | Record<string, unknown>, options: ModelOptions = {}) {
     if (this.models[name]) {
       throw new OttomanError(`A model with name '${name}' has already been registered.`);
     }
@@ -235,7 +236,7 @@ export class Ottoman {
     modelOptions.idKey = options.idKey || this.config.idKey || DEFAULT_ID_KEY;
     modelOptions.maxExpiry = options.maxExpiry || this.config.maxExpiry || DEFAULT_MAX_EXPIRY;
 
-    const ModelFactory = createModel({ name, schemaDraft: schema, options: modelOptions, ottoman: this });
+    const ModelFactory = createModel<T>({ name, schemaDraft: schema, options: modelOptions, ottoman: this });
     this.models[name] = ModelFactory;
     return ModelFactory;
   }
@@ -292,7 +293,11 @@ export class Ottoman {
    * const User = connection.getModel('User');
    * ```
    */
-  getModel(name: string): ModelTypes {
+  getModel<T = any>(
+    name: string,
+  ): Model<T> & {
+    new (data: T, options?: CastOptions): Document<T> & T;
+  } {
     return this.models[name];
   }
 
@@ -446,5 +451,5 @@ export const start = () => __ottoman && __ottoman.start();
 export const getModel = (name: string) => __ottoman && __ottoman.getModel(name);
 export const getCollection = (collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) =>
   __ottoman && __ottoman.getCollection(collectionName, scopeName);
-export const model = (name: string, schema: Schema | Record<string, unknown>, options?) =>
-  __ottoman && __ottoman.model(name, schema, options);
+export const model = <T = any>(name: string, schema: Schema | Record<string, unknown>, options?) =>
+  __ottoman && __ottoman.model<T>(name, schema, options);

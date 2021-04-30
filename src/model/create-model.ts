@@ -24,7 +24,7 @@ import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors
 /**
  * @ignore
  */
-export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel) => {
+export const createModel = <T = any>({ name, schemaDraft, options, ottoman }: CreateModel) => {
   const schema = schemaDraft instanceof Schema ? schemaDraft : new Schema(schemaDraft);
 
   const { idKey: ID_KEY, modelKey, scopeName, collectionName, keyGenerator, keyGeneratorDelimiter } = options;
@@ -88,7 +88,8 @@ export const createModel = ({ name, schemaDraft, options, ottoman }: CreateModel
     }
   }
 
-  return ModelFactory as ModelTypes;
+  // @ts-ignore
+  return ModelFactory as ModelTypes<T>;
 };
 
 export const _buildModel = (metadata: ModelMetadata) => {

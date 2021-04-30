@@ -39,9 +39,15 @@ const schema = {
   name: String,
 };
 
+interface IUser {
+  type?: string;
+  name?: string;
+  isActive?: boolean;
+}
+
 describe('Test Document Access Functions', () => {
   test('UserModel.create Creating a document', async () => {
-    const UserModel = model('User', schema);
+    const UserModel = model<IUser>('User', schema);
     await startInTest(getDefaultInstance());
     const result = await UserModel.create(accessDoc);
     await delay(500);
@@ -69,7 +75,7 @@ describe('Test Document Access Functions', () => {
   });
 
   test('UserModel.update -> Update a document', async () => {
-    const UserModel = model('User', schema);
+    const UserModel = model<IUser>('User', schema);
     await startInTest(getDefaultInstance());
     const result = await UserModel.create(accessDoc);
     await UserModel.updateById(result.id, updateDoc);
@@ -78,7 +84,7 @@ describe('Test Document Access Functions', () => {
   });
 
   test('UserModel.update -> Update a document, throw DocumentNotFound', async () => {
-    const UserModel = model('User', schema);
+    const UserModel = model<IUser>('User', schema);
     await startInTest(getDefaultInstance());
     try {
       await UserModel.updateById('dummyID', updateDoc);
@@ -88,7 +94,7 @@ describe('Test Document Access Functions', () => {
   });
 
   test('UserModel.replace Replace a document', async () => {
-    const UserModel = model('User', schema);
+    const UserModel = model<IUser>('User', schema);
     await startInTest(getDefaultInstance());
     const result = await UserModel.create(accessDoc);
     await UserModel.replaceById(result.id, replaceDoc);
@@ -125,7 +131,7 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel.updateById -> Replace a document with custom idKey', async () => {
     const CUSTOM_ID_KEY = 'userListId';
-    const UserModel = model('User', schema, { idKey: CUSTOM_ID_KEY });
+    const UserModel = model<IUser>('User', schema, { idKey: CUSTOM_ID_KEY });
     await startInTest(getDefaultInstance());
     const result = await UserModel.create({
       type: 'airline',
@@ -220,7 +226,7 @@ describe('Test Document Access Functions', () => {
   });
 
   test('UserModel count function', async () => {
-    const UserModel = model('User', schema);
+    const UserModel = model<IUser>('User', schema);
     await startInTest(getDefaultInstance());
     await UserModel.create(accessDoc);
     const count = await UserModel.count();
@@ -241,7 +247,7 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel findOne function, also check return correct custom idKey', async () => {
     const CUSTOM_ID_KEY = 'userId';
-    const UserModel = model('User', schema, { idKey: CUSTOM_ID_KEY });
+    const UserModel = model<IUser>('User', schema, { idKey: CUSTOM_ID_KEY });
     await startInTest(getDefaultInstance());
     await UserModel.create({
       type: 'airline',
@@ -260,7 +266,7 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel find function, also check return correct custom idKey', async () => {
     const CUSTOM_ID_KEY = 'userListId';
-    const UserModel = model('User', schema, { idKey: CUSTOM_ID_KEY });
+    const UserModel = model<IUser>('User', schema, { idKey: CUSTOM_ID_KEY });
     await startInTest(getDefaultInstance());
     await UserModel.create({
       type: 'airline',

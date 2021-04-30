@@ -11,6 +11,7 @@ export type CountOptions = {
   skip?: number;
 };
 
+export class Model<T = any, R = any> extends Document<T> {}
 /**
  * Constructor to build a model instance based on a schema and other options.
  * Provides methods to handle documents of the current collection in the database
@@ -25,15 +26,13 @@ export type CountOptions = {
  * ```
  */
 /* istanbul ignore file */
-export abstract class Model<T = any> extends Document<T> {
+export interface IModel<T = any, R = any> {
   /**
    * Creates a document from this model.
    * Implements schema validations, defaults, methods, static and hooks
    */
   // eslint-disable-next-line no-unused-vars
-  constructor(data: unknown, options: CastOptions = {}) {
-    super();
-  }
+  new (data: T, options?: CastOptions): Document<T> & T;
 
   /**
    * Finds documents.
@@ -65,9 +64,7 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async find(filter: LogicalWhereExpr = {}, options: FindOptions = {}): Promise<any> {
-    return Promise.resolve({});
-  }
+  find<Doc = T>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<any>;
 
   /**
    * Returns the number of documents that match the query
@@ -78,9 +75,7 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async count(filter: LogicalWhereExpr = {}, options: CountOptions = {}): Promise<any> {
-    return Promise.resolve({});
-  }
+  count(filter?: LogicalWhereExpr<T>, options?: CountOptions): Promise<any>;
 
   /**
    * Allows to retrieve a document by id
@@ -95,9 +90,7 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async findById(id: string, options: FindByIdOptions = {}): Promise<any> {
-    return Promise.resolve({});
-  }
+  findById<Result = R>(id: string, options?: FindByIdOptions): Promise<Document<Result> | Result>;
 
   /**
    * Finds a document.
@@ -112,9 +105,10 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async findOne(filter: LogicalWhereExpr = {}, options: FindOptions = {}): Promise<any> {
-    return Promise.resolve({});
-  }
+  findOne<Doc = T, Result = R>(
+    filter?: LogicalWhereExpr<Doc>,
+    options?: FindOptions,
+  ): Promise<Document<Result> | Result>;
 
   /**
    * Allows to create a new document
@@ -125,9 +119,7 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async create(doc: Record<string, any>): Promise<any> {
-    return Promise.resolve({});
-  }
+  create<Doc = T>(doc: Doc): Promise<Document<T>>;
 
   /**
    * Allows to create many document at once.
@@ -140,9 +132,7 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async createMany(docs: Record<string, any>[] | Record<string, any>): Promise<ManyQueryResponse> {
-    return Promise.resolve(new ManyQueryResponse('SUCCESS', { success: 0, errors: [], match_number: docs.length }));
-  }
+  createMany<Doc = T>(docs: Doc[] | Doc): Promise<ManyQueryResponse>;
 
   /**
    * Allows to update a document
@@ -189,9 +179,11 @@ export abstract class Model<T = any> extends Document<T> {
    * @throws **ImmutableError** if updateById is strict:CAST_STRATEGY.THROW and try to modify a immutable property.
    */
   // eslint-disable-next-line no-unused-vars
-  static async updateById(id: string, data: any, options: MutationFunctionOptions = { strict: true }): Promise<any> {
-    return Promise.resolve({});
-  }
+  updateById<Doc = T, Result = R>(
+    id: string,
+    data: Doc | Partial<Doc> | Document<Doc>,
+    options?: MutationFunctionOptions,
+  ): Promise<Document<Result> | Result>;
 
   /**
    * Same as **updateById**,except replace the existing document with the given document.
@@ -239,9 +231,11 @@ export abstract class Model<T = any> extends Document<T> {
    * @throws **ImmutableError** if replaceById is strict:CAST_STRATEGY.THROW and try to modify a immutable property.
    */
   // eslint-disable-next-line no-unused-vars
-  static async replaceById(id: string, data: any, options: MutationFunctionOptions = { strict: true }): Promise<any> {
-    return Promise.resolve({});
-  }
+  replaceById<Doc = T, Result = R>(
+    id: string,
+    data: Doc | Document<Doc>,
+    options?: MutationFunctionOptions,
+  ): Promise<Document<Result> | Result>;
 
   /**
    * Allows to remove a document
@@ -252,9 +246,7 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static async removeById(id: string): Promise<any> {
-    return Promise.resolve({});
-  }
+  removeById(id: string): Promise<any>;
 
   /**
    * Creates a [document](/classes/document) from the given data
@@ -270,9 +262,7 @@ export abstract class Model<T = any> extends Document<T> {
    * ```
    */
   // eslint-disable-next-line no-unused-vars
-  static fromData(data): Model<any> {
-    return data;
-  }
+  fromData(data: T | Partial<T>): Model<T>;
 
   /**
    * Deletes all of the documents that match conditions from the collection.
@@ -292,9 +282,7 @@ export abstract class Model<T = any> extends Document<T> {
    *
    */
   // eslint-disable-next-line no-unused-vars
-  static async removeMany(filter: LogicalWhereExpr = {}, options: FindOptions = {}): Promise<ManyQueryResponse> {
-    return Promise.resolve(new ManyQueryResponse('SUCCESS', { success: 0, errors: [], match_number: 0 }));
-  }
+  removeMany<Doc = T>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<ManyQueryResponse>;
 
   /**
    * Update all of the documents that match conditions from the collection.
@@ -408,15 +396,13 @@ export abstract class Model<T = any> extends Document<T> {
    * @param options [Update Many Options](/interfaces/updatemanyoptions.html)
    *
    */
-  static async updateMany(
+  updateMany<Query = T>(
     // eslint-disable-next-line no-unused-vars
-    filter: LogicalWhereExpr = {},
-    doc: Record<string, unknown>,
+    filter?: LogicalWhereExpr<Query>,
+    doc?: T | Partial<T>,
     // eslint-disable-next-line no-unused-vars
-    options: UpdateManyOptions = { strict: true },
-  ): Promise<ManyQueryResponse> {
-    return Promise.resolve(new ManyQueryResponse('SUCCESS', { success: 0, errors: [], match_number: 0 }));
-  }
+    options?: UpdateManyOptions,
+  ): Promise<ManyQueryResponse>;
 
   /**
    * Finds a document that matches the conditions of the collection and updates it.
@@ -481,15 +467,13 @@ export abstract class Model<T = any> extends Document<T> {
    *
    * @throws **ImmutableError** if findOneAndUpdate is strict:CAST_STRATEGY.THROW and try to modify a immutable property.
    */
-  static async findOneAndUpdate(
+  findOneAndUpdate<Query = T, Result = R>(
     // eslint-disable-next-line no-unused-vars
-    filter: LogicalWhereExpr = {},
-    doc: Record<string, unknown>,
+    filter?: LogicalWhereExpr<Query>,
+    doc?: T | Partial<T>,
     // eslint-disable-next-line no-unused-vars
-    options: FindOneAndUpdateOption = { strict: true },
-  ): Promise<any> {
-    return Promise.resolve({});
-  }
+    options?: FindOneAndUpdateOption,
+  ): Promise<Document<Result> | Result>;
 
   /**
    * dropCollection drops a collection from a scope in a bucket.
@@ -497,12 +481,10 @@ export abstract class Model<T = any> extends Document<T> {
    * @param scopeName
    * @param options
    */
-  static dropCollection(
+  dropCollection(
     collectionName?: string,
     scopeName?: string,
     // eslint-disable-next-line no-unused-vars
-    options: { timeout?: number } = {},
-  ): Promise<boolean | undefined> {
-    return Promise.resolve(true);
-  }
+    options?: { timeout?: number },
+  ): Promise<boolean | undefined>;
 }

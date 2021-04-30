@@ -50,7 +50,11 @@ describe('Test findOneAndUpdate function', () => {
       name: String,
       age: Number,
     });
-    const Cat = model('Cat', CatSchema);
+    interface ICat {
+      name: string;
+      age: number;
+    }
+    const Cat = model<ICat>('Cat', CatSchema);
     startInTest(getDefaultInstance());
     const run = async () => await Cat.findOneAndUpdate({ name: { $like: 'DummyCatName91' } }, { name: 'Kitty' });
     await expect(run).rejects.toThrow((couchbase as any).DocumentNotFoundError);

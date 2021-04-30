@@ -141,7 +141,7 @@ reading [Couchbasics: How Functional and Performance Needs Determine Data Access
 
 ### `n1ql`
 
-These indexes uses the new SQL-like query language available from Couchbase Server 4.0.0. When  start or ensureIndexes functions are executed, Ottoman automatically creates several secondary indexes so that the models can make queries to the database. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
+These indexes are the default and uses the new SQL-like query language available from Couchbase Server 4.0.0. When `start` or `ensureIndexes` functions are executed, Ottoman automatically creates several secondary indexes so that the models can make queries to the database. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
 
 N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html). If you need flexibility of queries and
 speed, this is the way to go.
@@ -266,7 +266,7 @@ console.log(userRefdoc);
 
 ### `view`
 
-These indexes are the default and use map-reduce views. This type of index is always available once `ensureIndexes` is called and will work with any Couchbase Server version.
+This type of index is always available once `ensureIndexes` is called and will work with any Couchbase Server version.
 
 Because views use map-reduce, certain types of queries can be faster as the query can be parallelized over all nodes in the cluster, with each node
 returning only partial results. One of the cons of views is that they are eventually consistent by default, and incur a performance
