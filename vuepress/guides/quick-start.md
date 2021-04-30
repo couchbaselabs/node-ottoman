@@ -19,7 +19,7 @@ If you still need to perform these tasks please use one of the following:
 ## Step 1: Create The Ottoman Node JS Project
 
 In this exercise, we will be working with the [Ottoman v2 ODM (Object Document Mapper)](https://github.com/couchbaselabs/node-ottoman)
-in conjunction with the [NodeJS SDK v3](https://docs.couchbase.com/nodejs-sdk/3.0/hello-world/start-using-sdk.html)
+in conjunction with the [NodeJS SDK v3](https://docs.couchbase.com/nodejs-sdk/current/hello-world/start-using-sdk.html)
 
 This tutorial was written using Node JS version 12.14, NPM version 6.13, and the Couchbase SDK 3.0, but higher version numbers should do.
 
