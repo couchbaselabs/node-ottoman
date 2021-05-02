@@ -1,3 +1,5 @@
+import { isObject } from 'util';
+import { PopulateSelectBaseType, PopulateSelectType } from '../model/populate.types';
 import { Schema } from '../schema';
 import { extractPopulate } from './query/extract-populate';
 
@@ -30,4 +32,20 @@ export const getSchemaType = (fieldName, schema) => {
     field = (field as any).itemType;
   }
   return field;
+};
+
+export const extractPopulateFieldsFromObject = ({ select, populate }: PopulateSelectBaseType): string[] => {
+  let toPopulate: string[] = extractPopulate(select);
+
+  if (populate) {
+    toPopulate = [
+      ...new Set([
+        ...toPopulate,
+        ...(typeof populate === 'object' && !Array.isArray(populate)
+          ? Object.keys(populate)
+          : extractPopulate(populate)),
+      ]),
+    ];
+  }
+  return toPopulate;
 };

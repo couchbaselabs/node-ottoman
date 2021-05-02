@@ -1,4 +1,4 @@
-import { FindOptions } from '../../handler/find/find-options';
+import { FindOptions } from '../../handler';
 
 /**
  * Extract the values to be populated.
