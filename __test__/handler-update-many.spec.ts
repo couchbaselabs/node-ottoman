@@ -52,7 +52,6 @@ describe('Test Document Update Many', () => {
       { name: 'Cats', age: 20 },
       { upsert: true },
     );
-    // await delay(500);
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
     expect(response.message.match_number).toBe(0);
@@ -116,7 +115,6 @@ describe('Test Document Update Many', () => {
       { isActive: 'active' },
       { consistency: SearchConsistency.LOCAL },
     );
-    // await delay(500);
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
     expect(response.status).toBe('FAILURE');

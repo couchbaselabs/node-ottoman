@@ -1,3 +1,4 @@
+import { PopulateFieldsType } from '../../model/populate.types';
 import { ISelectType, SortType } from '../../query';
 import { SearchConsistency } from '../../utils/search-consistency';
 
@@ -5,7 +6,7 @@ export class FindOptions {
   skip?: number;
   limit?: number;
   sort?: Record<string, SortType>;
-  populate?: string | string[];
+  populate?: PopulateFieldsType;
   populateMaxDeep?: number;
   select?: ISelectType[] | string | string[];
   consistency?: SearchConsistency;

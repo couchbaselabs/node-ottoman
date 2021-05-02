@@ -1,13 +1,14 @@
-import { delay } from '../../../__test__/testData';
-import { LogicalWhereExpr, Query } from '../../query';
-import { FindOptions } from './find-options';
-import { execPopulation } from '../../utils/populate/exec-populate';
-import { getProjectionFields } from '../../utils/query/extract-select';
-import { canBePopulated } from '../../utils/populate/can-be-populated';
-import { extractPopulate } from '../../utils/query/extract-populate';
-import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
 import { getModelMetadata, SearchConsistency } from '../..';
+import { delay } from '../../../__test__/testData';
+import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
+import { LogicalWhereExpr, Query } from '../../query';
 import { CAST_STRATEGY } from '../../utils/cast-strategy';
+import { canBePopulated } from '../../utils/populate/can-be-populated';
+import { execPopulation, execPopulationFromObject } from '../../utils/populate/exec-populate';
+import { isPopulateAnObject } from '../../utils/populate/is-populate-object';
+import { extractPopulate } from '../../utils/query/extract-populate';
+import { getProjectionFields } from '../../utils/query/extract-select';
+import { FindOptions } from './find-options';
 
 /**
  * Find documents
@@ -83,10 +84,21 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   if (select !== 'RAW COUNT(*) as count') {
     result.rows = result.rows.map((row) => new Model(row, { strict: false, strategy: CAST_STRATEGY.KEEP }));
     if (populate) {
-      const populateFields = extractPopulate(populate);
-      for (const toPopulate of populateFields) {
-        if (canBePopulated(toPopulate, projectionFields.fields)) {
-          await execPopulation(result.rows, toPopulate, ottoman, modelName, populateMaxDeep);
+      const isObject = isPopulateAnObject(populate);
+      const populateFields = extractPopulate(isObject ? Object.keys(populate) : populate);
+      const projections = projectionFields.fields;
+      if (isObject) {
+        for (const toPopulate of populateFields) {
+          if (!canBePopulated(toPopulate, projections)) {
+            delete populate[toPopulate];
+          }
+        }
+        await execPopulationFromObject(result.rows, populate, populateMaxDeep);
+      } else {
+        for (const toPopulate of populateFields) {
+          if (canBePopulated(toPopulate, projections)) {
+            await execPopulation(result.rows, toPopulate, ottoman, modelName, populateMaxDeep);
+          }
         }
       }
     }

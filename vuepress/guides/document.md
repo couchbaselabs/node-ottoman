@@ -148,6 +148,8 @@ Populated paths are no longer set to their original id, their value is replaced 
 
 Arrays of refs work the same way. Just call the populate method on the query and an array of documents will be returned in place of the original ids.
 
+You can see more examples of pupulate [here](https://v2.ottomanjs.com/classes/document.html#populate)
+
 ### Checking Whether a Field is Populated
 
 You can call the `_populated()` function to check whether a field is populated. If `_populated()` returns a truthy value, you can assume the field is populated.
