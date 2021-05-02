@@ -73,7 +73,6 @@ describe('Schema', () => {
       const User = model('User', userSchema);
       const user = new User({ name: 'John' });
       await user.save();
-      await delay(1000);
       await user.remove();
       expect(log1).toEqual(true);
       expect(log2).toEqual(true);

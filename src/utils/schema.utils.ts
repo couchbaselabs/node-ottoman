@@ -1,5 +1,4 @@
-import { isObject } from 'util';
-import { PopulateSelectBaseType, PopulateSelectType } from '../model/populate.types';
+import { PopulateSelectBaseType } from '../model/populate.types';
 import { Schema } from '../schema';
 import { extractPopulate } from './query/extract-populate';
 

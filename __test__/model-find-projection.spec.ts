@@ -24,7 +24,6 @@ describe('Test Model Find projection', () => {
     const documents = await UserModel.find(filter, options);
     options.select = ['_type'];
     const documents1 = await UserModel.find(filter, options);
-    await delay(300);
     const document = documents.rows[0];
     const document1 = documents1.rows[0];
     await UserModel.removeMany(filter);
@@ -51,7 +50,6 @@ describe('Test Model Find projection', () => {
     const documents = await UserModel.find(filter, options);
     options.select = ['name'];
     const documents1 = await UserModel.find(filter, options);
-    await delay(300);
     const document = documents.rows[0];
     const document1 = documents1.rows[0];
     await UserModel.removeMany(filter);
@@ -211,7 +209,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const { john, johnAddress, jane, janeAddress } = await fillData({ Address, Company, Person });
     const spaceX = await Company.findOne({ name: 'Space X' });
 
-    const response = await spaceX._populate(
+    await spaceX._populate(
       {
         president: { select: 'address,id', populate: 'address' },
         ceo: { select: 'age', populate: { address: { select: 'address' } } },
@@ -241,5 +239,3 @@ describe('Test Model Find projection on referenced objects', () => {
     await cleanUp({ Address, Company, Person });
   });
 });
-
-// TODO test case when select is of type "*"

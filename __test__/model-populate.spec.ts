@@ -1,13 +1,13 @@
 import {
-  model,
-  Schema,
+  DocumentNotFoundError,
   FindByIdOptions,
   FindOptions,
-  SearchConsistency,
   getDefaultInstance,
-  DocumentNotFoundError,
+  model,
+  Schema,
+  SearchConsistency,
 } from '../src';
-import { delay, startInTest } from './testData';
+import { startInTest } from './testData';
 
 const cardInfo = {
   cardNumber: '4242 4242 4242 4242',
@@ -137,7 +137,6 @@ describe('Test populate feature', () => {
     user.card = cardCreated.id;
     user.cats = [catCreated.id];
     const saved = await user.save();
-    await delay(500);
     const { card, cats } = await User.findById(saved.id, { populate: '*' });
     await Card.removeById(cardCreated.id);
     await Cat.removeById(catCreated.id);
@@ -179,7 +178,6 @@ describe('Test populate feature', () => {
 
     await user.save();
 
-    await delay(2000);
     const options = new FindOptions({
       limit: 3,
       populate: ['cats', 'card'],

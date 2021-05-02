@@ -15,6 +15,5 @@ export const delay = (timems) =>
 
 export const startInTest = async (ottoman: Ottoman) => {
   await ottoman.start();
-  // await delay(700);
   return true;
 };

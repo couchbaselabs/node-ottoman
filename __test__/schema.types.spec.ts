@@ -294,7 +294,6 @@ describe('SchemaTypes -> String', () => {
       email: 'Dummy.ExamPle@Email.CoM',
       code: 'asd',
     });
-    await delay(500);
     await User.removeById(user.id);
     expect(user.email).toBe('dummy.example@email.com');
     expect(user.code).toBe('ASD');

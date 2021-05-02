@@ -1,8 +1,7 @@
-import { getDefaultInstance } from '../src';
-import { DEFAULT_SCOPE } from '../src/utils/constants';
-import { delay } from './testData';
-import { BucketNotFoundError, CollectionNotFoundError, ScopeNotFoundError } from '../src/exceptions/ottoman-errors';
 import * as couchbase from 'couchbase';
+import { getDefaultInstance } from '../src';
+import { BucketNotFoundError, CollectionNotFoundError, ScopeNotFoundError } from '../src/exceptions/ottoman-errors';
+import { DEFAULT_SCOPE } from '../src/utils/constants';
 import { parseError } from '../src/utils/parse-errors';
 
 test('create and drop Collection', async () => {
@@ -17,8 +16,6 @@ test('create and drop Collection', async () => {
       maxExpiry: 30000,
     });
     expect(collectionCreated).toBe(true);
-
-    await delay(3000);
 
     const collectionDropped = await ottoman.collectionManager.dropCollection(name, DEFAULT_SCOPE);
     expect(collectionDropped).toBe(true);
@@ -36,16 +33,12 @@ test('create and drop Scope with Collections', async () => {
     const scopeCreated = await ottoman.collectionManager.createScope(scopeName);
     expect(scopeCreated).toBe(true);
 
-    await delay(3000);
-
     const collectionCreated = await ottoman.collectionManager.createCollection({
       name,
       scopeName,
       maxExpiry: 30000,
     });
     expect(collectionCreated).toBe(true);
-
-    await delay(3000);
 
     const scopeDropped = await ottoman.collectionManager.dropScope(scopeName);
     expect(scopeDropped).toBe(true);

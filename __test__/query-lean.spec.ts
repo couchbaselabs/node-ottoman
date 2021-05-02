@@ -1,6 +1,6 @@
 import { getDefaultInstance, model, Model, Schema, SearchConsistency } from '../src';
-import { delay, startInTest } from './testData';
 import { Document } from '../src/model/document';
+import { startInTest } from './testData';
 
 describe('Test Support Query Lean', () => {
   const schema = {
@@ -17,7 +17,6 @@ describe('Test Support Query Lean', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc);
-    await delay(500);
     const document = await UserModel.findOne({}, { consistency: SearchConsistency.LOCAL });
     const document1 = await UserModel.findOne({}, { consistency: SearchConsistency.LOCAL });
     await UserModel.removeById(id);
@@ -27,7 +26,6 @@ describe('Test Support Query Lean', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc);
-    await delay(500);
     const document = await UserModel.findOne({}, { consistency: SearchConsistency.LOCAL, lean: true });
     const document1 = await UserModel.findOne({}, { consistency: SearchConsistency.LOCAL });
     await UserModel.removeById(id);
@@ -37,7 +35,6 @@ describe('Test Support Query Lean', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc);
-    await delay(500);
     const document = await UserModel.findById(id, { lean: true });
     const document1 = await UserModel.findById(id);
     await UserModel.removeById(id);
@@ -47,7 +44,6 @@ describe('Test Support Query Lean', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc);
-    await delay(500);
     const { rows: documents } = await UserModel.find({ name: 'Ottoman Access Find Lean' }, { lean: true });
     const { rows: documents1 } = await UserModel.find({ name: 'Ottoman Access Find Lean' });
     await UserModel.removeById(id);
