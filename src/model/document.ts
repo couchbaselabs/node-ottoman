@@ -5,6 +5,7 @@ import { ApplyStrategy, CAST_STRATEGY, CastOptions } from '../utils/cast-strateg
 import { _keyGenerator } from '../utils/constants';
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
+import { isPopulateAnObject } from '../utils/populate/is-populate-object';
 import {
   extractPopulateFieldsFromObject,
   extractSchemaReferencesFields,
@@ -220,44 +221,199 @@ export abstract class Document<T = any> {
    *
    * @example
    * Getting context to explain populate.
-   * ```javascript
-   * const CardSchema = new Schema({
-   *   number: String,
-   *   zipCode: String,
-   *   issues: [{ type: IssueSchema, ref: 'Issue' }],
+   * ```typescript
+   * // Defining the schemas
+   * const addressSchema = new Schema({
+   *   address: String,
+   * });
+   * const personSchema = new Schema({
+   *   name: String,
+   *   age: Number,
+   *   address: { type: addressSchema, ref: 'Address' },
+   * });
+   * const companySchema = new Schema({
+   *   president: { type: personSchema, ref: 'Person' },
+   *   ceo: { type: personSchema, ref: 'Person' },
+   *   name: String,
+   *   workers: [{ type: personSchema, ref: 'Person' }],
    * });
    *
-   * const IssueSchema = new Schema({
-   *   title: String,
-   *   description: String,
-   * });
+   * // Initializing the models
+   * const Address = model('Address', addressSchema);
+   * const Person = model('Person', personSchema);
+   * const Company = model('Company', companySchema);
    *
-   * const Card = model('Card', CardSchema);
-   * const Issue = model('Issue', CardSchema);
+   * // Adding some data
+   * const johnAddress = await Address.create({ address: '13 Washington Square S, New York, NY 10012, USA' });
+   * const john = await Person.create({ name: 'John Smith', age: 52, address: johnAddress });
    *
-   * const issue = await Issue.create({ title: 'Broken card' });
+   * const janeAddress = await Address.create({ address: '55 Clark St, Brooklyn, NY 11201, USA' });
+   * const jane = await Person.create({ name: 'Jane Doe', age: 45, address: janeAddress });
    *
-   * const card = await Card.create({
-   *   cardNumber: '4242 4242 4242 4242',
-   *   zipCode: '42424',
-   *   issues: [issue.id],
-   * });
+   * const company = await Company.create({ name: 'Space X', president: john, ceo: jane });
+   *
+   *
+   * // Getting saved company data
+   * const spaceX = await Company.findById(company.id);
+   * console.log(`Company: `, company);
+   * ```
+   *
+   * Will get:
+   * ```
+   * Company: {
+   *     name: 'Space X',
+   *     president: '50e85ac9-5b4f-4587-aeb6-b287527794c9',
+   *     ceo: '32c2e85a-cc91-4db2-935f-f7d2768168de',
+   *     id: 'd59efbdf-4b7e-4d2f-a986-6e8451f22822',
+   *     _type: 'Company'
+   * }
    * ```
    *
    * Now we will see how the _populate methods works.
-   * ```javascript
-   * const card = await Card.findById(cardId);
-   * console.log(card.issues); // ['issueId']
+   * ```typescript
+   * const result = await spaceX._populate('ceo');
+   * console.log(`Result: `, result);
+   * ```
+   * ```
+   * Result: {
+   *   name: 'Space X',
+   *   president: '50e85ac9-5b4f-4587-aeb6-b287527794c9',
+   *   ceo: {
+   *     name: 'Jane Doe',
+   *     age: 45,
+   *     address: '235dd441-b445-4b88-b6aa-2ce35a958a32',
+   *     id: '32c2e85a-cc91-4db2-935f-f7d2768168de',
+   *     _type: 'Person'
+   *   },
+   *   id: 'd59efbdf-4b7e-4d2f-a986-6e8451f22822',
+   *   _type: 'Company'
+   * }
+   * ```
    *
-   * await card.populate('issues')
-   * console.log(card.issues); // [{id: 'issueId', title: 'Broken card'}]
+   * Can also pass an array or a string separated by a comma
+   * ```typescript
+   * const result = await spaceX._populate('ceo,president');
+   * // or
+   * const result = await spaceX._populate(['ceo', 'president']);
+   * console.log(`Result: `, result);
+   * ```
+   * ```
+   * Result: {
+   *   name: 'Space X',
+   *   president: {
+   *     name: 'John Smith',
+   *     age: 52,
+   *     address: 'bc7ea8a8-8d1c-4ab6-990c-d3a0163f7e10',
+   *     id: '50e85ac9-5b4f-4587-aeb6-b287527794c9',
+   *     _type: 'Person'
+   *   },
+   *   ceo: {
+   *     name: 'Jane Doe',
+   *     age: 45,
+   *     address: '235dd441-b445-4b88-b6aa-2ce35a958a32',
+   *     id: '32c2e85a-cc91-4db2-935f-f7d2768168de',
+   *     _type: 'Person'
+   *   },
+   *   id: 'd59efbdf-4b7e-4d2f-a986-6e8451f22822',
+   *   _type: 'Company'
+   * }
+   * ```
+   *
+   * If you want to get only a portion of the object
+   * ```typescript
+   * const result = await spaceX._populate({
+   *   ceo: ['age', 'address'], // or 'age,addres'
+   *   president: 'name',
+   * });
+   * console.log(`Result: `, result);
+   * ```
+   * ```
+   * Result: {
+   *   name: 'Space X',
+   *   president: { name: 'John Smith' },
+   *   ceo: { age: 45, address: '235dd441-b445-4b88-b6aa-2ce35a958a32' },
+   *   id: 'd59efbdf-4b7e-4d2f-a986-6e8451f22822',
+   *   _type: 'Company'
+   * }
+   * ```
+   *
+   * Now let's to go deeper
+   * ```typescript
+   * const result = await spaceX._populate(
+   *   {
+   *     ceo: {
+   *       select: 'age,id', // remember you can use ['age','address']
+   *       populate: 'address', // will populate all the fields
+   *     },
+   *     president: {
+   *       select: 'name',
+   *       populate: {
+   *         address: 'address', // will populate address field only
+   *       },
+   *     },
+   *   },
+   *   2, // for populate up to the second level
+   * );
+   * console.log(`Result: `, result);
+   * ```
+   * ```
+   * Result: {
+   *   name: 'Space X',
+   *   president: {
+   *     name: 'John Smith',
+   *     address: { address: '13 Washington Square S, New York, NY 10012, USA' }
+   *   },
+   *   ceo: {
+   *     age: 45,
+   *     id: '32c2e85a-cc91-4db2-935f-f7d2768168de',
+   *     address: {
+   *       address: '55 Clark St, Brooklyn, NY 11201, USA',
+   *       id: '235dd441-b445-4b88-b6aa-2ce35a958a32',
+   *       _type: 'Address'
+   *     }
+   *   },
+   *   id: 'd59efbdf-4b7e-4d2f-a986-6e8451f22822',
+   *   _type: 'Company'
+   * }
+   *```
+   * Below is another way through the find functions
+   * ```typescript
+   * const result = await Company.findOne(
+   *   { name: 'Space X' },
+   *   {
+   *     select: 'president,ceo',
+   *     populate: {
+   *       president: { select: 'address,id', populate: 'address' },
+   *       ceo: { select: ['age', 'name'], populate: { address: { select: 'id' } } },
+   *     },
+   *     populateMaxDeep: 2,
+   *   },
+   * );
+   * console.log(`Result: `, result);
+   * ```
+   * ```
+   * Result: {
+   *   ceo: {
+   *     age: 45,
+   *     name: 'Jane Doe',
+   *     address: { id: '235dd441-b445-4b88-b6aa-2ce35a958a32' }
+   *   },
+   *   president: {
+   *     address: {
+   *       address: '13 Washington Square S, New York, NY 10012, USA',
+   *       id: 'bc7ea8a8-8d1c-4ab6-990c-d3a0163f7e10',
+   *       _type: 'Address'
+   *     },
+   *     id: '50e85ac9-5b4f-4587-aeb6-b287527794c9'
+   *   }
+   * }
    * ```
    */
-  async _populate(fieldsName: PopulateFieldsType, deep = 1) {
+  async _populate(fieldsName?: PopulateFieldsType, deep = 1) {
     let fieldsToPopulate;
-    const isObject = fieldsName && typeof fieldsName === 'object' && !Array.isArray(fieldsName);
+    const isObject = isPopulateAnObject(fieldsName);
     if (isObject) {
-      fieldsToPopulate = extractSchemaReferencesFromGivenFields(Object.keys(fieldsName), this.$.schema);
+      fieldsToPopulate = extractSchemaReferencesFromGivenFields(Object.keys(fieldsName ?? ''), this.$.schema);
     } else if (fieldsName && fieldsName !== '*') {
       fieldsToPopulate = extractSchemaReferencesFromGivenFields(fieldsName, this.$.schema);
     } else {
@@ -281,7 +437,9 @@ export abstract class Document<T = any> {
               isObject && current !== '*' && current?.select !== '*'
                 ? {
                     select:
-                      typeof current === 'string' ? current : extractPopulateFieldsFromObject(current) ?? undefined,
+                      typeof current === 'string' || Array.isArray(current)
+                        ? current
+                        : extractPopulateFieldsFromObject(current) ?? undefined,
                   }
                 : undefined,
             );

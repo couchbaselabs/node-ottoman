@@ -143,6 +143,22 @@ describe('Test Model Find projection on referenced objects', () => {
     expect(president.toObject()).toStrictEqual({ name: 'John Smith' });
     expect(ceo.toObject()).toStrictEqual({ name: 'Jane Doe', age: 45 });
   });
+  test('Sub-objects required only with array', async () => {
+    const { Address, Company, Person } = getModels();
+    await startInTest(getDefaultInstance());
+    await fillData({ Address, Company, Person });
+    const spaceX = await Company.findOne({ name: 'Space X' });
+    await spaceX._populate({ president: 'name', ceo: ['name', 'age'] }, 2);
+
+    await cleanUp({ Address, Company, Person });
+
+    expect(spaceX).toBeDefined();
+    const { president, ceo } = spaceX;
+    expect(president).toBeDefined();
+    expect(ceo).toBeDefined();
+    expect(president.toObject()).toStrictEqual({ name: 'John Smith' });
+    expect(ceo.toObject()).toStrictEqual({ name: 'Jane Doe', age: 45 });
+  });
   test('Sub-objects that can be populated deep 1', async () => {
     const { Address, Company, Person } = getModels();
     await startInTest(getDefaultInstance());
@@ -228,6 +244,91 @@ describe('Test Model Find projection on referenced objects', () => {
     expect(pAddress.id).toBe(john.address);
     expect(pAddress.id).toBe(johnAddress.id);
     expect(pAddress.toObject()).toStrictEqual({ id: john.address, address: johnAddress.address, _type: 'Address' });
+    const { address: cAddress, age } = ceo;
+    expect(cAddress).toBeDefined();
+    expect(age).toBe(jane.age);
+    expect(cAddress.toObject()).toStrictEqual({ address: janeAddress.address });
+  });
+  test(`Populate in find one with default deep`, async () => {
+    const { Address, Company, Person } = getModels();
+    await startInTest(getDefaultInstance());
+    const { john, johnAddress, jane, janeAddress } = await fillData({ Address, Company, Person });
+    const spaceX = await Company.findOne(
+      { name: 'Space X' },
+      {
+        populate: {
+          president: { select: 'address,id', populate: 'address' },
+          ceo: { select: 'age', populate: { address: { select: 'address' } } },
+        },
+      },
+    );
+
+    await cleanUp({ Address, Company, Person });
+
+    expect(spaceX).toBeDefined();
+    const { president, ceo } = spaceX;
+    expect(president).toBeDefined();
+    expect(ceo).toBeDefined();
+    const { address: pAddress, id: pId } = president;
+    expect(pAddress).toBeDefined();
+    expect(pAddress).toBe(john.address);
+    expect(pAddress).toBe(johnAddress.id);
+    expect(pId).toBe(john.id);
+    expect(ceo.toObject()).toStrictEqual({ address: janeAddress.id, age: jane.age });
+  });
+  test(`Populate in find one with default deep=2`, async () => {
+    const { Address, Company, Person } = getModels();
+    await startInTest(getDefaultInstance());
+    const { john, johnAddress, jane, janeAddress } = await fillData({ Address, Company, Person });
+    const spaceX = await Company.findOne(
+      { name: 'Space X' },
+      {
+        populate: {
+          president: { select: 'address,id', populate: 'address' },
+          ceo: { select: 'age', populate: { address: { select: 'address' } } },
+        },
+        populateMaxDeep: 2,
+      },
+    );
+
+    await cleanUp({ Address, Company, Person });
+
+    expect(spaceX).toBeDefined();
+    const { president, ceo } = spaceX;
+    expect(president).toBeDefined();
+    expect(ceo).toBeDefined();
+    const { address: pAddress } = president;
+    expect(pAddress).toBeDefined();
+    expect(pAddress.id).toBe(john.address);
+    expect(pAddress.id).toBe(johnAddress.id);
+    expect(pAddress.toObject()).toStrictEqual({ id: john.address, address: johnAddress.address, _type: 'Address' });
+    const { address: cAddress, age } = ceo;
+    expect(cAddress).toBeDefined();
+    expect(age).toBe(jane.age);
+    expect(cAddress.toObject()).toStrictEqual({ address: janeAddress.address });
+  });
+  test(`Populate in find one with default deep=2 using findOptions 'select'`, async () => {
+    const { Address, Company, Person } = getModels();
+    await startInTest(getDefaultInstance());
+    const { jane, janeAddress } = await fillData({ Address, Company, Person });
+    const spaceX = await Company.findOne(
+      { name: 'Space X' },
+      {
+        select: 'ceo',
+        populate: {
+          president: { select: 'address,id', populate: 'address' },
+          ceo: { select: 'age', populate: { address: { select: 'address' } } },
+        },
+        populateMaxDeep: 2,
+      },
+    );
+
+    await cleanUp({ Address, Company, Person });
+
+    expect(spaceX).toBeDefined();
+    const { president, ceo } = spaceX;
+    expect(president).toBeUndefined();
+    expect(ceo).toBeDefined();
     const { address: cAddress, age } = ceo;
     expect(cAddress).toBeDefined();
     expect(age).toBe(jane.age);
