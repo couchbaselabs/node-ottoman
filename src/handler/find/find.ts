@@ -1,3 +1,4 @@
+import { delay } from '../../../__test__/testData';
 import { LogicalWhereExpr, Query } from '../../query';
 import { FindOptions } from './find-options';
 import { execPopulation } from '../../utils/populate/exec-populate';
@@ -71,23 +72,27 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
       queryOptions.scanConsistency = couchbase.QueryScanConsistency.NotBounded;
       break;
   }
-  const result = cluster.query(query.build({ ignoreCase }), queryOptions);
 
-  return result.then(async (r: { rows: unknown[] }) => {
-    if (select !== 'RAW COUNT(*) as count') {
-      r.rows = r.rows.map((row) => new Model(row, { strict: false, strategy: CAST_STRATEGY.KEEP }));
-      if (populate) {
-        const populateFields = extractPopulate(populate);
-        for (const toPopulate of populateFields) {
-          if (canBePopulated(toPopulate, projectionFields.fields)) {
-            await execPopulation(r.rows, toPopulate, ottoman, modelName, populateMaxDeep);
-          }
+  const n1ql = query.build({ ignoreCase });
+  let result = await cluster.query(n1ql, queryOptions);
+
+  if (!result?.rows?.length) {
+    await delay(300);
+    result = await cluster.query(n1ql, queryOptions);
+  }
+  if (select !== 'RAW COUNT(*) as count') {
+    result.rows = result.rows.map((row) => new Model(row, { strict: false, strategy: CAST_STRATEGY.KEEP }));
+    if (populate) {
+      const populateFields = extractPopulate(populate);
+      for (const toPopulate of populateFields) {
+        if (canBePopulated(toPopulate, projectionFields.fields)) {
+          await execPopulation(result.rows, toPopulate, ottoman, modelName, populateMaxDeep);
         }
       }
     }
-    if (lean) {
-      r.rows = r.rows.map((value: any) => value.toObject());
-    }
-    return r;
-  });
+  }
+  if (lean) {
+    result.rows = result.rows.map((value: any) => value.toObject());
+  }
+  return result;
 };

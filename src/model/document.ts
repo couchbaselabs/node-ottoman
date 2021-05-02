@@ -1,17 +1,22 @@
 import { DocumentExistsError, DocumentNotFoundError } from '../exceptions/exceptions';
+import { ImmutableError } from '../exceptions/ottoman-errors';
+import { validate } from '../schema';
+import { ApplyStrategy, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
+import { _keyGenerator } from '../utils/constants';
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
-import { validate } from '../schema';
+import {
+  extractPopulateFieldsFromObject,
+  extractSchemaReferencesFields,
+  extractSchemaReferencesFromGivenFields,
+} from '../utils/schema.utils';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
-import { getModelMetadata } from './utils/model.utils';
-import { storeLifeCycle } from './utils/store-life-cycle';
-import { removeLifeCycle } from './utils/remove-life-cycle';
+import { PopulateFieldsType } from './populate.types';
 import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
-import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
-import { _keyGenerator } from '../utils/constants';
-import { ApplyStrategy, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
-import { ImmutableError } from '../exceptions/ottoman-errors';
+import { getModelMetadata } from './utils/model.utils';
+import { removeLifeCycle } from './utils/remove-life-cycle';
+import { storeLifeCycle } from './utils/store-life-cycle';
 
 /**
  * Document class represent a database document
@@ -248,13 +253,17 @@ export abstract class Document<T = any> {
    * console.log(card.issues); // [{id: 'issueId', title: 'Broken card'}]
    * ```
    */
-  async _populate(fieldsName: string | string[], deep = 1) {
+  async _populate(fieldsName: PopulateFieldsType, deep = 1) {
     let fieldsToPopulate;
-    if (fieldsName && fieldsName !== '*') {
+    const isObject = fieldsName && typeof fieldsName === 'object' && !Array.isArray(fieldsName);
+    if (isObject) {
+      fieldsToPopulate = extractSchemaReferencesFromGivenFields(Object.keys(fieldsName), this.$.schema);
+    } else if (fieldsName && fieldsName !== '*') {
       fieldsToPopulate = extractSchemaReferencesFromGivenFields(fieldsName, this.$.schema);
     } else {
       fieldsToPopulate = extractSchemaReferencesFields(this.$.schema);
     }
+
     for (const fieldName in fieldsToPopulate) {
       const field = fieldsToPopulate[fieldName];
       const modelName = (field as any).refModel;
@@ -265,19 +274,26 @@ export abstract class Document<T = any> {
           const refField = refFields[i];
           if (typeof refField === 'string' && modelName) {
             const { findById } = this.$.ottoman.getModel(modelName);
-            const populated = await findById(refField);
+
+            const current = fieldsName?.[fieldName];
+            const populated = await findById(
+              refField,
+              isObject && current !== '*' && current?.select !== '*'
+                ? {
+                    select:
+                      typeof current === 'string' ? current : extractPopulateFieldsFromObject(current) ?? undefined,
+                  }
+                : undefined,
+            );
             const currentDeep = deep - 1;
             if (currentDeep > 0) {
-              await populated._populate('*', currentDeep);
+              await populated._populate(current?.populate ?? current ?? '*', currentDeep);
             }
             refFields[i] = populated;
           }
         }
-        if (Array.isArray(ref)) {
-          this[fieldName] = refFields;
-        } else {
-          this[fieldName] = refFields[0];
-        }
+
+        this[fieldName] = Array.isArray(ref) ? refFields : refFields[0];
       }
     }
     return this;
