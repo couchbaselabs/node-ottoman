@@ -1,7 +1,7 @@
 import { getDefaultInstance, model, Schema, ValidationError } from '../src';
-import { delay, startInTest } from './testData';
-import { cast, CAST_STRATEGY } from '../src/utils/cast-strategy';
 import { BuildIndexQueryError } from '../src/exceptions/ottoman-errors';
+import { cast, CAST_STRATEGY } from '../src/utils/cast-strategy';
+import { startInTest } from './testData';
 
 const CardSchemaBase = new Schema({
   cardNumber: { type: String },
@@ -23,7 +23,6 @@ describe('Errors Name', () => {
     const Card = model('Card', CardSchema);
     await startInTest(getDefaultInstance());
     const result = await Card.create(cardInfo);
-    await delay(500);
     try {
       await Card.findByCardNumber();
     } catch (e) {

@@ -1,5 +1,5 @@
-import { Schema, model, getDefaultInstance } from '../src';
-import { delay, startInTest } from './testData';
+import { getDefaultInstance, model, Schema } from '../src';
+import { startInTest } from './testData';
 
 const generateMockData = async () => {
   const userSchema = new Schema({
@@ -35,7 +35,6 @@ const generateMockData = async () => {
 describe('Mode Query Index Tests', () => {
   test('Test schema query structure', async () => {
     const { user } = await generateMockData();
-    await delay(2500);
     const results = await user.myPosts();
     expect(results.rows).toBeDefined();
     expect(results.rows.length > 0).toBeTruthy();

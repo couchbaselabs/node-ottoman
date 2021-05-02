@@ -1,5 +1,5 @@
 import { buildWhereClauseExpr, getDefaultInstance, LogicalWhereExpr, model, Query } from '../src';
-import { delay, startInTest } from './testData';
+import { startInTest } from './testData';
 
 describe('Options to ignore case', () => {
   const doc1 = {
@@ -65,7 +65,6 @@ describe('Options to ignore case', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc1);
-    await delay(500);
     const { rows: documents } = await UserModel.find({ name: { $eq: 'oTToman aCCess find', $ignoreCase: true } });
     await UserModel.removeById(id);
     expect(documents[0].name).toStrictEqual('Ottoman Access Find');
@@ -75,7 +74,6 @@ describe('Options to ignore case', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc1);
-    await delay(500);
     const { rows: documents } = await UserModel.find({
       name: { $like: 'oTToman aCCess find', $ignoreCase: true },
     });
@@ -87,7 +85,6 @@ describe('Options to ignore case', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc1);
-    await delay(1500);
 
     const { rows: documents } = await UserModel.find(
       {
@@ -103,7 +100,6 @@ describe('Options to ignore case', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc1);
-    await delay(1500);
 
     const { rows: documents } = await UserModel.find(
       {
@@ -120,7 +116,6 @@ describe('Options to ignore case', () => {
     await startInTest(getDefaultInstance());
     const { id: id1 } = await UserModel.create(doc1);
     const { id: id2 } = await UserModel.create(doc2);
-    await delay(500);
 
     const { rows: documents } = await UserModel.find(
       {
@@ -138,7 +133,6 @@ describe('Options to ignore case', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id: idToRemove } = await UserModel.create(doc1);
-    await delay(500);
 
     const { id, name } = await UserModel.findOne(
       {
@@ -154,7 +148,6 @@ describe('Options to ignore case', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id: idToRemove } = await UserModel.create(doc1);
-    await delay(500);
 
     const { id, name } = await UserModel.findOne(
       {

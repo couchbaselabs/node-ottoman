@@ -22,7 +22,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchema);
     await startInTest(getDefaultInstance());
     const result = await Card.create(cardInfo);
-    await delay(500);
     result.cardNumber = '80';
     await Card.removeById(result.id);
     expect(result.cardNumber).toBe('80');
@@ -31,7 +30,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     const result = await Card.create(cardInfo);
-    await delay(500);
     result.cardNumber = '80';
     await Card.removeById(result.id);
     expect(result.cardNumber).toBe(cardInfo.cardNumber);
@@ -40,7 +38,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     await Card.create(cardInfo);
-    await delay(1500);
     const result = await Card.findOne({ cardNumber: '5678 5678 5678 5678' });
     result.cardNumber = '80';
     await Card.removeById(result.id);
@@ -50,7 +47,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     const { id } = await Card.create(cardInfo);
-    await delay(500);
     const result = await Card.findById(id);
     result.cardNumber = '80';
     await Card.removeById(result.id);
@@ -61,7 +57,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     const { id } = await Card.create(cardInfo);
-    await delay(500);
     try {
       await Card.updateById(id, cardInfoUpdate);
     } catch (e) {
@@ -76,7 +71,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     const { id } = await Card.create(cardInfo);
-    await delay(500);
     await Card.replaceById(id, cardInfoUpdate);
     const card = await Card.findById(id);
     await Card.removeById(id);
@@ -87,7 +81,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     await Card.create(cardInfo);
-    await delay(500);
     const card = await Card.findOneAndUpdate({ cardNumber: { $like: '%5678 5678 5678 5678%' } }, cardInfoUpdate, {
       new: true,
     });
@@ -99,7 +92,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     await Card.create(cardInfo);
-    await delay(500);
     const card = await Card.findOneAndUpdate({ cardNumber: { $like: '%5678 5678%' } }, cardInfoUpdate, { new: false });
     await Card.removeById(card.id);
     expect(card.cardNumber).toBe('5678 5678 5678 5678');
@@ -110,10 +102,8 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     const { id } = await Card.create(cardInfo);
-    await delay(500);
     await Card.updateById(id, cardInfoUpdate, { strict: false });
     const card = await Card.findById(id);
-    await delay(500);
     await Card.removeById(id);
     expect(card.cardNumber).toBe('4321 4321 4321 4321');
     expect(card.zipCode).toBe('43210');
@@ -122,10 +112,8 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     const { id } = await Card.create(cardInfo);
-    await delay(500);
     await Card.updateById(id, cardInfoUpdate, { strict: true });
     const card = await Card.findById(id);
-    await delay(500);
 
     await Card.removeById(id);
     expect(card.cardNumber).toBe('5678 5678 5678 5678');
@@ -135,7 +123,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     const { id } = await Card.create(cardInfo);
-    await delay(500);
     try {
       await Card.updateById(id, cardInfoUpdate, { strict: CAST_STRATEGY.THROW });
     } catch (e) {
@@ -143,7 +130,6 @@ describe('Test Schema Immutable', () => {
       expect(message).toBe("Field 'cardNumber' is immutable and current cast strategy is set to 'throw'");
     }
     const card = await Card.findById(id);
-    await delay(500);
     await Card.removeById(id);
     expect(card.cardNumber).toBe('5678 5678 5678 5678');
     expect(card.zipCode).toBe('56789');
@@ -153,7 +139,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     const { id } = await Card.create(cardInfo);
-    await delay(500);
     await Card.replaceById(id, cardInfoUpdate, { strict: false });
     const card = await Card.findById(id);
     await Card.removeById(id);
@@ -164,7 +149,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     const { id } = await Card.create(cardInfo);
-    await delay(500);
     await Card.replaceById(id, cardInfoUpdate, { strict: true });
     const card = await Card.findById(id);
     await Card.removeById(id);
@@ -175,7 +159,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     const { id } = await Card.create(cardInfo);
-    await delay(500);
     try {
       await Card.replaceById(id, cardInfoUpdate, { strict: CAST_STRATEGY.THROW });
     } catch (e) {
@@ -192,7 +175,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     await Card.create(cardInfo);
-    await delay(500);
     const card = await Card.findOneAndUpdate({ cardNumber: { $like: '%5678 5678 5678 5678%' } }, cardInfoUpdate, {
       new: true,
       strict: false,
@@ -205,7 +187,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     await Card.create(cardInfo);
-    await delay(500);
     const card = await Card.findOneAndUpdate({ cardNumber: { $like: '%5678 5678 5678 5678%' } }, cardInfoUpdate, {
       new: true,
       strict: true,
@@ -218,7 +199,6 @@ describe('Test Schema Immutable', () => {
     const Card = model('Card', CardSchemaBase);
     await startInTest(getDefaultInstance());
     await Card.create(cardInfo);
-    await delay(500);
     try {
       await Card.findOneAndUpdate({ cardNumber: { $like: '%5678 5678 5678 5678%' } }, cardInfoUpdate, {
         new: true,
@@ -294,7 +274,6 @@ async function updateManyHelper(result: any[], strict: ApplyStrategy = true) {
     card2 = await Card.create({ cardNumber: '5678 5678 2222 2222', zipCode: '22222' });
   };
   await batchCreate();
-  await delay(500);
   const response: IManyQueryResponse = await Card.updateMany(
     { cardNumber: { $like: '%5678 5678%' } },
     { zipCode: '12345', cardNumber: '0000 0000 0000 0000' },
@@ -303,7 +282,6 @@ async function updateManyHelper(result: any[], strict: ApplyStrategy = true) {
   const result1 = await Card.findById(card1.id);
   const result2 = await Card.findById(card2.id);
 
-  await delay(500);
   const cleanUp = async () => await Card.removeMany({ _type: 'CardMany' });
   await cleanUp();
   result.push(result1, result2, response);

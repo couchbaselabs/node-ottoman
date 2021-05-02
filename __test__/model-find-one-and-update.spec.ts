@@ -1,6 +1,6 @@
-import { getDefaultInstance, model, Schema } from '../src';
-import { delay, startInTest } from './testData';
 import couchbase from 'couchbase';
+import { getDefaultInstance, model, Schema } from '../src';
+import { startInTest } from './testData';
 
 describe('Test findOneAndUpdate function', () => {
   test('Test find item and update', async () => {
@@ -9,13 +9,12 @@ describe('Test findOneAndUpdate function', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     await Cat.create({ name: 'Figaro', age: 27 });
-    await delay(500);
     const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' });
-    expect(response.name).toBe('Figaro');
     const cleanUp = async () => await Cat.removeById(response.id);
     await cleanUp();
+    expect(response.name).toBe('Figaro');
   });
   test('Test find item and update with options.new in true', async () => {
     const CatSchema = new Schema({
@@ -23,13 +22,12 @@ describe('Test findOneAndUpdate function', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     await Cat.create({ name: 'Figaro', age: 27 });
-    await delay(500);
     const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' }, { new: true });
-    expect(response.name).toBe('Kitty');
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
+    expect(response.name).toBe('Kitty');
   });
   test('Test find item and update, options.upsert in true', async () => {
     const CatSchema = new Schema({
@@ -37,13 +35,12 @@ describe('Test findOneAndUpdate function', () => {
       age: Number,
     });
     const Cat = model('Cat', CatSchema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     await Cat.create({ name: 'Cat0', age: 27 });
-    await delay(500);
     const response = await Cat.findOneAndUpdate({ name: 'Kitty' }, { name: 'Kitty', age: 20 }, { upsert: true });
-    expect(response.name).toBe('Kitty');
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
+    expect(response.name).toBe('Kitty');
   });
   test('Test find item and update, Document Not Found', async () => {
     const CatSchema = new Schema({
@@ -55,7 +52,7 @@ describe('Test findOneAndUpdate function', () => {
       age: number;
     }
     const Cat = model<ICat>('Cat', CatSchema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const run = async () => await Cat.findOneAndUpdate({ name: { $like: 'DummyCatName91' } }, { name: 'Kitty' });
     await expect(run).rejects.toThrow((couchbase as any).DocumentNotFoundError);
   });

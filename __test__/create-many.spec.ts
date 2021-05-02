@@ -7,11 +7,11 @@ test('Test Create Many', async () => {
   await startInTest(getDefaultInstance());
   const docs = [{ name: 'Xbox' }, { name: 'Yellow Box' }];
   const queryResult: IManyQueryResponse = await Box.createMany(docs);
-  expect(queryResult.message.success).toBe(docs.length);
   const boxs = await Box.find({}, { consistency: SearchConsistency.LOCAL });
-  expect(boxs.rows.length).toBeGreaterThanOrEqual(2);
   const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
   await cleanUp();
+  expect(queryResult.message.success).toBe(docs.length);
+  expect(boxs.rows.length).toBeGreaterThanOrEqual(2);
 });
 
 test('Test Create Many Errors ', async () => {
@@ -19,11 +19,11 @@ test('Test Create Many Errors ', async () => {
   await startInTest(getDefaultInstance());
   const docs = [{ name: 'Xbox', price: 10 }, { name: 'Yellow Box' }];
   const queryResult: IManyQueryResponse = await Box.createMany(docs);
+  const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
+  await cleanUp();
   expect(queryResult.message.success).toBe(1);
   expect(queryResult.message.errors.length).toBe(1);
   expect(queryResult.message.errors[0].exception).toBe('ValidationError');
-  const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
-  await cleanUp();
 });
 
 test('Test Create Many Errors JSON Strict ', async () => {
@@ -49,9 +49,9 @@ test('Test Create Many Errors JSON Strict ', async () => {
       ],
     },
   };
-  expect(JSON.stringify(queryResult)).toStrictEqual(JSON.stringify(queryResultJson));
   const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
   await cleanUp();
+  expect(JSON.stringify(queryResult)).toStrictEqual(JSON.stringify(queryResultJson));
 });
 
 test('Test Create Many Errors Class Strict ', async () => {
@@ -75,7 +75,7 @@ test('Test Create Many Errors Class Strict ', async () => {
     ],
   });
 
-  expect(queryResult).toStrictEqual(queryResultClass);
   const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
   await cleanUp();
+  expect(queryResult).toStrictEqual(queryResultClass);
 });
