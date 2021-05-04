@@ -11,6 +11,7 @@ export {
   CertificateAuthenticator,
 } from './ottoman/ottoman';
 export { Model } from './model/model';
+export { ModelTypes } from './model/model.types';
 export { getModelMetadata } from './model/utils/model.utils';
 export { ViewIndexOptions } from './model/index/view/view-index-options';
 export {
