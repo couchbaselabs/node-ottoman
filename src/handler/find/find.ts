@@ -1,5 +1,4 @@
 import { getModelMetadata, SearchConsistency } from '../..';
-import { delay } from '../../../__test__/testData';
 import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
 import { LogicalWhereExpr, Query } from '../../query';
 import { CAST_STRATEGY } from '../../utils/cast-strategy';
@@ -75,12 +74,8 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   }
 
   const n1ql = query.build({ ignoreCase });
-  let result = await cluster.query(n1ql, queryOptions);
+  const result = await cluster.query(n1ql, queryOptions);
 
-  if (!result?.rows?.length) {
-    await delay(300);
-    result = await cluster.query(n1ql, queryOptions);
-  }
   if (select !== 'RAW COUNT(*) as count') {
     result.rows = result.rows.map((row) => new Model(row, { strict: false, strategy: CAST_STRATEGY.KEEP }));
     if (populate) {
