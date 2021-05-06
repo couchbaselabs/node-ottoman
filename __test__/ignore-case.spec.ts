@@ -1,5 +1,5 @@
 import { buildWhereClauseExpr, getDefaultInstance, LogicalWhereExpr, model, Query } from '../src';
-import { startInTest } from './testData';
+import { consistency, startInTest } from './testData';
 
 describe('Options to ignore case', () => {
   const doc1 = {
@@ -65,7 +65,10 @@ describe('Options to ignore case', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc1);
-    const { rows: documents } = await UserModel.find({ name: { $eq: 'oTToman aCCess find', $ignoreCase: true } });
+    const { rows: documents } = await UserModel.find(
+      { name: { $eq: 'oTToman aCCess find', $ignoreCase: true } },
+      consistency,
+    );
     await UserModel.removeById(id);
     expect(documents[0].name).toStrictEqual('Ottoman Access Find');
   });
@@ -74,9 +77,10 @@ describe('Options to ignore case', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc1);
-    const { rows: documents } = await UserModel.find({
-      name: { $like: 'oTToman aCCess find', $ignoreCase: true },
-    });
+    const { rows: documents } = await UserModel.find(
+      { name: { $like: 'oTToman aCCess find', $ignoreCase: true } },
+      consistency,
+    );
     await UserModel.removeById(id);
     expect(documents[0].name).toStrictEqual('Ottoman Access Find');
   });
@@ -90,7 +94,7 @@ describe('Options to ignore case', () => {
       {
         name: { $like: 'oTToman aCCess find' },
       },
-      { ignoreCase: true },
+      { ignoreCase: true, ...consistency },
     );
     await UserModel.removeById(id);
     expect(documents[0].name).toStrictEqual('Ottoman Access Find');
@@ -105,7 +109,7 @@ describe('Options to ignore case', () => {
       {
         name: 'oTToman aCCess find',
       },
-      { ignoreCase: true },
+      { ignoreCase: true, ...consistency },
     );
     await UserModel.removeById(id);
     expect(documents[0].name).toStrictEqual('Ottoman Access Find');
@@ -121,7 +125,7 @@ describe('Options to ignore case', () => {
       {
         name: { $like: 'OTTOMAN ACCESS FIND', $ignoreCase: false },
       },
-      { ignoreCase: true },
+      { ignoreCase: true, ...consistency },
     );
     await UserModel.removeById(id1);
     await UserModel.removeById(id2);
@@ -138,7 +142,7 @@ describe('Options to ignore case', () => {
       {
         name: { $like: 'oTToman aCCess find' },
       },
-      { ignoreCase: true },
+      { ignoreCase: true, ...consistency },
     );
     await UserModel.removeById(idToRemove);
     expect(id).toStrictEqual(idToRemove);
@@ -153,7 +157,7 @@ describe('Options to ignore case', () => {
       {
         name: 'oTToman aCCess find',
       },
-      { ignoreCase: true },
+      { ignoreCase: true, ...consistency },
     );
     await UserModel.removeById(idToRemove);
     expect(id).toStrictEqual(idToRemove);

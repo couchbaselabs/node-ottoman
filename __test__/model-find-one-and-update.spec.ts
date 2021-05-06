@@ -1,6 +1,6 @@
 import couchbase from 'couchbase';
 import { getDefaultInstance, model, Schema } from '../src';
-import { startInTest } from './testData';
+import { consistency, startInTest } from './testData';
 
 describe('Test findOneAndUpdate function', () => {
   test('Test find item and update', async () => {
@@ -11,7 +11,7 @@ describe('Test findOneAndUpdate function', () => {
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
     await Cat.create({ name: 'Figaro', age: 27 });
-    const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' });
+    const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' }, consistency);
     const cleanUp = async () => await Cat.removeById(response.id);
     await cleanUp();
     expect(response.name).toBe('Figaro');
@@ -24,7 +24,11 @@ describe('Test findOneAndUpdate function', () => {
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
     await Cat.create({ name: 'Figaro', age: 27 });
-    const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' }, { new: true });
+    const response = await Cat.findOneAndUpdate(
+      { name: { $like: '%Figaro%' } },
+      { name: 'Kitty' },
+      { new: true, ...consistency },
+    );
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
     expect(response.name).toBe('Kitty');
@@ -37,7 +41,11 @@ describe('Test findOneAndUpdate function', () => {
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
     await Cat.create({ name: 'Cat0', age: 27 });
-    const response = await Cat.findOneAndUpdate({ name: 'Kitty' }, { name: 'Kitty', age: 20 }, { upsert: true });
+    const response = await Cat.findOneAndUpdate(
+      { name: 'Kitty' },
+      { name: 'Kitty', age: 20 },
+      { upsert: true, ...consistency },
+    );
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
     expect(response.name).toBe('Kitty');

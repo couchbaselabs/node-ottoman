@@ -1,6 +1,5 @@
-import { FindOptions, getDefaultInstance, model, Schema, SearchConsistency } from '../src';
-import { ModelTypes } from '../src/model/model.types';
-import { delay, startInTest } from './testData';
+import { FindOptions, getDefaultInstance, model, ModelTypes, Schema } from '../src';
+import { consistency, startInTest } from './testData';
 
 describe('Test Model Find projection', () => {
   const SchemaBase = {
@@ -20,7 +19,7 @@ describe('Test Model Find projection', () => {
       name: 'Ottoman Access List Custom ID',
     });
     const filter = { name: 'Ottoman Access List Custom ID' };
-    const options: FindOptions = { consistency: SearchConsistency.LOCAL, lean: true };
+    const options: FindOptions = { lean: true, ...consistency };
     const documents = await UserModel.find(filter, options);
     options.select = ['_type'];
     const documents1 = await UserModel.find(filter, options);
@@ -46,7 +45,7 @@ describe('Test Model Find projection', () => {
       noExistOnSchema: true,
     });
     const filter = { name: 'Ottoman Access List Custom ID' };
-    const options: FindOptions = { consistency: SearchConsistency.LOCAL, lean: true };
+    const options: FindOptions = { lean: true, ...consistency };
     const documents = await UserModel.find(filter, options);
     options.select = ['name'];
     const documents1 = await UserModel.find(filter, options);
@@ -85,10 +84,9 @@ describe('Test Model Find projection on referenced objects', () => {
     Company: model('Company', companySchema),
   });
   const cleanUp = async ({ Address, Company, Person }: { [K: string]: ModelTypes }) => {
-    await Address.removeMany({ _type: 'Address' });
-    await Person.removeMany({ _type: 'Person' });
-    await Company.removeMany({ _type: 'Company' });
-    await delay(300);
+    await Address.removeMany({ _type: 'Address' }, consistency);
+    await Person.removeMany({ _type: 'Person' }, consistency);
+    await Company.removeMany({ _type: 'Company' }, consistency);
   };
   const fillData = async ({ Address, Company, Person }: { [K: string]: ModelTypes }) => {
     const johnAddress = await Address.create({ address: '13 Washington Square S, New York, NY 10012, USA' });
@@ -105,7 +103,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const { Address, Company, Person } = getModels();
     await startInTest(getDefaultInstance());
     await fillData({ Address, Company, Person });
-    const spaceX = await Company.findOne({ name: 'Space X' });
+    const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
     await spaceX._populate({ president: '*', ceo: '*' }, 2);
 
     await cleanUp({ Address, Company, Person });
@@ -131,7 +129,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const { Address, Company, Person } = getModels();
     await startInTest(getDefaultInstance());
     await fillData({ Address, Company, Person });
-    const spaceX = await Company.findOne({ name: 'Space X' });
+    const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
     await spaceX._populate({ president: 'name', ceo: 'name,age' }, 2);
 
     await cleanUp({ Address, Company, Person });
@@ -147,7 +145,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const { Address, Company, Person } = getModels();
     await startInTest(getDefaultInstance());
     await fillData({ Address, Company, Person });
-    const spaceX = await Company.findOne({ name: 'Space X' });
+    const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
     await spaceX._populate({ president: 'name', ceo: ['name', 'age'] }, 2);
 
     await cleanUp({ Address, Company, Person });
@@ -164,7 +162,7 @@ describe('Test Model Find projection on referenced objects', () => {
     await startInTest(getDefaultInstance());
     const { johnAddress } = await fillData({ Address, Company, Person });
 
-    const spaceX = await Company.findOne({ name: 'Space X' });
+    const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
     await spaceX._populate({ president: 'name, address', ceo: 'age' }, 1);
 
     await cleanUp({ Address, Company, Person });
@@ -181,7 +179,7 @@ describe('Test Model Find projection on referenced objects', () => {
     await startInTest(getDefaultInstance());
     const { johnAddress } = await fillData({ Address, Company, Person });
 
-    const spaceX = await Company.findOne({ name: 'Space X' });
+    const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
     await spaceX._populate({ president: 'address', ceo: 'age' }, 2);
     await cleanUp({ Address, Company, Person });
 
@@ -198,7 +196,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const { Address, Company, Person } = getModels();
     await startInTest(getDefaultInstance());
     const { john, johnAddress, jane, janeAddress } = await fillData({ Address, Company, Person });
-    const spaceX = await Company.findOne({ name: 'Space X' });
+    const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
 
     await spaceX._populate({ president: { select: '*', populate: '*' }, ceo: { populate: 'address' } }, 2);
 
@@ -223,7 +221,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const { Address, Company, Person } = getModels();
     await startInTest(getDefaultInstance());
     const { john, johnAddress, jane, janeAddress } = await fillData({ Address, Company, Person });
-    const spaceX = await Company.findOne({ name: 'Space X' });
+    const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
 
     await spaceX._populate(
       {
@@ -256,6 +254,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const spaceX = await Company.findOne(
       { name: 'Space X' },
       {
+        ...consistency,
         populate: {
           president: { select: 'address,id', populate: 'address' },
           ceo: { select: 'age', populate: { address: { select: 'address' } } },
@@ -283,6 +282,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const spaceX = await Company.findOne(
       { name: 'Space X' },
       {
+        ...consistency,
         populate: {
           president: { select: 'address,id', populate: 'address' },
           ceo: { select: 'age', populate: { address: { select: 'address' } } },
@@ -314,6 +314,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const spaceX = await Company.findOne(
       { name: 'Space X' },
       {
+        ...consistency,
         select: 'ceo',
         populate: {
           president: { select: 'address,id', populate: 'address' },
@@ -333,10 +334,5 @@ describe('Test Model Find projection on referenced objects', () => {
     expect(cAddress).toBeDefined();
     expect(age).toBe(jane.age);
     expect(cAddress.toObject()).toStrictEqual({ address: janeAddress.address });
-  });
-  test(`CleanUp`, async () => {
-    const { Address, Company, Person } = getModels();
-    await startInTest(getDefaultInstance());
-    await cleanUp({ Address, Company, Person });
   });
 });

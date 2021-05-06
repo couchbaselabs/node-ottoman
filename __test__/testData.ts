@@ -1,4 +1,4 @@
-import { Ottoman } from '../src';
+import { Ottoman, SearchConsistency } from '../src';
 
 export const bucketName = 'travel-sample';
 export const username = 'Administrator';
@@ -17,3 +17,5 @@ export const startInTest = async (ottoman: Ottoman) => {
   await ottoman.start();
   return true;
 };
+
+export const consistency = { consistency: SearchConsistency.LOCAL };
