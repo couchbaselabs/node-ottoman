@@ -2,7 +2,7 @@ import couchbase from 'couchbase';
 import { getDefaultInstance, getModelMetadata, model, Schema } from '../src';
 import { batchProcessQueue, chunkArray, IManyQueryResponse, removeCallback, StatusExecution } from '../src/handler';
 import { ModelMetadata } from '../src/model/interfaces/model-metadata.interface';
-import { startInTest } from './testData';
+import { consistency, startInTest } from './testData';
 
 describe('Test Document Remove Many', () => {
   test('Test Process Query Stack Function', async () => {
@@ -44,7 +44,7 @@ describe('Test Document Remove Many', () => {
       await Cat.create({ name: 'Cat3', age: 30 });
     };
     await batchCreate();
-    const response: IManyQueryResponse = await Cat.removeMany({ name: { $like: '%Cat%' } });
+    const response: IManyQueryResponse = await Cat.removeMany({ name: { $like: '%Cat%' } }, consistency);
     expect(response.message.success).toBe(4);
     expect(response.message.match_number).toBe(4);
   });

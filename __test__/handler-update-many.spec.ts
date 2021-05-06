@@ -1,7 +1,7 @@
 import couchbase from 'couchbase';
 import { getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema, SearchConsistency } from '../src';
 import { updateCallback } from '../src/handler';
-import { startInTest } from './testData';
+import { consistency, startInTest } from './testData';
 
 describe('Test Document Update Many', () => {
   test('Test Update Many Function', async () => {
@@ -19,8 +19,12 @@ describe('Test Document Update Many', () => {
       await Cat.create({ name: 'Cat3', age: 30 });
     };
     await batchCreate();
-    const response: IManyQueryResponse = await Cat.updateMany({ name: { $like: '%Cat%' } }, { name: 'Cats' });
-    const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
+    const response: IManyQueryResponse = await Cat.updateMany(
+      { name: { $like: '%Cat%' } },
+      { name: 'Cats' },
+      consistency,
+    );
+    const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' }, consistency);
     await cleanUp();
     expect(response.message.success).toBe(4);
     expect(response.message.match_number).toBe(4);
@@ -50,9 +54,9 @@ describe('Test Document Update Many', () => {
     const response: IManyQueryResponse = await Cat.updateMany(
       { name: { $like: 'DummyCatName91' } },
       { name: 'Cats', age: 20 },
-      { upsert: true },
+      { upsert: true, ...consistency },
     );
-    const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
+    const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' }, consistency);
     await cleanUp();
     expect(response.message.match_number).toBe(0);
     expect(response.message.success).toBe(1);
@@ -71,7 +75,7 @@ describe('Test Document Update Many', () => {
       await updateCallback({ ...doc, id: 'dummy_id' }, metadata, { name: 'Cat' });
     } catch (error) {
       const dnf = new (couchbase as any).DocumentNotFoundError();
-      const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
+      const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' }, consistency);
       await cleanUp();
       expect(error.exception).toBe(dnf.constructor.name);
       expect(error.message).toBe(dnf.message);
@@ -90,7 +94,11 @@ describe('Test Document Update Many', () => {
     await Cat.create({ name: 'Cat0', age: 27 });
     await Cat.create({ name: 'Cat1', age: 28 });
 
-    const response: IManyQueryResponse = await Cat.updateMany({ name: { $like: '%Cat%' } }, { age: 'Cats' });
+    const response: IManyQueryResponse = await Cat.updateMany(
+      { name: { $like: '%Cat%' } },
+      { age: 'Cats' },
+      consistency,
+    );
 
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();

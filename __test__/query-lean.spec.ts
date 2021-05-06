@@ -1,6 +1,6 @@
-import { getDefaultInstance, model, Model, Schema, SearchConsistency } from '../src';
+import { getDefaultInstance, model, Model, Schema } from '../src';
 import { Document } from '../src/model/document';
-import { startInTest } from './testData';
+import { consistency, startInTest } from './testData';
 
 describe('Test Support Query Lean', () => {
   const schema = {
@@ -17,8 +17,8 @@ describe('Test Support Query Lean', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc);
-    const document = await UserModel.findOne({}, { consistency: SearchConsistency.LOCAL });
-    const document1 = await UserModel.findOne({}, { consistency: SearchConsistency.LOCAL });
+    const document = await UserModel.findOne({}, consistency);
+    const document1 = await UserModel.findOne({}, consistency);
     await UserModel.removeById(id);
     validation(document.toObject(), document1, UserModel);
   });
@@ -26,8 +26,8 @@ describe('Test Support Query Lean', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc);
-    const document = await UserModel.findOne({}, { consistency: SearchConsistency.LOCAL, lean: true });
-    const document1 = await UserModel.findOne({}, { consistency: SearchConsistency.LOCAL });
+    const document = await UserModel.findOne({}, { lean: true, ...consistency });
+    const document1 = await UserModel.findOne({}, consistency);
     await UserModel.removeById(id);
     validation(document, document1, UserModel);
   });
@@ -35,7 +35,7 @@ describe('Test Support Query Lean', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc);
-    const document = await UserModel.findById(id, { lean: true });
+    const document = await UserModel.findById(id, { lean: true, ...consistency });
     const document1 = await UserModel.findById(id);
     await UserModel.removeById(id);
     validation(document, document1, UserModel);
@@ -44,8 +44,11 @@ describe('Test Support Query Lean', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     const { id } = await UserModel.create(doc);
-    const { rows: documents } = await UserModel.find({ name: 'Ottoman Access Find Lean' }, { lean: true });
-    const { rows: documents1 } = await UserModel.find({ name: 'Ottoman Access Find Lean' });
+    const { rows: documents } = await UserModel.find(
+      { name: 'Ottoman Access Find Lean' },
+      { lean: true, ...consistency },
+    );
+    const { rows: documents1 } = await UserModel.find({ name: 'Ottoman Access Find Lean' }, consistency);
     await UserModel.removeById(id);
     validation(documents[0], documents1[0], UserModel);
   });
