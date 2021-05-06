@@ -122,7 +122,27 @@ $ yarn docs:dev
 - ensure version number is bumped
 - yarn build
 - yarn is:ready
+
+## Publishing to NPM
+
+When publishing a new package to NPM, please follow the following steps:
+
+- git pull (master branch)
+- yarn install && yarn build
+- update the `package.json` file w/ new version
+- yarn test:legacy (Use `test:legacy` Until CB 7 Release)
+- yarn pack (ensure package is packing as intended)
 - npm publish (--tag alpha or --tag beta)
+- push changes to `package.json` file w/ new version
+- deploy docs *if required
+
+Once package is published, *update the docs:
+
+- yarn docs:dev (preview site)
+- yarn docs (generate docs directory)
+- copy files in `docs/.vuepress/dist` to ottomanjs-site
+- ensure CNAME file is correct
+- git push changes to ottomanjs-site
 
 ## License
 

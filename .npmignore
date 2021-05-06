@@ -103,7 +103,7 @@ dist
 # TernJS port file
 .tern-port
 .idea
-src
+/src
 .vuepress
 vuepress
 api
