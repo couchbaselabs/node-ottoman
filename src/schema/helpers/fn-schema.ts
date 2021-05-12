@@ -34,7 +34,7 @@ export const buildFields = (obj: Schema | SchemaDef, strict = true): FieldMap =>
     const opts =
       obj[_key] !== undefined && obj[_key] !== null ? _parseType(obj[_key], strict) : ({ type: false } as ParseResult);
     if (!opts.type) {
-      throw new BuildSchemaError(`Property ${_key} is a required type`);
+      throw new BuildSchemaError(`Property '${_key}' is a required type`);
     }
     fields[_key] = _makeField(_key, opts);
   }
@@ -107,7 +107,7 @@ const _getFieldType = (type: any): any => {
 const _makeField = (name: string, def: ParseResult): IOttomanType => {
   const typeFactory = Schema.FactoryTypes[String(def.type)];
   if (typeFactory === undefined) {
-    throw new BuildSchemaError(`Unsupported type specified in the property "${name}"`);
+    throw new BuildSchemaError(`Unsupported type specified in the property '${name}'`);
   }
   return typeFactory(name, def.options);
 };

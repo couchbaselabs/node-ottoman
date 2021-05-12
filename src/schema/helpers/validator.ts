@@ -12,7 +12,7 @@ export const applyValidator = (
     switch (typeof validator) {
       case 'string':
         if (typeof Schema.validators[validator] === 'undefined') {
-          throw new BuildSchemaError(`Validator ${validator} for field ${name} does not exist.`);
+          throw new BuildSchemaError(`Validator '${validator}' for field '${name}' does not exist.`);
         }
         _validator = Schema.validators[validator];
         break;

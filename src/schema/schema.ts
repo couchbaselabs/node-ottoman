@@ -240,7 +240,7 @@ export class Schema {
 
   private static checkHook(hook: HookTypes): void {
     if (!(Object.values(HOOKS) as string[]).includes(hook)) {
-      throw new BuildSchemaError(`The hook ${hook} is not allowed`);
+      throw new BuildSchemaError(`The hook '${hook}' is not allowed`);
     }
   }
 

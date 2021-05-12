@@ -1,4 +1,4 @@
-import { FindOptions } from '../../../handler/find/find-options';
+import { FindOptions } from '../../../handler';
 
 export type IndexType = 'refdoc' | 'n1ql' | 'view';
 export type SchemaIndex = Record<

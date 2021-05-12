@@ -1,4 +1,4 @@
-import { Schema } from '../../schema/schema';
+import { Schema } from '../../schema';
 import { ModelMetadata } from './model-metadata.interface';
 import { Ottoman } from '../../ottoman/ottoman';
 

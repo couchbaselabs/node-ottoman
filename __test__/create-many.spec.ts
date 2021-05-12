@@ -44,7 +44,7 @@ test('Test Create Many Errors JSON Strict ', async () => {
           },
           status: 'FAILURE',
           exception: 'ValidationError',
-          message: 'Property price is required',
+          message: `Property 'price' is required`,
         },
       ],
     },
@@ -70,7 +70,7 @@ test('Test Create Many Errors Class Strict ', async () => {
         },
         'FAILURE',
         'ValidationError',
-        'Property price is required',
+        `Property 'price' is required`,
       ),
     ],
   });

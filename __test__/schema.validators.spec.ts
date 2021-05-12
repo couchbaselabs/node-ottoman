@@ -58,7 +58,7 @@ describe('schema custom validators', () => {
       },
     };
     expect(() => validate({ name: 'John' }, schemaDef)).toThrow(
-      new Error('Validator fake for field name does not exist.'),
+      new Error(`Validator 'fake' for field 'name' does not exist.`),
     );
   });
   test("should throw an errors if validators aren't object", () => {

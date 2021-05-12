@@ -350,7 +350,7 @@ describe('Schema Types', () => {
         any: 'Hello',
       };
       const run = () => validate(data, UserSchema);
-      expect(run).toThrow('Property type is required');
+      expect(run).toThrow(`Property 'type' is required`);
     });
 
     test('Check Mixed Schema Type custom validation', () => {
