@@ -1,7 +1,6 @@
 import { applyDefaultValue, BuildSchemaError, IOttomanType, model, Schema, validate, ValidationError } from '../src';
 import { isOttomanType } from '../src/schema/helpers';
 import { ArrayType, DateType, EmbedType, NumberType, StringType } from '../src/schema/types';
-import { delay } from './testData';
 
 const validData = {
   firstName: 'John',
@@ -93,7 +92,7 @@ describe('Schema Types', () => {
   class MocType {}
   test('should throw an error when defining the unsupported type in schema.', () => {
     const schema = { name: MocType };
-    expect(() => new Schema(schema)).toThrow(new BuildSchemaError('Unsupported type specified in the property "name"'));
+    expect(() => new Schema(schema)).toThrow(new BuildSchemaError(`Unsupported type specified in the property 'name'`));
   });
   test('should throw an error when defining auto value and default value on the same field', () => {
     const schema = {
@@ -180,21 +179,21 @@ describe('Schema Types', () => {
       age: { type: Number, intVal: true },
       amount: { min: 23, max: 24 },
     };
-    expect(() => new Schema(schema)).toThrow(new BuildSchemaError('Unsupported type specified in the property "min"'));
+    expect(() => new Schema(schema)).toThrow(new BuildSchemaError(`Unsupported type specified in the property 'min'`));
 
     const schemaWithNull = {
       name: String,
       hasChild: Boolean,
       amount: null,
     };
-    expect(() => new Schema(schemaWithNull)).toThrow(new BuildSchemaError('Property amount is a required type'));
+    expect(() => new Schema(schemaWithNull)).toThrow(new BuildSchemaError(`Property 'amount' is a required type`));
 
     const schemaWithUndefined = {
       name: String,
       hasChild: Boolean,
       amount: undefined,
     };
-    expect(() => new Schema(schemaWithUndefined)).toThrow(new BuildSchemaError('Property amount is a required type'));
+    expect(() => new Schema(schemaWithUndefined)).toThrow(new BuildSchemaError(`Property 'amount' is a required type`));
   });
 
   test('date type', () => {

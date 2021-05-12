@@ -64,7 +64,7 @@ export abstract class CoreType extends IOttomanType {
     if (typeof _required.val !== 'undefined' && _required.val) {
       return _required.message;
     } else if (!!_required) {
-      return `Property ${this.name} is required`;
+      return `Property '${this.name}' is required`;
     }
   }
 

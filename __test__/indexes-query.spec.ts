@@ -74,6 +74,6 @@ describe('Mode Query Index Tests', () => {
       const User = model('User', userSchema);
       new User({ name: 'ottoman-user-test' });
     };
-    expect(run).toThrow('Collection News does not exist.');
+    expect(run).toThrow(`Collection 'News' does not exist.`);
   });
 });

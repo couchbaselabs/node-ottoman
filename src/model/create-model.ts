@@ -126,7 +126,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
         if (by && of) {
           const QueryModel = ottoman.getModel(of);
           if (!QueryModel) {
-            throw new BuildIndexQueryError(`Collection ${of} does not exist.`);
+            throw new BuildIndexQueryError(`Collection '${of}' does not exist.`);
           }
           const queryMetadata = getModelMetadata(QueryModel);
           let indexName = `${ottoman.bucketName}_${scopeName}_${of}$${indexFieldsName([by])}`;

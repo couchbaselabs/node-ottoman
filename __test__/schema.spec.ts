@@ -1,5 +1,4 @@
-import { BuildSchemaError, Schema, model, registerGlobalPlugin } from '../src';
-import { delay } from './testData';
+import { BuildSchemaError, model, registerGlobalPlugin, Schema } from '../src';
 
 describe('Schema', () => {
   const schema = new Schema({ name: String });
