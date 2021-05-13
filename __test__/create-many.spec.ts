@@ -1,13 +1,13 @@
-import { getDefaultInstance, IManyQueryResponse, model, SearchConsistency } from '../src';
-import { startInTest } from './testData';
+import { getDefaultInstance, IManyQueryResponse, model } from '../src';
 import { ManyQueryResponse, StatusExecution } from '../src/handler';
+import { consistency, startInTest } from './testData';
 
 test('Test Create Many', async () => {
   const Box = model('Box', { name: String, price: Number });
   await startInTest(getDefaultInstance());
   const docs = [{ name: 'Xbox' }, { name: 'Yellow Box' }];
   const queryResult: IManyQueryResponse = await Box.createMany(docs);
-  const boxs = await Box.find({}, { consistency: SearchConsistency.LOCAL });
+  const boxs = await Box.find({}, consistency);
   const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
   await cleanUp();
   expect(queryResult.message.success).toBe(docs.length);

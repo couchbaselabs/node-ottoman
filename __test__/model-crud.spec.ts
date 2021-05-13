@@ -6,10 +6,9 @@ import {
   model,
   Ottoman,
   Schema,
-  SearchConsistency,
 } from '../src';
 import { OttomanError } from '../src/exceptions/ottoman-errors';
-import { connectUri, startInTest } from './testData';
+import { connectUri, consistency, startInTest } from './testData';
 
 const accessDoc = {
   type: 'airlineR',
@@ -250,12 +249,7 @@ describe('Test Document Access Functions', () => {
       isActive: false,
       name: 'Ottoman Access Find One',
     });
-    const document = await UserModel.findOne(
-      {
-        name: 'Ottoman Access Find One',
-      },
-      { consistency: SearchConsistency.LOCAL },
-    );
+    const document = await UserModel.findOne({ name: 'Ottoman Access Find One' }, consistency);
     expect(document).toBeTruthy();
     expect(typeof document[CUSTOM_ID_KEY]).toBe('string');
   });
@@ -269,12 +263,7 @@ describe('Test Document Access Functions', () => {
       isActive: false,
       name: 'Ottoman Access List Custom ID',
     });
-    const documents = await UserModel.find(
-      {
-        name: 'Ottoman Access List Custom ID',
-      },
-      { consistency: SearchConsistency.LOCAL },
-    );
+    const documents = await UserModel.find({ name: 'Ottoman Access List Custom ID' }, consistency);
     expect(documents.rows).toBeDefined();
     const document = documents.rows[0];
     expect(typeof document[CUSTOM_ID_KEY]).toBe('string');
@@ -284,12 +273,7 @@ describe('Test Document Access Functions', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     try {
-      await UserModel.findOne(
-        {
-          name: 'Search Example',
-        },
-        { consistency: SearchConsistency.LOCAL },
-      );
+      await UserModel.findOne({ name: 'Search Example' }, consistency);
     } catch (e) {
       expect(e).toBeInstanceOf(DocumentNotFoundError);
     }
@@ -347,7 +331,7 @@ describe('Test Document Access Functions', () => {
       isActive: false,
       name: 'Ottoman Access List',
     });
-    const result = await Model.find({ id: user.id }, { select: 'meta().id', consistency: SearchConsistency.LOCAL });
+    const result = await Model.find({ id: user.id }, { select: 'meta().id', ...consistency });
     const document = result.rows[0];
     expect(document).toBeDefined();
     expect(document.id.startsWith('Airlines__')).toBeDefined();
@@ -363,7 +347,7 @@ describe('Test Document Access Functions', () => {
       isActive: false,
       name: 'Ottoman Access List',
     });
-    const result = await Model.find({ id: user.id }, { select: 'meta().id', consistency: SearchConsistency.LOCAL });
+    const result = await Model.find({ id: user.id }, { select: 'meta().id', ...consistency });
     const document = result.rows[0];
     ottoman2.close();
     expect(document).toBeDefined();

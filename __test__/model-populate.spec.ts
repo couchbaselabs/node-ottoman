@@ -1,13 +1,5 @@
-import {
-  DocumentNotFoundError,
-  FindByIdOptions,
-  FindOptions,
-  getDefaultInstance,
-  model,
-  Schema,
-  SearchConsistency,
-} from '../src';
-import { startInTest } from './testData';
+import { DocumentNotFoundError, FindByIdOptions, FindOptions, getDefaultInstance, model, Schema } from '../src';
+import { consistency, startInTest } from './testData';
 
 const cardInfo = {
   cardNumber: '4242 4242 4242 4242',
@@ -182,7 +174,7 @@ describe('Test populate feature', () => {
       limit: 3,
       populate: ['cats', 'card'],
       populateMaxDeep: 2,
-      consistency: SearchConsistency.LOCAL,
+      ...consistency,
     });
     let result = await User.find({ name: user.name }, options);
     expect(result.rows.length).toBeGreaterThanOrEqual(1);

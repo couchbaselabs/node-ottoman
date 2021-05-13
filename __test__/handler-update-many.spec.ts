@@ -1,5 +1,5 @@
 import couchbase from 'couchbase';
-import { getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema, SearchConsistency } from '../src';
+import { getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema } from '../src';
 import { updateCallback } from '../src/handler';
 import { consistency, startInTest } from './testData';
 
@@ -118,11 +118,7 @@ describe('Test Document Update Many', () => {
       await Cat.create({ name: 'Cat0', age: 27, isActive: true });
     };
     await batchCreate();
-    const response = await Cat.updateMany(
-      { name: { $like: '%Cat%' } },
-      { isActive: 'active' },
-      { consistency: SearchConsistency.LOCAL },
-    );
+    const response = await Cat.updateMany({ name: { $like: '%Cat%' } }, { isActive: 'active' }, consistency);
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
     expect(response.status).toBe('FAILURE');
