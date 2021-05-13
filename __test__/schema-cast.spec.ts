@@ -1,7 +1,7 @@
-import { getDefaultInstance, is, model, Schema, SearchConsistency } from '../src';
-import { cast, CAST_STRATEGY } from '../src/utils/cast-strategy';
+import { getDefaultInstance, is, model, Schema } from '../src';
 import { ArrayType } from '../src/schema/types';
-import { startInTest } from './testData';
+import { cast, CAST_STRATEGY } from '../src/utils/cast-strategy';
+import { consistency, startInTest } from './testData';
 
 test('cast schema', () => {
   const childSchema = new Schema({ name: String, age: Number });
@@ -90,7 +90,7 @@ test('test strict schema model create', async () => {
   expect(doc.name).toBe(name);
   expect(doc.notInSchema).toBe(undefined);
 
-  const docs = await Model.find({ name }, { consistency: SearchConsistency.LOCAL });
+  const docs = await Model.find({ name }, consistency);
   const findDoc = docs.rows[0];
   expect(findDoc.name).toBe(name);
   expect(findDoc.notInSchema).toBe(undefined);
@@ -109,7 +109,7 @@ test('test strict false schema model create', async () => {
   const doc = new Model({ name, notInSchema: true });
   await doc.save();
 
-  const docs = await Model.find({ name }, { consistency: SearchConsistency.LOCAL });
+  const docs = await Model.find({ name }, consistency);
   const findDoc = docs.rows[0];
   await Model.removeMany({ name: { $like: 'name-strict-%' } });
   expect(doc.name).toBe(name);

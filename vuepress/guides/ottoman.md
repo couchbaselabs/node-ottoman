@@ -33,7 +33,7 @@ interface OttomanConfig {
   idKey?: string;
   modelKey?: string;
   populateMaxDeep?: number;
-  searchConsistency?: SearchConsistency;
+  consistency?: SearchConsistency;
   maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata }) => string;
   keyGeneratorDelimiter?: string;
@@ -45,7 +45,7 @@ interface OttomanConfig {
 - `idKey`: it's the value of the key to save your id. The default value is set to `id`
 - `modelKey`: define the key to store the model name into the document. The default value is `_type`
 - `populateMaxDeep`: set default value for population. Default value is `1`.
-- `searchConsistency`: define default Search Consistency Strategy. The default value is `SearchConsistency.NONE`
+- `consistency`: define default Search Consistency Strategy. The default value is `SearchConsistency.NONE`
 - `maxExpiry`: value used to create a collection for this instance. The default value is `300000`.
 - `keyGenerator`: function to generate the key to store documents.
 - `keyGeneratorDelimiter`: string value used to build the document key. The default value is `::`.

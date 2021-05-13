@@ -62,7 +62,7 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
     query = query.orderBy(sort);
   }
   const queryOptions: Record<string, unknown> = {};
-  const _consistency = consistency || ottoman.config.searchConsistency || SearchConsistency.NONE;
+  const _consistency = consistency || ottoman.config.consistency || SearchConsistency.NONE;
   switch (_consistency) {
     case SearchConsistency.GLOBAL:
     case SearchConsistency.LOCAL:
