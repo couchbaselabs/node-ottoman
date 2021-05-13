@@ -287,14 +287,12 @@ export const _buildModel = (metadata: ModelMetadata) => {
       options: FindOneAndUpdateOption = { strict: true },
     ) => {
       try {
-        const before = await _Model.findOne(filter, options);
+        const before = await _Model.findOne(filter, { ...options, consistency: 1 });
         if (before) {
-          if (!options.new) {
-            return before;
-          }
-          const afterToUpdate = _Model.fromData({ ...before });
-          afterToUpdate._applyData({ ...doc }, options.strict);
-          return await afterToUpdate.save();
+          const toSave = _Model.fromData({ ...before });
+          toSave._applyData({ ...doc }, options.strict);
+          const after = await toSave.save();
+          return options.new ? after : before;
         }
       } catch (e) {
         if (options.upsert) {
