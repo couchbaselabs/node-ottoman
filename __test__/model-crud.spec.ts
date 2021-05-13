@@ -9,7 +9,7 @@ import {
   SearchConsistency,
 } from '../src';
 import { OttomanError } from '../src/exceptions/ottoman-errors';
-import { connectUri, startInTest } from './testData';
+import { connectUri, consistency, startInTest } from './testData';
 
 const accessDoc = {
   type: 'airlineR',
@@ -347,7 +347,7 @@ describe('Test Document Access Functions', () => {
       isActive: false,
       name: 'Ottoman Access List',
     });
-    const result = await Model.find({ id: user.id }, { select: 'meta().id', consistency: SearchConsistency.LOCAL });
+    const result = await Model.find({ id: user.id }, { select: 'meta().id', ...consistency });
     const document = result.rows[0];
     expect(document).toBeDefined();
     expect(document.id.startsWith('Airlines__')).toBeDefined();

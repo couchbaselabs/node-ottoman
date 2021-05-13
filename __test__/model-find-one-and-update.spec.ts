@@ -1,6 +1,6 @@
 import couchbase from 'couchbase';
 import { getDefaultInstance, model, Schema } from '../src';
-import { consistency, startInTest } from './testData';
+import { startInTest } from './testData';
 
 describe('Test findOneAndUpdate function', () => {
   test('Test find item and update', async () => {
@@ -11,10 +11,26 @@ describe('Test findOneAndUpdate function', () => {
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
     await Cat.create({ name: 'Figaro', age: 27 });
-    const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' }, consistency);
+    const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' });
     const cleanUp = async () => await Cat.removeById(response.id);
     await cleanUp();
     expect(response.name).toBe('Figaro');
+  });
+  test('Test find item and update check stored document', async () => {
+    const CatSchema = new Schema({
+      name: String,
+      age: Number,
+    });
+    const Cat = model('Cat', CatSchema);
+    await startInTest(getDefaultInstance());
+    await Cat.create({ name: 'Figaro', age: 27 });
+    const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' });
+    const doc = await Cat.findById(response.id);
+    const cleanUp = async () => await Cat.removeById(response.id);
+    await cleanUp();
+    expect(response.name).toBe('Figaro');
+    expect(doc.name).toBe('Kitty');
+    expect(response.id).toBe(doc.id);
   });
   test('Test find item and update with options.new in true', async () => {
     const CatSchema = new Schema({
@@ -24,11 +40,7 @@ describe('Test findOneAndUpdate function', () => {
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
     await Cat.create({ name: 'Figaro', age: 27 });
-    const response = await Cat.findOneAndUpdate(
-      { name: { $like: '%Figaro%' } },
-      { name: 'Kitty' },
-      { new: true, ...consistency },
-    );
+    const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' }, { new: true });
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
     expect(response.name).toBe('Kitty');
@@ -41,11 +53,7 @@ describe('Test findOneAndUpdate function', () => {
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
     await Cat.create({ name: 'Cat0', age: 27 });
-    const response = await Cat.findOneAndUpdate(
-      { name: 'Kitty' },
-      { name: 'Kitty', age: 20 },
-      { upsert: true, ...consistency },
-    );
+    const response = await Cat.findOneAndUpdate({ name: 'Kitty' }, { name: 'Kitty', age: 20 }, { upsert: true });
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
     expect(response.name).toBe('Kitty');
