@@ -14,6 +14,18 @@ test('Test Create Many', async () => {
   expect(boxs.rows.length).toBeGreaterThanOrEqual(2);
 });
 
+test('Test Create Many with find limit 0', async () => {
+  const Box = model('Box', { name: String, price: Number });
+  await startInTest(getDefaultInstance());
+  const docs = [{ name: 'Xbox' }, { name: 'Yellow Box' }];
+  const queryResult: IManyQueryResponse = await Box.createMany(docs);
+  const boxs = await Box.find({}, { ...consistency, limit: 0 });
+  const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
+  await cleanUp();
+  expect(queryResult.message.success).toBe(docs.length);
+  expect(boxs.rows.length).toBe(0);
+});
+
 test('Test Create Many Errors ', async () => {
   const Box = model('Box', { name: String, price: { required: true, type: Number } });
   await startInTest(getDefaultInstance());
