@@ -7,6 +7,7 @@ import { execPopulation, execPopulationFromObject } from '../../utils/populate/e
 import { isPopulateAnObject } from '../../utils/populate/is-populate-object';
 import { extractPopulate } from '../../utils/query/extract-populate';
 import { getProjectionFields } from '../../utils/query/extract-select';
+import { isNumber } from '../../utils/type-helpers';
 import { FindOptions } from './find-options';
 
 /**
@@ -52,8 +53,9 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
 
   // Building the query
   let query = new Query({}, fromClause).select(projectionFields.projection).where(expr_where);
-  if (limit) {
-    query = query.limit(limit);
+
+  if (isNumber(limit)) {
+    query = query.limit(limit as number);
   }
   if (skip) {
     query = query.offset(skip);

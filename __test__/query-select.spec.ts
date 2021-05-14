@@ -119,6 +119,23 @@ describe('Test Query Builder SELECT clause', () => {
     expect(query).toStrictEqual(`SELECT RAW \`${bucketName}\` FROM \`${bucketName}\` LIMIT 10 OFFSET 0`);
   });
 
+  test('Check the limit=0 function of the query builder', async () => {
+    const select: ISelectType[] = [
+      {
+        $raw: {
+          $field: {
+            name: bucketName,
+          },
+        },
+      },
+    ];
+
+    const query1 = new Query({}, bucketName).select(select).limit(0).offset(0).build();
+    const query2 = new Query({}, bucketName).select(select).offset(0).build();
+    expect(query1).toStrictEqual(`SELECT RAW \`${bucketName}\` FROM \`${bucketName}\` LIMIT 0 OFFSET 0`);
+    expect(query2).toStrictEqual(`SELECT RAW \`${bucketName}\` FROM \`${bucketName}\` OFFSET 0`);
+  });
+
   test('Check the useKeys function of the query builder', async () => {
     const select: ISelectType[] = [
       {
@@ -246,9 +263,14 @@ describe('Test Query Builder SELECT clause', () => {
       use: ['airlineR_8093', 'airlineR_8094'],
     };
     const query = new Query(params, bucketName).build();
+    params.limit = 0;
+    const query1 = new Query(params, bucketName).build();
 
     expect(query).toStrictEqual(
       `SELECT COUNT(type) AS odm FROM \`${bucketName}\` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((price>"amount_val" AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20")) GROUP BY type ORDER BY type DESC LIMIT 5 OFFSET 1`,
+    );
+    expect(query1).toStrictEqual(
+      `SELECT COUNT(type) AS odm FROM \`${bucketName}\` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((price>"amount_val" AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20")) GROUP BY type ORDER BY type DESC LIMIT 0 OFFSET 1`,
     );
   });
 

@@ -1,3 +1,4 @@
+import { isNumber } from '../utils/type-helpers';
 import { BaseQuery } from './base-query';
 import {
   IConditionExpr,
@@ -447,9 +448,11 @@ export class Query extends BaseQuery {
         case 'orderBy':
           !!conditionals[value] && this.orderBy(conditionals[value] as Record<string, SortType>);
           break;
-        case 'limit':
-          !!conditionals[value] && this.limit(conditionals[value] as number);
+        case 'limit': {
+          const limit = conditionals[value];
+          isNumber(limit) && this.limit(limit as number);
           break;
+        }
         case 'offset':
           !!conditionals[value] && this.offset(conditionals[value] as number);
           break;
