@@ -1,25 +1,25 @@
 import couchbase from 'couchbase';
-import { CountOptions, Model } from './model';
-import { nonenumerable } from '../utils/noenumarable';
-import { _keyGenerator, DEFAULT_MAX_EXPIRY } from '../utils/constants';
-import { extractSelect } from '../utils/query/extract-select';
+import { SearchConsistency } from '..';
+import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 import { createMany, find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
-import { CreateModel } from './interfaces/create-model.interface';
-import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { FindByIdOptions, IFindOptions } from '../handler/';
-import { getModelMetadata, setModelMetadata } from './utils/model.utils';
-import { buildViewIndexQuery } from './index/view/build-view-index-query';
-import { buildIndexQuery } from './index/n1ql/build-index-query';
-import { indexFieldsName } from './index/helpers/index-field-names';
-import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
 import { LogicalWhereExpr } from '../query';
 import { Schema } from '../schema';
-import { ModelTypes } from './model.types';
-import { SearchConsistency } from '..';
-import { UpdateManyOptions } from './interfaces/update-many.interface';
-import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { cast, CAST_STRATEGY, CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
-import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
+import { _keyGenerator, DEFAULT_MAX_EXPIRY } from '../utils/constants';
+import { nonenumerable } from '../utils/noenumarable';
+import { extractSelect } from '../utils/query/extract-select';
+import { indexFieldsName } from './index/helpers/index-field-names';
+import { buildIndexQuery } from './index/n1ql/build-index-query';
+import { buildViewRefdoc } from './index/refdoc/build-index-refdoc';
+import { buildViewIndexQuery } from './index/view/build-view-index-query';
+import { CreateModel } from './interfaces/create-model.interface';
+import { FindOneAndUpdateOption } from './interfaces/find.interface';
+import { ModelMetadata } from './interfaces/model-metadata.interface';
+import { UpdateManyOptions } from './interfaces/update-many.interface';
+import { CountOptions, Model } from './model';
+import { ModelTypes } from './model.types';
+import { getModelMetadata, setModelMetadata } from './utils/model.utils';
 
 /**
  * @ignore
@@ -232,11 +232,28 @@ export const _buildModel = (metadata: ModelMetadata) => {
       }
     };
 
-    static replaceById = async (id: string, data, options?: MutationFunctionOptions) => {
+    static replaceById = async (id: string, data, options: MutationFunctionOptions = { strict: true }) => {
       const key = id || data[ID_KEY];
       const value = await _Model.findById(key);
       if (value[ID_KEY]) {
-        const replace = new _Model({});
+        const temp = {};
+        Object.keys(data).map((key) => {
+          if (value.hasOwnProperty(key)) {
+            temp[key] = value[key];
+          }
+        });
+        if (options?.strict) {
+          Object.keys(value).map((key) => {
+            if (value.immutableHasOwnProperty(key)) {
+              temp[key] = value[key];
+            }
+            if (!data.hasOwnProperty(key) && options.strict === CAST_STRATEGY.THROW) {
+              data[key] = undefined;
+            }
+          });
+        }
+
+        const replace = new _Model({ ...temp });
         replace._applyData(
           {
             ...data,
