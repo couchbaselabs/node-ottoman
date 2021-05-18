@@ -236,15 +236,15 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const key = id || data[ID_KEY];
       const value = await _Model.findById(key);
       if (value[ID_KEY]) {
-        value._applyData(
+        const replace = new _Model({});
+        replace._applyData(
           {
             ...data,
             ...{ [ID_KEY]: key, [modelKey]: modelName },
           },
           options?.strict,
         );
-        const instance = new _Model({ ...value });
-        return instance.save();
+        return replace.save();
       }
     };
 

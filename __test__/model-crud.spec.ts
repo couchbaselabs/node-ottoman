@@ -29,7 +29,6 @@ const updateDoc = {
 const replaceDoc = {
   type: 'airlineZ Replace',
   isActive: false,
-  name: 'Ottoman Access',
 };
 
 const schema = {
@@ -97,6 +96,7 @@ describe('Test Document Access Functions', () => {
     await UserModel.replaceById(result.id, replaceDoc);
     const user = await UserModel.findById(result.id);
     expect(user.type).toBe('airlineZ Replace');
+    expect(user.name).toBeUndefined();
   });
 
   test('UserModel.replace -> Replace a document, throw DocumentNotFound', async () => {

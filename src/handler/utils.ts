@@ -35,13 +35,16 @@ export const batchProcessQueue = (metadata: ModelMetadata) => async (
 ) => {
   const chunks = chunkArray([...items], throttle);
   const chunkPromises = chunks.map((data) => Promise.resolve(data));
-  const result: ManyResponse = { success: 0, match_number: items.length, errors: [] };
+  const result: ManyResponse = { success: 0, match_number: items.length, errors: [], data: [] };
   for await (const chunk of chunkPromises) {
     for await (const r of processBatch(chunk, fn, metadata, extra)) {
       if (r.status === 'FAILURE') {
         result.errors.push(r);
       } else {
         result.success = result.success + 1;
+        if (r.payload) {
+          result.data?.push(r.payload);
+        }
       }
     }
   }

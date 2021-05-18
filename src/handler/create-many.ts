@@ -21,8 +21,8 @@ export const createMany = (metadata: ModelMetadata) => async (documents: unknown
 export const createManyCallback = (document: ModelTypes, metadata: ModelMetadata): Promise<StatusExecution> => {
   const Model = metadata.ottoman.getModel(metadata.modelName);
   return Model.create(document)
-    .then(() => {
-      return Promise.resolve(new StatusExecution(document[metadata.ID_KEY], 'SUCCESS'));
+    .then((created) => {
+      return Promise.resolve(new StatusExecution(created, 'SUCCESS'));
     })
     .catch((error) => {
       /* istanbul ignore next */
