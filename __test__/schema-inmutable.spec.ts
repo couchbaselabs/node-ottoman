@@ -1,4 +1,5 @@
 import { getDefaultInstance, IManyQueryResponse, model, Schema } from '../src';
+import { ImmutableError } from '../src/exceptions/ottoman-errors';
 import { StatusExecution } from '../src/handler';
 import { ApplyStrategy, CAST_STRATEGY } from '../src/utils/cast-strategy';
 import { consistency, startInTest } from './testData';
@@ -76,6 +77,44 @@ describe('Test Schema Immutable', () => {
     await Card.removeById(id);
     expect(card.cardNumber).toBe('5678 5678 5678 5678');
     expect(card.zipCode).toBe('43210');
+  });
+  test('Test Schema Immutable integration -> Replace a document removing a property', async () => {
+    const Card = model('Card', CardSchemaBase);
+    await startInTest(getDefaultInstance());
+    const { id } = await Card.create(cardInfo);
+    await Card.replaceById(id, { zipCode: '43210' });
+    const card = await Card.findById(id);
+    await Card.removeById(id);
+    expect(card.cardNumber).toBe('5678 5678 5678 5678');
+    expect(card.zipCode).toBe('43210');
+  });
+  test('Test Schema Immutable integration -> Replace a document removing a property strict:false', async () => {
+    const Card = model('Card', CardSchemaBase);
+    await startInTest(getDefaultInstance());
+    const { id } = await Card.create(cardInfo);
+    await Card.replaceById(id, { zipCode: '43210' }, { strict: false });
+    const card = await Card.findById(id);
+    await Card.removeById(id);
+    expect(card.cardNumber).toBeUndefined();
+    expect(card.zipCode).toBe('43210');
+  });
+  test('Test Schema Immutable integration -> Replace a document removing a property strict:false', async () => {
+    const Card = model('Card', CardSchemaBase);
+    await startInTest(getDefaultInstance());
+    const { id } = await Card.create(cardInfo);
+    let exception: any;
+    try {
+      await Card.replaceById(id, { zipCode: '43210' }, { strict: CAST_STRATEGY.THROW });
+    } catch (e) {
+      exception = e;
+    }
+    const card = await Card.findById(id);
+    await Card.removeById(id);
+    const { message } = exception;
+    expect(message).toBe(`Field 'cardNumber' is immutable and current cast strategy is set to 'throw'`);
+    expect(exception).toBeInstanceOf(ImmutableError);
+    expect(card.zipCode).toBe('56789');
+    expect(card.cardNumber).toBe('5678 5678 5678 5678');
   });
   test('Test Schema Immutable integration -> findOneAndUpdate new:true', async () => {
     const Card = model('Card', CardSchemaBase);
