@@ -52,6 +52,7 @@ export class StatusExecution implements IStatusExecution {
  * @field errors List of errors thrown in the execution
  * */
 export interface ManyResponse {
+  data?: any[];
   match_number: number;
   success: number;
   errors: StatusExecution[];

@@ -12,6 +12,8 @@ test('Test Create Many', async () => {
   await cleanUp();
   expect(queryResult.message.success).toBe(docs.length);
   expect(boxs.rows.length).toBeGreaterThanOrEqual(2);
+  expect(queryResult.message.data?.length).toStrictEqual(docs.length);
+  expect(queryResult.message.data![0]?.id).toBeDefined();
 });
 
 test('Test Create Many with find limit 0', async () => {
@@ -63,7 +65,10 @@ test('Test Create Many Errors JSON Strict ', async () => {
   };
   const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
   await cleanUp();
-  expect(JSON.stringify(queryResult)).toStrictEqual(JSON.stringify(queryResultJson));
+  expect(queryResult.status).toBe('FAILURE');
+  expect(queryResult.message.success).toBe(1);
+  expect(queryResult.message.match_number).toBe(2);
+  expect(JSON.stringify(queryResult.message.errors)).toStrictEqual(JSON.stringify(queryResultJson.message.errors));
 });
 
 test('Test Create Many Errors Class Strict ', async () => {
@@ -89,5 +94,8 @@ test('Test Create Many Errors Class Strict ', async () => {
 
   const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
   await cleanUp();
-  expect(queryResult).toStrictEqual(queryResultClass);
+  expect(queryResult.status).toBe('FAILURE');
+  expect(queryResult.message.success).toBe(1);
+  expect(queryResult.message.match_number).toBe(2);
+  expect(queryResult.message.errors).toStrictEqual(queryResultClass.message.errors);
 });
