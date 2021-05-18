@@ -27,6 +27,8 @@ describe('Test Document Update Many', () => {
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' }, consistency);
     await cleanUp();
     expect(response.message.success).toBe(4);
+    expect(response.message.data?.length).toBe(4);
+    expect(response.message.data![0]?.name).toBe('Cats');
     expect(response.message.match_number).toBe(4);
   });
 

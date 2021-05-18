@@ -134,9 +134,10 @@ describe('Test Document Access Functions', () => {
       isActive: false,
       name: 'Ottoman Access List Custom ID',
     });
-    const document = await UserModel.updateById(result[CUSTOM_ID_KEY], result);
+    const document = await UserModel.updateById(result[CUSTOM_ID_KEY], { isActive: true });
     await UserModel.removeById(document[CUSTOM_ID_KEY]);
     expect(document).toBeDefined();
+    expect(document.isActive).toBe(true);
     expect(typeof document[CUSTOM_ID_KEY]).toBe('string');
     expect(result[CUSTOM_ID_KEY]).toStrictEqual(document[CUSTOM_ID_KEY]);
   });
