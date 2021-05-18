@@ -80,6 +80,7 @@ test('Test Create Many Errors Class Strict ', async () => {
   const queryResultClass = new ManyQueryResponse('FAILURE', {
     success: 1,
     match_number: 2,
+    data: [],
     errors: [
       new StatusExecution(
         {

@@ -46,6 +46,7 @@ describe('Test Document Remove Many', () => {
     await batchCreate();
     const response: IManyQueryResponse = await Cat.removeMany({ name: { $like: '%Cat%' } }, consistency);
     expect(response.message.success).toBe(4);
+    expect(response.message.data?.length).toBe(4);
     expect(response.message.match_number).toBe(4);
   });
 

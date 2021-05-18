@@ -279,7 +279,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
         return removeMany(metadata)(response.rows.map((v) => v[ID_KEY]));
       }
-      return new ManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [] });
+      return new ManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [], data: [] });
     };
 
     static updateMany = async (
@@ -295,7 +295,12 @@ export const _buildModel = (metadata: ModelMetadata) => {
         const ModelFactory = ottoman.getModel(modelName);
         await ModelFactory.create(doc);
       }
-      return new ManyQueryResponse('SUCCESS', { success: options.upsert ? 1 : 0, match_number: 0, errors: [] });
+      return new ManyQueryResponse('SUCCESS', {
+        success: options.upsert ? 1 : 0,
+        match_number: 0,
+        errors: [],
+        data: [],
+      });
     };
 
     static findOneAndUpdate = async (
