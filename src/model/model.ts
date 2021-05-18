@@ -4,6 +4,7 @@ import { LogicalWhereExpr, SortType } from '../query';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
+import { ModelTypes } from './model.types';
 
 export type CountOptions = {
   sort?: Record<string, SortType>;
@@ -31,7 +32,6 @@ export interface IModel<T = any, R = any> {
    * Creates a document from this model.
    * Implements schema validations, defaults, methods, static and hooks
    */
-  // eslint-disable-next-line no-unused-vars
   new (data: T, options?: CastOptions): Document<T> & T;
 
   /**
@@ -63,7 +63,6 @@ export interface IModel<T = any, R = any> {
    * // Returns a list of the elements that match the applied filters.
    * ```
    */
-  // eslint-disable-next-line no-unused-vars
   find<Doc = T>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<any>;
 
   /**
@@ -74,7 +73,6 @@ export interface IModel<T = any, R = any> {
    * User.count({name: {$like: "%Jane%"}})
    * ```
    */
-  // eslint-disable-next-line no-unused-vars
   count(filter?: LogicalWhereExpr<T>, options?: CountOptions): Promise<any>;
 
   /**
@@ -89,8 +87,8 @@ export interface IModel<T = any, R = any> {
    * // will return the user document with the current id only with the fields name and cards populated
    * ```
    */
-  // eslint-disable-next-line no-unused-vars
-  findById<Result = R>(id: string, options?: FindByIdOptions): Promise<Document<Result> | Result>;
+  findById<Result = R>(id: string, options?: FindByIdOptions): Promise<Result>;
+  findById<Result = R>(id: string, options?: FindByIdOptions): Promise<Document<Result>>;
 
   /**
    * Finds a document.
@@ -104,11 +102,8 @@ export interface IModel<T = any, R = any> {
    * // will return a an user with the name "Jane" ignoring case
    * ```
    */
-  // eslint-disable-next-line no-unused-vars
-  findOne<Doc = T, Result = R>(
-    filter?: LogicalWhereExpr<Doc>,
-    options?: FindOptions,
-  ): Promise<Document<Result> | Result>;
+  findOne<Doc = T, Result = R>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<Result>;
+  findOne<Doc = T, Result = R>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<Document<Result>>;
 
   /**
    * Allows to create a new document
@@ -118,7 +113,6 @@ export interface IModel<T = any, R = any> {
    * const user = await User.create({name: "John Doe"});
    * ```
    */
-  // eslint-disable-next-line no-unused-vars
   create<Doc = T>(doc: Doc): Promise<Document<T>>;
 
   /**
@@ -131,7 +125,6 @@ export interface IModel<T = any, R = any> {
    * const user = await User.createMany([{name: "John Doe"}, {name: "Jane Doe"}]);
    * ```
    */
-  // eslint-disable-next-line no-unused-vars
   createMany<Doc = T>(docs: Doc[] | Doc): Promise<ManyQueryResponse>;
 
   /**
@@ -178,12 +171,17 @@ export interface IModel<T = any, R = any> {
    *
    * @throws **ImmutableError** if updateById is strict:CAST_STRATEGY.THROW and try to modify a immutable property.
    */
-  // eslint-disable-next-line no-unused-vars
   updateById<Doc = T, Result = R>(
     id: string,
     data: Doc | Partial<Doc> | Document<Doc>,
     options?: MutationFunctionOptions,
-  ): Promise<Document<Result> | Result>;
+  ): Promise<Result>;
+
+  updateById<Doc = T, Result = R>(
+    id: string,
+    data: Doc | Partial<Doc> | Document<Doc>,
+    options?: MutationFunctionOptions,
+  ): Promise<Document<Result>>;
 
   /**
    * Same as **updateById**,except replace the existing document with the given document.
@@ -230,12 +228,17 @@ export interface IModel<T = any, R = any> {
    * @throws **DocumentNotFoundError** if the document not exist.
    * @throws **ImmutableError** if replaceById is strict:CAST_STRATEGY.THROW and try to modify a immutable property.
    */
-  // eslint-disable-next-line no-unused-vars
   replaceById<Doc = T, Result = R>(
     id: string,
     data: Doc | Document<Doc>,
     options?: MutationFunctionOptions,
-  ): Promise<Document<Result> | Result>;
+  ): Promise<Result>;
+
+  replaceById<Doc = T, Result = R>(
+    id: string,
+    data: Doc | Document<Doc>,
+    options?: MutationFunctionOptions,
+  ): Promise<Document<Result>>;
 
   /**
    * Allows to remove a document
@@ -245,8 +248,7 @@ export interface IModel<T = any, R = any> {
    * const result = await User.removeById('userId');
    * ```
    */
-  // eslint-disable-next-line no-unused-vars
-  removeById(id: string): Promise<any>;
+  removeById(id: string): Promise<{ cas: any }>;
 
   /**
    * Creates a [document](/classes/document) from the given data
@@ -261,8 +263,7 @@ export interface IModel<T = any, R = any> {
    * // Now user was persisted to DB
    * ```
    */
-  // eslint-disable-next-line no-unused-vars
-  fromData(data: T | Partial<T>): Model<T>;
+  fromData(data: T | Partial<T>): ModelTypes<T>;
 
   /**
    * Deletes all of the documents that match conditions from the collection.
@@ -281,7 +282,6 @@ export interface IModel<T = any, R = any> {
    *
    *
    */
-  // eslint-disable-next-line no-unused-vars
   removeMany<Doc = T>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<ManyQueryResponse>;
 
   /**
@@ -397,10 +397,8 @@ export interface IModel<T = any, R = any> {
    *
    */
   updateMany<Query = T>(
-    // eslint-disable-next-line no-unused-vars
     filter?: LogicalWhereExpr<Query>,
     doc?: T | Partial<T>,
-    // eslint-disable-next-line no-unused-vars
     options?: UpdateManyOptions,
   ): Promise<ManyQueryResponse>;
 
@@ -468,12 +466,16 @@ export interface IModel<T = any, R = any> {
    * @throws **ImmutableError** if findOneAndUpdate is strict:CAST_STRATEGY.THROW and try to modify a immutable property.
    */
   findOneAndUpdate<Query = T, Result = R>(
-    // eslint-disable-next-line no-unused-vars
     filter?: LogicalWhereExpr<Query>,
     doc?: T | Partial<T>,
-    // eslint-disable-next-line no-unused-vars
     options?: FindOneAndUpdateOption,
-  ): Promise<Document<Result> | Result>;
+  ): Promise<Result>;
+
+  findOneAndUpdate<Query = T, Result = R>(
+    filter?: LogicalWhereExpr<Query>,
+    doc?: T | Partial<T>,
+    options?: FindOneAndUpdateOption,
+  ): Promise<Document<Result>>;
 
   /**
    * dropCollection drops a collection from a scope in a bucket.
@@ -484,7 +486,6 @@ export interface IModel<T = any, R = any> {
   dropCollection(
     collectionName?: string,
     scopeName?: string,
-    // eslint-disable-next-line no-unused-vars
     options?: { timeout?: number },
   ): Promise<boolean | undefined>;
 }
