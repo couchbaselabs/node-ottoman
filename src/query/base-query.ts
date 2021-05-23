@@ -8,7 +8,7 @@ import {
 } from './interface/query.types';
 
 /**
- * Basic definition of Query Class
+ * Basic definition of Query class.
  * */
 export abstract class BaseQuery {
   protected constructor(protected _conditions: IConditionExpr, protected _collection: string) {}

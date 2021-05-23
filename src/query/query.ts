@@ -72,7 +72,7 @@ export class Query extends BaseQuery {
    */
   private indexOn?: IIndexOnParams[];
   /**
-   * Types of supported index statements.
+   * Types of supported Index statements.
    */
   private indexType?: IndexType;
   /**
@@ -84,7 +84,7 @@ export class Query extends BaseQuery {
    */
   private indexUsingGSI?: boolean;
   /**
-   * INDEX USING GSI Expression.
+   * INDEX WITH Expression.
    */
   private indexWith?: IIndexWithParams;
   /**
@@ -187,7 +187,7 @@ export class Query extends BaseQuery {
   }
 
   /**
-   * Create INDEX using General Secondary Index(GSI).
+   * Create INDEX using General Secondary Index (GSI).
    * @method
    * @public
    *
@@ -339,7 +339,7 @@ export class Query extends BaseQuery {
   }
 
   /**
-   * Add GROUP BY expression to GROUP BY clause.
+   * Add GROUP BY expression to SELECT clause.
    * @method
    * @public
    *
@@ -464,9 +464,9 @@ export class Query extends BaseQuery {
   }
 
   /**
-   * Build a n1ql query from the defined parameters.
+   * Build a N1QL query from the defined parameters.
    *
-   * Can also use `ignoreCase` as part of the `build` method, this will always prioritize the `$ignoreCase` value defined in clause
+   * Can also use `ignoreCase` as part of the `build` method, this will always prioritize the `$ignoreCase` value defined in clause.
    * @example
    * ```ts
    *   const expr_where = {

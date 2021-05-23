@@ -1,5 +1,5 @@
 /**
- * Set a given property of the target to be no-enumerable
+ * Set a given property of the target to be non-enumerable
  * Will not be listed on Object.keys and will be excluded by spread operator
  */
 export const nonenumerable = (target: any, propertyKey: string) => {

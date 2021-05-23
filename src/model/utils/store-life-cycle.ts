@@ -6,7 +6,7 @@ import { updateRefdocIndexes } from './update-refdoc-indexes';
 import { CAST_STRATEGY } from '../../utils/cast-strategy';
 
 /**
- * Store lifecycle including hooks and validations
+ * Store lifecycle including hooks and validations.
  * @ignore
  */
 export const storeLifeCycle = async ({ key, id, data, options, metadata, refKeys }) => {

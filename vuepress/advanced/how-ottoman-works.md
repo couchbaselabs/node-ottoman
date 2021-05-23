@@ -1,3 +1,5 @@
+# How Ottoman Works
+
 This section is for those who want to understand how Ottoman works in depth.
 
 ## Key Generation Layer

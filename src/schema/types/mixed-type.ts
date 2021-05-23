@@ -2,7 +2,7 @@ import { CoreType } from './core-type';
 import { CoreTypeOptions } from '../interfaces/schema.types';
 
 /**
- * `Mixed` type supports any `Object` types, you can change the value to anything else you like, it can be represented in the following ways:
+ * `Mixed` type supports any `Object` types, you can change the value to anything else, it can be represented in the following ways:
  *
  *  ## Options
  *

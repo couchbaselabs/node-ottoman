@@ -46,7 +46,7 @@ export type ApplyStrategy = boolean | CAST_STRATEGY.THROW;
 
 /**
  *  @desc
- *  Used by the mutations functions to apply the defined strategy
+ *  Used by the mutation functions to apply the defined strategy.
  */
 export type MutationFunctionOptions = {
   strict?: ApplyStrategy;

@@ -20,8 +20,7 @@ import { removeLifeCycle } from './utils/remove-life-cycle';
 import { storeLifeCycle } from './utils/store-life-cycle';
 
 /**
- * Document class represent a database document
- * and provide some useful methods to work with.
+ * Document class represents a database document and provides useful methods to work with.
  *
  * @example
  * ```javascript
@@ -32,7 +31,7 @@ import { storeLifeCycle } from './utils/store-life-cycle';
  * const User = model('User', { name: String });
  *
  * // Create a document from the `User` Model
- * const jane = new User({name: "Jane Doe"})
+ * const jane = new User({ name: "Jane Doe" })
  * ```
  */
 export abstract class Document<T = any> {
@@ -103,7 +102,7 @@ export abstract class Document<T = any> {
     return getModelMetadata(this.constructor);
   }
   /**
-   * Returns id value, useful when working with dynamic ID_KEY
+   * Returns id value, useful when working with dynamic ID_KEY.
    *
    * @example
    * ```javascript
@@ -116,18 +115,18 @@ export abstract class Document<T = any> {
   }
 
   /**
-   * Returns id key
+   * Returns id key.
    */
   _getIdField(): string {
     return this.$.ID_KEY;
   }
 
   /**
-   * Saves or Updates the document
+   * Saves or Updates the document.
    *
    * @example
    * ```javascript
-   * const user = new User({name: "John Doe"}); //user document created, it's not saved yet
+   * const user = new User({ name: "John Doe" }); //user document created, it's not saved yet
    *
    * await user.save(); // user saved into the DB
    *
@@ -190,7 +189,7 @@ export abstract class Document<T = any> {
   }
 
   /**
-   * Removes the document from database
+   * Removes the document from the database.
    *
    * @example
    * ```javascript
@@ -216,7 +215,7 @@ export abstract class Document<T = any> {
   }
 
   /**
-   * Allows to load document references
+   * Allows to load document references.
    *
    *
    * @example
@@ -458,16 +457,16 @@ export abstract class Document<T = any> {
   }
 
   /**
-   * Reverts population. Switches back document reference
+   * Reverts population. Switches back document reference.
    *
    * @example
-   * To get in context about the Card and Issue Models [see the populate example.](/classes/document.html#populate)
+   * To get in context about the Card and Issue Models [see the populate example.](/classes/document.html#populate).
    * ```javascript
    * const card = await Card.findById(cardId);
    * console.log(card.issues); // ['issueId']
    *
    * await card._populate('issues')
-   * console.log(card.issues); // [{id: 'issueId', title: 'Broken card'}]
+   * console.log(card.issues); // [{ id: 'issueId', title: 'Broken card' }]
    *
    * card._depopulate('issues')
    * console.log(card.issues); // ['issueId']
@@ -499,17 +498,17 @@ export abstract class Document<T = any> {
   }
 
   /**
-   * Allows to know if a document field is populated
+   * Allows to know if a document field is populated.
    *
    * @example
-   * To get in context about the Card and Issue Models [see the populate example.](/classes/document.html#populate)
+   * To get in context about the Card and Issue Models [see the populate example.](/classes/document.html#populate).
    * ```javascript
    * const card = await Card.findById(cardId);
    * console.log(card.issues); // ['issueId']
    * console.log(card._populated('issues')); // false
    *
    * await card._populate('issues')
-   * console.log(card.issues); // [{id: 'issueId', title: 'Broken card'}]
+   * console.log(card.issues); // [{ id: 'issueId', title: 'Broken card' }]
    * console.log(card._populated('issues')); // true
    * ```
    */
@@ -529,10 +528,10 @@ export abstract class Document<T = any> {
    *
    * @example
    * ```typescript
-   * const user = new User({name: "John Doe"});
+   * const user = new User({ name: "John Doe" });
    *
-   * user._applyData({name: "Jane Doe"});
-   * console.log(user) // {name: "Jane Doe"}
+   * user._applyData({ name: "Jane Doe" });
+   * console.log(user) // { name: "Jane Doe" }
    * ```
    *
    * @example With strategies on immutable properties
@@ -542,15 +541,15 @@ export abstract class Document<T = any> {
    *
    *  // with strategy:false is like above example
    *  user._applyData({ name: 'Jane Doe' }, false);
-   *  console.log(user); // {name: "Jane Doe"}
+   *  console.log(user); // { name: "Jane Doe" }
    *
    *  // with strategy:true remains immutable
    *  user._applyData({ name: 'Jane Doe' }, true);
-   *  console.log(user); // {name: "John Doe"}
+   *  console.log(user); // { name: "John Doe" }
    *
    *  // trying to update it directly
    *  user.name = 'Jane Doe';
-   *  console.log(user); // {name: "John Doe"}
+   *  console.log(user); // { name: "John Doe" }
    *
    *  // with strategy:CAST_STRATEGY.THROW
    *  user._applyData({ name: 'Jane Doe' }, CAST_STRATEGY.THROW);
@@ -584,10 +583,10 @@ export abstract class Document<T = any> {
   }
 
   /**
-   * Runs schema validations over current document
+   * Runs schema validations over current document.
    * @example
    * ```javascript
-   * const user = new User({name: "John Doe"});
+   * const user = new User( { name: "John Doe" } );
    *
    * try {
    *   await user._validate()

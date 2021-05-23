@@ -5,9 +5,8 @@ import { ModelTypes } from '../model/model.types';
 import { ApplyStrategy } from '../utils/cast-strategy';
 
 /**
- * Async Function
- * Update all of the documents that match conditions from the collection
- * Allows to use some filters and other useful options
+ * Async Function: Update all of the documents that match conditions from the collection.
+ * Allows use of filters and options.
  *
  * @param documents List of documents to update
  * @param doc Fields to update.

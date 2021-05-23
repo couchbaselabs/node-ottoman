@@ -1,6 +1,6 @@
 module.exports = {
   title: 'Ottoman.js',
-  description: 'Ottoman is a ODM built for Couchbase and Node.js. ',
+  description: 'Ottoman is an ODM built for Couchbase and Node.js. ',
   themeConfig: {
     displayAllHeaders: true,
     nav: [

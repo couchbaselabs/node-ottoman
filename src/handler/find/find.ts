@@ -11,8 +11,7 @@ import { isNumber } from '../../utils/type-helpers';
 import { FindOptions } from './find-options';
 
 /**
- * Find documents
- * Allows to use some filters and other useful options
+ * Find documents using filter and options.
  * @ignore
  */
 export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {

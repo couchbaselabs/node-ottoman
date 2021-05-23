@@ -7,7 +7,7 @@ export type FieldMap = { [key: string]: IOttomanType };
 export type PluginConstructor = (Schema) => void;
 export type FactoryFunction = (name, options) => IOttomanType;
 /**
- * Should throw all errors detected
+ * Should throw all errors detected.
  */
 export type OttomanSchemaTypes = 'String' | 'Boolean' | 'Number' | 'Date' | 'Array' | 'Reference' | 'Embed' | 'Mixed';
 export type ValidatorFunction = (value: unknown) => void;

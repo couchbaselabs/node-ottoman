@@ -1,10 +1,10 @@
 export type SortType = 'ASC' | 'DESC';
 /**
- * Result expressions ALL | DISTINCT
+ * Result expressions of ALL | DISTINCT type.
  * */
 export type ReturnResultType = '$all' | '$distinct';
 /**
- * Result expressions RAW | ELEMENT | VALUE
+ * Result expressions of RAW | ELEMENT | VALUE type.
  * */
 export type ResultExprType = '$raw' | '$element' | '$value';
 /**
@@ -84,7 +84,7 @@ export interface CollectionInWithinOperatorValue {
 }
 
 /**
- * Structure of the collection in within operator
+ * Structure of the collection in within operator.
  *
  * @example
  * ```
@@ -96,7 +96,7 @@ export type CollectionInWithinOperatorType = {
 };
 
 /**
- * Structure of the collection expression
+ * Structure of the collection expression.
  *
  * */
 export interface CollectionExpressionType {
@@ -104,11 +104,11 @@ export interface CollectionExpressionType {
   $satisfies: FieldWhereExpr;
 }
 /**
- * Structure of the collection in within operator
+ * Structure of the collection in within operator.
  *
  * @example
  * ```
- * {$any: {$expr: [{$in:{search_expr: 'search', target_expr: 'address', $not: true} }], $satisfies:{address: '10'}}}
+ * { $any: { $expr: [{ $in:{ search_expr: 'search', target_expr: 'address', $not: true } }], $satisfies:{ address: '10' } } }
  * ```
  * */
 export type CollectionSelectOperatorType = {
@@ -120,7 +120,7 @@ export type CollectionSelectOperatorType = {
  *
  * @example
  * ```
- * {operator: value} -> e.g { $like: '%ottoman%'}
+ * { operator: value } -> e.g { $like: '%ottoman%' }
  * ```
  *
  * */
@@ -137,7 +137,7 @@ export type ComparisonWhereExpr = {
  *
  * @example
  * ```
- * {field: {operator: value}} -> e.g { address: {$like: '%ottoman%'}} | {$or: [{ address: {$like: '%ottoman%'}}]}
+ * { field: { operator: value } } -> e.g { address: { $like: '%ottoman%'} } | { $or: [ { address: { $like: '%ottoman%'} }] }
  * ```
  *
  * */
@@ -151,7 +151,7 @@ export type FieldWhereExpr<T = unknown> =
  *
  * @example
  * ```
- * {field: {operator: value}} -> e.g {$or: [{ address: {$like: '%ottoman%'}}]}
+ * { field: { operator: value } } -> e.g { $or: [{ address: { $like: '%ottoman%' } }] }
  * ```
  *
  * */
@@ -174,7 +174,7 @@ export type LogicalWhereExpr<T = any> =
  *
  * @example
  * ```
- *  e.g { name: 'address', as: 'addr'}
+ *  e.g { name: 'address', as: 'addr' }
  * ```
  *
  * */
@@ -187,7 +187,7 @@ export interface IField {
  *
  * @example
  * ```
- *  {$count: {$field: {name: 'address'}, as: 'addr'}} | {$count: {$field: 'address'}}
+ *  { $count: { $field: { name: 'address' }, as: 'addr' } } | { $count: { $field: 'address' } }
  * ```
  *
  * */
@@ -201,7 +201,7 @@ export type ISelectAggType = {
  *
  * @example
  * ```
- *  {$field: {name: 'address'}, as: 'addr'}
+ *  { $field: { name: 'address' }, as: 'addr' }
  * ```
  *
  * */
@@ -216,7 +216,7 @@ export interface ISelectFieldType {
  *
  * @example
  * ```
- *  {$raw: {$field: {name: 'address'}, as: 'addr'}}
+ *  { $raw: { $field: { name: 'address' }, as: 'addr' } }
  * ```
  *
  * */
@@ -227,7 +227,7 @@ export type ISelectResultExprType = { [key in ResultExprType]?: ISelectAggType |
  *
  * @example
  * ```
- *  {$all: {$field: {name: 'address'}, as: 'addr'}}
+ *  { $all: { $field: { name: 'address' }, as: 'addr' } }
  * ```
  *
  * */
@@ -240,7 +240,7 @@ export type ISelectReturnResultType = {
  *
  * @example
  * ```
- *  {$all: {$field: {name: 'address'}, as: 'addr'}, $field: 'type', $field: {name: 'count'}}
+ *  { $all: { $field: { name: 'address' }, as: 'addr' }, $field: 'type', $field: { name: 'count' } }
  * ```
  *
  * */

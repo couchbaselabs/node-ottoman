@@ -120,7 +120,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
           this[key] = schema.methods[key];
         }
       }
-      // Adding queries index.
+      // Adding queries index
       for (const key in schema?.queries) {
         const { by, of } = schema.queries[key];
         if (by && of) {

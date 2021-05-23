@@ -2,7 +2,7 @@ import { IFindOptions } from '../../handler';
 import { MutationFunctionOptions } from '../../utils/cast-strategy';
 
 /**
- * Find One and Update Options parameter
+ * Find One and Update Option parameter.
  * */
 export interface FindOneAndUpdateOption extends IFindOptions, MutationFunctionOptions {
   /** Default: false

@@ -1,6 +1,7 @@
 # Ottoman Class
 
-## Defining an Ottoman's instance:
+## Defining an Ottoman instance
+
 ```typescript
 import { Ottoman } from "./ottoman";
 
@@ -44,36 +45,40 @@ interface OttomanConfig {
 - `scopeName`: store value to use for each Model if it doesn't provide any. The default value is `_default`
 - `idKey`: it's the value of the key to save your id. The default value is set to `id`
 - `modelKey`: define the key to store the model name into the document. The default value is `_type`
-- `populateMaxDeep`: set default value for population. Default value is `1`.
+- `populateMaxDeep`: set default value for population. The default value is `1`.
 - `consistency`: define default Search Consistency Strategy. The default value is `SearchConsistency.NONE`
 - `maxExpiry`: value used to create a collection for this instance. The default value is `300000`.
 - `keyGenerator`: function to generate the key to store documents.
 - `keyGeneratorDelimiter`: string value used to build the document key. The default value is `::`.
 
 The default implementation for `keyGenerator` function is:
+
 ```typescript
 KEY_GENERATOR = ({ metadata }) => `${metadata.modelName}`;
 ```
+
 `keyGenerator` can be overridden for each `Model` if you want, check this in [model options](/guides/model.html#model-options)
 
 `keyGeneratorDelimiter` have 2 restrictions:
+
 1. Only support up to 2 characters
-2. The available characters are `~!#$%&*_\-:<>?`. 
+2. The available characters are `~!#$%&*_\-:<>?`
 
 :::warning Warning
 If the value provided to `keyGeneratorDelimiter` is invalid Ottoman will throw a BadKeyGeneratorDelimiterError exception.
 :::
 
 Some examples of `keyGeneratorDelimiter`:
+
 - `::` (Default delimiter)
 - `&`
 - `&?`
-- `_` 
-- `##` 
+- `_`
+- `##`
 
 `keyGeneratorDelimiter` can be overridden for each `Model` if you want, check this in [model options](/guides/model.html#model-options)
 
-# Connections
+## Connections
 
 All your [Models](/guides/model) will be created via a connection and map to a Collection.
 
@@ -95,9 +100,10 @@ If the connection fails on your machine, try using 127.0.0.1 instead of `localho
 
 ![Connection Anatomy](./connection-anatomy.png)
 
-
 ## Connection options
-`connect` function also support a javascript object as parameter.
+
+`connect` function also support a javascript object as a parameter.
+
 ```javascript
 import { Ottoman } from 'ottoman';
 
@@ -137,7 +143,7 @@ import { connect, model } from 'ottoman';
 // connecting to server
 connect('couchbase://localhost/travel-sample@admin:password');
 
-// Now you can use the model function to create Models in the default instance.
+// Now you can use the model function to create Models in the default instance
 const User = model('User', { name: String });
 ```
 
@@ -145,7 +151,6 @@ const User = model('User', { name: String });
 Notice we start using Ottoman without creating any instance, it's possible by using the `connect` function.
 `connect` function will create a default ottoman instance with default options if there's not an ottoman default instance created yet.
 :::
-
 
 IMPORTANT: This will be the recommended way to use `Ottoman` if your app uses only 1 instance.
 This way ottoman will save for you the Ottoman instance to work in any place of your code.
@@ -162,11 +167,10 @@ in Couchbase Server 5.1 and up, and all other services in more recent releases o
 
 The process relies on a certificate authority, for the issuing of certificates that validate identities.
 A certificate includes information such as the name of the entity it identifies,
-an expiration date, the name of the authority that issued the certificate, 
-and the digital signature of the authority.
-A client attempting to access Couchbase Server can present a certificate to the server,
+an expiration date, the name of the authority that issued the certificate, and the digital signature of the authority.
+A client attempting to access Couchbase Server can present a certificate to the server, 
 allowing the server to check the validity of the certificate.
-If the certificate is valid, the user under whose identity the client is running, and the roles assigned that user,
+If the certificate is valid, the user under whose identity the client is running, and the roles assigned to that user,
 are verified. If the assigned roles are appropriate for the level of access requested to the specified resource,
 access is granted.
 
@@ -196,7 +200,6 @@ ottoman.connect({
 })
 ```
 
-
 ## Multiple ottoman instances
 
 ```javascript
@@ -209,10 +212,10 @@ ottoman2.connect('couchbase://localhost/other-bucket@admin:password');
 
 // After connect you can create an explicitly Model from a given instance
 
-//Creating UserModel from ottoman1
+// Creating UserModel from ottoman1
 const UserModel = ottoman1.model('User', { name: String });
 
-//Creating CatModel from ottoman2
+// Creating CatModel from ottoman2
 const CatModel = ottoman2.model('Cat', { age: Number });
 ```
 
@@ -225,11 +228,10 @@ const ottoman2 = new Ottoman();
 
 // Getting default instance
 const defaultInstance = getDefaultInstance();
-// defaultInstance = ottoman1;
+// defaultInstance = ottoman1
 ```
 
-The first ottoman instance created will be set as the default instance and
-could be accessed anywhere in your code by calling `getDefaultInstance` function.
+The first ottoman instance created will be set as the default instance and could be accessed anywhere in your code by calling `getDefaultInstance` function.
 
 ## Closing connections
 
@@ -241,7 +243,7 @@ ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
 // Closing connection1
 ottoman1.close();
 
-// Or just call the `close` function to close the default ottoman instance connection. In this case, the `ottoman1` connection will be closed.
+// Or just call the `close` function closing the default ottoman instance connection. In this case, the `ottoman1` connection will be closed
 close();
 ```
 
@@ -263,15 +265,17 @@ This way Ottoman will store all your data in a bucket.
 
 ## Bootstrapping
 
-Ottoman class will provide 3 main methods in order to bootstrap the app:
-- `ensureCollections` will attempt to create collections and scopes for each model.
-- `ensureIndexes` will attempt to create all indexes defined in the schema definition.
-- `start` method is just a shortcut to run `ensureCollections` and `ensureIndexes`.
-  Notice: It's not required to execute the `start` method to Ottoman work.
-  
+Ottoman class will provide 3 main methods to bootstrap the app:
+
+- `ensureCollections` will attempt to create collections and scopes for each model
+- `ensureIndexes` will attempt to create all indexes defined in the schema definition
+- `start` method is just a shortcut to run `ensureCollections` and `ensureIndexes`
+
+Notice: It's not required to execute the `start` method to Ottoman work.
+
 ## Setting environment variables
 
-Ottoman provide a `set` function to help you define environment variables. 
+Ottoman provides a `set` function to help you define environment variables.
 The next example will show how to set debug mode:
 
 ```typescript
@@ -286,6 +290,7 @@ Remember: You must define your environment variables at the very beginning.
 ## Helper functions
 
 Ottoman provides some helpers functions:
+
 - [dropBucket](/classes/ottoman.html#dropbucket) drops a bucket from the cluster.
 - [dropScope](/classes/ottoman.html#dropscope) drops a scope from a bucket.
 - [dropCollection](/classes/ottoman.html#dropcollection) drops a collection from a scope in a bucket.

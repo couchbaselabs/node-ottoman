@@ -2,7 +2,7 @@ import { FindOptions } from '../../../handler';
 import { BuildIndexQueryError } from '../../../exceptions/ottoman-errors';
 
 /**
- * View index function factory
+ * View index function factory.
  */
 export const buildIndexQuery = (Model, fields, indexFnName, indexOptions = {}) => (
   values: any | any[],

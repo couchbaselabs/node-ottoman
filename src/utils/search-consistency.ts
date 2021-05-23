@@ -1,7 +1,7 @@
 export enum SearchConsistency {
   /**
-   * No degree consistency required
-   * Called as NOT_BOUNDED in Couchbase Server
+   * No degree consistency required.
+   * Called as NOT_BOUNDED in Couchbase Server.
    */
   NONE,
 

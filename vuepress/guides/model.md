@@ -1,7 +1,9 @@
 # Model
 
 Models are fancy constructors compiled from [Schema](/guides/schema) definitions.
+
 An instance of a model is called a document.
+
 Models are responsible for creating and reading documents from the underlying Couchbase database.
 
 ## Compiling your first model
@@ -106,10 +108,8 @@ const user = new User({ name: 'Jane', age: 29 });
 user.save();
 // saved!
 
-// or
-
 User.create({ name: 'Jane', age: 29 });
-// saved!
+// also saved!
 ```
 
 Note that no users will be created/removed until the connection that your model uses is open.
@@ -153,7 +153,7 @@ User.findOne({ name: 'Jane' });
 
 ```javascript
 User.findById('userId');
-// will return the user document with the current id.
+// will return the user document with the current id
 
 User.findById('userId', { select: 'name, cards', populate: 'cards' });
 // will return the user document with the current id only with the fields name and cards populated
@@ -177,13 +177,13 @@ export interface IFindOptions {
 ```
 
 ### Advanced use of select parameter.
+
 You can select nested objects using the structure defined in the N1QL Language documentation [Link]([https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/constructionops.html)
 
 ```typescript
 User.find({name: 'john'}, {select: '{"latLon": {geo.lat, geo.lon}, geo.lat} as geo  }'})
 
 ```
-
 
 ### Advanced use of filter parameter.
 
@@ -196,12 +196,12 @@ const filter = {
   ],
 };
 User.find(filter);
-// Returns a list of the elements that match the applied filters.
+// Returns a list of the elements that match the applied filters
 ```
 
-### Use of ignoreCase.
+### Use of ignoreCase
 
-```typescript 
+```typescript
 // Defining `User` schema
 const userSchema = {
   name: String,
@@ -218,15 +218,20 @@ await UserModel.create(user2);
 ```
 
 * Without ignoreCase
+
 ```typescript
 const { rows: documents } = await UserModel.find({ name: { $eq: 'Couchbase' } }, { lean: true });
 console.log(`Documents: `, documents);
 ```
+
 Will get:
+
 ```sh
 $> Documents:  []
 ```
+
 * Using `$ignoreCase` in filters params
+
 ```typescript
 const { rows: documents } = await UserModel.find(
     { name: { $eq: 'Couchbase', $ignoreCase: true } }, // Find filters
@@ -236,6 +241,7 @@ console.log(`Documents: `, documents);
 ```
 
 * Using `ignoreCase` in find options
+
 ```typescript
 const { rows: documents } = await UserModel.find(
     { name: { $like: 'Couch%' } }, // Find filters
@@ -248,7 +254,9 @@ const { rows: documents } = await UserModel.find(
 );
 console.log(`Documents: `, documents);
 ```
+
 For the two previous examples will get something like this:
+
 ```sh
 $> Documents: [
   {
@@ -262,10 +270,11 @@ $> Documents: [
     name: 'couchbase'
   }
 ]
-
 ```
+
 ::: tip Note
 Using `ignoreCase` as part of find functions options will always prioritize the value of `$ignoreCase` defined in the clause
+
 ```typescript
 UserModel.find([
   { address: { $like: 'NY-%', $ignoreCase: false } }, // ignoreCase will not be applied
@@ -303,7 +312,7 @@ See the [API](/classes/model.html#static-updatebyid) docs for more detail.
 
 ```javascript
 User.updateById('userId', { age: 30 });
-// update document with id equal to 'userId' with age 30.
+// update document with id equal to 'userId' with age 30
 ```
 
 Models have static method `replaceById` which has the same behavior as **updateById**, except that the replaceById replaces the existing document with the given document.
@@ -350,7 +359,7 @@ When you create a new `Model` Ottoman will register it by name.
 ```javascript
 const User = model('User', userSchema);
 
-// Ottoman under the hood will register in a dictionary object with a key set to model name.
+// Ottoman under the hood will register in a dictionary object with a key set to model name
 const models = {
   User: UserModel,
 };
@@ -369,7 +378,7 @@ import { getModel, model } from 'ottoman';
 
 const User = model('User', { name: string });
 
-//anywhere else in the app.
+// anywhere else in the app
 const User = getModel('User');
 ```
 
@@ -394,15 +403,15 @@ Ottoman's `Models` provide a `dropCollection` static method to remove a collecti
 ...
 const User = model('User', schema, {scopeName: 'scopeA'});
 
-// dropCollection without parameter will drop it's own collection. 
+// dropCollection without parameter will drop it's own collection
 // This case User Collection in the scopeA will be removed
 User.dropCollection()
 
-// dropCollection with collectionName parameter will drop the collection in the same scope. 
+// dropCollection with collectionName parameter will drop the collection in the same scope
 // This case Cat Collection in the scopeA will be removed
 User.dropCollection('Cat')
 
-// dropCollection can even drop a collection from another scope, if it's provide explicitly. 
+// dropCollection can even drop a collection from another scope, if it's provide explicitly
 // This case Cat Collection in the scopeB will be removed
 User.dropCollection('Cat', 'scopeB')
 ```
