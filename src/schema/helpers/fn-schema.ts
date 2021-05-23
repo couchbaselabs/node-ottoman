@@ -10,18 +10,19 @@ type ParseResult = {
 };
 
 /**
- * Build the fields using the given definition. If the [[obj]] is a schema instance, the data will be taken from the fields provided
+ * Build the fields using the given definition.
+ * If the [[obj]] is a schema instance, the data will be taken from the fields provided.
  * @function
  * @public
  *
  * @param {Schema|Object} obj the definition or schema instance
- * @param strict will drop all property not defined in schema
+ * @param strict will drop all properties not defined in the schema
  * @returns {FieldMap}
  * @throws {Error}
  *
  * @example
  *  ```ts
- *    const fields = buildFields({name: String, hasChild: {type: Boolean, default: true}});
+ *    const fields = buildFields({ name: String, hasChild: { type: Boolean, default: true } });
  *  ```
  */
 export const buildFields = (obj: Schema | SchemaDef, strict = true): FieldMap => {
@@ -42,7 +43,7 @@ export const buildFields = (obj: Schema | SchemaDef, strict = true): FieldMap =>
 };
 
 /**
- * Parse the definition of a field in the schema to identify its type
+ * Parse the definition of a field in the schema to identify its type.
  * @function
  * @private
  * @param value that is going to parsed
@@ -79,7 +80,7 @@ const _parseType = (value, strict = true): ParseResult => {
 };
 
 /**
- * Create the Structure of schema object.
+ * Create the structure of schema object.
  * @private
  * @param type of the field
  * @param options of the schema
@@ -89,7 +90,7 @@ const _makeParseResult = (type: string, options): ParseResult => {
 };
 
 /**
- * Get the string type of a field
+ * Get the String type of a field.
  * @private
  * @param type of the field
  * */
@@ -98,7 +99,7 @@ const _getFieldType = (type: any): any => {
 };
 
 /**
- * Make a field using its definition, throw a [[BuildSchemaError]] if the type is not supported
+ * Make a field using its definition, throw a [[BuildSchemaError]] if the type is not supported.
  * @private
  * @param name of the field
  * @param def result of parsing the field schema
@@ -112,7 +113,7 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
   return typeFactory(name, def.options);
 };
 /**
- * Validate data using the schema definition
+ * Validate data using the schema definition.
  * @param data that is going to be validated
  * @param schema that will be used to validate
  * @param options
@@ -134,7 +135,7 @@ const _makeField = (name: string, def: ParseResult): IOttomanType => {
  *     {
  *      validationStrategy: VALIDATION_STRATEGY.STRICT
  *     });
- *    console.log(castSchema(data, schema)); // Print {name: "John", age: 50}
+ *    console.log(castSchema(data, schema)); // Print { name: "John", age: 50 }
  *    console.log(castSchema(data, strictSchema)); // Throw "Property age must be of type Number"
  * ```
  */
@@ -170,13 +171,13 @@ export const validate = (
 };
 
 /**
- * Apply default values defined on schema to an object instance
+ * Apply default values defined on schema to an object instance.
  * @param obj reference to object instance
  * @param schema definition will be used to determine default definitions
  *
  * @example
  * ```ts
- *  const schema = {name: {type: String, default: 'John'}, hasChild: {type: Boolean, default: true}};
+ *  const schema = { name: { type: String, default: 'John' }, hasChild: { type: Boolean, default: true } };
  *  const obj: any = applyDefaultValue(obj, schema)
  *
  *  console.log(obj);

@@ -11,7 +11,7 @@ Everything in Ottoman starts with a Schema.
 ```javascript
 const blogSchema = new Schema({
   title: { type: String, required: true },
-  author: String, // String is shorthand for {type: String},
+  author: String, // String is shorthand for { type: String }
   authorNative: Schema.Types.String,
   body: String,
   comments: [{ body: String, date: Date }],
@@ -29,14 +29,14 @@ const blogSchema = new Schema({
 
 For more information about options, please [review the types ](/guides/schema.html#allowed-schematypes-are)
 
-Each key in our code blogSchema defines a property in our documents which will be cast to its associated SchemaType. For example, we've defined a property title which will be casted to the String SchemaType and property date which will be casted to a Date SchemaType.
+Each key in our code blogSchema defines a property in our documents which will be cast to its associated SchemaType. For example, we've defined a property title that will be cast to the String SchemaType and property date which will be cast to a Date SchemaType.
 
 Please note above that if a property only requires a type, it can be specified using a shorthand notation (contrast the title property above with the date property).
 
 Keys may also be assigned to nested objects containing further key/type definitions like the meta property above.
-This will happen whenever a key's value is a POJO that lacks a bona-fide type property.
+This will happen whenever a key's value is a POJO that lacks a bonafide-type property.
 In these cases, only the leaves in a tree are given actual paths in the schema (like meta.votes and meta.favs above), and the branches do not have actual paths.
-A side-effect of this is that meta above cannot have its own validation. If validation is needed up the tree, a path needs to be created up the tree.
+The meta above cannot have its own validation as a side-effect of this. If validation is needed up the tree, a path needs to be created up the tree.
 
 ## Allowed SchemaTypes are:
 
@@ -51,7 +51,7 @@ A side-effect of this is that meta above cannot have its own validation. If vali
 
 Schemas not only define the structure of your document and casting of properties,
 they also define document instance methods, static Model methods,
-compound indexes, plugins and document lifecycle hooks.
+compound indexes, plugins, and document lifecycle hooks.
 
 ## Creating a model
 
@@ -129,7 +129,7 @@ createUser();
 
 You should see results similar to the following:
 
-```
+```bash
 Ottoman is ready!
 User 'Jane Doe' successfully created
 ```
@@ -141,9 +141,9 @@ reading [Couchbasics: How Functional and Performance Needs Determine Data Access
 
 ### `n1ql`
 
-These indexes are the default and uses the new SQL-like query language available from Couchbase Server 4.0.0. When `start` or `ensureIndexes` functions are executed, Ottoman automatically creates several secondary indexes so that the models can make queries to the database. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
+These indexes are the default and use the new SQL-like query language available from Couchbase Server 4.0.0. When `start` or `ensureIndexes` functions are executed, Ottoman automatically creates several secondary indexes so that the models can make queries to the database. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
 
-N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html). If you need flexibility of queries and
+N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html). If you need the flexibility of queries and
 speed, this is the way to go.
 
 ``` typescript Example
@@ -202,17 +202,17 @@ console.log(usersN1ql.rows);
 These indexes are the most performant, but the least flexible. They allow only a single document to occupy any particular value and do direct key-value lookups using a referential document to identify a matching document in Couchbase.
 
 In short, if you need to look up a document by a single value of a single attribute quickly (e.g. key lookups), this is the way to go. But you cannot combine multiple refdoc indexes to speed up finding
-something like "all customers with first name 'John' last name 'Smith'".
+something like "all customers with the first name of 'John' and last name of 'Smith'".
 
 ```typescript
 const UserSchema = new Schema({
-	name: String,
-	email: String,
-	card: {
-	  cardNumber: String,
-	  zipCode: String,
-	},
-	roles: [{ name: String }],
+  name: String,
+  email: String,
+  card: {
+    cardNumber: String,
+    zipCode: String,
+  },
+  roles: [{ name: String }],
 });
 
 // Refdoc index declaration
@@ -259,7 +259,7 @@ console.log(userRefdoc);
 ```
 
 ::: warning
-**Refdoc Index** is not managed by couchbase but strictly by Ottoman and doesn't guarantee consistency if the keys that are a part of these indexes are updated by an external operation for example N1QL. 
+**Refdoc Index** is not managed by Couchbase but strictly by Ottoman. It does not guarantee consistency if the keys that are a part of these indexes are updated by an external operation, like N1QL for example. 
 
 **_Needs to be used with caution!!!_**
 :::
@@ -274,13 +274,13 @@ penalty if you want consistency in the result.
 
 ```typescript
 const UserSchema = new Schema({
-	name: String,
-	email: String,
-	card: {
-	  cardNumber: String,
-	  zipCode: String,
-	},
-	roles: [{ name: String }],
+  name: String,
+  email: String,
+  card: {
+    cardNumber: String,
+    zipCode: String,
+  },
+  roles: [{ name: String }],
 });
 
 // View index declaration
@@ -362,7 +362,7 @@ so the above examples will not work because of the value of this.
 
 ## Hooks
 
-Hooks are functions which are passed control during execution of asynchronous functions.
+Hooks are functions that are passed control during the execution of asynchronous functions.
 Hooks are specified at the schema level and are useful for writing plugins.
 
 ### The available hooks are:
@@ -374,7 +374,7 @@ Hooks are specified at the schema level and are useful for writing plugins.
 
 ### Register hooks with `pre` function
 
-Pre functions are executed one after another, for each hooks registered.
+Pre functions are executed one after another, for each hook registered.
 
 ```javascript
 import {Schema} from 'ottoman';
@@ -443,7 +443,7 @@ try {
 
 ### Post Hooks
 
-`post` middleware are executed after the hooked method and all of its pre hooks have completed.
+`post` middleware is executed after the hooked method and all of its pre hooks have been completed.
 
 ```javascript
 schema.post('validate', function (doc) {
@@ -522,7 +522,7 @@ UserSchema.plugin(pluginLog)
 const UserModel = model('User', UserSchema);
 
 const user = new UserModel(...);
-// Pre save hooks will be execute and it will print the document just before save it to Couchbase server.
+// Pre save hooks will be executed and it will print the document just before persisting to Couchbase Server
 await user.save();
 ```
 
@@ -549,14 +549,14 @@ const UserSchema = new Schema({
 const UserModel = model('User', UserSchema);
 
 const user = new UserModel(...);
-// Pre save hooks will be execute and it will log the document just before save it to Couchbase server.
+// Pre save hooks will be executed and it will print the document just before persisting to Couchbase Server
 await user.save();
 ```
 
 ## Strict Mode
 
 The strict option, (enabled by default),
-ensures that values passed to our model constructor that were not specified in our schema do not get saved to the db.
+ensures that values passed to our model constructor that were not specified in our schema do not get saved to the database.
 
 ```javascript
 const userSchema = new Schema({...})
@@ -567,7 +567,7 @@ user.save(); // iAmNotInTheSchema is not saved to the db
 // set to false..
 const userSchema = new Schema({...}, { strict: false });
 const user = new User({ iAmNotInTheSchema: true });
-user.save(); // iAmNotInTheSchema is now saved to the db!!
+user.save(); // iAmNotInTheSchema is now saved to the db!
 ```
 
 This value can be overridden at the model instance level by passing as second argument:
@@ -580,11 +580,11 @@ const user = new User(doc, { strict: false }); // disables strict mode
 
 ## Schema Helpful Methods
 
-Each `Schema` instance have two helpful methods `cast` and `validate`.
+Each `Schema` instance has two helpful methods `cast` and `validate`.
 
 ### Cast method
 
-The `cast` method get a Javascript Object as first parameter and enforce schema types for each field in the schema definition.
+The `cast` method gets a Javascript Object as the first parameter and enforces schema types for each field in the schema definition.
 
 ```javascript
 const schema = new Schema({
@@ -619,9 +619,9 @@ interface CastOptions {
 }
 ```
 
-- `strict` will remove field not defined in the schema. The default value is set to true.
+- `strict` will remove fields not defined in the schema. The default value is set to true.
 - `skip` will be a string array with values of the key you may want to prevent to cast. The default value is empty [].
-- `strategy` when cast action fail, defined strategy is apply. The default strategy is set to `defaultOrDrop`
+- `strategy` when cast action fails, defined strategy is applied. The default strategy is set to `defaultOrDrop`
 
 Available strategies are:
 
@@ -638,8 +638,8 @@ CAST_STRATEGY
 
 ### Validate method
 
-The `validate` method get a Javascript Object as first parameter and enforce schema types, rules and validations for each field in the schema definition.
-If something fail an exception will be throw up, else the `validate` method will return a valid object for the current Schema.
+The `validate` method gets a Javascript Object as the first parameter and enforces schema types, rules, and validations for each field in the schema definition.
+If something fails an exception will be throw up, else the `validate` method will return a valid object for the current Schema.
 
 ```javascript
 const schema = new Schema({
@@ -654,7 +654,7 @@ const result = schema.validate({
     createdAt: '2020-12-20T16:00:00.000Z'
 })
 
-// result variable now look like this:
+// result variable now looks like this:
 {
     name: 'TV',
     price: 345.99, // price was casted to Number
@@ -664,11 +664,11 @@ const result = schema.validate({
 
 #### Validate method options
 
-`validate` method have 1 options:
+`validate` method has 1 option:
 
 ```javascript
 {
-  strict: boolean; // strict set to true, will remove field not defined in the schema.
+  strict: boolean; // strict set to true, will remove field not defined in the schema
 }
 ```
 

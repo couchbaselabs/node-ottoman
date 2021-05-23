@@ -1,5 +1,5 @@
 /**
- * Status of Query Response
+ * Status of Query Response.
  * */
 export type Status = 'SUCCESS' | 'FAILURE';
 
@@ -23,7 +23,7 @@ export interface IStatusExecution {
 }
 
 /**
- * Status of a Query Execution
+ * Status of a Query Execution.
  * */
 export class StatusExecution implements IStatusExecution {
   payload: string | Record<string, unknown>;
@@ -31,7 +31,7 @@ export class StatusExecution implements IStatusExecution {
   exception?: string;
   message?: string;
   /**
-   * @param payload Receive id when updateMany or removeMany is used, receive object in case of createMany.
+   * @param payload Receive id when updateMany or removeMany is used, receive object in case of createMany
    * @param status Status of Execution ('SUCCESS' | 'FAILURE')
    * @param exception Couchbase exception
    * @param message Couchbase exception message
@@ -45,7 +45,7 @@ export class StatusExecution implements IStatusExecution {
 }
 
 /**
- * Message of a Many Query Response
+ * Message of a Many Query Response.
  *
  * @field match_number Number of items that matched the filter, in case of createMany represent the number of documents to create.
  * @field success Number of successful operations
@@ -64,7 +64,7 @@ export interface IManyQueryResponse {
 }
 
 /**
- * Response Class for bulk operations
+ * Response class for bulk operations.
  * */
 export class ManyQueryResponse extends QueryResponse<ManyResponse> implements IManyQueryResponse {
   /**

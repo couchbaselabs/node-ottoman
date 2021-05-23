@@ -14,27 +14,27 @@ export const MODEL_KEY = '_type';
 export const DEFAULT_ID_KEY = 'id';
 
 /**
- * Default scope name
+ * Default scope name.
  */
 export const DEFAULT_SCOPE = '_default';
 
 /**
- * Default collection name
+ * Default collection name.
  */
 export const DEFAULT_COLLECTION = '_default';
 
 /**
- * Default KeyGenerator function
+ * Default KeyGenerator function.
  */
 export const KEY_GENERATOR = ({ metadata }) => `${metadata.modelName}`;
 
 /**
- * Default KeyGeneratorDelimiter value
+ * Default KeyGeneratorDelimiter value.
  */
 export const KEY_GENERATOR_DELIMITER = '::';
 
 /**
- * Internal KeyGenerator function
+ * Internal KeyGenerator function.
  * @param keyGen
  * @param metadata
  * @param id

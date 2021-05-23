@@ -7,7 +7,7 @@ import { CoreTypeOptions } from '../interfaces/schema.types';
 import { cast, CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 
 /**
- * `EmbedType` will allow you to declare a path as another schema, set type to the sub-schema's instance.
+ * `EmbedType` will allow declaration of path as another schema, set type to the sub-schema's instance.
  *
  * ## Options
  *
@@ -29,8 +29,8 @@ import { cast, CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strateg
  *   user: userSchema
  * });
  * ```
- * Also you can use a Javascript plain Object as value for an `EmbedType`.
- * Therefore the below example will behave the same that the above example do.
+ * You can also use a JavaScript plain Object as value for an `EmbedType`.
+ * Therefore the below example will behave the same as the example above.
  *
  * ```javascript
  * const schema = new Schema({
@@ -43,7 +43,7 @@ import { cast, CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strateg
  * });
  * ```
  * @tip
- * `EmbedType` will allow you to reuse easily your existing schemas into new one using composition.
+ * `EmbedType` will allow you to easily reuse existing schemas into new ones using composition.
  */
 export class EmbedType extends CoreType {
   constructor(name: string, public schema: Schema, options?: CoreTypeOptions) {

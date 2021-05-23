@@ -1,5 +1,5 @@
 /**
- * Checking if key is metadata
+ * Check if key is metadata.
  * @param key
  */
 import { MODEL_KEY, DEFAULT_ID_KEY } from './constants';

@@ -68,21 +68,21 @@ export class Schema {
   options: SchemaOptions;
 
   /**
-   * @summary Creates an instance of Schema
+   * @summary Creates an instance of Schema.
    * @name Schema
    * @class
    * @public
    *
    * @param obj Schema definition
    * @param options Settings to build schema
-   * @param options.strict will remove fields if they aren't defined in the schema
+   * @param options.strict removes fields if they aren't defined in the schema
    * @param options.preHooks initialization of preHooks since Schema constructor
    * @param options.postHooks initialization of postHooks since Schema constructor
    * @returns Schema
    *
    * @example
    * ```ts
-   *  const schema = new Schema({name: String, age: {type: Number, intVal: true, min: 18}});
+   *  const schema = new Schema({ name: String, age: { type: Number, intVal: true, min: 18 } });
    * ```
    */
   constructor(obj: SchemaDef | Schema, options: SchemaOptions = { strict: true }) {
@@ -106,13 +106,13 @@ export class Schema {
     }
   }
   /**
-   * Validate a model instance using the definition of the schema
+   * Validate a model instance using the definition of the schema.
    * @method
    * @public
    *
    * @example
    * ```ts
-   *   const schema = new Schema({name: String, age: {type: Number, intVal: true, min: 18}});
+   *   const schema = new Schema({ name: String, age: { type: Number, intVal: true, min: 18 } });
    *   const result = schema.validate({name: 'John Doe', age: '34'});
    *   console.log(result)
    * ```
@@ -127,17 +127,17 @@ export class Schema {
   }
 
   /**
-   * Cast a model instance using schema definition
+   * Cast a model instance using schema definition.
    * @method
    * @public
    *
    * @example
    * ```ts
-   *   const schema = new Schema({name: String, age: {type: Number}});
-   *   const result = schema.cast({name: 'John Doe', age: '34'});
+   *   const schema = new Schema({ name: String, age: {type: Number }});
+   *   const result = schema.cast({ name: 'John Doe', age: '34' });
    *   console.log(result)
    * ```
-   * > {name: 'John Doe', age: 34}
+   * > { name: 'John Doe', age: 34 }
    */
   cast(data: unknown, options: CastOptions = {}) {
     options.strict = options.strict !== undefined ? options.strict : this.options.strict;
@@ -145,13 +145,13 @@ export class Schema {
   }
 
   /**
-   * Applies default values defined on schema to an object instance
+   * Applies default values defined on schema to an object instance.
    * @method
    * @public
    * @param obj
    * @example
    * ```ts
-   *   const schema = new Schema({ amount: { type: Number, default: 5}});
+   *   const schema = new Schema({ amount: { type: Number, default: 5 } });
    *   const result = schema.applyDefaultsToObject({});
    *   console.log(result)
    * ```
@@ -170,10 +170,10 @@ export class Schema {
     return obj;
   }
   /**
-   * Allows access to specify field.
+   * Allows access to a specific field.
    * @example
    * ```ts
-   *   const schema = new Schema({ amount: { type: Number, default: 5}});
+   *   const schema = new Schema({ amount: { type: Number, default: 5 } });
    *   const field = schema.path('amount');
    *   console.log(field.typeName);
    * ```
@@ -188,7 +188,7 @@ export class Schema {
    * Allows to apply plugins, to extend schema and model features.
    * @example
    * ```ts
-   *   const schema = new Schema({ amount: { type: Number, default: 5}});
+   *   const schema = new Schema({ amount: { type: Number, default: 5 } });
    *   schema.plugin((schema) => console.log(schema.path('amount').typeName));
    * ```
    * > Number
@@ -203,11 +203,11 @@ export class Schema {
   }
 
   /**
-   * Allows to register a hook method.
+   * Register a hook method.
    * Pre hooks are executed before the hooked method.
    * @example
    * ```ts
-   *   const schema = new Schema({ amount: { type: Number, default: 5}});
+   *   const schema = new Schema({ amount: { type: Number, default: 5} } );
    *   schema.pre(HOOKS.validate, (doc) => console.log(doc));
    * ```
    */
@@ -221,11 +221,11 @@ export class Schema {
   }
 
   /**
-   * Allows to register a hook function.
+   * Register a hook function.
    * Post hooks are executed after the hooked method.
    * @example
    * ```ts
-   *   const schema = new Schema({ amount: { type: Number, default: 5}});
+   *   const schema = new Schema({ amount: { type: Number, default: 5} } );
    *   schema.post(HOOKS.validate, (doc) => console.log(doc));
    * ```
    */
@@ -274,12 +274,12 @@ export class Schema {
    * Adds fields/schema type pairs to this schema.
    * @example
    * ```ts
-   *   const plane = new Schema({ name: String});
-   *   const boeing = new Schema({price: Number});
+   *   const plane = new Schema({ name: String });
+   *   const boeing = new Schema({ price: Number });
    *   boeing.add(plane);
    *
    *   // You can add also add fields to this schema
-   *   boeing.add({status: Boolean});
+   *   boeing.add({ status: Boolean });
    * ```
    * @param obj Plain object to add, or another schema
    * @return Schema

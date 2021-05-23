@@ -5,7 +5,6 @@
 >we will create two indexes, a primary and adaptive index.
 >After we upsert our records, these indexes will allow us to look up our documents with the Query API in Ottoman
 
-
 ## Prerequisites: Three Steps required to Query our Bucket
 
 1. Setup Couchbase Server 6.5 and ensure it is running.
@@ -24,7 +23,6 @@ in conjunction with the [NodeJS SDK v3](https://docs.couchbase.com/nodejs-sdk/cu
 This tutorial was written using Node JS version 12.14, NPM version 6.13, and the Couchbase SDK 3.0, but higher version numbers should do.
 
 You can check your version numbers by running the following commands:
-
 
 ```bash
 node --version
@@ -57,8 +55,7 @@ code .
 ```
 
 We have now set up a project directory and enabled npm, installed `ottoman`,
-created a `server.js` file and
-finally opened up our VS Code editor to the project root.
+created a `server.js` file, and finally opened up our VS Code editor to the project root.
 
 Open `server.js` file, this is where we’ll add our code.
 
@@ -95,7 +92,7 @@ const User = ottoman.model('User', {
 ```
 
 Ottoman does support other data types like `boolean`, `number`, and `Date`.
-A model can also define indexes, but for now we will skip this,
+A model can also define indexes, but for now, we will skip this,
 as we already set up indexes manually in the prerequisites.
 
 ## Create New User Documents
@@ -121,7 +118,7 @@ const tom = new User({
 
 ## Persist Documents to Our Bucket
 
-So far we have simply defined model structure and created documents locally.
+So far we have simply defined the model structure and created documents locally.
 
 Now that we want to persist the documents, all our interaction with the Couchbase server
 will be done asynchronously, so we will call Ottomonan's `save()` method on each
@@ -308,12 +305,12 @@ ottoman.start()
 :::
 
 ## Summary
+
 We have created models in Ottoman, defined some documents, and persisted them to the database.
 We then subsequently looked them up using the built-in `find()` method which used the Ottoman Query API for Couchbase.
 We have not yet touched on indexes other than the fact that we created two of them during the docker and indexes section of the quickstart.
 
 If you would like to continue learning about Ottoman, we suggest checking out the [Ottoman Documentation](http://ottomanjs.com/).
-
 
 ## Exercise Complete
 

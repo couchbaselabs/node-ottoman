@@ -4,8 +4,7 @@ import { StatusExecution } from './types';
 import { ModelTypes } from '../model/model.types';
 
 /**
- * Async Function
- * Allow to create many document at once
+ * Async Function: Create many documents at once
  *
  * @param documents List of documents to create
  *

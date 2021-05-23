@@ -17,7 +17,7 @@ interface NumberTypeOptions {
   max?: number | NumberFunction | MinmaxOption;
 }
 /**
- * `Number` are plain javascript number
+ * `Number` are plain JavaScript Number.
  *
  * ## Options
  *

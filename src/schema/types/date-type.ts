@@ -16,7 +16,7 @@ interface DateTypeOptions {
 }
 
 /**
- * `Date` are plain javascript date
+ * `Date` are plain JavaScript Date.
  *
  * ## Options
  *
@@ -30,7 +30,7 @@ interface DateTypeOptions {
  * @example
  * ```typescript
  * const userSchema =  new Schema({
- *   birthday: {type: Date, min: '1990-12-31', max: new Date()},
+ *   birthday: { type: Date, min: '1990-12-31', max: new Date() },
  *   hired: Schema.Types.Date
  * })
  * ```

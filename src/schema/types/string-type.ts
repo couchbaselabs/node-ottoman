@@ -8,7 +8,7 @@ import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 type FunctionsString = () => string[];
 
 /**
- * Schema String Type Options
+ * Schema String type options.
  *
  * @field `enum` defines a list of allowed values.
  * @field `auto` that will generate the initial value of the field. It allows the value 'uuid' or a function. It cannot be used combined with default.
@@ -154,7 +154,7 @@ export interface StringTypeOptions extends CoreTypeOptions {
 }
 
 /**
- * `String` are plain javascript string and accepts the following options
+ * `String` are plain JavaScript String and accepts the following options:
  *
  * ## Options
  *

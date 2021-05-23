@@ -1,18 +1,17 @@
 # Building Your First App
 
+Our goal is to provide you with a demo application to explore how to setup and use Ottoman using best practices.
+
 ## Prepare Couchbase Server
 
-This is a sample application for getting started with OttomanJS using Couchbase Server 6.5 (or version 6.6). 
-The application provides a Rest API and demonstrates ODM capabilities. 
-It uses Couchbase Server 6.5, together with OttomanJS v2 + Express + Couchbase SDK + Node.js.  
-Travel-Sample application is a flight planner that allows the user to search for and select a flight route based on airports and dates.
+This is a sample application for getting started with Ottoman using Couchbase Server 6.x. The application provides a Rest API and demonstrates Ottoman's ODM capabilities. It uses Ottoman v2, Express, and the Couchbase NodeJS SDK. The Travel-Sample API we buildcould be used in a flight planner application that allows the user to search for and select a flight route based on airports and dates.
 
 ## Prepare Our Project Folder
 
 Install Node.js from the [Node.js website](http://nodejs.org/).  
-Once Node.js is installed, we can bootstrap our application. 
+Once Node.js is installed, we can bootstrap our application.
 
-#### Development Guide
+### Development Guide
 
 1. [Install Couchbase Server Using Docker](https://docs.couchbase.com/server/current/install/getting-started-docker.html).
 
@@ -30,28 +29,24 @@ $ yarn api:dev
 
 ## Tutorial Project (Travel-Sample) Goals
 
-The requirements for this application are:
-
-- REST API for Travel-Sample Application.
-- The application must store hotels, flights, and airports information.
-- Couchbase will be the system of record.
+What want to build a REST API for a Travel-Sample Application that stores and queries hotel, flight, and airport information using Couchbase Server as the system of record.
 
 ### Data Model
 
-The flexiblity and dynamic nature of a NOSQL Document Database and JSON simplifies building the data model. 
-For the travel sample application we will use three types of objects, and we'll define those in specific modules in the node application.   
+The flexiblity and dynamic nature of a NOSQL Document Database and JSON simplifies building the data model.
+For the travel sample application we will use three types of objects, and we'll define those in specific modules in the node application.  
 
 - airports
 - flightPaths
 - hotels
- 
+
 The source code is organized by each module in a folder under the root of the application, a module defines REST endpoints, and the data model of a resource. 
-The data model is defined in `.model.ts` by the schema and model, and in the case of the endpoints, there are defined in various `.controller.ts` files, such as `flights.controller.ts`. 
+The data model is defined in `.model.ts` by the schema and model, and in the case of the endpoints, there are defined in various `.controller.ts` files, such as `flights.controller.ts`.  
 Let's walk through the code starting with the `hotels` module.
 
 ### Hotel Model
 
-The first section of the hotel module instantiates module dependencies which, for this particular example, are Ottoman and the database file where the information on the Couchbase instance is stored. 
+The first section of the hotel module instantiates module dependencies which, for this particular example, are Ottoman and the database file where the information on the Couchbase instance is stored.
 
 ```ts
 import { model, addValidators, Schema } from 'ottoman';    // ← use ottoman
@@ -71,18 +66,19 @@ addValidators({
 });
 ```
 
-The model for the Hotels object is defined, using several of the built in types that Ottoman supports. 
-For additional reference, see http://www.ottomanjs.com. 
-Several indices are defined along with the model &mdash; the indices are utilized as methods for each instance of the Hotel Object. 
-Ottoman supports complex data types, embedded references to other models, and customization.
+The model for the Hotels object is defined, using several of the built in types that Ottoman supports.  
 
+For additional reference, see http://www.ottomanjs.com.  
+
+Several indices are defined along with the model &mdash; the indices are utilized as methods for each instance of the Hotel Object. Ottoman supports complex data types, embedded references to other models, and customization.
 
 We are going to define a custom type link:
+
 ```ts
     import { IOttomanType, ValidationError, registerType } from 'ottoman';
     
     /**
-     * Custom type to manage the links
+     * Custom type to manage the links.
      */
     export class LinkType extends IOttomanType {
       constructor(name: string) {
@@ -97,18 +93,18 @@ We are going to define a custom type link:
     }
     
     /**
-     * Factory function
+     * Factory function.
      * @param name of field
      */
     export const linkTypeFactory = (name) => new LinkType(name);
     
     /**
-     * Register type on Schema Supported Types
+     * Register type on Schema Supported Types.
      */
     registerType(LinkType.name, linkTypeFactory);
     
     /**
-     * Check if value is a valid Link
+     * Check if value is a valid Link.
      * @param value
      */
     const isLink = (value: string) => {
@@ -168,13 +164,11 @@ HotelSchema.index.findByName = { by: 'name', type: 'n1ql' };
 export const HotelModel = model('hotel', HotelSchema);
 ```
 
-In the Hotel model above, there is one explicit index defined. By default,
-if an index type is not specified Ottoman will select the fastest available index supported within the current Couchbase cluster.
-In addition to utilizing built in secondary index support within Couchbase, 
-Ottoman can also utilize referential documents and maintain the referential integrity for updates and deletes. 
-This is a powerful features that allows for blazingly fast lookups by a particular field. 
-This type of index in Ottoman is useful for finding a particular object by a unique field such as customer id or email address in the example above.
-In addition to any explicit index, Ottoman also provides a generic find capability using the Query api and N1QL. 
+In the Hotel model above, there is one explicit index defined. By default, if an index type is not specified Ottoman will select the fastest available index supported within the current Couchbase cluster.  
+
+In addition to utilizing built in secondary index support within Couchbase, Ottoman can also utilize referential documents and maintain the referential integrity for updates and deletes. This is a powerful features that allows for blazingly fast lookups by a particular field. This type of index in Ottoman is useful for finding a particular object by a unique field such as customer id or email address in the example above.  
+
+In addition to any explicit index, Ottoman also provides a generic find capability using the Query api and N1QL.
 
 ### Airport Model
 
@@ -205,12 +199,11 @@ export const AirportModel = model('airport', AirportSchema);
 
 ### Application and Routing
 
-Now that the models are defined above, the controller functionality is defined in the ```index.ts``` file in the root directory and the routes on the ```*.controller.ts``` files in the module directory. 
+Now that the models are defined above, the controller functionality is defined in the ```index.ts``` file in the root directory and the routes on the ```*.controller.ts``` files in the module directory.
 
 #### App
 
-The `index.ts` file is the entry point to the application and defines how the application will function. 
-The code within the file is as follows:
+The `index.ts` file is the entry point to the application and defines how the application will function.
 
 ```ts
 import express, { Request, Response } from 'express';
@@ -245,7 +238,7 @@ app.use((err: Error, req: Request, res: Response) => {
   }
   return res.status(500).json({ error: err.toString() });
 });
-const useCollections = false; // set this to true to create scopes/collections.
+const useCollections = false; // set this to true to create scopes/collections
 start({ useCollections })
   .then(() => {
     console.log('All the indexes were registered');
@@ -259,6 +252,7 @@ start({ useCollections })
 ```
 
 #### Routes and Documentations
+
 Once you have the example running, you can find all definitions in Swagger:
 
 ```http://127.0.0.1:4500/api-docs```

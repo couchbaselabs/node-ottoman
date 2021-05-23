@@ -14,8 +14,8 @@ export type CountOptions = {
 
 export class Model<T = any, R = any> extends Document<T> {}
 /**
- * Constructor to build a model instance based on a schema and other options.
- * Provides methods to handle documents of the current collection in the database
+ * Constructor to build a model instance based on schema and options.
+ * Provides methods to handle documents of the current collection in the database.
  *
  * @example
  * ```javascript
@@ -39,13 +39,13 @@ export interface IModel<T = any, R = any> {
    *
    * @example
    * ```javascript
-   * User.find({name: "Jane"})
+   * User.find({ name: "Jane" })
    * // will return a list of all users with the name "Jane"
    *
-   * User.find({name: "Jane"}, {limit: 10})
+   * User.find({ name: "Jane" }, { limit: 10 })
    * // will return a list of all users with the name "Jane" and limited to 10 items
    *
-   * User.find({name: "Jane"}, {ignoreCase: true})
+   * User.find({ name: "Jane" }, { ignoreCase: true })
    * // will return a list of all users with the name "Jane" ignoring case
    *
    * ```
@@ -56,7 +56,7 @@ export interface IModel<T = any, R = any> {
    * $and: [
    *   { price2: { $gt: 1.99, $isNotNull: true } },
    *   { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
-   *   {name: {$eq: 'John', $ignoreCase: true}}
+   *   {name: { $eq: 'John', $ignoreCase: true }}
    *  ],
    * };
    * User.find(filter)
@@ -66,25 +66,25 @@ export interface IModel<T = any, R = any> {
   find<Doc = T>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<any>;
 
   /**
-   * Returns the number of documents that match the query
+   * Returns the number of documents that match the query.
    *
    * @example
    * ```javascript
-   * User.count({name: {$like: "%Jane%"}})
+   * User.count({ name: { $like: "%Jane%" } })
    * ```
    */
   count(filter?: LogicalWhereExpr<T>, options?: CountOptions): Promise<any>;
 
   /**
-   * Allows to retrieve a document by id
+   * Retrieves a document by id.
    *
    * @example
    * ```javascript
    * User.findById('userId')
-   * // will return the user document with the current id.
+   * // will return the user document by id.
    *
    * User.findById('userId', {select: 'name, cards', populate: 'cards'})
-   * // will return the user document with the current id only with the fields name and cards populated
+   * // will return the user document by id with only the fields name, and cards populated.
    * ```
    */
   findById<Result = R>(id: string, options?: FindByIdOptions): Promise<Result>;
@@ -95,40 +95,40 @@ export interface IModel<T = any, R = any> {
    *
    * @example
    * ```javascript
-   * User.findOne({name: "Jane"})
-   * // will return a document with a User with the name "Jane" or throw a DocumentNotFoundError exception in case of not finding it
+   * User.findOne({ name: "Jane" })
+   * // will return a document with a User name of "Jane", or if it doesn't exist, throw a DocumentNotFoundError exception.
    *
-   * User.findOne({name: "Jane"}, {ignoreCase: true})
-   * // will return a an user with the name "Jane" ignoring case
+   * User.findOne({ name: "Jane" }, { ignoreCase: true })
+   * // will return a document with a User name of "Jane", ignoring the case.
    * ```
    */
   findOne<Doc = T, Result = R>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<Result>;
   findOne<Doc = T, Result = R>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<Document<Result>>;
 
   /**
-   * Allows to create a new document
+   * Creates a new document.
    *
    * @example
    * ```javascript
-   * const user = await User.create({name: "John Doe"});
+   * const user = await User.create({ name: "John Doe" });
    * ```
    */
   create<Doc = T>(doc: Doc): Promise<Document<T>>;
 
   /**
-   * Allows to create many document at once.
+   * Creates many documents at once.
    *
    * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
    *
    * @example
    * ```javascript
-   * const user = await User.createMany([{name: "John Doe"}, {name: "Jane Doe"}]);
+   * const user = await User.createMany([{ name: "John Doe" }, { name: "Jane Doe" }]);
    * ```
    */
   createMany<Doc = T>(docs: Doc[] | Doc): Promise<ManyQueryResponse>;
 
   /**
-   * Allows to update a document
+   * Updates a document.
    *
    * @example
    * ```typescript
@@ -184,7 +184,7 @@ export interface IModel<T = any, R = any> {
   ): Promise<Document<Result>>;
 
   /**
-   * Same as **updateById**,except replace the existing document with the given document.
+   * Same as **updateById**, except it replaces the existing document with the given document.
    *
    * @example
    * ```javascript
@@ -241,7 +241,7 @@ export interface IModel<T = any, R = any> {
   ): Promise<Document<Result>>;
 
   /**
-   * Allows to remove a document
+   * Removes a document by id.
    *
    * @example
    * ```javascript
@@ -251,7 +251,7 @@ export interface IModel<T = any, R = any> {
   removeById(id: string): Promise<{ cas: any }>;
 
   /**
-   * Creates a [document](/classes/document) from the given data
+   * Creates a [document](/classes/document) from the given data.
    * Result will be the same that -> new Model(data)
    *
    * @example
@@ -285,7 +285,7 @@ export interface IModel<T = any, R = any> {
   removeMany<Doc = T>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<ManyQueryResponse>;
 
   /**
-   * Update all of the documents that match conditions from the collection.
+   * Updates all of the documents that match conditions from the collection.
    *
    * The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
    *
@@ -337,7 +337,7 @@ export interface IModel<T = any, R = any> {
    *    result.push(result1, result2, response);
    *  }
    *
-   *  // Here store data to check response on each round
+   *  // Store data to check response on each round
    * let result: any[] = [];
    *
    * async function testRounds(){
@@ -392,7 +392,7 @@ export interface IModel<T = any, R = any> {
    * ```
    *
    * @param filter Filter Condition [Where Expression](/classes/query.html#where)
-   * @param doc Values for the fields to update.
+   * @param doc Values for the fields to update
    * @param options [Update Many Options](/interfaces/updatemanyoptions.html)
    *
    */
@@ -411,7 +411,7 @@ export interface IModel<T = any, R = any> {
    * ```
    *
    * @param filter Filter Condition [Where Expression](/classes/query.html#where)
-   * @param doc Values for the fields to update.
+   * @param doc Values for the fields to update
    * @param options [FindOneAndUpdateOptions](/interfaces/findoneandupdateoption.html)
    *
    *

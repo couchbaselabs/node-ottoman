@@ -3,7 +3,7 @@ import { Ottoman } from '../../../ottoman/ottoman';
 import { BuildIndexQueryError } from '../../../exceptions/ottoman-errors';
 
 /**
- * Index function factory
+ * Index function factory.
  */
 export const buildViewIndexQuery = (ottoman: Ottoman, designDocName, indexName, fields, Model) => async (
   values: any | any[],

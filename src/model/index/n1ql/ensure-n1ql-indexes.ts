@@ -7,8 +7,7 @@ import { DEFAULT_COLLECTION } from '../../../utils/constants';
 
 /**
  * Creates the register index in the Database Server.
- * In addition, creates one index as primary for the bucketName
- * and one for every Ottoman model.
+ * In addition, creates one index as primary for the bucketName and one for every Ottoman model.
  */
 export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
   const __indexes = n1qlIndexes;

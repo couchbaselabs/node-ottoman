@@ -7,6 +7,5 @@ export const buildMapViewIndexFn = (metadata: ModelMetadata, fields) => {
     if (doc.${modelKey} == "${modelName}") {
         emit([${docFields.join(',')}], null);
     }
-}
-  `;
+  }`;
 };

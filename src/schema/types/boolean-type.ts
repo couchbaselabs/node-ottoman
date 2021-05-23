@@ -3,7 +3,7 @@ import { CoreTypeOptions } from '../interfaces/schema.types';
 import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
 
 /**
- * `Boolean` are plain javascript booleans
+ * `Boolean` are plain JavaScript Boolean.
  *
  * ## Options
  *
@@ -21,14 +21,14 @@ import { CAST_STRATEGY, checkCastStrategy } from '../../utils/cast-strategy';
  * })
  * ```
  *
- * ### Ottoman cast the following values to true:
+ * ### Ottoman will cast the following values to true:
  * * true
  * * 'true'
  * * 1
  * * '1'
  * * 'yes'
  *
- * ### Ottoman cast the following values to false:
+ * ### Ottoman will cast the following values to false:
  * * false
  * * 'false'
  * * 0

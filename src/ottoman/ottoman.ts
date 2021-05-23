@@ -46,8 +46,7 @@ interface OttomanConfig {
 }
 
 /**
- * CertificateAuthenticator provides an authenticator implementation
- * which uses TLS Certificate Authentication.
+ * CertificateAuthenticator provides an authenticator implementation using TLS Cert Authentication.
  */
 export class CertificateAuthenticator {
   /**
@@ -59,7 +58,7 @@ export class CertificateAuthenticator {
 }
 
 /**
- * Store default connection
+ * Store default connection.
  */
 export let __ottoman: Ottoman;
 export const __ottomanInstances: Ottoman[] = [];
@@ -121,7 +120,7 @@ export class Ottoman {
   }
 
   /**
-   * Gets a bucket manager for this cluster
+   * Gets a bucket manager for this cluster.
    *
    * Check the
    * [Bucket Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/BucketManager.html)
@@ -192,7 +191,7 @@ export class Ottoman {
   }
 
   /**
-   * Connect to Couchbase server
+   * Connect to Couchbase server.
    * @example
    * ```javascript
    *  import { connect } from "ottoman";
@@ -211,10 +210,9 @@ export class Ottoman {
 
   /**
    * Creates a Model on this connection.
-   *
    * @example
    * ```javascript
-   * const User = connection.model('User', { name: String }, {collectionName: 'users'});
+   * const User = connection.model('User', { name: String }, { collectionName: 'users' });
    * ```
    */
   model<T = any>(name: string, schema: Schema | Record<string, unknown>, options: ModelOptions = {}): ModelTypes<T> {
@@ -284,7 +282,7 @@ export class Ottoman {
   }
 
   /**
-   * Returns a Model constructor from the given name
+   * Returns a Model constructor from the given model name.
    *
    * @example
    * ```javascript
@@ -297,7 +295,7 @@ export class Ottoman {
 
   /**
    * Return a collection from the given collectionName in this bucket
-   * Or default collection if collectionName is missing
+   * or default collection if collectionName is missing.
    */
   getCollection(collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) {
     return this.bucket
@@ -306,7 +304,7 @@ export class Ottoman {
   }
 
   /**
-   * Closes the current connection
+   * Closes the current connection.
    *
    * @example
    * ```javascript
@@ -320,14 +318,14 @@ export class Ottoman {
   /**
    * Executes N1QL Queries.
    *
-   * Ottoman provides a powerful [Query Builder](/guides/query-builder) system to create valid N1QL queries in a easier way.
+   * Ottoman provides a powerful [Query Builder](/guides/query-builder) system to create valid N1QL queries using method chaining.
    * See the example below:
    *
    * @example
    * ```javascript
    * const expr_where = {$or: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }]};
    * const query = new Query({}, 'travel-sample');
-   * const n1qlQuery = query.select([{$field: 'address'}]).where(expr_where).build()
+   * const n1qlQuery = query.select([{ $field: 'address' }]).where(expr_where).build()
    *
    * connection.query(n1qlQuery).then(result => console.log(result))
    * ```
@@ -339,7 +337,7 @@ export class Ottoman {
   }
 
   /**
-   * `ensureCollections` will attempt to create scopes and collection to map your models into Couchbase Server.
+   * `ensureCollections` will attempt to create scopes and collections to map your models to in Couchbase Server.
    */
   async ensureCollections() {
     const scopePromises = new Map();
@@ -403,7 +401,7 @@ export class Ottoman {
   }
 
   /**
-   * `ensureIndexes` will attempt to create indexes defined in your schemas
+   * `ensureIndexes` will attempt to create indexes defined in your schema if they do not exist.
    */
   async ensureIndexes() {
     await ensureN1qlIndexes(this, this.n1qlIndexes);
@@ -412,7 +410,7 @@ export class Ottoman {
 
   /**
    * `start` method is just a shortcut to run `ensureCollections` and `ensureIndexes`.
-   *  Notice: It's not required to execute the `start` method to Ottoman work.
+   *  Notice: It's not required to execute the `start` method in order for Ottoman work.
    */
   async start() {
     await this.ensureCollections();

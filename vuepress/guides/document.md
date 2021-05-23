@@ -1,11 +1,10 @@
 # Documents
-Ottoman documents represent a one-to-one mapping to documents as stored in Couchbase Server. Each document is an instance of its Model.
 
+Ottoman documents represent a one-to-one mapping to documents as stored in Couchbase Server. Each document is an instance of its Model.
 
 ## Documents vs Models
 
-[Document](/classes/document.html) and [Model](/classes/model.html) are distinct classes in Ottoman. The Model class is a subclass of the Document class. 
-When you use the Model constructor, you create a new document.
+[Document](/classes/document.html) and [Model](/classes/model.html) are distinct classes in Ottoman. The Model class is a subclass of the Document class. When you use the Model constructor, you create a new document.
 
 ```javascript
 const MyModel = ottoman.model('Test', new Schema({ name: String }));
@@ -16,11 +15,11 @@ doc instanceof ottoman.Model; // true
 doc instanceof ottoman.Document; // true
 ```
 
-In Ottoman, a `document` generally means an instance of a model. You should not have to create an instance of the Document class without going through a model.
+In Ottoman, a `document` means an instance of a model. No need to create an instance of the Document class.
 
 ## Retrieving
 
-When you load documents from Couchbase Server using model functions like findById(), you get a Ottoman `document` back.
+When you load documents from Couchbase Server using model functions like findById(), you get an Ottoman `document` back.
 
 ```javascript
 const doc = await MyModel.findOne();
@@ -32,7 +31,7 @@ doc instanceof ottoman.Document; // true
 
 ## Updating
 
-Ottoman documents track changes. You can modify a document using vanilla JavaScript assignments and Ottoman will convert it into Couchbase update operators.
+Ottoman documents track changes. You can modify a document using vanilla JavaScript assignments and Ottoman will convert it into Couchbase update operations.
 
 ```javascript
 doc.name = 'foo';
@@ -47,20 +46,18 @@ If the document with the corresponding id is not found, Ottoman will report a `D
 ```javascript
 const doc = await MyModel.findOne();
 
-// Delete the document so Ottoman won't be able to save changes
+// Delete document so `save()` will throw. Ottoman cannot save.
 await MyModel.removeById(doc._id);
 
 doc.name = 'foo';
-await doc.save(); // Throws DocumentNotFoundError
+await doc.save(); // Throws `DocumentNotFoundError` on `save()`.
 ```
 
 The `save()` function is generally the right way to update a document with Ottoman. With `save()`, you get full validation and middleware.
 
 ## Validating
 
-Documents are casted and validated before they are saved. 
-Ottoman first casts values to the specified type and then validates them. Internally, 
-Ottoman calls the document's validate() method before saving.
+Documents are casted and validated before saved. Ottoman casts values to the specified type and then validates them. Internally, Ottoman calls the document's `validate()` method before saving.
 
 ```javascript
 const schema = new Schema({ name: String, age: { type: Number, min: 0 } });
@@ -77,10 +74,9 @@ await p2.validate();
 
 ## Populate
 
-Population is the process of automatically replacing the specified paths in the document with document(s) from other collection(s).
-We may populate a single document, multiple documents, a plain object, multiple plain objects, or all objects returned from a query.
-Let's look at some examples.
+Population is the process of automatically replacing the specified paths in a document using document(s) from other collection(s). We may populate a single document, multiple documents, a plain object, multiple plain objects, or all objects returned from a query.
 
+Examples:
 
 ```javascript
 import {Schema, model} from 'ottoman';
@@ -102,8 +98,7 @@ const Person = model('Person', personSchema);
 ```
 
 So far we've created two Models. Our Person model has its stories field set to an array of ids.
-The ref option is what tells Ottoman which model to use during population, in our case the Story model.
-All ids we store here must be document ids from the Story model.
+The `ref` option is what tells Ottoman which model to use during population, in our case the `Story` model. All ids we store here must be document ids from the `Story` model.
 
 ### Saving refs
 
@@ -127,7 +122,7 @@ await story1.save()
 ### Using Population
 
 So far we haven't done anything much different. We've merely created a Person and a Story.
-Now let's take a look at populating our story's author:
+Now let's take a look at populating our Story's author:
 
 ```javascript
 // Populate using document
@@ -161,7 +156,7 @@ story._depopulate('author'); // Make `author` not populated anymore
 story._populated('author'); // undefined
 ```
 
-A common reason for checking whether a path is populated is getting the author id.
+A common reason for checking whether a path is populated is getting the `author.id`.
 
 ```javascript
 story.populated('author'); // truthy
@@ -173,14 +168,14 @@ story.populated('author'); // false
 
 ### Advanced Population
 
-You can use the `*` symbol as a wildcard to populate all references in the current model, in this example all properties types references will be populated:
+Use `*` as a wildcard to populate all references in the current model. In this example all properties types references will be populated:
 
 ```javascript
 await story._populate('*');
 ```
 
-Also, you can setup to automatically populate child document references, by passing a second integer value to `_populate` function,
-this value will tell to Ottoman how deep you want to populate.
+Also, you can automatically populate child document references by passing a second integer value to `_populate` function,
+this value will tell to Ottoman how many levels deep you want to populate.
 
 ```javascript
 // Using on a document
@@ -190,13 +185,13 @@ await story._populate('*', 2);
 const stories = await Story.find({ title: 'Casino Royale' }, {populate: 'author', populateMaxDeep: 2})
 ```
 
-In the above example Ottoman will populate all references on story and story children. 
+In the above example Ottoman will populate all references on story and story's children.
 It doesn't matter if they are single or array references.
 
 ::: warning
 Beware from setting a large integer value on populate `deep` argument, it could affect the query performance.
 :::
 
-
 ## Next Up
+
 Now that we've covered Documents, let's take a look at [Query Builder](/guides/query-builder).

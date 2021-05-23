@@ -41,18 +41,18 @@ import {
 import { escapeReservedWords } from '../utils';
 import { BuildQueryError } from '../../exceptions/ottoman-errors';
 
-// select expressions functions
+// start of SELECT expression functions
 /**
  * Build a SELECT N1QL query from user-specified parameters.
  * {@link https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/select-syntax.html}
  * @param collection Collection name
- * @param select SELECT Clause param
- * @param letExpr LET Clause param
- * @param where WHERE Clause param
- * @param orderBy ORDER BY Clause param
- * @param limit LIMIT Clause param
- * @param offset OFFSET Clause param
- * @param useExpr USE Clause param
+ * @param select SELECT Clause
+ * @param letExpr LET Clause
+ * @param where WHERE Clause
+ * @param orderBy ORDER BY Clause
+ * @param limit LIMIT Clause
+ * @param offset OFFSET Clause
+ * @param useExpr USE Clause
  * @param ignoreCase boolean to ignore case
  *
  * @return N1QL SELECT Query
@@ -119,8 +119,8 @@ const _buildField = (clause: IField | string) => {
 };
 
 /**
- * Create N1QL queries from select array params
- * @param clause SELECT Clause param
+ * Create N1QL queries from SELECT array params.
+ * @param clause SELECT Clause
  *
  * @return N1QL SELECT Query
  * */
@@ -131,7 +131,7 @@ export const buildSelectArrayExpr = (clause: ISelectType[]): string => {
 /**
  * Recursive function to create N1QL queries.
  * @param n1ql N1QL Query String
- * @param clause SELECT Clause param
+ * @param clause SELECT Clause
  *
  * @return N1QL SELECT Query
  * */
@@ -148,7 +148,7 @@ export const buildSelectExpr = (n1ql: string, clause: ISelectType): string => {
       return `${ResultExprDict[key]} ${buildSelectExpr(n1ql, clause[key])}`;
     }
     if (AggDict.hasOwnProperty(key)) {
-      // todo check if have AS expr inside of Agg function.
+      // todo: check if have AS expression inside of Agg function.
       return `${AggDict[key]}(${_buildAggDictExpr(clause as ISelectAggType, key)}${buildSelectExpr(
         n1ql,
         clause[key],
@@ -215,9 +215,9 @@ const _buildUseKeysExpr = (useKeys: string[] | undefined) => {
   return Array.isArray(useKeys) ? ` USE KEYS ${stringifyValues(useKeys)}` : '';
 };
 
-// end select expression functions
+// end of SELECT expression functions
 
-//group by expression functions
+// start of GROUP BY expression functions
 /**
  *@ignore
  */
@@ -249,15 +249,15 @@ const _buildGroupBy = (groupByExpr: IGroupBy[]) => {
     .join(',')}`;
 };
 
-//end group by expression functions
+// end of GROUP BY expression functions
 
-// where expression functions
+// start of WHERE expression functions
 
 /**
  * Create WHERE N1QL Expressions.
  * {@link https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/where.html}
- * @param clause WHERE Clause param
- * @param ignoreCase apply ignore case
+ * @param clause WHERE Clause
+ * @param ignoreCase Apply ignore case
  * @return N1QL WHERE Expression
  * */
 export const buildWhereExpr = (expr: LogicalWhereExpr | undefined, clause?: string, ignoreCase = false): string => {
@@ -280,11 +280,11 @@ export const verifyWhereObjectKey = (clause: LogicalWhereExpr) => {
 };
 
 /**
- * Recursive function to create WHERE N1QL Expressions.
+ * Recursive function to create WHERE N1QL expressions.
  * @param n1ql N1QL Query String
  * @param clause WHERE Clause param
  *
- * @return N1QL WHERE Expression
+ * @return N1QL WHERE expression
  * */
 export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr, ignoreCase = false): string => {
   try {
@@ -445,19 +445,19 @@ const _buildWhereCollectionExpr = (op: CollectionSelectOperator, expr: Collectio
   } ${buildWhereClauseExpr('', expr.$satisfies)} END`;
 };
 
-// end where expression functions
+// end of WHERE expression functions
 
-// index expression functions
+// start of INDEX expression functions
 
 /**
  * Build a INDEX N1QL query from user-specified parameters.
  * {@link https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/createindex.html}
  * @param collection Collection name
- * @param type INDEX clause types can be 'CREATE' | 'BUILD' | 'DROP' | 'CREATE PRIMARY'
- * @param on ON Clause param
- * @param where WHERE Clause param
- * @param usingGSI use a Global Secondary Index(GSI).
- * @param withExpr WITH Clause param
+ * @param type INDEX clause types ('CREATE' | 'BUILD' | 'DROP' | 'CREATE PRIMARY')
+ * @param on ON Clause
+ * @param where WHERE Clause
+ * @param usingGSI use a Global Secondary Index (GSI)
+ * @param withExpr WITH Clause
  *
  * @return N1QL INDEX Query
  * */
@@ -547,4 +547,4 @@ const applyIgnoreCase = (
   return isIgnoreCase ? `LOWER(${left}) ${operator} LOWER(${right})` : `${left}${op}${right}`;
 };
 
-// end index expression functions
+// end of INDEX expression functions

@@ -4,7 +4,7 @@
 
 ## Using the Query Builder.
 
-There are 3 ways to use the Query Builder: by using parameters, by using access functions or by combining both.
+There are 3 ways to use the Query Builder: by using parameters, by using access functions, or by combining both.
 
 ### Build a Query by using parameters
 
@@ -187,10 +187,10 @@ const result = query.select([{ $field: 'address' }])
                     .build({ ignoreCase: true }); // ignore case is enabled for where clause elements
 console.log(result)
 ```
+
 Would have as output:
 > SELECT address FROM `travel-sample` WHERE (address LIKE "%57-59%" OR free_breakfast=true OR `(LOWER(name) = LOWER("John"))`)
 :::
-
 
 ## N1QL SELECT clause structure
 
@@ -306,3 +306,4 @@ The syntax of a JOIN clause in n1ql is documented [here](https://docs.couchbase.
 See definition [here](/classes/query.html#groupby)
 
 The syntax of a GROUP BY clause in n1ql is documented [here](https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/groupby.html).
+

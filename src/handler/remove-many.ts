@@ -3,11 +3,10 @@ import { batchProcessQueue } from './utils';
 import { ManyQueryResponse, StatusExecution } from './types';
 
 /**
- * Async Function
- * Deletes all of the documents that match conditions from the collection
- * Allows to use some filters and other useful options
+ * Async Function: Deletes all of the documents that match conditions from the collection.
+ * Allows use of filters and options.
  *
- * @param ids List of ids of the documents to delete
+ * @param ids List of documents to delete
  *
  * @return (ManyQueryResponse)[(/classes/queryresponse.html)]
  */

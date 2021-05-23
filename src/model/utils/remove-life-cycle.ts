@@ -4,7 +4,7 @@ import { remove } from '../../handler';
 import { updateRefdocIndexes } from './update-refdoc-indexes';
 
 /**
- * Remove lifecycle including hooks
+ * Remove lifecycle including hooks.
  * @ignore
  */
 export const removeLifeCycle = async ({ id, options, metadata, refKeys, data }) => {

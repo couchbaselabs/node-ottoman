@@ -36,17 +36,17 @@ export const AggDict: Record<AggType, string> = {
 };
 
 /**
- * Dictionary for handling result expressions RAW | ELEMENT | VALUE
+ * Dictionary for handling result expressions of RAW | ELEMENT | VALUE type.
  * */
 export const ResultExprDict: Record<ResultExprType, string> = { $raw: 'RAW', $element: 'ELEMENT', $value: 'VALUE' };
 
 /**
- * Dictionary for handling result expressions ALL | DISTINCT
+ * Dictionary for handling result expressions of ALL | DISTINCT type.
  * */
 export const ReturnResultDict: Record<ReturnResultType, string> = { $all: 'ALL', $distinct: 'DISTINCT' };
 
 /**
- * Dictionary for handling Boolean comparison operators
+ * Dictionary for handling Boolean comparison operators.
  * */
 export const ComparisonEmptyOperatorDict: Record<ComparisonEmptyOperatorType, string> = {
   $isNull: 'IS NULL',
@@ -58,7 +58,7 @@ export const ComparisonEmptyOperatorDict: Record<ComparisonEmptyOperatorType, st
 };
 
 /**
- * Dictionary for handling Numeric comparison operators
+ * Dictionary for handling Numeric comparison operators.
  * */
 export const ComparisonSingleOperatorDict: Record<ComparisonSingleOperatorType, string> = {
   $eq: '=',
@@ -70,7 +70,7 @@ export const ComparisonSingleOperatorDict: Record<ComparisonSingleOperatorType, 
 };
 
 /**
- * Dictionary for handling String comparison operators
+ * Dictionary for handling String comparison operators.
  * */
 export const ComparisonSingleStringOperatorDict: Record<ComparisonSingleStringOperatorType, string> = {
   $like: 'LIKE',
@@ -78,7 +78,7 @@ export const ComparisonSingleStringOperatorDict: Record<ComparisonSingleStringOp
 };
 
 /**
- * Dictionary for handling Range comparison operators
+ * Dictionary for handling Range comparison operators.
  * */
 export const ComparisonMultipleOperatorDict: Record<ComparisonMultipleOperatorType, string> = {
   $btw: 'BETWEEN',
@@ -86,7 +86,7 @@ export const ComparisonMultipleOperatorDict: Record<ComparisonMultipleOperatorTy
 };
 
 /**
- * Dictionary for handling logical operators
+ * Dictionary for handling Logical operators.
  * */
 export const LogicalOperatorDict: Record<LogicalOperatorType, string> = {
   $and: 'AND',
@@ -95,7 +95,7 @@ export const LogicalOperatorDict: Record<LogicalOperatorType, string> = {
 };
 
 /**
- * Dictionary for handling collection select operators
+ * Dictionary for handling collection Select operators.
  * */
 export const CollectionSelectOperatorDict: Record<CollectionSelectOperator, string> = {
   $any: 'ANY',
@@ -103,7 +103,7 @@ export const CollectionSelectOperatorDict: Record<CollectionSelectOperator, stri
 };
 
 /**
- * Dictionary for handling collection (in | within) operators
+ * Dictionary for handling collection (In | Within) operators.
  * */
 export const CollectionInWithinOperatorDict: Record<CollectionInWithinOperator, string> = {
   $in: 'IN',
@@ -111,7 +111,7 @@ export const CollectionInWithinOperatorDict: Record<CollectionInWithinOperator, 
 };
 
 /**
- * Dictionary for handling collection satisfies operators
+ * Dictionary for handling collection Satisfies operators.
  * */
 export const CollectionSatisfiesOperatorDict: Record<CollectionSatisfiesOperator, string> = {
   $satisfies: 'SATISFIES',

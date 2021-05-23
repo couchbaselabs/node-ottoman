@@ -2,7 +2,7 @@ import { OttomanError } from '../exceptions/ottoman-errors';
 
 export class SelectClauseException extends OttomanError {
   constructor() {
-    // todo update message
+    // todo: update message
     super('The SELECT clause does not have the proper structure');
   }
 }
