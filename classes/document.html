@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Class: Document ‹T› | Ottoman.js</title>
+    <meta name="generator" content="VuePress 1.7.1">
+    
+    <meta name="description" content="Ottoman is an ODM built for Couchbase and Node.js. ">
+    
+    <link rel="preload" href="/assets/css/0.styles.058b88e7.css" as="style"><link rel="preload" href="/assets/js/app.7b629544.js" as="script"><link rel="preload" href="/assets/js/2.2b957f68.js" as="script"><link rel="preload" href="/assets/js/25.8a681e04.js" as="script"><link rel="prefetch" href="/assets/js/10.9bc44836.js"><link rel="prefetch" href="/assets/js/100.9a0afb61.js"><link rel="prefetch" href="/assets/js/11.0f2c8f67.js"><link rel="prefetch" href="/assets/js/12.fbd06e9f.js"><link rel="prefetch" href="/assets/js/13.41549cea.js"><link rel="prefetch" href="/assets/js/14.e71008f6.js"><link rel="prefetch" href="/assets/js/15.c5e3d31c.js"><link rel="prefetch" href="/assets/js/16.423a77e5.js"><link rel="prefetch" href="/assets/js/17.7f12643f.js"><link rel="prefetch" href="/assets/js/18.fe4191fd.js"><link rel="prefetch" href="/assets/js/19.8df3beae.js"><link rel="prefetch" href="/assets/js/20.9d939540.js"><link rel="prefetch" href="/assets/js/21.2319f2b2.js"><link rel="prefetch" href="/assets/js/22.a7cfb167.js"><link rel="prefetch" href="/assets/js/23.d2a011cc.js"><link rel="prefetch" href="/assets/js/24.95262c6b.js"><link rel="prefetch" href="/assets/js/26.dc79040b.js"><link rel="prefetch" href="/assets/js/27.b8321d89.js"><link rel="prefetch" href="/assets/js/28.350b28ff.js"><link rel="prefetch" href="/assets/js/29.19470e92.js"><link rel="prefetch" href="/assets/js/3.3b7c709e.js"><link rel="prefetch" href="/assets/js/30.45fe22cb.js"><link rel="prefetch" href="/assets/js/31.4e267eb0.js"><link rel="prefetch" href="/assets/js/32.5d74b678.js"><link rel="prefetch" href="/assets/js/33.f5a7e52d.js"><link rel="prefetch" href="/assets/js/34.9ec92758.js"><link rel="prefetch" href="/assets/js/35.10833da8.js"><link rel="prefetch" href="/assets/js/36.c6daf42b.js"><link rel="prefetch" href="/assets/js/37.e7ac7f76.js"><link rel="prefetch" href="/assets/js/38.4df6df33.js"><link rel="prefetch" href="/assets/js/39.a921fe4c.js"><link rel="prefetch" href="/assets/js/4.41b80b80.js"><link rel="prefetch" href="/assets/js/40.3e4d5a32.js"><link rel="prefetch" href="/assets/js/41.648d5b63.js"><link rel="prefetch" href="/assets/js/42.bf2ea5be.js"><link rel="prefetch" href="/assets/js/43.083f91a2.js"><link rel="prefetch" href="/assets/js/44.8bf64fbe.js"><link rel="prefetch" href="/assets/js/45.22ebf708.js"><link rel="prefetch" href="/assets/js/46.77a7c80f.js"><link rel="prefetch" href="/assets/js/47.89cb7017.js"><link rel="prefetch" href="/assets/js/48.e7f07b8d.js"><link rel="prefetch" href="/assets/js/49.c717fee9.js"><link rel="prefetch" href="/assets/js/5.8ce9387f.js"><link rel="prefetch" href="/assets/js/50.22b4c852.js"><link rel="prefetch" href="/assets/js/51.e3a533b7.js"><link rel="prefetch" href="/assets/js/52.cef185f8.js"><link rel="prefetch" href="/assets/js/53.d65ef170.js"><link rel="prefetch" href="/assets/js/54.922d5276.js"><link rel="prefetch" href="/assets/js/55.1c7dfd41.js"><link rel="prefetch" href="/assets/js/56.1133e003.js"><link rel="prefetch" href="/assets/js/57.99823363.js"><link rel="prefetch" href="/assets/js/58.e2fb7130.js"><link rel="prefetch" href="/assets/js/59.055568cb.js"><link rel="prefetch" href="/assets/js/6.62ce3c47.js"><link rel="prefetch" href="/assets/js/60.da274fef.js"><link rel="prefetch" href="/assets/js/61.991b3239.js"><link rel="prefetch" href="/assets/js/62.a405c0f7.js"><link rel="prefetch" href="/assets/js/63.9d2b8c14.js"><link rel="prefetch" href="/assets/js/64.7453ecfe.js"><link rel="prefetch" href="/assets/js/65.41770b1b.js"><link rel="prefetch" href="/assets/js/66.6d275c48.js"><link rel="prefetch" href="/assets/js/67.5ce2fbcd.js"><link rel="prefetch" href="/assets/js/68.88a1547a.js"><link rel="prefetch" href="/assets/js/69.6417d570.js"><link rel="prefetch" href="/assets/js/7.2588417c.js"><link rel="prefetch" href="/assets/js/70.6b9ccc5d.js"><link rel="prefetch" href="/assets/js/71.0a14a212.js"><link rel="prefetch" href="/assets/js/72.5a595233.js"><link rel="prefetch" href="/assets/js/73.86059cc4.js"><link rel="prefetch" href="/assets/js/74.6ad980d1.js"><link rel="prefetch" href="/assets/js/75.ef5bb232.js"><link rel="prefetch" href="/assets/js/76.ee6002ad.js"><link rel="prefetch" href="/assets/js/77.723f7828.js"><link rel="prefetch" href="/assets/js/78.1e866f8a.js"><link rel="prefetch" href="/assets/js/79.3f9dd055.js"><link rel="prefetch" href="/assets/js/8.43d90542.js"><link rel="prefetch" href="/assets/js/80.1f038312.js"><link rel="prefetch" href="/assets/js/81.e201e46b.js"><link rel="prefetch" href="/assets/js/82.59996f78.js"><link rel="prefetch" href="/assets/js/83.1a587767.js"><link rel="prefetch" href="/assets/js/84.efc269ab.js"><link rel="prefetch" href="/assets/js/85.b9810556.js"><link rel="prefetch" href="/assets/js/86.7320b29c.js"><link rel="prefetch" href="/assets/js/87.d917fa4d.js"><link rel="prefetch" href="/assets/js/88.ced7819c.js"><link rel="prefetch" href="/assets/js/89.c942b0be.js"><link rel="prefetch" href="/assets/js/9.fe952048.js"><link rel="prefetch" href="/assets/js/90.51e27635.js"><link rel="prefetch" href="/assets/js/91.bb93672e.js"><link rel="prefetch" href="/assets/js/92.b44f00a3.js"><link rel="prefetch" href="/assets/js/93.e6d1ba27.js"><link rel="prefetch" href="/assets/js/94.df85d584.js"><link rel="prefetch" href="/assets/js/95.a99ab15f.js"><link rel="prefetch" href="/assets/js/96.3e824903.js"><link rel="prefetch" href="/assets/js/97.65a2592d.js"><link rel="prefetch" href="/assets/js/98.80a09c49.js"><link rel="prefetch" href="/assets/js/99.ca44ac8d.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.058b88e7.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Ottoman.js</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guides/quick-start.html" class="nav-link">
+  Quick Start
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Basic" class="dropdown-title"><span class="title">Basic</span> <span class="arrow down"></span></button> <button type="button" aria-label="Basic" class="mobile-dropdown-title"><span class="title">Basic</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/guides/ottoman.html" class="nav-link">
+  Ottoman
+</a></li><li class="dropdown-item"><!----> <a href="/guides/schema.html" class="nav-link">
+  Schema
+</a></li><li class="dropdown-item"><!----> <a href="/guides/model.html" class="nav-link">
+  Model
+</a></li><li class="dropdown-item"><!----> <a href="/guides/document.html" class="nav-link">
+  Document
+</a></li><li class="dropdown-item"><!----> <a href="/guides/query-builder.html" class="nav-link">
+  Query Builder
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Advanced" class="dropdown-title"><span class="title">Advanced</span> <span class="arrow down"></span></button> <button type="button" aria-label="Advanced" class="mobile-dropdown-title"><span class="title">Advanced</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/advanced/how-ottoman-works.html" class="nav-link">
+  How Ottoman Works
+</a></li><li class="dropdown-item"><!----> <a href="/advanced/ottoman.html" class="nav-link">
+  Ottoman
+</a></li></ul></div></div><div class="nav-item"><a href="/guides/first-app.html" class="nav-link">
+  Example
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow down"></span></button> <button type="button" aria-label="API" class="mobile-dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/classes/ottoman.html" class="nav-link">
+  Ottoman
+</a></li><li class="dropdown-item"><!----> <a href="/classes/schema.html" class="nav-link">
+  Schema
+</a></li><li class="dropdown-item"><!----> <a href="/classes/model.html" class="nav-link">
+  Model
+</a></li><li class="dropdown-item"><!----> <a href="/classes/document.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  Document
+</a></li><li class="dropdown-item"><!----> <a href="/classes/query.html" class="nav-link">
+  Query Builder
+</a></li></ul></div></div><div class="nav-item"><a href="https://github.com/couchbaselabs/node-ottoman" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guides/quick-start.html" class="nav-link">
+  Quick Start
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Basic" class="dropdown-title"><span class="title">Basic</span> <span class="arrow down"></span></button> <button type="button" aria-label="Basic" class="mobile-dropdown-title"><span class="title">Basic</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/guides/ottoman.html" class="nav-link">
+  Ottoman
+</a></li><li class="dropdown-item"><!----> <a href="/guides/schema.html" class="nav-link">
+  Schema
+</a></li><li class="dropdown-item"><!----> <a href="/guides/model.html" class="nav-link">
+  Model
+</a></li><li class="dropdown-item"><!----> <a href="/guides/document.html" class="nav-link">
+  Document
+</a></li><li class="dropdown-item"><!----> <a href="/guides/query-builder.html" class="nav-link">
+  Query Builder
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Advanced" class="dropdown-title"><span class="title">Advanced</span> <span class="arrow down"></span></button> <button type="button" aria-label="Advanced" class="mobile-dropdown-title"><span class="title">Advanced</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/advanced/how-ottoman-works.html" class="nav-link">
+  How Ottoman Works
+</a></li><li class="dropdown-item"><!----> <a href="/advanced/ottoman.html" class="nav-link">
+  Ottoman
+</a></li></ul></div></div><div class="nav-item"><a href="/guides/first-app.html" class="nav-link">
+  Example
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow down"></span></button> <button type="button" aria-label="API" class="mobile-dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/classes/ottoman.html" class="nav-link">
+  Ottoman
+</a></li><li class="dropdown-item"><!----> <a href="/classes/schema.html" class="nav-link">
+  Schema
+</a></li><li class="dropdown-item"><!----> <a href="/classes/model.html" class="nav-link">
+  Model
+</a></li><li class="dropdown-item"><!----> <a href="/classes/document.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  Document
+</a></li><li class="dropdown-item"><!----> <a href="/classes/query.html" class="nav-link">
+  Query Builder
+</a></li></ul></div></div><div class="nav-item"><a href="https://github.com/couchbaselabs/node-ottoman" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Class: Document ‹T›</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/classes/document.html#type-parameters" class="sidebar-link">Type parameters</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/classes/document.html#hierarchy" class="sidebar-link">Hierarchy</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/classes/document.html#methods" class="sidebar-link">Methods</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/classes/document.html#applydata" class="sidebar-link">_applyData</a></li><li class="sidebar-sub-header"><a href="/classes/document.html#depopulate" class="sidebar-link">_depopulate</a></li><li class="sidebar-sub-header"><a href="/classes/document.html#getid" class="sidebar-link">_getId</a></li><li class="sidebar-sub-header"><a href="/classes/document.html#getidfield" class="sidebar-link">_getIdField</a></li><li class="sidebar-sub-header"><a href="/classes/document.html#populate" class="sidebar-link">_populate</a></li><li class="sidebar-sub-header"><a href="/classes/document.html#populated" class="sidebar-link">_populated</a></li><li class="sidebar-sub-header"><a href="/classes/document.html#validate" class="sidebar-link">_validate</a></li><li class="sidebar-sub-header"><a href="/classes/document.html#remove" class="sidebar-link">remove</a></li><li class="sidebar-sub-header"><a href="/classes/document.html#save" class="sidebar-link">save</a></li><li class="sidebar-sub-header"><a href="/classes/document.html#tojson" class="sidebar-link">toJSON</a></li><li class="sidebar-sub-header"><a href="/classes/document.html#toobject" class="sidebar-link">toObject</a></li></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="class-document-‹t›"><a href="#class-document-‹t›" class="header-anchor">#</a> Class: Document ‹<strong>T</strong>›</h1> <p>Document class represents a database document and provides useful methods to work with.</p> <p><strong><code>example</code></strong></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> connect<span class="token punctuation">,</span> model <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&quot;ottoman&quot;</span><span class="token punctuation">;</span>
+<span class="token function">connect</span><span class="token punctuation">(</span><span class="token string">&quot;couchbase://localhost/travel-sample@admin:password&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Create an `User` model</span>
+<span class="token keyword">const</span> User <span class="token operator">=</span> <span class="token function">model</span><span class="token punctuation">(</span><span class="token string">'User'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> String <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Create a document from the `User` Model</span>
+<span class="token keyword">const</span> jane <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">&quot;Jane Doe&quot;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div><h2 id="type-parameters"><a href="#type-parameters" class="header-anchor">#</a> Type parameters</h2> <p>▪ <strong>T</strong></p> <h2 id="hierarchy"><a href="#hierarchy" class="header-anchor">#</a> Hierarchy</h2> <ul><li><p><strong>Document</strong></p> <p>↳ <a href="/classes/model.html">Model</a></p></li></ul> <h2 id="methods"><a href="#methods" class="header-anchor">#</a> Methods</h2> <h3 id="applydata"><a href="#applydata" class="header-anchor">#</a> _applyData</h3> <p>▸ <strong>_applyData</strong>(<code>data</code>: any, <code>strategy</code>: <a href="/globals.html#applystrategy">ApplyStrategy</a>): <em>void</em></p> <p>Allows to easily apply data from an object to current document.</p> <p><strong><code>example</code></strong></p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">const</span> user <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">&quot;John Doe&quot;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+user<span class="token punctuation">.</span><span class="token function">_applyData</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">&quot;Jane Doe&quot;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span> <span class="token comment">// { name: &quot;Jane Doe&quot; }</span>
+</code></pre></div><p><strong><code>example</code></strong> With strategies on immutable properties</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">const</span> User <span class="token operator">=</span> <span class="token function">model</span><span class="token punctuation">(</span><span class="token string">'Card'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token keyword">type</span><span class="token operator">:</span> String<span class="token punctuation">,</span> immutable<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> user <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'John Doe'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+ <span class="token comment">// with strategy:false is like above example</span>
+ user<span class="token punctuation">.</span><span class="token function">_applyData</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'Jane Doe'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// { name: &quot;Jane Doe&quot; }</span>
+
+ <span class="token comment">// with strategy:true remains immutable</span>
+ user<span class="token punctuation">.</span><span class="token function">_applyData</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'Jane Doe'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// { name: &quot;John Doe&quot; }</span>
+
+ <span class="token comment">// trying to update it directly</span>
+ user<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">'Jane Doe'</span><span class="token punctuation">;</span>
+ <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// { name: &quot;John Doe&quot; }</span>
+
+ <span class="token comment">// with strategy:CAST_STRATEGY.THROW</span>
+ user<span class="token punctuation">.</span><span class="token function">_applyData</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'Jane Doe'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token constant">CAST_STRATEGY</span><span class="token punctuation">.</span><span class="token constant">THROW</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token comment">// ImmutableError: Field 'name' is immutable and current cast strategy is set to 'throw'</span>
+</code></pre></div><p><strong>Parameters:</strong></p> <table><thead><tr><th>Name</th> <th>Type</th> <th>Default</th></tr></thead> <tbody><tr><td><code>data</code></td> <td>any</td> <td>-</td></tr> <tr><td><code>strategy</code></td> <td><a href="/globals.html#applystrategy">ApplyStrategy</a></td> <td>true</td></tr></tbody></table> <p><strong>Returns:</strong> <em>void</em></p> <hr> <h3 id="depopulate"><a href="#depopulate" class="header-anchor">#</a> _depopulate</h3> <p>▸ <strong>_depopulate</strong>(<code>fieldsName</code>: string | string[]): <em>this</em></p> <p>Reverts population. Switches back document reference.</p> <p><strong><code>example</code></strong>
+To get in context about the Card and Issue Models <a href="/classes/document.html#populate">see the populate example.</a>.</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> card <span class="token operator">=</span> <span class="token keyword">await</span> Card<span class="token punctuation">.</span><span class="token function">findById</span><span class="token punctuation">(</span>cardId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>card<span class="token punctuation">.</span>issues<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ['issueId']</span>
+
+<span class="token keyword">await</span> card<span class="token punctuation">.</span><span class="token function">_populate</span><span class="token punctuation">(</span><span class="token string">'issues'</span><span class="token punctuation">)</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>card<span class="token punctuation">.</span>issues<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// [{ id: 'issueId', title: 'Broken card' }]</span>
+
+card<span class="token punctuation">.</span><span class="token function">_depopulate</span><span class="token punctuation">(</span><span class="token string">'issues'</span><span class="token punctuation">)</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>card<span class="token punctuation">.</span>issues<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ['issueId']</span>
+</code></pre></div><p><strong>Parameters:</strong></p> <table><thead><tr><th>Name</th> <th>Type</th></tr></thead> <tbody><tr><td><code>fieldsName</code></td> <td>string | string[]</td></tr></tbody></table> <p><strong>Returns:</strong> <em>this</em></p> <hr> <h3 id="getid"><a href="#getid" class="header-anchor">#</a> _getId</h3> <p>▸ <strong>_getId</strong>(): <em>string</em></p> <p>Returns id value, useful when working with dynamic ID_KEY.</p> <p><strong><code>example</code></strong></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code>  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span><span class="token function">_getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 'userId'</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>user<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 'userId'</span>
+</code></pre></div><p><strong>Returns:</strong> <em>string</em></p> <hr> <h3 id="getidfield"><a href="#getidfield" class="header-anchor">#</a> _getIdField</h3> <p>▸ <strong>_getIdField</strong>(): <em>string</em></p> <p>Returns id key.</p> <p><strong>Returns:</strong> <em>string</em></p> <hr> <h3 id="populate"><a href="#populate" class="header-anchor">#</a> _populate</h3> <p>▸ <strong>_populate</strong>(<code>fieldsName?</code>: <a href="/globals.html#populatefieldstype">PopulateFieldsType</a>, <code>deep</code>: number): <em>Promise‹this›</em></p> <p>Allows to load document references.</p> <p><strong><code>example</code></strong>
+Getting context to explain populate.</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token comment">// Defining the schemas</span>
+<span class="token keyword">const</span> addressSchema <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Schema</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  address<span class="token operator">:</span> String<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> personSchema <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Schema</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  name<span class="token operator">:</span> String<span class="token punctuation">,</span>
+  age<span class="token operator">:</span> Number<span class="token punctuation">,</span>
+  address<span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token keyword">type</span><span class="token operator">:</span> addressSchema<span class="token punctuation">,</span> ref<span class="token operator">:</span> <span class="token string">'Address'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> companySchema <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Schema</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  president<span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token keyword">type</span><span class="token operator">:</span> personSchema<span class="token punctuation">,</span> ref<span class="token operator">:</span> <span class="token string">'Person'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  ceo<span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token keyword">type</span><span class="token operator">:</span> personSchema<span class="token punctuation">,</span> ref<span class="token operator">:</span> <span class="token string">'Person'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  name<span class="token operator">:</span> String<span class="token punctuation">,</span>
+  workers<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token keyword">type</span><span class="token operator">:</span> personSchema<span class="token punctuation">,</span> ref<span class="token operator">:</span> <span class="token string">'Person'</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Initializing the models</span>
+<span class="token keyword">const</span> Address <span class="token operator">=</span> <span class="token function">model</span><span class="token punctuation">(</span><span class="token string">'Address'</span><span class="token punctuation">,</span> addressSchema<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> Person <span class="token operator">=</span> <span class="token function">model</span><span class="token punctuation">(</span><span class="token string">'Person'</span><span class="token punctuation">,</span> personSchema<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> Company <span class="token operator">=</span> <span class="token function">model</span><span class="token punctuation">(</span><span class="token string">'Company'</span><span class="token punctuation">,</span> companySchema<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Adding some data</span>
+<span class="token keyword">const</span> johnAddress <span class="token operator">=</span> <span class="token keyword">await</span> Address<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">{</span> address<span class="token operator">:</span> <span class="token string">'13 Washington Square S, New York, NY 10012, USA'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> john <span class="token operator">=</span> <span class="token keyword">await</span> Person<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'John Smith'</span><span class="token punctuation">,</span> age<span class="token operator">:</span> <span class="token number">52</span><span class="token punctuation">,</span> address<span class="token operator">:</span> johnAddress <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> janeAddress <span class="token operator">=</span> <span class="token keyword">await</span> Address<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">{</span> address<span class="token operator">:</span> <span class="token string">'55 Clark St, Brooklyn, NY 11201, USA'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> jane <span class="token operator">=</span> <span class="token keyword">await</span> Person<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'Jane Doe'</span><span class="token punctuation">,</span> age<span class="token operator">:</span> <span class="token number">45</span><span class="token punctuation">,</span> address<span class="token operator">:</span> janeAddress <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> company <span class="token operator">=</span> <span class="token keyword">await</span> Company<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'Space X'</span><span class="token punctuation">,</span> president<span class="token operator">:</span> john<span class="token punctuation">,</span> ceo<span class="token operator">:</span> jane <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Getting saved company data</span>
+<span class="token keyword">const</span> spaceX <span class="token operator">=</span> <span class="token keyword">await</span> Company<span class="token punctuation">.</span><span class="token function">findById</span><span class="token punctuation">(</span>company<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Company: </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> company<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>Will get:</p> <div class="language- extra-class"><pre class="language-text"><code>Company: {
+    name: 'Space X',
+    president: '50e85ac9-5b4f-4587-aeb6-b287527794c9',
+    ceo: '32c2e85a-cc91-4db2-935f-f7d2768168de',
+    id: 'd59efbdf-4b7e-4d2f-a986-6e8451f22822',
+    _type: 'Company'
+}
+</code></pre></div><p>Now we will see how the _populate methods works.</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> spaceX<span class="token punctuation">.</span><span class="token function">_populate</span><span class="token punctuation">(</span><span class="token string">'ceo'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Result: </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>Result: {
+  name: 'Space X',
+  president: '50e85ac9-5b4f-4587-aeb6-b287527794c9',
+  ceo: {
+    name: 'Jane Doe',
+    age: 45,
+    address: '235dd441-b445-4b88-b6aa-2ce35a958a32',
+    id: '32c2e85a-cc91-4db2-935f-f7d2768168de',
+    _type: 'Person'
+  },
+  id: 'd59efbdf-4b7e-4d2f-a986-6e8451f22822',
+  _type: 'Company'
+}
+</code></pre></div><p>Can also pass an array or a string separated by a comma</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> spaceX<span class="token punctuation">.</span><span class="token function">_populate</span><span class="token punctuation">(</span><span class="token string">'ceo,president'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// or</span>
+<span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> spaceX<span class="token punctuation">.</span><span class="token function">_populate</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'ceo'</span><span class="token punctuation">,</span> <span class="token string">'president'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Result: </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>Result: {
+  name: 'Space X',
+  president: {
+    name: 'John Smith',
+    age: 52,
+    address: 'bc7ea8a8-8d1c-4ab6-990c-d3a0163f7e10',
+    id: '50e85ac9-5b4f-4587-aeb6-b287527794c9',
+    _type: 'Person'
+  },
+  ceo: {
+    name: 'Jane Doe',
+    age: 45,
+    address: '235dd441-b445-4b88-b6aa-2ce35a958a32',
+    id: '32c2e85a-cc91-4db2-935f-f7d2768168de',
+    _type: 'Person'
+  },
+  id: 'd59efbdf-4b7e-4d2f-a986-6e8451f22822',
+  _type: 'Company'
+}
+</code></pre></div><p>If you want to get only a portion of the object</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> spaceX<span class="token punctuation">.</span><span class="token function">_populate</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  ceo<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'age'</span><span class="token punctuation">,</span> <span class="token string">'address'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token comment">// or 'age,addres'</span>
+  president<span class="token operator">:</span> <span class="token string">'name'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Result: </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>Result: {
+  name: 'Space X',
+  president: { name: 'John Smith' },
+  ceo: { age: 45, address: '235dd441-b445-4b88-b6aa-2ce35a958a32' },
+  id: 'd59efbdf-4b7e-4d2f-a986-6e8451f22822',
+  _type: 'Company'
+}
+</code></pre></div><p>Now let's to go deeper</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> spaceX<span class="token punctuation">.</span><span class="token function">_populate</span><span class="token punctuation">(</span>
+  <span class="token punctuation">{</span>
+    ceo<span class="token operator">:</span> <span class="token punctuation">{</span>
+      select<span class="token operator">:</span> <span class="token string">'age,id'</span><span class="token punctuation">,</span> <span class="token comment">// remember you can use ['age','address']</span>
+      populate<span class="token operator">:</span> <span class="token string">'address'</span><span class="token punctuation">,</span> <span class="token comment">// will populate all the fields</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    president<span class="token operator">:</span> <span class="token punctuation">{</span>
+      select<span class="token operator">:</span> <span class="token string">'name'</span><span class="token punctuation">,</span>
+      populate<span class="token operator">:</span> <span class="token punctuation">{</span>
+        address<span class="token operator">:</span> <span class="token string">'address'</span><span class="token punctuation">,</span> <span class="token comment">// will populate address field only</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token number">2</span><span class="token punctuation">,</span> <span class="token comment">// for populate up to the second level</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Result: </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>Result: {
+  name: 'Space X',
+  president: {
+    name: 'John Smith',
+    address: { address: '13 Washington Square S, New York, NY 10012, USA' }
+  },
+  ceo: {
+    age: 45,
+    id: '32c2e85a-cc91-4db2-935f-f7d2768168de',
+    address: {
+      address: '55 Clark St, Brooklyn, NY 11201, USA',
+      id: '235dd441-b445-4b88-b6aa-2ce35a958a32',
+      _type: 'Address'
+    }
+  },
+  id: 'd59efbdf-4b7e-4d2f-a986-6e8451f22822',
+  _type: 'Company'
+}
+</code></pre></div><p>Below is another way through the find functions</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> Company<span class="token punctuation">.</span><span class="token function">findOne</span><span class="token punctuation">(</span>
+  <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'Space X'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    select<span class="token operator">:</span> <span class="token string">'president,ceo'</span><span class="token punctuation">,</span>
+    populate<span class="token operator">:</span> <span class="token punctuation">{</span>
+      president<span class="token operator">:</span> <span class="token punctuation">{</span> select<span class="token operator">:</span> <span class="token string">'address,id'</span><span class="token punctuation">,</span> populate<span class="token operator">:</span> <span class="token string">'address'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      ceo<span class="token operator">:</span> <span class="token punctuation">{</span> select<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'age'</span><span class="token punctuation">,</span> <span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> populate<span class="token operator">:</span> <span class="token punctuation">{</span> address<span class="token operator">:</span> <span class="token punctuation">{</span> select<span class="token operator">:</span> <span class="token string">'id'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    populateMaxDeep<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Result: </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>Result: {
+  ceo: {
+    age: 45,
+    name: 'Jane Doe',
+    address: { id: '235dd441-b445-4b88-b6aa-2ce35a958a32' }
+  },
+  president: {
+    address: {
+      address: '13 Washington Square S, New York, NY 10012, USA',
+      id: 'bc7ea8a8-8d1c-4ab6-990c-d3a0163f7e10',
+      _type: 'Address'
+    },
+    id: '50e85ac9-5b4f-4587-aeb6-b287527794c9'
+  }
+}
+</code></pre></div><p><strong>Parameters:</strong></p> <table><thead><tr><th>Name</th> <th>Type</th> <th>Default</th></tr></thead> <tbody><tr><td><code>fieldsName?</code></td> <td><a href="/globals.html#populatefieldstype">PopulateFieldsType</a></td> <td>-</td></tr> <tr><td><code>deep</code></td> <td>number</td> <td>1</td></tr></tbody></table> <p><strong>Returns:</strong> <em>Promise‹this›</em></p> <hr> <h3 id="populated"><a href="#populated" class="header-anchor">#</a> _populated</h3> <p>▸ <strong>_populated</strong>(<code>fieldName</code>: string): <em>boolean</em></p> <p>Allows to know if a document field is populated.</p> <p><strong><code>example</code></strong>
+To get in context about the Card and Issue Models <a href="/classes/document.html#populate">see the populate example.</a>.</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> card <span class="token operator">=</span> <span class="token keyword">await</span> Card<span class="token punctuation">.</span><span class="token function">findById</span><span class="token punctuation">(</span>cardId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>card<span class="token punctuation">.</span>issues<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ['issueId']</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>card<span class="token punctuation">.</span><span class="token function">_populated</span><span class="token punctuation">(</span><span class="token string">'issues'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// false</span>
+
+<span class="token keyword">await</span> card<span class="token punctuation">.</span><span class="token function">_populate</span><span class="token punctuation">(</span><span class="token string">'issues'</span><span class="token punctuation">)</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>card<span class="token punctuation">.</span>issues<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// [{ id: 'issueId', title: 'Broken card' }]</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>card<span class="token punctuation">.</span><span class="token function">_populated</span><span class="token punctuation">(</span><span class="token string">'issues'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// true</span>
+</code></pre></div><p><strong>Parameters:</strong></p> <table><thead><tr><th>Name</th> <th>Type</th></tr></thead> <tbody><tr><td><code>fieldName</code></td> <td>string</td></tr></tbody></table> <p><strong>Returns:</strong> <em>boolean</em></p> <hr> <h3 id="validate"><a href="#validate" class="header-anchor">#</a> _validate</h3> <p>▸ <strong>_validate</strong>(): <em>any</em></p> <p>Runs schema validations over current document.</p> <p><strong><code>example</code></strong></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> user <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">&quot;John Doe&quot;</span> <span class="token punctuation">}</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> user<span class="token punctuation">.</span><span class="token function">_validate</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span>errors<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>errors<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>Returns:</strong> <em>any</em></p> <hr> <h3 id="remove"><a href="#remove" class="header-anchor">#</a> remove</h3> <p>▸ <strong>remove</strong>(<code>options</code>: object): <em>Promise‹any›</em></p> <p>Removes the document from the database.</p> <p><strong><code>example</code></strong></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> user <span class="token operator">=</span> User<span class="token punctuation">.</span><span class="token function">findById</span><span class="token punctuation">(</span><span class="token string">'userId'</span><span class="token punctuation">)</span>
+
+<span class="token keyword">await</span> user<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p><strong>Parameters:</strong></p> <table><thead><tr><th>Name</th> <th>Type</th> <th>Default</th></tr></thead> <tbody><tr><td><code>options</code></td> <td>object</td> <td>{}</td></tr></tbody></table> <p><strong>Returns:</strong> <em>Promise‹any›</em></p> <hr> <h3 id="save"><a href="#save" class="header-anchor">#</a> save</h3> <p>▸ <strong>save</strong>(<code>onlyCreate</code>: boolean): <em>Promise‹this›</em></p> <p>Saves or Updates the document.</p> <p><strong><code>example</code></strong></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> user <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">User</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">&quot;John Doe&quot;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//user document created, it's not saved yet</span>
+
+<span class="token keyword">await</span> user<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// user saved into the DB</span>
+
+You also can force save <span class="token keyword">function</span> to only create <span class="token keyword">new</span> <span class="token class-name">Documents</span> by passing <span class="token boolean">true</span> <span class="token keyword">as</span> argument
+<span class="token keyword">await</span> user<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ensure to execute a insert operation</span>
+</code></pre></div><p><strong>Parameters:</strong></p> <table><thead><tr><th>Name</th> <th>Type</th> <th>Default</th></tr></thead> <tbody><tr><td><code>onlyCreate</code></td> <td>boolean</td> <td>false</td></tr></tbody></table> <p><strong>Returns:</strong> <em>Promise‹this›</em></p> <hr> <h3 id="tojson"><a href="#tojson" class="header-anchor">#</a> toJSON</h3> <p>▸ <strong>toJSON</strong>(): <em>this</em></p> <p>Returns a Javascript object to be serialized to JSON</p> <p><strong>Returns:</strong> <em>this</em></p> <hr> <h3 id="toobject"><a href="#toobject" class="header-anchor">#</a> toObject</h3> <p>▸ <strong>toObject</strong>(): <em>this</em></p> <p>Returns a Javascript object with data</p> <p><strong>Returns:</strong> <em>this</em></p></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"><!----></div></div>
+    <script src="/assets/js/app.7b629544.js" defer></script><script src="/assets/js/2.2b957f68.js" defer></script><script src="/assets/js/25.8a681e04.js" defer></script>
+  </body>
+</html>
