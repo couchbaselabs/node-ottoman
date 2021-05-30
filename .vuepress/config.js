@@ -14,6 +14,7 @@ module.exports = {
           { text: 'Model', link: '/guides/model.md' },
           { text: 'Document', link: '/guides/document.md' },
           { text: 'Query Builder', link: '/guides/query-builder.md' },
+          { text: 'Mongoose to Ottoman', link: '/guides/mongoose-to-couchbase.md' },
         ],
       },
       {

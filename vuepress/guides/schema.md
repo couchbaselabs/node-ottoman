@@ -9,6 +9,8 @@ Schema maps to a Couchbase collection and defines the shape of the documents wit
 Everything in Ottoman starts with a Schema.
 
 ```javascript
+import { Schema } from 'ottoman';
+
 const blogSchema = new Schema({
   title: { type: String, required: true },
   author: String, // String is shorthand for { type: String }
@@ -29,13 +31,13 @@ const blogSchema = new Schema({
 
 For more information about options, please [review the types](/guides/schema.html#allowed-schematypes-are)
 
-Each key in our code blogSchema defines a property in our documents which will be cast to its associated SchemaType. For example, we've defined a property title that will be cast to the String SchemaType and property date which will be cast to a Date SchemaType.
+Each key in our code `blogSchema` defines a property in our documents which will be cast to its associated [SchemaType](#allowed-schematypes-are). For example, we've defined a property `title` that will be cast to the [String](/classes/stringtype.html) SchemaType and property `date` which will be cast to a [Date](/classes/datetype.html) SchemaType.
 
-Please note above that if a property only requires a type, it can be specified using a shorthand notation (contrast the title property above with the date property).
+Please note above that if a property only requires a type, it can be specified using a shorthand notation (contrast the `title` property above with the `date` property).
 
-Keys may also be assigned to nested objects containing further key/type definitions like the meta property above.
+Keys may also be assigned to nested objects containing further key/type definitions like the `meta` property above.
 This will happen whenever a key's value is a POJO that lacks a bonafide-type property.
-In these cases, only the leaves in a tree are given actual paths in the schema (like meta.votes and meta.favs above), and the branches do not have actual paths.
+In these cases, only the leaves in a tree are given actual paths in the schema (like `meta.votes` and `meta.favs` above), and the branches do not have actual paths.
 The meta above cannot have its own validation as a side-effect of this. If validation is needed up the tree, a path needs to be created up the tree.
 
 ## Allowed SchemaTypes
@@ -50,18 +52,74 @@ The meta above cannot have its own validation as a side-effect of this. If valid
 - [Mixed](/classes/mixedtype)
 
 Schemas not only define the structure of your document and casting of properties,
-they also define document instance methods, static Model methods,
-compound indexes, plugins, and document lifecycle hooks.
+they also define document [instance methods](#instance-methods), [static Model methods](#statics),
+[compound indexes](#indexes), [plugins](#plugins), and document lifecycle [hooks](#hooks).
 
 ## Creating a Model
 
-To use our schema definition, we need to convert our blogSchema into a Model we can work with.
+To use our schema definition, we need to convert our `blogSchema` into a [Model](/guides/model.html) we can work with.
 To do so, we pass it into `model(modelName, schema)`:
 
 ```javascript
 const Blog = model('Blog', blogSchema);
 // ready to go!
 ```
+
+## Instance Methods
+
+Instances of `Models` are [documents](/guides/document.md). Documents have many of their own [built-in instance methods](/classes/document.html).
+We may also define our own custom document instance methods.
+
+```javascript
+import { connect, Schema } from 'ottoman';
+// connecting
+const connection = connect('couchbase://localhost/travel-sample@admin:password');
+
+// define a schema
+const animalSchema = new Schema({ name: String, type: String });
+
+// assign a function to the "methods" object of our animalSchema
+animalSchema.methods.findSimilarTypes = function () {
+  return connection.getModel('Animal').find({ type: this.type });
+};
+```
+
+Now all of our `animal` instances have a `findSimilarTypes` method available to them.
+
+```javascript
+const Animal = model('Animal', animalSchema);
+const dog = new Animal({ type: 'dog' });
+
+const dogs = await dog.findSimilarTypes();
+console.log(dogs);
+```
+
+- Overwriting a default Ottoman document method may lead to unpredictable results.
+- The example above uses the `Schema.methods` object directly to save an instance method.
+
+::: danger Note
+Do **not** declare _methods_ using ES6 arrow functions (`=>`). Arrow functions [explicitly prevent binding](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) `this`, so your method will **not** have access to the document, and the above examples will not work.
+:::
+
+## Statics
+
+You can also add static functions to your model.
+
+Add a function property to `schema.statics`
+
+```javascript
+// Assign a function to the "statics" object of our animalSchema
+animalSchema.statics.findByName = function (name) {
+  return this.find({ name: name });
+};
+
+const Animal = model('Animal', animalSchema);
+let animals = await Animal.findByName('fido');
+```
+::: danger Note
+Do **not** declare _statics_ using ES6 arrow functions (`=>`). Arrow functions [explicitly prevent binding](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) `this`,
+so the above examples will **not** work because of the value of `this`.
+:::
 
 ## Indexes
 
@@ -303,59 +361,6 @@ await user.save();
 const viewIndexOptions = new ViewIndexOptions({ limit: 1 });
 const usersView = await User.findByName(userData.name, viewIndexOptions);
 ```
-
-## Instance Methods
-
-Instances of Models are [documents](/guides/document.md). Documents have many of their own built-in instance methods.
-We may also define our own custom document instance methods.
-
-```javascript
-import { connect, Schema } from 'ottoman';
-// connecting
-const connection = connect('couchbase://localhost/travel-sample@admin:password');
-
-// define a schema
-const animalSchema = new Schema({ name: String, type: String });
-
-// assign a function to the "methods" object of our animalSchema
-animalSchema.methods.findSimilarTypes = function () {
-  return connection.getModel('Animal').find({ type: this.type });
-};
-```
-
-Now all of our animal instances have a findSimilarTypes method available to them.
-
-```javascript
-const Animal = model('Animal', animalSchema);
-const dog = new Animal({ type: 'dog' });
-
-const dogs = await dog.findSimilarTypes();
-console.log(dogs);
-```
-
-- Overwriting a default Ottoman document method may lead to unpredictable results.
-- The example above uses the Schema.methods object directly to save an instance method.
-- Do not declare methods using ES6 arrow functions (=>). Arrow functions explicitly prevent binding this, so your method will not have access to the document and the above examples will not work.
-
-## Statics
-
-You can also add static functions to your model.
-
-Add a function property to schema.statics
-Call the Schema#static() function
-
-```javascript
-// Assign a function to the "statics" object of our animalSchema
-animalSchema.statics.findByName = function (name) {
-  return this.find({ name: name });
-};
-
-const Animal = model('Animal', animalSchema);
-let animals = await Animal.findByName('fido');
-```
-
-Do **not** declare statics using ES6 arrow functions (=>). Arrow functions explicitly prevent binding this,
-so the above examples will not work because of the value of this.
 
 ## Hooks
 
