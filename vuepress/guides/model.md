@@ -1,8 +1,8 @@
 # Model
 
-Models are fancy constructors compiled from [Schema](/guides/schema) definitions.
+[Models](/classes/model.html) are fancy constructors compiled from [Schema](/guides/schema) definitions.
 
-An instance of a model is called a document.
+An instance of a model is called a [document](/guides/document.html).
 
 Models are responsible for creating and reading documents from the underlying Couchbase database.
 
@@ -16,7 +16,7 @@ const User = model('User', schema);
 ```
 
 ::: warning
-The [model()](/classes/ottoman.html#model) function makes a copy of the schema. Make sure that you've added everything you want to the schema, including hooks, before calling model()!
+The [model()](/classes/ottoman.html#model) function makes a copy of the `schema`. Make sure that you've added everything you want to the `schema`, including hooks, before calling `model()`!
 :::
 
 ### Model Options
@@ -132,7 +132,7 @@ The response status will be **SUCCESS** as long as no error occurs, otherwise it
 ## Querying
 
 Finding documents is easy with Ottoman, powered by the built-in Query Builder.
-Documents can be retrieved using each models `find`, `findById`, `findOne`, defined [indexes](/guides/schema.html#indexes) or where [static methods](/guides/schema.html#statics).
+Documents can be retrieved using each `models` [find](/interfaces/imodel.html#find), [findById](/interfaces/imodel.html#findbyid), [findOne](/interfaces/imodel.html#findone), defined [indexes](/guides/schema.html#indexes) or where [static methods](/guides/schema.html#statics).
 
 ```javascript
 User.find({ name: 'Jane' });
@@ -287,14 +287,14 @@ See the chapter on queries for more details on how to use the [Query](/guides/qu
 
 ## Deleting
 
-Models have static removeById() function to remove documents matching the given id value.
+Models have static `removeById()` function to remove documents matching the given id value.
 See the [API](/classes/model.html#static-removebyid) docs for more detail.
 
 ```javascript
 User.removeById('userId');
 ```
 
-Models have static removeMany() function to remove all documents matching the given condition.
+Models have static `removeMany()` function to remove all documents matching the given condition.
 See the [API](/classes/model.html#static-removemany) docs for more detail.
 
 ```javascript
