@@ -100,7 +100,7 @@ const Person = model('Person', personSchema);
 So far we've created two Models. Our Person model has its stories field set to an array of ids.
 The `ref` option is what tells Ottoman which model to use during population, in our case the `Story` model. All ids we store here must be document ids from the `Story` model.
 
-### Saving refs
+### Saving Refs
 
 Saving refs to other documents works the same way you normally save properties, just assign the `id` value:
 

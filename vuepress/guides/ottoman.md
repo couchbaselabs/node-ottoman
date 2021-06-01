@@ -1,6 +1,6 @@
 # Ottoman Class
 
-## Defining an Ottoman instance
+## Defining an Ottoman Instance
 
 ```typescript
 import { Ottoman } from "./ottoman";
@@ -8,18 +8,18 @@ import { Ottoman } from "./ottoman";
 const ottoman = new Ottoman();
 ```
 
-Ottoman's instances are the backbone of Ottoman.js. They are the entry point to use the ODM in your app.
+Ottoman's instances are the backbone of Ottoman.js and the entry point to use the ODM in your app.
 
-## Ottoman constructor options
+## Ottoman Constructor Options
 
-Ottoman allows you to modify some settings, which could be useful for database modeling or migration,
-you can for example change the metadata key to define the model in documents.
+Ottoman allows you to modify it's settings, this is useful for database modeling or migration.
+One example is changing the metadata key to define the model in your documents.
 
 ```typescript
 import { Ottoman } from "./ottoman";
 
 const ottoman = new Ottoman({
-    modelKey: 'type',
+  modelKey: 'type'
 });
 ```
 
@@ -41,48 +41,48 @@ interface OttomanConfig {
 }
 ```
 
-- `collectionName`: store value to use for each Model if it doesn't provide any. The default value will be the Model's name.
-- `scopeName`: store value to use for each Model if it doesn't provide any. The default value is `_default`
-- `idKey`: it's the value of the key to save your id. The default value is set to `id`
-- `modelKey`: define the key to store the model name into the document. The default value is `_type`
-- `populateMaxDeep`: set default value for population. The default value is `1`.
-- `consistency`: define default Search Consistency Strategy. The default value is `SearchConsistency.NONE`
-- `maxExpiry`: value used to create a collection for this instance. The default value is `300000`.
-- `keyGenerator`: function to generate the key to store documents.
-- `keyGeneratorDelimiter`: string value used to build the document key. The default value is `::`.
+- `collectionName`: Store value to use for each Model if not provided. Default: Model's name
+- `scopeName`: Store value to use for each Model if not provided. Default: `_default`
+- `idKey`: Value of the key to save your **id**. Default: Document's `id`
+- `modelKey`: Key to store the model name into the document. Default: `_type`
+- `populateMaxDeep`: Numeric Value for how many levels deep you want to **_populate**. Default: `1`
+- `consistency`: Value for **Search Consistency Strategy**. Default: `SearchConsistency.NONE`
+- `maxExpiry`: Numeric value (based in Milliseconds) used to create a collection for this instance. Default: `300000`
+- `keyGenerator`: Function to generate the key to store documents. Default: `(params: { metadata: ModelMetadata }) => string`
+- `keyGeneratorDelimiter`: String value used to build the document key. Default: `::`
 
-The default implementation for `keyGenerator` function is:
+The default implementation for the `keyGenerator` function is:
 
 ```typescript
 KEY_GENERATOR = ({ metadata }) => `${metadata.modelName}`;
 ```
 
-`keyGenerator` can be overridden for each `Model` if you want, check this in [model options](/guides/model.html#model-options)
+`keyGenerator` can be overridden for each `Model` if needed. check this in [model options](/guides/model.html#model-options)
 
-`keyGeneratorDelimiter` have 2 restrictions:
+`keyGeneratorDelimiter` has 2 restrictions:
 
-1. Only support up to 2 characters
+1. Only supports up to 2 characters
 2. The available characters are `~!#$%&*_\-:<>?`
 
 :::warning Warning
-If the value provided to `keyGeneratorDelimiter` is invalid Ottoman will throw a BadKeyGeneratorDelimiterError exception.
+If the value provided to `keyGeneratorDelimiter` is invalid Ottoman will throw a **BadKeyGeneratorDelimiterError** exception.
 :::
 
 Some examples of `keyGeneratorDelimiter`:
 
-- `::` (Default delimiter)
+- `::` **default*
 - `&`
 - `&?`
 - `_`
 - `##`
 
-`keyGeneratorDelimiter` can be overridden for each `Model` if you want, check this in [model options](/guides/model.html#model-options)
+`keyGeneratorDelimiter` can be overridden for each `Model` if needed. For more info see: [model options](/guides/model.html#model-options)
 
 ## Connections
 
-All your [Models](/guides/model) will be created via a connection and map to a Collection.
+All your [Models](/guides/model) will be created via a connection and it will map to a Collection.
 
-## Create a connection
+## Create a Connection
 
 You can connect to Couchbase Server with the [connect()](/classes/ottoman.html#connect) method.
 
@@ -94,25 +94,25 @@ ottoman.connect('couchbase://localhost/travel-sample@admin:password');
 ```
 
 This is the minimum needed to connect to the travel-sample bucket.
-If the connection fails on your machine, try using 127.0.0.1 instead of `localhost`.
+If the connection fails on your machine, try using `127.0.0.1` instead of `localhost`.
 
 ### Connection String Anatomy
 
 ![Connection Anatomy](./connection-anatomy.png)
 
-## Connection options
+## Connection Options
 
-`connect` function also support a javascript object as a parameter.
+`connect` function also supports a JavaScript object as a parameter.
 
 ```javascript
 import { Ottoman } from 'ottoman';
 
 const ottoman = new Ottoman();
 ottoman.connect({
-    connectionString: 'couchbase://localhost',
-    bucketName: 'travel-sample',
-    username: 'admin',
-    password: 'password'
+  connectionString: 'couchbase://localhost',
+  bucketName: 'travel-sample',
+  username: 'admin',
+  password: 'password'
 });
 ```
 
@@ -131,26 +131,14 @@ interface ConnectOptions {
 }
 ```
 
-`transcoder`: Transcoder provides an interface for performing custom transcoding of document contents being retrieved and stored to the cluster.
-More details [here](https://docs.couchbase.com/nodejs-sdk/current/howtos/transcoders-nonjson.html).
-`logFunc`: it's a callback function that receive the 
-[entry](https://docs.couchbase.com/sdk-api/couchbase-node-client/global.html#LoggingEntry) variable as paramater.
+`transcoder`: Provides an interface for performing custom transcoding of document contents being retrieved and stored to the cluster. For more details see [transcoders-nonjson](https://docs.couchbase.com/nodejs-sdk/current/howtos/transcoders-nonjson.html).
+`logFunc`: A callback function that receives the [entry](https://docs.couchbase.com/sdk-api/couchbase-node-client/global.html#LoggingEntry) variable as paramater.
 
 ## Certificate Authentication
 
-Couchbase Server supports the use of X.509 certificates to authenticate clients
-(only available in the Enterprise Edition, not the Community Edition).
-This allows authenticated users to access specific resources by means of the data service,
-in Couchbase Server 5.1 and up, and all other services in more recent releases of Couchbase Data Platform.
+Couchbase Server supports the use of **X.509** certificates to authenticate clients (only available in the Enterprise Edition, not Community Edition). This allows authenticated users to access specific resources using the data service in Couchbase Server 5.1 and up and all other services in more recent releases of Couchbase Data Platform.
 
-The process relies on a certificate authority, for the issuing of certificates that validate identities.
-A certificate includes information such as the name of the entity it identifies,
-an expiration date, the name of the authority that issued the certificate, and the digital signature of the authority.
-A client attempting to access Couchbase Server can present a certificate to the server, 
-allowing the server to check the validity of the certificate.
-If the certificate is valid, the user under whose identity the client is running, and the roles assigned to that user,
-are verified. If the assigned roles are appropriate for the level of access requested to the specified resource,
-access is granted.
+The process relies on a certificate authority for the issuing of certificates that validate identities. A certificate includes information such as the name of the entity it identifies, an expiration date, the name of the authority that issued the certificate, and the digital signature of the authority. A client attempting to access Couchbase Server can present a certificate to the server allowing the server to check the validity of the certificate. If the certificate is valid, the user under whose identity the client is running and the roles assigned to that user are verified. If the assigned roles are appropriate for the level of access requested to the specified resource, access is granted.
 
 For a more detailed conceptual description of using certificates, see [Certificates](https://docs.couchbase.com/server/6.5/learn/security/certificates.html1).
 
@@ -158,10 +146,8 @@ For a more detailed conceptual description of using certificates, see [Certifica
 
 For sample procedures whereby certificates can be generated and deployed,
 see [Manage Certificates](https://docs.couchbase.com/server/6.5/manage/manage-security/manage-certificates.html).
-The rest of this document assumes that the processes there,
-or something similar, have been followed. That is, 
-a cluster certificate has been created and installed on the server,
-a client certificate has been created, and it is stored in a JVM keystore along with the cluster’s certificate.
+
+The rest of this document assumes that the processes there, or something similar, have been followed. That is, a cluster certificate has been created and installed on the server, a client certificate has been created, and it is stored in a JVM Keystore along with the cluster’s certificate.
 
 ```typescript
 import { Ottoman, CertificateAuthenticator } from 'ottoman';
@@ -171,10 +157,10 @@ ottoman.connect({
   connectionString: 'couchbase://localhost',
   bucketName: 'travel-sample',
   authenticator: new CertificateAuthenticator(
-          "/path/to/client/certificate.pem",
-          "/path/to/client/key.pem"
+    "/path/to/client/certificate.pem",
+    "/path/to/client/key.pem"
   ),
-  trustStorePath: "/path/to/ca/certificates.pem",
+  trustStorePath: "/path/to/ca/certificates.pem"
 })
 ```
 
@@ -182,96 +168,95 @@ ottoman.connect({
 
 Ottoman creates an instance by default to make the job easier.
 
-This instance is stored in the NodeJS process where the application runs and allows to use of the standalone functions `connect`,` model`, `start`,` close`.
+This instance is stored in the NodeJS process where the application runs and allows the use of the standalone functions: `connect`, `model`, `start`, and `close`.
 
 Let's see an example of how to create an Ottoman application.
 
 ```js
 import {Ottoman, connect, model, start} from 'ottoman';
 
-// Create the ottoman instance
+// Create ottoman instance
 const ottoman = new Ottoman ();
 
-// Connect to DB
+// Connect to database
 connect ('couchbase://localhost/travel-sample@admin:password');
 
-// Define your model
+// Define a model
 const User = model ('User', {name: String});
 
 // Bootstrap the application
-start ();
+start();
 ```
 
-Notice: We do not have to explicitly call the `connect`, `model`, or `start` methods using the Ottoman instance, since the first Ottoman instance created is registered and stored as the default instance which will be used by the standalone under the hood functions.
+Notice: We do not have to explicitly call the `connect`, `model`, or `start` methods using the Ottoman instance. The first Ottoman instance created is registered and stored as the default instance which will be used by the standalone, under-the-hood functions.
 
 e.g. `connect (...)` will run for the default instance like this `getDefaultInstance().connect(...)` Ottoman handles this logic for you.
 
-
-The default instance can be obtained with the `getDefaultInstance` function, which will return the default instance if it was created or` undefined` otherwise.
+The default instance can be obtained with the `getDefaultInstance` function, returning the default instance if it was created or `undefined` if not.
 
 ```js
-import {Ottoman, getDefaultInstance} from 'ottoman';
-const ottoman1 = new Ottoman ();
-const ottoman2 = new Ottoman ();
+import { Ottoman, getDefaultInstance } from 'ottoman';
+const ottoman1 = new Ottoman();
+const ottoman2 = new Ottoman();
 
-// Getting default instance
-const defaultInstance = getDefaultInstance ();
+// Get the default instance
+const defaultInstance = getDefaultInstance();
 // defaultInstance = ottoman1
 ```
 
 This can greatly simplify work in modular applications.
 
-## Using the standalone functions
+## Using the Standalone Functions
 
 ```javascript
 import { connect, model } from 'ottoman';
-// connecting to server
+// connect to the server
 connect('couchbase://localhost/travel-sample@admin:password');
 
-// Now you can use the model function to create Models in the default instance
+// Now you can use the model function to create models in the default instance
 const User = model('User', { name: String });
 ```
 
 ::: tip
 Notice we start using Ottoman without creating any instance, it's possible by using the `connect` function.
-`connect` function will create a default ottoman instance with default options if there's not an ottoman default instance created yet.
+The `connect` function will create a Ottoman instance with default options if there's not an Ottoman default instance yet created.
 :::
 
-IMPORTANT: This will be the recommended way to use `Ottoman` if your app uses only 1 instance.
-This way ottoman will save for you the Ottoman instance to work in any place of your code.
+IMPORTANT: This will be the recommended way to use `Ottoman` if your app uses only one instance.
+This way ottoman will save the Ottoman instance for you to work with in your code.
 
-Example `model` instead of `ottoman.model`.
-Also there are `start`, `close`, `connect`, `getDefaultInstance`, `getCollections` functions are available for Ottoman default instance.
+Example: `model` instead of `ottoman.model`.
 
+Also there are `start`, `close`, `connect`, `getCollections`, and `getDefaultInstance` functions available for the Ottoman default instance.
 
-## Multiple Ottoman instances
+## Multiple Ottoman Instances
 
-Sometimes it is necessary to use different databases in the same application for some reason, it is not the common case but it is perfectly probable that at some point you will come across this use case. Ottoman provides multiple instance creation to solve this requirement, let's see how it works:
+Sometimes it is necessary to use different databases in the same application. It is not common, but it is probable that at some point you will come across this use case. Ottoman provides multiple instance creation to solve this, let's see how it works:
 
-So far we have used the default instance to connect, create the models, and even to start the application through the autonomous functions `connect`,` model`, `start`. These functions use the instance that Ottoman creates by default on the back to facilitate its handling, in this way the developer does not have to control the reference to the app instance. This works well and simplifies the work a lot, but sometimes it is necessary to use several databases in the same application, which Ottoman solves through multiple instances
+So far we have used the default instance to connect, create the models, and even to start the application through the autonomous functions `connect`, `model`, and `start`. These functions use the instance that Ottoman creates by default to facilitate its handling. In this scenario the developer does not have to control the reference for the app instance. This works well and simplifies things, but sometimes it is necessary to use several databases, which Ottoman solves through allowing multiple instances.
 
-let's see an example:
+Example:
 
-1. Create the instance and connect it to the DB
+1. Create the instance and connect it to the database
 
 ```js
-import {Ottoman} from 'ottoman';
+import { Ottoman } from 'ottoman';
 
-const ottoman = new Ottoman ();
-ottoman.connect ('couchbase://localhost/travel-sample@admin:password')
+const ottoman = new Ottoman();
+ottoman.connect('couchbase://localhost/travel-sample@admin:password')
 ```
 
 2. Create the models and start Ottoman.
 
 ```js
-import {Ottoman} from 'ottoman';
+import { Ottoman } from 'ottoman';
 
-const ottoman = new Ottoman ();
-ottoman.connect ('couchbase://localhost/travel-sample@admin:password')
+const ottoman = new Ottoman();
+ottoman.connect('couchbase://localhost/travel-sample@admin:password')
 
-const User = ottoman.model ('User', schema)
+const User = ottoman.model('User', schema)
 
-ottoman.start ()
+ottoman.start()
 ```
 
 With these simple steps, we create an Ottoman application as simple as possible.
@@ -279,32 +264,33 @@ With these simple steps, we create an Ottoman application as simple as possible.
 If we want to have multiple instances, we only have to repeat the steps described above, the code to create 2 instances would be left in this way:
 
 ```js
-import {Ottoman} from 'ottoman';
-const ottoman1 = new Ottoman ();
-ottoman1.connect ('couchbase://localhost/travel-sample@admin:password');
+import { Ottoman } from 'ottoman';
+const ottoman1 = new Ottoman();
+ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
 
-const ottoman2 = new Ottoman ();
-ottoman2.connect ('couchbase://localhost/other-bucket@admin:password');
+const ottoman2 = new Ottoman();
+ottoman2.connect('couchbase://localhost/other-bucket@admin:password');
 
 // After connect you can create an explicitly Model from a given instance
 
 // Creating UserModel from ottoman1
-const UserModel = ottoman1.model ('User', {name: String});
+const UserModel = ottoman1.model('User', { name: String });
 
 // Creating CatModel from ottoman2
-const CatModel = ottoman2.model ('Cat', {age: Number});
+const CatModel = ottoman2.model('Cat', { age: Number });
 ```
 
 You can create as many Ottoman instances as you need, there is not a defined limit.
 
 :::warning Strongly recommended for multiples instances
-When working with multiple instances avoid using the standalone functions (connect, model, start, close, ...), the recommended way is to use the desired Ottoman instance as a prefix ensuring that each component is registered in the correct instance.
+When working with multiple instances avoid using the standalone functions (`connect`, `model`, `start`, and `close`), the recommended way is to use the desired Ottoman instance as a prefix ensuring that each component is registered in the correct instance.
 
 Example:
+
 ```js
 // working with multiple instances
-ottoman1.connect ('couchbase://localhost/travel-sample@admin:password');
-ottoman2.connect ('couchbase://localhost/other-bucket@admin:password');
+ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
+ottoman2.connect('couchbase://localhost/other-bucket@admin:password');
 
 // not recommended
 const User = model(User, schema);
@@ -314,7 +300,7 @@ const User = ottoman2.model(User, schema);
 ```
 :::
 
-## Closing connections
+## Closing Connections
 
 ```javascript
 import { Ottoman } from 'ottoman';
@@ -324,7 +310,8 @@ ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
 // Closing connection1
 ottoman1.close();
 
-// Or just call the `close` function closing the default ottoman instance connection. In this case, the `ottoman1` connection will be closed
+// Or just call the `close` function to close the default ottoman instance connection.
+// In this case, the `ottoman1` connection will be closed
 close();
 ```
 
@@ -332,29 +319,29 @@ close();
 Always remember to close your connections.
 :::
 
-## Not using scopes/collections
+## Not Using Scopes/Collections
 
-If you don't want to use the scopes/collection approach set the ottoman instances this way:
+If you don't want to use the **scopes and collections** approach, set the ottoman instances this way:
 
 ```typescript
 import { Ottoman } from "./ottoman";
 
-const ottoman = new Ottoman({collectionName: '_default'});
+const ottoman = new Ottoman({ collectionName: '_default' });
 ```
 
 This way Ottoman will store all your data in a bucket.
 
 ## Bootstrapping
 
-Ottoman class will provide 3 main methods to bootstrap the app:
+The **Ottoman** class will provide three main methods to bootstrap the app:
 
 - `ensureCollections` will attempt to create collections and scopes for each model
 - `ensureIndexes` will attempt to create all indexes defined in the schema definition
 - `start` method is just a shortcut to run `ensureCollections` and `ensureIndexes`
 
-Notice: It's not required to execute the `start` method to Ottoman work.
+Notice: It's not required to execute the `start` method for Ottoman work.
 
-## Setting environment variables
+## Setting Environment Variables
 
 Ottoman provides a `set` function to help you define environment variables.
 The next example will show how to set debug mode:
@@ -367,10 +354,10 @@ set('DEBUG', true);
 ```
 
 Remember: You must define your environment variables at the very beginning.
-  
-## Helper functions
 
-Ottoman provides some helpers functions:
+## Helper Functions
+
+Ottoman provides these helpers functions:
 
 - [dropBucket](/classes/ottoman.html#dropbucket) drops a bucket from the cluster.
 - [dropScope](/classes/ottoman.html#dropscope) drops a scope from a bucket.

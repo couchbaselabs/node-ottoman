@@ -6,7 +6,7 @@ An instance of a model is called a document.
 
 Models are responsible for creating and reading documents from the underlying Couchbase database.
 
-## Compiling your first model
+## Compiling Your First Model
 
 When you call [model()](/classes/ottoman.html#model) function on a schema, Ottoman compiles a model for you.
 
@@ -77,7 +77,7 @@ interface ModelOptions {
 
 If you don't provided a `keyGenerator` or `keyGeneratorDelimiter` implementation it will be inherited by `Ottoman` instance options, check this in [Ottoman options](/guides/ottoman.html#ottoman-constructor-options)
 
-### Model id
+### Model Id
 
 Ottoman will generate automatically your document's `id` and will guarantee that each `id` will be unique.
 
@@ -176,7 +176,7 @@ export interface IFindOptions {
 }
 ```
 
-### Advanced use of select parameter.
+### Advanced Use of Select Parameter
 
 You can select nested objects using the structure defined in the N1QL Language documentation [Link]([https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/constructionops.html)
 
@@ -185,7 +185,7 @@ User.find({name: 'john'}, {select: '{"latLon": {geo.lat, geo.lon}, geo.lat} as g
 
 ```
 
-### Advanced use of filter parameter.
+### Advanced Use of Filter Parameter
 
 ```typescript
 const filter = {
@@ -199,7 +199,7 @@ User.find(filter);
 // Returns a list of the elements that match the applied filters
 ```
 
-### Use of ignoreCase
+### Use of `ignoreCase`
 
 ```typescript
 // Defining `User` schema
@@ -217,7 +217,7 @@ await UserModel.create(user1);
 await UserModel.create(user2);
 ```
 
-* Without ignoreCase
+* Without `ignoreCase`
 
 ```typescript
 const { rows: documents } = await UserModel.find({ name: { $eq: 'Couchbase' } }, { lean: true });
@@ -352,7 +352,7 @@ If options.new is **true** return the document after update otherwise by default
 If options.upsert is **true** insert a document if the document does not exist.
 :::
 
-## Handling multilpes Models
+## Handling Multilpe Models
 
 When you create a new `Model` Ottoman will register it by name.
 
@@ -369,7 +369,7 @@ const models = {
 Duplicate Model's name will throw an exception notifying about the register model duplication.
 :::
 
-### Getting existing Models
+### Getting Existing Models
 
 You can retrieve a registered Model using the `getModel` function.
 
