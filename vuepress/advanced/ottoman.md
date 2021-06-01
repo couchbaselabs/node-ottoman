@@ -28,7 +28,7 @@ interface OttomanConfig {
 
 This option sets the default value for the population. The default value is `1`. This number will be the number of times `Ottoman` will go deeper populating the `document`.
 
-#### Shape the solution
+#### Shape the Solution
 
 Let's see a whole example to show how to populate and populateMaxDeep option works using `ReferenceType`:
 We'll go to create Address, Person, Company `Models`.
@@ -37,7 +37,7 @@ We'll go to create Address, Person, Company `Models`.
 import { Schema, model } from 'ottoman';
 
 const addressSchema = new Schema({
-    address: String
+  address: String
 })
 
 const personSchema = Schema({
@@ -60,7 +60,7 @@ const Company = model('Company', companySchema);
 
 In the example above, we define a "Schema" for the company that uses the "Person" schema to define "president" and "workers" and the person scheme uses the address Schema in turn. A reference representation of the modeling might be `Company -> Person -> Address`.
 
-#### Saving documents
+#### Saving Documents
 
 Now we are going to create a new Company with John Smith as President and Jane Doe as CEO.
 
@@ -84,7 +84,7 @@ await spaceX.save()
 These few lines of code create the `Space X` company. Notice how we use the ReferenceType to create 
 relations between our models.
 
-#### Retrieving documents with populate
+#### Retrieving Documents with Populate
 
 We already have the `Space X` company saved, let's see how we can retrieve it
 
@@ -97,17 +97,18 @@ The result should look like this:
 
 ```json
 {
-    "id": "2454353-34543-34534534",
-    "name": "Space X",
-    "president": "123456-1234-12345",
-    "ceo": "654321-4321-54321"
+  "id": "2454353-34543-34534534",
+  "name": "Space X",
+  "president": "123456-1234-12345",
+  "ceo": "654321-4321-54321"
 }
 ```
 
 Notice: The `president` and `ceo` field don't have the data, they are just saving a reference to the data in the `Person` collection
 
 If we want to get the data reference for the `president` and `ceo` fields we need to use the `populate` feature.
-Let's how to do it.
+
+Example:
 
 ```typescript
 // first we need to Space X company
@@ -149,8 +150,7 @@ As you can see we retrieved successfully the data for the `president` and `ceo` 
 closer the address field inside them still have a reference to the address, due to we have 3 level
 of nested `Schemas`, for a case like this, we can use the `populateMaxDeep` option, the default value is 1,
 this means that only the field in the first level will be populated even if we use the `*` wildcard,
-this wildcard is only to notified the fields to populate not the deep of the search if we use nested `Schemas`
-and want to `Ottoman` handle the population we need to use the `populateMaxDeep` option. Let's see how it work.
+this wildcard is only to notified the fields to populate not the deep of the search if we use nested `Schemas` and want to `Ottoman` handle the population we need to use the `populateMaxDeep` option. Let's see how it work.
 
 ```typescript
 // first we need to Space X company
@@ -203,8 +203,5 @@ const ottoman = new Ottoman({populateMaxDeep: 5});
 await spaceX._populate('*')
 ```
 
-This way every `_populate` function will try to populate documents 5 levels deep instead of just 1 default and recommended value.
-Populations are one of the more expensive operations in Databases as a general concept,
-try to avoid high numbers in `populateMaxDeep`.
-`Ottoman` takes advantage of key/value operation to execute populate to reduce the query times as much as possible.
+This way every `_populate` function will try to populate documents 5 levels deep instead of just 1 default and recommended value. Populations are one of the more expensive operations in Databases as a general concept, try to avoid high numbers in `populateMaxDeep`. Ottoman takes advantage of key/value operation to execute populate to reduce the query times as much as possible.
 :::

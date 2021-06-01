@@ -8,7 +8,7 @@ Ottoman provides an abstraction layer to handle the `keys` that will be used to 
 
 Developers will only have to work with the `document` ids while ottoman handles the keys automatically for them.
 
-## keyGenerator function
+## `keyGenerator` function
 
 The default `keyGenerator` function is used to generate all keys by Ottoman in your Couchbase datastore.
 
@@ -16,7 +16,7 @@ The default `keyGenerator` function is used to generate all keys by Ottoman in y
 const keyGenerator = ({metadata}) => `${metadata.modelName}`
 ```
 
-Using the default `keyGenerator` function that `Ottoman` provides and assuming your `modelName` is 'User', the key for your document would look like:
+Using the default `keyGenerator` function that Ottoman provides and assuming your `modelName` is 'User', the key for your document would look like:
 
 - `User::0477024c`
 
@@ -24,12 +24,12 @@ Using the default `keyGenerator` function that `Ottoman` provides and assuming y
 This resulted key is a combination of the prefix as provided by the default  `keyGenerator` function (`${metadata.modelName}`) [appended with an ID](/guides/model.html#model-id) (`0477024c`).
 :::
 
-### Override keyGenerator function
+### Override `keyGenerator` function
 
 The `keyGenerator` function allows you to only override the prefix for a key, or completely remove the prefix such that the key always matches the ID of the document generated.
 
 ```javascript
-const keyGenerator = ({metadata}) => `${metadata.scopeName}`
+const keyGenerator = ({ metadata }) => `${metadata.scopeName}`
 const User = model('User', schema, { keyGenerator, scopeName: 'myScope' })
 ```
 
@@ -50,18 +50,18 @@ const User = model('User', userSchema);
 1. Set your rules in the `Schema`.
 2. Now you can create your `Model` with the `Schema` defined.
 
-### Creating a document
+### Creating a Document
 
 Let see how Ottoman handles a new document creation.
 
 ![How to Use](./create.png)
 
 ::: tip Notice
-Using `Ottoman` you only need to think about `id` in order to execute CRUD Operations over documents.
-All the `key` management will be automatically handled by `Ottoman`.
+Using Ottoman you only need to think about `id` in order to execute CRUD Operations over documents.
+All the `key` management will be automatically handled by Ottoman.
 :::
 
-### Retrieving a document
+### Retrieving a Document
 
 Ottoman provides a `findById` method at the `Model` level to retrieve a document by `id`. See the picture below to understand how it works.
 
