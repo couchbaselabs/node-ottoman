@@ -168,95 +168,96 @@ ottoman.connect({
 
 Ottoman creates an instance by default to make the job easier.
 
-This instance is stored in the NodeJS process where the application runs and allows the use of the standalone functions: `connect`, `model`, `start`, and `close`.
+This instance is stored in the NodeJS process where the application runs and allows to use of the standalone functions `connect`,` model`, `start`,` close`.
 
 Let's see an example of how to create an Ottoman application.
 
 ```js
 import {Ottoman, connect, model, start} from 'ottoman';
 
-// Create ottoman instance
+// Create the ottoman instance
 const ottoman = new Ottoman ();
 
-// Connect to database
+// Connect to DB
 connect ('couchbase://localhost/travel-sample@admin:password');
 
-// Define a model
+// Define your model
 const User = model ('User', {name: String});
 
 // Bootstrap the application
-start();
+start ();
 ```
 
-Notice: We do not have to explicitly call the `connect`, `model`, or `start` methods using the Ottoman instance. The first Ottoman instance created is registered and stored as the default instance which will be used by the standalone, under-the-hood functions.
+Notice: We do not have to explicitly call the `connect`, `model`, or `start` methods using the Ottoman instance, since the first Ottoman instance created is registered and stored as the default instance which will be used by the standalone under the hood functions.
 
 e.g. `connect (...)` will run for the default instance like this `getDefaultInstance().connect(...)` Ottoman handles this logic for you.
 
-The default instance can be obtained with the `getDefaultInstance` function, returning the default instance if it was created or `undefined` if not.
+
+The default instance can be obtained with the `getDefaultInstance` function, which will return the default instance if it was created or` undefined` otherwise.
 
 ```js
-import { Ottoman, getDefaultInstance } from 'ottoman';
-const ottoman1 = new Ottoman();
-const ottoman2 = new Ottoman();
+import {Ottoman, getDefaultInstance} from 'ottoman';
+const ottoman1 = new Ottoman ();
+const ottoman2 = new Ottoman ();
 
-// Get the default instance
-const defaultInstance = getDefaultInstance();
+// Getting default instance
+const defaultInstance = getDefaultInstance ();
 // defaultInstance = ottoman1
 ```
 
 This can greatly simplify work in modular applications.
 
-## Using the Standalone Functions
+## Using the standalone functions
 
 ```javascript
 import { connect, model } from 'ottoman';
-// connect to the server
+// connecting to server
 connect('couchbase://localhost/travel-sample@admin:password');
 
-// Now you can use the model function to create models in the default instance
+// Now you can use the model function to create Models in the default instance
 const User = model('User', { name: String });
 ```
 
 ::: tip
 Notice we start using Ottoman without creating any instance, it's possible by using the `connect` function.
-The `connect` function will create a Ottoman instance with default options if there's not an Ottoman default instance yet created.
+`connect` function will create a default ottoman instance with default options if there's not an ottoman default instance created yet.
 :::
 
-IMPORTANT: This will be the recommended way to use `Ottoman` if your app uses only one instance.
-This way ottoman will save the Ottoman instance for you to work with in your code.
+IMPORTANT: This will be the recommended way to use `Ottoman` if your app uses only 1 instance.
+This way ottoman will save for you the Ottoman instance to work in any place of your code.
 
-Example: `model` instead of `ottoman.model`.
+Example `model` instead of `ottoman.model`.
+Also there are `start`, `close`, `connect`, `getDefaultInstance`, `getCollections` functions are available for Ottoman default instance.
 
-Also there are `start`, `close`, `connect`, `getCollections`, and `getDefaultInstance` functions available for the Ottoman default instance.
 
-## Multiple Ottoman Instances
+## Multiple Ottoman instances
 
-Sometimes it is necessary to use different databases in the same application. It is not common, but it is probable that at some point you will come across this use case. Ottoman provides multiple instance creation to solve this, let's see how it works:
+Sometimes it is necessary to use different databases in the same application for some reason, it is not the common case but it is perfectly probable that at some point you will come across this use case. Ottoman provides multiple instance creation to solve this requirement, let's see how it works:
 
-So far we have used the default instance to connect, create the models, and even to start the application through the autonomous functions `connect`, `model`, and `start`. These functions use the instance that Ottoman creates by default to facilitate its handling. In this scenario the developer does not have to control the reference for the app instance. This works well and simplifies things, but sometimes it is necessary to use several databases, which Ottoman solves through allowing multiple instances.
+So far we have used the default instance to connect, create the models, and even to start the application through the autonomous functions `connect`,` model`, `start`. These functions use the instance that Ottoman creates by default on the back to facilitate its handling, in this way the developer does not have to control the reference to the app instance. This works well and simplifies the work a lot, but sometimes it is necessary to use several databases in the same application, which Ottoman solves through multiple instances
 
-Example:
+let's see an example:
 
-1. Create the instance and connect it to the database
+1. Create the instance and connect it to the DB
 
 ```js
-import { Ottoman } from 'ottoman';
+import {Ottoman} from 'ottoman';
 
-const ottoman = new Ottoman();
-ottoman.connect('couchbase://localhost/travel-sample@admin:password')
+const ottoman = new Ottoman ();
+ottoman.connect ('couchbase://localhost/travel-sample@admin:password')
 ```
 
 2. Create the models and start Ottoman.
 
 ```js
-import { Ottoman } from 'ottoman';
+import {Ottoman} from 'ottoman';
 
-const ottoman = new Ottoman();
-ottoman.connect('couchbase://localhost/travel-sample@admin:password')
+const ottoman = new Ottoman ();
+ottoman.connect ('couchbase://localhost/travel-sample@admin:password')
 
-const User = ottoman.model('User', schema)
+const User = ottoman.model ('User', schema)
 
-ottoman.start()
+ottoman.start ()
 ```
 
 With these simple steps, we create an Ottoman application as simple as possible.
@@ -264,20 +265,20 @@ With these simple steps, we create an Ottoman application as simple as possible.
 If we want to have multiple instances, we only have to repeat the steps described above, the code to create 2 instances would be left in this way:
 
 ```js
-import { Ottoman } from 'ottoman';
-const ottoman1 = new Ottoman();
-ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
+import {Ottoman} from 'ottoman';
+const ottoman1 = new Ottoman ();
+ottoman1.connect ('couchbase://localhost/travel-sample@admin:password');
 
-const ottoman2 = new Ottoman();
-ottoman2.connect('couchbase://localhost/other-bucket@admin:password');
+const ottoman2 = new Ottoman ();
+ottoman2.connect ('couchbase://localhost/other-bucket@admin:password');
 
 // After connect you can create an explicitly Model from a given instance
 
 // Creating UserModel from ottoman1
-const UserModel = ottoman1.model('User', { name: String });
+const UserModel = ottoman1.model ('User', {name: String});
 
 // Creating CatModel from ottoman2
-const CatModel = ottoman2.model('Cat', { age: Number });
+const CatModel = ottoman2.model ('Cat', {age: Number});
 ```
 
 You can create as many Ottoman instances as you need, there is not a defined limit.
