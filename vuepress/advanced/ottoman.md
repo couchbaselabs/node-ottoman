@@ -8,21 +8,27 @@ This section will cover some advanced concepts and options in `Ottoman`.
 interface OttomanConfig {
   collectionName?: string;
   scopeName?: string;
+  idKey?: string;
   modelKey?: string;
   populateMaxDeep?: number;
   consistency?: SearchConsistency;
   maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata }) => string;
+  keyGeneratorDelimiter?: string;
 }
 ```
 
-- `collectionName`: store value to use for each Model if it doesn't provide any. The default value will be the Model's name.
-- `scopeName`: store value to use for each Model if it doesn't provide any. The default value is `_default`
-- `modelKey`: define the key to store the model name into the document. The default value is `_type`
-- `populateMaxDeep`: set default value for population. The default value is `1`.
-- `consistency`: define default Search Consistency Strategy. The default value is `SearchConsistency.NONE`
-- `maxExpiry`: value used to create a collection for this instance. The default value is `300000`.
-- `keyGenerator`: a complete new section is available to show how this work check it [here](advanced/how-ottoman-works.html#key-generation-layer)
+- `collectionName`: Store value to use for each Model if not provided. Default: Model's name
+- `scopeName`: Store value to use for each Model if not provided. Default: `_default`
+- `idKey`: Value of the key to save your **id**. Default: Document's `id`
+- `modelKey`: Key to store the model name into the document. Default: `_type`
+- `populateMaxDeep`: Numeric Value for how many levels deep you want to *_populate*. Default: `1`
+- `consistency`: Value for *Search Consistency Strategy*. Default: `SearchConsistency.NONE`
+- `maxExpiry`: Numeric value (based in Milliseconds) used to create a collection for this instance. Default: `300000`
+- `keyGenerator`: Function to generate the key to store documents. Default: `(params: { metadata: ModelMetadata }) => string`
+- `keyGeneratorDelimiter`: String value used to build the document key. Default: `::`
+
+A complete new section is available to show how the [key-generation-layer](advanced/how-ottoman-works.html#key-generation-layer) works.
 
 ### PopulateMaxDeep Option
 
