@@ -15,7 +15,7 @@ If you still need to perform these tasks please use one of the following:
 
 - [5-minute Couchbase Docker Container Configuration](https://docs.couchbase.com/tutorials/quick-start/quickstart-docker-image-manual-cb65.html)
 
-## Step 1: Create The Ottoman Node JS Project
+## Create the Ottoman NodeJS Project
 
 In this exercise, we will be working with the [Ottoman v2 ODM (Object Document Mapper)](https://github.com/couchbaselabs/node-ottoman)
 in conjunction with the [NodeJS SDK v3](https://docs.couchbase.com/nodejs-sdk/current/hello-world/start-using-sdk.html)
@@ -61,7 +61,6 @@ Open `server.js` file, this is where we’ll add our code.
 
 Taking each code sample below, we will add each new block of code done after one another.
 
-
 ## Connecting to a Couchbase Bucket
 
 Create a connection to our Couchbase Server running in Docker. Your password may be different, just swap out yours if it is different.
@@ -70,10 +69,10 @@ Create a connection to our Couchbase Server running in Docker. Your password may
 const ottoman = require('ottoman');
 
 connect({
-    connectionString: 'couchbase://localhost',
-    bucketName: 'default',
-    username: 'Administrator',
-    password: 'password'
+  connectionString: 'couchbase://localhost',
+  bucketName: 'default',
+  username: 'Administrator',
+  password: 'password'
 });
 ```
 
@@ -166,7 +165,6 @@ This is a quick way to remove all documents.
 
 Let’s remove these two documents, write some more code that will add the documents, and then turn around and query them.
 
-
 ## Write a Query with Ottoman’s Query API
 
 In Ottoman, we can retrieve records from our bucket using the adaptive index we have in place by calling the `find()` method.
@@ -175,7 +173,6 @@ Append the `find()` logic to our `runAsync` function.
 ```javascript
 runAsync = async () => {
   //...saving users
-
   const result = await User.find(
     { lastName: 'Tom' },
     { consistency: ottoman.SearchConsistency.LOCAL })
@@ -187,7 +184,6 @@ The first two arguments to the `find()` method are `filter` and `options`.
 
 Instead of passing objects along as parameters,
 let’s write our code to define the filter and options as objects first and then pass them into the function as arguments.
-
 
 ```javascript
 runAsync = async () => {
@@ -224,15 +220,15 @@ You should see results similar to the following in your command line:
 success: user Perry added!
 success: user Major added!
 Query results:  [
-    {
-      _scope: '_default',
-      email: 'major.tom@acme.com',
-      firstName: 'Major',
-      id: '02374d71-6e4d-47f1-9cbe-54b487cec89b',
-      lastName: 'Tom',
-      tagLine: 'Send me up a drink',
-      type: 'User'
-    }
+  {
+    _scope: '_default',
+    email: 'major.tom@acme.com',
+    firstName: 'Major',
+    id: '02374d71-6e4d-47f1-9cbe-54b487cec89b',
+    lastName: 'Tom',
+    tagLine: 'Send me up a drink',
+    type: 'User'
+  }
 ]
 ```
 
@@ -256,10 +252,10 @@ In our case indexes were added manually, if not Ottoman would have given us this
 const ottoman = require('ottoman');
 
 ottoman.connect({
-    connectionString: 'couchbase://localhost',
-    bucketName: 'default',
-    username: 'Administrator',
-    password: 'password'
+  connectionString: 'couchbase://localhost',
+  bucketName: 'default',
+  username: 'Administrator',
+  password: 'password'
 });
 
 const User = ottoman.model('User', {

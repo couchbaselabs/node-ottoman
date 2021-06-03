@@ -183,13 +183,13 @@ As in the Hotel model example, the Airport object is defined with several differ
 
 ```ts
 const AirportSchema = new Schema({
- airportname: { type: String, required: true },
- city: { type: String, required: true },
- country: { type: String, required: true },
- faa: String,
- geo: GeolocationSchema,
- icao: String,
- tz: { type: String, required: true },
+  airportname: { type: String, required: true },
+  city: { type: String, required: true },
+  country: { type: String, required: true },
+  faa: String,
+  geo: GeolocationSchema,
+  icao: String,
+  tz: { type: String, required: true },
 });
 
 AirportSchema.index.findByName = { by: 'name', type: 'n1ql' };

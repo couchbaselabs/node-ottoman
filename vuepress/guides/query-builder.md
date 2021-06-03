@@ -2,11 +2,11 @@
 
 [Query Builder](/classes/query.html) is a flexible tool designed to create N1QL queries by specifying parameters and methods. Query Builder lets you: create queries of unlimited length and complexity without the need to know the syntax of N1QL Queries.
 
-## Using the Query Builder.
+## Using the Query Builder
 
 There are 3 ways to use the Query Builder: by using parameters, by using access functions, or by combining both.
 
-### Build a Query by using parameters
+### Build a Query by Using Parameters
 
 To create queries by using parameters it is mandatory to define in the query constructor the [**parameters**](/interfaces/iconditionexpr.html#hierarchy) of the query and the **name** of the collection.
 
@@ -48,15 +48,15 @@ const params = {
   orderBy: { type: 'DESC' },
   limit: 10,
   offset: 1,
-  use: ['airlineR_8093', 'airlineR_8094'],
+  use: ['airline_8093', 'airline_8094'],
 };
 const query = new Query(params, 'travel-sample').build();
 console.log(query);
 ```
 
-> SELECT COUNT(type) AS odm FROM `travel-sample` USE KEYS ["airlineR_8093","airlineR_8094"] LET amount_val=10,size_val=20 WHERE ((price>"amount_val" AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20") AND (LOWER(name) = LOWER("John"))) AND ANY search IN address SATISFIES address="10" END AND search IN ["address"] GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING type LIKE "%hotel%" ORDER BY type DESC LIMIT 10 OFFSET 1
+> SELECT COUNT(type) AS odm FROM `travel-sample` USE KEYS ["airline_8093","airline_8094"] LET amount_val=10,size_val=20 WHERE ((price>"amount_val" AND price IS NOT NULL) OR auto>10 OR amount=10) AND ((price2>1.99 AND price2 IS NOT NULL) AND ((price3>1.99 AND price3 IS NOT NULL) OR id="20") AND (LOWER(name) = LOWER("John"))) AND ANY search IN address SATISFIES address="10" END AND search IN ["address"] GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING type LIKE "%hotel%" ORDER BY type DESC LIMIT 10 OFFSET 1
 
-### Build a query by using access functions
+### Build a Query by Using Access Functions
 
 Creating queries by using the access function is very similar to create them with parameters. The difference is that the parameters are not passed directly to the constructor, instead, they are passed using the different functions available in the Query Class.
 
@@ -98,7 +98,7 @@ const lettingExpr = [
 const orderBy = { type: 'DESC' };
 const limit = 10;
 const offset = 1;
-const useExpr = ['airlineR_8093', 'airlineR_8094'];
+const useExpr = ['airline_8093', 'airline_8094'];
 
 const query = new Query({}, 'collection-name')
   .select(select)
@@ -115,9 +115,9 @@ const query = new Query({}, 'collection-name')
 console.log(query);
 ```
 
-> SELECT COUNT(type) AS odm,MAX(amount) FROM \`travel-sample\` USE KEYS ['airlineR_8093','airlineR_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING type LIKE "%hotel%" ORDER BY type = 'DESC' LIMIT 10 OFFSET 1
+> SELECT COUNT(type) AS odm,MAX(amount) FROM \`travel-sample\` USE KEYS ['airline_8093','airline_8094'] LET amount_val = 10,size_val = 20 WHERE ((price > amount_val AND price IS NOT NULL) OR auto > 10 OR amount = 10) AND ((price2 > 1.99 AND price2 IS NOT NULL) AND ((price3 > 1.99 AND price3 IS NOT NULL) OR id = '20')) GROUP BY type AS sch LETTING amount_v2=10,size_v2=20 HAVING type LIKE "%hotel%" ORDER BY type = 'DESC' LIMIT 10 OFFSET 1
 
-### Build a query by using parameters and function parameters
+### Build a Query by Using Parameters and Function Parameters
 
 ```ts
 const select = [{ $field: 'address' }];
@@ -127,7 +127,7 @@ console.log(query);
 
 > SELECT address FROM \`travel-sample\` WHERE price > 5 LIMIT 10
 
-### Advanced example of using the WHERE clause
+### Advanced Example of Using the WHERE Clause
 
 ```ts
 const where = {
@@ -183,8 +183,8 @@ Can also use `ignoreCase` as part of the `build` method, this will always priori
  */
 const query = new Query({}, 'travel-sample');
 const result = query.select([{ $field: 'address' }])
-                    .where(expr_where)
-                    .build({ ignoreCase: true }); // ignore case is enabled for where clause elements
+  .where(expr_where)
+  .build({ ignoreCase: true }); // ignore case is enabled for where clause elements
 console.log(result)
 ```
 
@@ -192,7 +192,7 @@ Would have as output:
 > SELECT address FROM `travel-sample` WHERE (address LIKE "%57-59%" OR free_breakfast=true OR `(LOWER(name) = LOWER("John"))`)
 :::
 
-## N1QL SELECT clause structure
+## N1QL SELECT Clause Structure
 
 See definition [here](/classes/query.html#select)
 
@@ -230,21 +230,19 @@ Available Aggregation Functions:
 | \$varPop       | VAR_SAMP      |
 | \$varSamp      | VAR_SAMP      |
 
-### N1QL SELECT nested clause example
+### N1QL SELECT Nested Clause Example
 
 ```typescript
 const query = new Query({}, 'travel-sample a');
 const result = query
   .select([{ $field: { name: '{"latLon": {geo.lat, geo.lon} }', as: 'geo' } }])
-  .where({
-    'a.type': 'hotel',
-  })
+  .where({ 'a.type': 'hotel' })
   .build();
 ```
 
 > 'SELECT {"latLon": {geo.lat, geo.lon} } AS geo FROM `travel-sample` a WHERE a.type="hotel"'
 
-## N1QL WHERE clause structure
+## N1QL WHERE Clause Structure
 
 See definition [here](/classes/query.html#where)
 
@@ -295,15 +293,16 @@ Available String Modifiers:
 | ------------ | ------- |
 | \$ignoreCase | Boolean |
 
-## N1QL JOIN clause structure (Currently the JOIN clause is only supported in string format.)
+## N1QL JOIN Clause Structure
+
+Notice: Currently the JOIN clause is only supported in string format.
 
 See definition [here](/classes/query.html#plainJoin)
 
 The syntax of a JOIN clause in n1ql is documented [here](https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/join.html).
 
-## N1QL GROUP BY clause structure
+## N1QL GROUP BY Clause Structure
 
 See definition [here](/classes/query.html#groupby)
 
 The syntax of a GROUP BY clause in n1ql is documented [here](https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/groupby.html).
-

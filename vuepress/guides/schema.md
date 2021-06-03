@@ -4,7 +4,7 @@ Schema maps to a Couchbase collection and defines the shape of the documents wit
 
 ![How to Use](./howToUse.jpg)
 
-## Defining your schema
+## Defining Your Schema
 
 Everything in Ottoman starts with a Schema.
 
@@ -27,7 +27,7 @@ const blogSchema = new Schema({
 });
 ```
 
-For more information about options, please [review the types ](/guides/schema.html#allowed-schematypes-are)
+For more information about options, please [review the types](/guides/schema.html#allowed-schematypes-are)
 
 Each key in our code blogSchema defines a property in our documents which will be cast to its associated SchemaType. For example, we've defined a property title that will be cast to the String SchemaType and property date which will be cast to a Date SchemaType.
 
@@ -38,7 +38,7 @@ This will happen whenever a key's value is a POJO that lacks a bonafide-type pro
 In these cases, only the leaves in a tree are given actual paths in the schema (like meta.votes and meta.favs above), and the branches do not have actual paths.
 The meta above cannot have its own validation as a side-effect of this. If validation is needed up the tree, a path needs to be created up the tree.
 
-## Allowed SchemaTypes are:
+## Allowed SchemaTypes
 
 - [String](/classes/stringtype)
 - [Number](/classes/numbertype)
@@ -53,7 +53,7 @@ Schemas not only define the structure of your document and casting of properties
 they also define document instance methods, static Model methods,
 compound indexes, plugins, and document lifecycle hooks.
 
-## Creating a model
+## Creating a Model
 
 To use our schema definition, we need to convert our blogSchema into a Model we can work with.
 To do so, we pass it into `model(modelName, schema)`:
@@ -97,31 +97,28 @@ schema.index.findByLastName = {
 };
 ```
 
-To ensure that server is working, you must call the `start` method.
-This method will internally generate a list of indexes and scopes, collections (if you have the developer preview active)
-which will be used with the most optimal configuration for them and will build the structures that might be missing on the server.
-This method must be called after all models are defined, and it is a good idea to call this only when needed rather than any time your server is started.
+To ensure that server is working, you must call the `start` method. This method will internally generate a list of indexes and scopes, collections (if you have the developer preview active) which will be used with the most optimal configuration for them and will build the structures that might be missing on the server. This method must be called after all models are defined, and it is a good idea to call this only when needed rather than any time your server is started.
 
 ```javascript
 const {connect, model, start, close} = require('ottoman');
 connect('couchbase://localhost/travel-sample@admin:password');
 
 async function createUser() {
-    const User = model('User', { name: String } );
-    const user = new User( { name: 'Jane Doe' } );
+  const User = model('User', { name: String } );
+  const user = new User( { name: 'Jane Doe' } );
 
-    try {
-        await start();
-        console.log("Ottoman is ready!")
+  try {
+    await start();
 
-        const newUser = await user.save();
+    console.log("Ottoman is ready!")
+    const newUser = await user.save();
 
-        await close();
-        console.log(`User '${ newUser.name }' successfully created`);
-    }
-    catch (e) {
-        console.log(`ERROR: ${e.message}`);
-    }
+    await close();
+    console.log(`User '${ newUser.name }' successfully created`);
+  }
+  catch (e) {
+    console.log(`ERROR: ${e.message}`);
+  }
 }
 
 createUser();
@@ -139,14 +136,14 @@ User 'Jane Doe' successfully created
 Below are some quick notes on the types of indexes available, and their pros and cons. For a more in-depth discussion, consider
 reading [Couchbasics: How Functional and Performance Needs Determine Data Access in Couchbase](https://blog.couchbase.com/determine-data-access-in-couchbase/)
 
-### `n1ql`
+### N1QL Query Language
 
 These indexes are the default and use the new SQL-like query language available from Couchbase Server 4.0.0. When `start` or `ensureIndexes` functions are executed, Ottoman automatically creates several secondary indexes so that the models can make queries to the database. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
 
 N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html). If you need the flexibility of queries and
 speed, this is the way to go.
 
-``` typescript Example
+```typescript
 const UserSchema = new Schema({
   name: String,
   email: String,
@@ -186,7 +183,7 @@ console.log(usersN1ql.rows);
 
 ```
 
-```
+```sh
 // Output!!!
 [
   {
@@ -197,7 +194,7 @@ console.log(usersN1ql.rows);
 ]
 ```
 
-### `refdoc`
+### RefDoc
 
 These indexes are the most performant, but the least flexible. They allow only a single document to occupy any particular value and do direct key-value lookups using a referential document to identify a matching document in Couchbase.
 
@@ -239,22 +236,22 @@ const userRefdoc = await User.findRefName(userData.name);
 console.log(userRefdoc);
 ```
 
-```
+```sh
 // Output!!!
 // {
-//     "name": "index",
-//     "email": "index@email.com",
-//     "card": {
-//         "cardNumber": "424242425252",
-//         "zipCode": "42424"
-//     },
-//     "roles": [
-//         {
-//             "name": "admin"
-//         }
-//     ],
-//     "id": "66c2d0dd-76ab-4b91-83b4-353893e3ede3",
-//     "_type": "User"
+//   "name": "index",
+//   "email": "index@email.com",
+//   "card": {
+//     "cardNumber": "424242425252",
+//     "zipCode": "42424"
+//   },
+//   "roles": [
+//     {
+//       "name": "admin"
+//     }
+//   ],
+//   "id": "66c2d0dd-76ab-4b91-83b4-353893e3ede3",
+//   "_type": "User"
 // }
 ```
 
@@ -264,7 +261,7 @@ console.log(userRefdoc);
 **_Needs to be used with caution!!!_**
 :::
 
-### `view`
+### View
 
 This type of index is always available once `ensureIndexes` is called and will work with any Couchbase Server version.
 
@@ -307,7 +304,7 @@ const viewIndexOptions = new ViewIndexOptions({ limit: 1 });
 const usersView = await User.findByName(userData.name, viewIndexOptions);
 ```
 
-## Instance methods
+## Instance Methods
 
 Instances of Models are [documents](/guides/document.md). Documents have many of their own built-in instance methods.
 We may also define our own custom document instance methods.
@@ -365,14 +362,14 @@ so the above examples will not work because of the value of this.
 Hooks are functions that are passed control during the execution of asynchronous functions.
 Hooks are specified at the schema level and are useful for writing plugins.
 
-### The available hooks are:
+### Available Hooks
 
 - `validate`
 - `save`
 - `update`
 - `remove`
 
-### Register hooks with `pre` function
+### Register Hooks with `pre`
 
 Pre functions are executed one after another, for each hook registered.
 
@@ -582,7 +579,7 @@ const user = new User(doc, { strict: false }); // disables strict mode
 
 Each `Schema` instance has two helpful methods `cast` and `validate`.
 
-### Cast method
+### Cast Method
 
 The `cast` method gets a Javascript Object as the first parameter and enforces schema types for each field in the schema definition.
 
@@ -607,7 +604,7 @@ const result = schema.cast({
 }
 ```
 
-#### Cast method options
+#### Cast Method Options
 
 `cast` method have a few useful options:
 
@@ -662,7 +659,7 @@ const result = schema.validate({
 }
 ```
 
-#### Validate method options
+#### Validate Method Options
 
 `validate` method has 1 option:
 
@@ -676,7 +673,7 @@ By default, it will get the `strict` option value set via the Schema constructor
 
 ## Extend Schemas
 
-### Add method
+### Add Method
 
 The `add` method allows adding extra fields or extending properties of other schemas.
 
