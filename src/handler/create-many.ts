@@ -10,7 +10,7 @@ import { ModelTypes } from '../model/model.types';
  *
  * @return (ManyQueryResponse)[(/classes/queryresponse.html)]
  */
-export const createMany = (metadata: ModelMetadata) => async (documents: unknown[]) => {
+export const createMany = <T = any>(metadata: ModelMetadata) => async (documents: unknown[]) => {
   return await batchProcessQueue(metadata)(documents, createManyCallback, {}, 100);
 };
 

@@ -125,7 +125,7 @@ export interface IModel<T = any, R = any> {
    * const user = await User.createMany([{ name: "John Doe" }, { name: "Jane Doe" }]);
    * ```
    */
-  createMany<Doc = T>(docs: Doc[] | Doc): Promise<ManyQueryResponse>;
+  createMany<Doc = T, Result = R>(docs: Doc[] | Doc): Promise<ManyQueryResponse<Document<Result>>>;
 
   /**
    * Updates a document.
@@ -282,7 +282,10 @@ export interface IModel<T = any, R = any> {
    *
    *
    */
-  removeMany<Doc = T>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<ManyQueryResponse>;
+  removeMany<Doc = T, Result = string>(
+    filter?: LogicalWhereExpr<Doc>,
+    options?: FindOptions,
+  ): Promise<ManyQueryResponse<Result>>;
 
   /**
    * Updates all of the documents that match conditions from the collection.
@@ -396,11 +399,11 @@ export interface IModel<T = any, R = any> {
    * @param options [Update Many Options](/interfaces/updatemanyoptions.html)
    *
    */
-  updateMany<Query = T>(
+  updateMany<Query = T, Result = T>(
     filter?: LogicalWhereExpr<Query>,
     doc?: T | Partial<T>,
     options?: UpdateManyOptions,
-  ): Promise<ManyQueryResponse>;
+  ): Promise<ManyQueryResponse<Document<Result>>>;
 
   /**
    * Finds a document that matches the conditions of the collection and updates it.
