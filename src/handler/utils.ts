@@ -27,7 +27,7 @@ function* processBatch(items, fn, metadata, extra): IterableIterator<StatusExecu
 /**
  * @ignore
  */
-export const batchProcessQueue = (metadata: ModelMetadata) => async (
+export const batchProcessQueue = <T = any>(metadata: ModelMetadata) => async (
   items: unknown[],
   fn: unknown,
   extra: Record<string, unknown> = {},
@@ -35,7 +35,7 @@ export const batchProcessQueue = (metadata: ModelMetadata) => async (
 ) => {
   const chunks = chunkArray([...items], throttle);
   const chunkPromises = chunks.map((data) => Promise.resolve(data));
-  const result: ManyResponse = { success: 0, match_number: items.length, errors: [], data: [] };
+  const result: ManyResponse<T> = { success: 0, match_number: items.length, errors: [], data: [] };
   for await (const chunk of chunkPromises) {
     for await (const r of processBatch(chunk, fn, metadata, extra)) {
       if (r.status === 'FAILURE') {
@@ -43,10 +43,10 @@ export const batchProcessQueue = (metadata: ModelMetadata) => async (
       } else {
         result.success = result.success + 1;
         if (r.payload) {
-          result.data?.push(r.payload);
+          result.data?.push(r.payload as T);
         }
       }
     }
   }
-  return new ManyQueryResponse(result.errors.length > 0 ? 'FAILURE' : 'SUCCESS', result);
+  return new ManyQueryResponse<T>(result.errors.length > 0 ? 'FAILURE' : 'SUCCESS', result);
 };
