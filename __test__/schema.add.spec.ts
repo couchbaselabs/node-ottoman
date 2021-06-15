@@ -168,7 +168,6 @@ describe('Test Schema Add Function', () => {
   });
 
   test('Test Schema Add Schema Full Coverage', async () => {
-    await startInTest(getDefaultInstance());
     const product = new Schema({
       name: { type: String, required: true, auto: 'uuid' },
     });
@@ -199,6 +198,8 @@ describe('Test Schema Add Function', () => {
     drink.add(product);
 
     const Drink = model('Drink', drink);
+    await startInTest(getDefaultInstance());
+
     await Drink.create({ name: 'Te', brand: 'TE S.A' });
     await delay(1000);
     const response = await Drink.findByName('Te');

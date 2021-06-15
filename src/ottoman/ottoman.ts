@@ -35,6 +35,7 @@ export interface ConnectOptions {
 
 interface OttomanConfig {
   collectionName?: string;
+  retryCount?: number;
   scopeName?: string;
   idKey?: string;
   modelKey?: string;
@@ -368,22 +369,10 @@ export class Ottoman {
         if (collectionName !== '_default') {
           collectionPromises.set(
             `${scopeName}${collectionName}`,
-            this.collectionManager
-              .createCollection({
-                name: collectionName,
-                scopeName,
-                maxExpiry: maxExpiry ? +maxExpiry : DEFAULT_MAX_EXPIRY,
-              })
-              .then(() => {
-                if (isDebugMode()) {
-                  console.info(`collection created: ${scopeName}/${collectionName}`);
-                }
-              })
-              .catch((e) => {
-                if (!(e instanceof (couchbase as any).CollectionExistsError)) {
-                  throw e;
-                }
-              }),
+            tryCreateCollection(
+              { collectionName, scopeName, maxExpiry, collectionManager: this.collectionManager },
+              this.config.retryCount,
+            ),
           );
         }
       }
@@ -392,8 +381,6 @@ export class Ottoman {
     // eslint-disable-next-line no-unused-vars
     for await (const scope of scopePromises.values()) {
     }
-
-    delay(1000);
 
     // eslint-disable-next-line no-unused-vars
     for await (const collection of collectionPromises.values()) {
@@ -424,6 +411,43 @@ const delay = (timems) =>
       resolve(true);
     }, timems);
   });
+
+const createCollection = ({ collectionManager, collectionName, scopeName, maxExpiry }) => {
+  return collectionManager
+    .createCollection({
+      name: collectionName,
+      scopeName,
+      maxExpiry: maxExpiry ? +maxExpiry : DEFAULT_MAX_EXPIRY,
+    })
+    .then(() => {
+      if (isDebugMode()) {
+        console.info(`collection created: ${scopeName}/${collectionName}`);
+      }
+    });
+};
+
+const tryCreateCollection = async (
+  { collectionManager, collectionName, scopeName, maxExpiry },
+  retries = 3,
+  delayMS = 5000,
+) => {
+  try {
+    return await createCollection({ collectionManager, collectionName, scopeName, maxExpiry });
+  } catch (e) {
+    if (!(e instanceof (couchbase as any).CollectionExistsError)) {
+      if (retries > 0) {
+        await delay(delayMS);
+        return await tryCreateCollection(
+          { collectionManager, collectionName, scopeName, maxExpiry },
+          retries - 1,
+          delayMS + 5000,
+        );
+      } else {
+        throw e;
+      }
+    }
+  }
+};
 
 export const getDefaultInstance = () => __ottoman;
 export const getOttomanInstances = () => __ottomanInstances;

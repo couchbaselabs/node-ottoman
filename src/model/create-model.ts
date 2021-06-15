@@ -17,7 +17,7 @@ import { CreateModel } from './interfaces/create-model.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
-import { CountOptions, Model } from './model';
+import { Model } from './model';
 import { ModelTypes } from './model.types';
 import { getModelMetadata, setModelMetadata } from './utils/model.utils';
 
@@ -164,9 +164,8 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return ottoman.dropCollection(_scopeName, _collectionName, options);
     }
 
-    static count = async (filter: LogicalWhereExpr = {}, options: CountOptions = {}) => {
+    static count = async (filter: LogicalWhereExpr = {}) => {
       const response = await find(metadata)(filter, {
-        ...options,
         select: 'RAW COUNT(*) as count',
         noCollection: true,
         consistency: SearchConsistency.LOCAL,
