@@ -233,7 +233,7 @@ describe('Test Document Access Functions', () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
     try {
-      await UserModel.count({ count: { $like: 'UserModelTestError' } }, { limit: 1, skip: 1 });
+      await UserModel.count({ count: { $like: 'UserModelTestError' } });
     } catch (e) {
       const { message } = e;
       expect(e).toBeInstanceOf(OttomanError);

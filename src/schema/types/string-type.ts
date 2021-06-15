@@ -218,6 +218,9 @@ export class StringType extends CoreType {
   }
 
   cast(value: unknown, strategy = CAST_STRATEGY.DEFAULT_OR_DROP) {
+    if (value === null) {
+      return value;
+    }
     let castedValue = String(value);
     if (is(castedValue, String) && !is(value, Object)) {
       if (this.lowercase) {
@@ -240,7 +243,7 @@ export class StringType extends CoreType {
     if (_wrongType) {
       throw new ValidationError(`Property '${this.name}' must be of type '${this.typeName}'`);
     }
-    if (value == null) {
+    if (value === null) {
       return value;
     }
     const errors: string[] = [];

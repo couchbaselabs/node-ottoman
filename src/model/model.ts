@@ -1,16 +1,10 @@
 import { Document } from './document';
 import { FindByIdOptions, FindOptions, ManyQueryResponse } from '../handler';
-import { LogicalWhereExpr, SortType } from '../query';
+import { LogicalWhereExpr } from '../query';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
 import { ModelTypes } from './model.types';
-
-export type CountOptions = {
-  sort?: Record<string, SortType>;
-  limit?: number;
-  skip?: number;
-};
 
 export class Model<T = any, R = any> extends Document<T> {}
 /**
@@ -73,7 +67,7 @@ export interface IModel<T = any, R = any> {
    * User.count({ name: { $like: "%Jane%" } })
    * ```
    */
-  count(filter?: LogicalWhereExpr<T>, options?: CountOptions): Promise<any>;
+  count(filter?: LogicalWhereExpr<T>): Promise<any>;
 
   /**
    * Retrieves a document by id.

@@ -1,6 +1,17 @@
-import { applyDefaultValue, BuildSchemaError, IOttomanType, model, Schema, validate, ValidationError } from '../src';
+import {
+  applyDefaultValue,
+  BuildSchemaError,
+  getDefaultInstance,
+  IOttomanType,
+  model,
+  Schema,
+  SearchConsistency,
+  validate,
+  ValidationError,
+} from '../src';
 import { isOttomanType } from '../src/schema/helpers';
 import { ArrayType, DateType, EmbedType, NumberType, StringType } from '../src/schema/types';
+import { startInTest } from './testData';
 
 const validData = {
   firstName: 'John',
@@ -312,5 +323,23 @@ describe('SchemaTypes -> String', () => {
   test('Option -> Trim', async () => {
     element.options = { trim: true };
     expect(element.cast(' trim trim ')).toBe('trim trim');
+  });
+
+  test('Null value for StringType', async () => {
+    const schema = new Schema({
+      text: { type: String },
+      review: { type: String },
+    });
+
+    const Message = model('Message', schema);
+    startInTest(getDefaultInstance());
+
+    const review = 'test null value';
+    await Message.create({ text: null, review });
+    await Message.create({ text: 'hello', review: 'test' });
+
+    const result = await Message.find({ text: { $isNull: true } }, { consistency: SearchConsistency.LOCAL });
+    expect(result.rows.length).toBeGreaterThan(0);
+    expect(result.rows[0].review).toBe(review);
   });
 });

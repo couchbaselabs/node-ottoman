@@ -11,10 +11,10 @@ import { DEFAULT_COLLECTION } from '../../../utils/constants';
  */
 export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
   const __indexes = n1qlIndexes;
-  const { bucketName, cluster, queryIndexManager } = ottoman;
-  const indexes = await queryIndexManager.getAllIndexes(bucketName);
+  const { bucketName, cluster } = ottoman;
+
   const indexesToBuild: Record<string, string[]> = {};
-  const existingIndexesNames: string[] = indexes.map((index) => index.name);
+  const existingIndexesNames: string[] = [];
 
   // Create the ottoman type index, needed to make model lookups fast.
   const keys = Object.keys(ottoman.models);
@@ -37,8 +37,9 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
         await cluster.query(queryForIndexOttomanType(name, on, modelKey));
       } catch (e) {
         if (e.context.first_error_message !== `The index ${name} already exists.`) {
-          console.error(`Failed creating N1QL index ${name}`);
-          throw e;
+          if (isDebugMode()) {
+            console.error(`Failed creating N1QL index ${name}`);
+          }
         }
       }
     }
@@ -70,8 +71,9 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
           })
           .catch((e) => {
             if (e.context.first_error_message !== `The index ${indexNameSanitized} already exists.`) {
-              console.error(`Failed creating Secondary N1QL index ${indexNameSanitized}`);
-              throw e;
+              if (isDebugMode()) {
+                console.error(`Failed creating Secondary N1QL index ${indexNameSanitized}`);
+              }
             }
           });
       }
