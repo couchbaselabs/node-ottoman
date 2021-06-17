@@ -47,7 +47,7 @@ interface OttomanConfig {
 - `modelKey`: Key to store the model name into the document. Default: `_type`
 - `populateMaxDeep`: Numeric Value for how many levels deep you want to *_populate*. Default: `1`
 - `consistency`: Value for *Search Consistency Strategy*. Default: `SearchConsistency.NONE`
-- `maxExpiry`: Numeric value (based in Milliseconds) used to create a collection for this instance. Default: `300000`
+- `maxExpiry`: Numeric value (based in Milliseconds) used to create a collection for this instance. Default: `0`
 - `keyGenerator`: Function to generate the key to store documents. Default: `(params: { metadata: ModelMetadata }) => string`
 - `keyGeneratorDelimiter`: String value used to build the document key. Default: `::`
 

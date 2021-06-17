@@ -61,7 +61,7 @@ interface ModelOptions {
   scopeName?: string;
   idKey?: string;
   modelKey?: string;
-  maxExpiry?: string;
+  maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata }) => string;
   keyGeneratorDelimiter?: string;
 }
@@ -71,7 +71,7 @@ interface ModelOptions {
 - `scopeName`: define the scope where the collection will be placed. The default value is `_default`
 - `idKey`: it's the value of the key to save your id. The default value is set to 'id'.
 - `modelKey`: define the key to store the model name into the document. The default value is `_type`
-- `maxExpiry`: value used to create a collection for this instance. The default value is `300000`.
+- `maxExpiry`: value used to create a collection for this instance. The default value is `0`.
 - `keyGenerator`: function to generate the key to store documents.
 - `keyGeneratorDelimiter`: string value used to build the document key. The default value is `::`
 

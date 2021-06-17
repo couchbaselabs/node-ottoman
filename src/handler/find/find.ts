@@ -9,6 +9,7 @@ import { extractPopulate } from '../../utils/query/extract-populate';
 import { getProjectionFields } from '../../utils/query/extract-select';
 import { isNumber } from '../../utils/type-helpers';
 import { FindOptions } from './find-options';
+import { isDebugMode } from '../../utils/is-debug-mode';
 
 /**
  * Find documents using filter and options.
@@ -75,6 +76,9 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   }
 
   const n1ql = query.build({ ignoreCase });
+  if (isDebugMode()) {
+    console.log(n1ql);
+  }
   const result = await cluster.query(n1ql, queryOptions);
 
   if (select !== 'RAW COUNT(*) as count') {
