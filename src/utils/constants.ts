@@ -61,4 +61,4 @@ export const validateDelimiter = (delimiter: string) => {
   }
 };
 
-export const DEFAULT_MAX_EXPIRY = 300000;
+export const DEFAULT_MAX_EXPIRY = 0;
