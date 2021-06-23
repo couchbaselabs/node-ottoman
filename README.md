@@ -128,8 +128,8 @@ $ yarn docs:dev
 When publishing a new package to NPM, please follow the following steps:
 
 - git pull (master branch)
-- yarn install && yarn build
 - update the `package.json` file w/ new version
+- yarn install && yarn build
 - yarn test:legacy (Use `test:legacy` Until CB 7 Release)
 - yarn pack (ensure package is packing as intended)
 - npm publish (--tag alpha or --tag beta)
