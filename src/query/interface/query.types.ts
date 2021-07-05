@@ -58,61 +58,63 @@ export type ComparisonMultipleOperatorType = '$btw' | '$notBtw';
 export type LogicalOperatorType = '$and' | '$or' | '$not';
 
 /**
- * Collection Select Operator.
+ * Collection Range Predicate Operator.
  * */
-export type CollectionSelectOperator = '$any' | '$every';
+export type CollectionRangePredicateOperatorType = '$any' | '$every';
 
 /**
- * Collection IN and WITHIN Operators.
+ * Collection Deep Search Operators.
  * */
-export type CollectionInWithinOperator = '$in' | '$within';
+export type CollectionDeepSearchOperatorType = '$in' | '$within' | '$notIn' | '$notWithin';
 
 /**
- * List of Collection IN and WITHIN Operators.
+ * Collection SATISFIES Operator used within range predicates ( ANY / EVERY ).
  * */
-export type CollectionSatisfiesOperator = '$satisfies';
+export type CollectionSatisfiesOperatorType = '$satisfies';
 
 /**
  * List of String Modifiers.
  * */
-export type StringModifiers = '$ignoreCase';
-
-export interface CollectionInWithinOperatorValue {
-  search_expr: unknown;
-  target_expr: unknown;
-  $not?: boolean;
-}
+export type StringModifiersType = '$ignoreCase';
 
 /**
  * Structure of the collection in within operator.
  *
  * @example
  * ```
- * {$in:{search_expr: 'search', target_expr: 'address', $not: true}}
+ * // Using $in
+ * { var: { $in: expr } }
+ *
+ * // Using $within
+ * { var: { $within: expr } }
+ *
+ * @var A string that evaluates to a string representing the variable name in the ANY/EVERY loop
+ * @expr A string or expression that evaluates to a string representing the array to loop through
  * ```
  * */
-export type CollectionInWithinOperatorType = {
-  [key in CollectionInWithinOperator]?: CollectionInWithinOperatorValue;
+export type CollectionRangePredicateDeepSearchExpressionType = Record<
+  string,
+  { [key in Exclude<CollectionDeepSearchOperatorType, '$notIn' | '$notWithin'>]?: string | any[] }
+>;
+
+/**
+ * Structure of the collection range predicate expression.
+ * */
+export type CollectionRangePredicateExpressionType = {
+  $expr: CollectionRangePredicateDeepSearchExpressionType[];
+  $satisfies: FieldWhereExpr;
 };
 
 /**
- * Structure of the collection expression.
- *
- * */
-export interface CollectionExpressionType {
-  $expr: CollectionInWithinOperatorType[];
-  $satisfies: FieldWhereExpr;
-}
-/**
  * Structure of the collection in within operator.
  *
  * @example
  * ```
- * { $any: { $expr: [{ $in:{ search_expr: 'search', target_expr: 'address', $not: true } }], $satisfies:{ address: '10' } } }
+ * { $any: { $expr: [{ search:{ $in: 'address' } }], $satisfies:{ address: '10' } } }
  * ```
  * */
-export type CollectionSelectOperatorType = {
-  [key in CollectionSelectOperator]?: CollectionExpressionType;
+export type CollectionRangePredicateType = {
+  [key in CollectionRangePredicateOperatorType]?: CollectionRangePredicateExpressionType;
 };
 
 /**
@@ -124,13 +126,15 @@ export type CollectionSelectOperatorType = {
  * ```
  *
  * */
-export type ComparisonWhereExpr = {
-  [key in
-    | ComparisonEmptyOperatorType
-    | ComparisonSingleOperatorType
-    | ComparisonMultipleOperatorType
-    | ComparisonSingleStringOperatorType]?: string | number | boolean | (number | string)[];
-};
+export type ComparisonWhereExpr =
+  | {
+      [key in
+        | ComparisonEmptyOperatorType
+        | ComparisonSingleOperatorType
+        | ComparisonMultipleOperatorType
+        | ComparisonSingleStringOperatorType]?: string | number | boolean | (number | string)[];
+    }
+  | { [key in CollectionDeepSearchOperatorType]?: string | any[] };
 
 /**
  * Structure of WHERE field expression
@@ -142,9 +146,11 @@ export type ComparisonWhereExpr = {
  *
  * */
 export type FieldWhereExpr<T = unknown> =
-  | Record<string, string | number | boolean | ComparisonWhereExpr | StringModifiers>
-  | LogicalWhereExpr<T>
-  | T;
+  | {
+      [key: string]: string | number | boolean | ComparisonWhereExpr | StringModifiersType;
+    }
+  | { [key in LogicalOperatorType]?: (FieldWhereExpr<T> | CollectionRangePredicateType)[] }
+  | Record<any, any>;
 
 /**
  * Structure of Logical WHERE expression
@@ -156,18 +162,11 @@ export type FieldWhereExpr<T = unknown> =
  *
  * */
 export type LogicalWhereExpr<T = any> =
-  | {
-      [key in LogicalOperatorType]?: FieldWhereExpr<T>[];
-    }
-  | {
-      [key: string]: FieldWhereExpr<T>;
-    }
-  | {
-      [key: string]: unknown;
-    }
-  | T
-  | CollectionSelectOperatorType
-  | CollectionInWithinOperatorType;
+  | CollectionRangePredicateType
+  | { [key in LogicalOperatorType]?: (FieldWhereExpr<T> | CollectionRangePredicateType)[] }
+  | FieldWhereExpr<T>;
+/*
+ */
 
 /**
  * SELECT field structure
@@ -249,10 +248,7 @@ export type ISelectType = ISelectReturnResultType | ISelectResultExprType | ISel
 /**
  * LET expression
  * */
-export interface ILetExpr {
-  key: string;
-  value: unknown;
-}
+export type LetExprType = Record<string, unknown>;
 
 export interface IGroupBy {
   expr: string;
@@ -264,14 +260,14 @@ export interface IGroupBy {
  * */
 export interface IConditionExpr {
   select?: ISelectType[] | string;
-  let?: ILetExpr[];
+  let?: LetExprType;
   where?: LogicalWhereExpr;
   orderBy?: Record<string, SortType>;
   limit?: number;
   offset?: number;
   use?: string[];
   groupBy?: IGroupBy[];
-  letting?: ILetExpr[];
+  letting?: LetExprType;
   having?: LogicalWhereExpr;
 }
 

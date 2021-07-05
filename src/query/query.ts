@@ -1,21 +1,21 @@
+import { BuildIndexQueryError } from '../exceptions/ottoman-errors';
+import { ValidationError } from '../schema';
 import { isNumber } from '../utils/type-helpers';
 import { BaseQuery } from './base-query';
+import { IndexParamsOnExceptions, IndexParamsUsingGSIExceptions, MultipleQueryTypesException } from './exceptions';
+import { buildIndexExpr, selectBuilder } from './helpers';
 import {
   IConditionExpr,
   IGroupBy,
   IIndexOnParams,
   IIndexWithParams,
-  ILetExpr,
   IndexType,
   ISelectType,
+  LetExprType,
   LogicalWhereExpr,
   QueryBuildOptionsType,
   SortType,
 } from './interface/query.types';
-import { IndexParamsOnExceptions, IndexParamsUsingGSIExceptions, MultipleQueryTypesException } from './exceptions';
-import { buildIndexExpr, selectBuilder } from './helpers';
-import { ValidationError } from '../schema';
-import { BuildIndexQueryError } from '../exceptions/ottoman-errors';
 
 export class Query extends BaseQuery {
   /**
@@ -41,7 +41,7 @@ export class Query extends BaseQuery {
   /**
    * LET Expression.
    */
-  private letExpr?: ILetExpr[];
+  private letExpr?: LetExprType;
   /**
    * GROUP BY Expression.
    */
@@ -49,7 +49,7 @@ export class Query extends BaseQuery {
   /**
    * LETTING Expression.
    */
-  private lettingExpr?: ILetExpr[];
+  private lettingExpr?: LetExprType;
   /**
    * HAVING Expression.
    */
@@ -325,15 +325,89 @@ export class Query extends BaseQuery {
    * @public
    *
    * @example
+   *
    * ```ts
-   *   const letExpr = [{ key: 'amount_val', value: 10 }];
-   *   const query = new Query({}, 'travel-sample');
-   *   const result = query.select([{$field: 'address'}]).let(letExpr).build()
-   *   console.log(result)
+   * // SELECT expression definition
+   * const selectExpr = 't1.airportname, t1.geo.lat, t1.geo.lon, t1.city, t1.type';
+   *
+   * // LET expression definition
+   * const letExpr: LetExprType = {
+   *   min_lat: 71,
+   *   max_lat: 'ABS(t1.geo.lon)*4+1',
+   *   place: `(SELECT RAW t2.country FROM \`travel-sample\` t2 WHERE t2.type = "landmark")`,
+   * };
+   *
+   * // WHERE expression definition
+   * const whereExpr: LogicalWhereExpr = {
+   *   $and: [
+   *     { 't1.type': 'airport' },
+   *     { 't1.geo.lat': { $gt: { $field: 'min_lat' } } },
+   *     { 't1.geo.lat': { $lt: { $field: 'max_lat' } } },
+   *     { 't1.country': { $in: { $field: 'place' } } },
+   *   ],
+   * };
+   *
+   * // QUERY creation
+   * const query = new Query({}, 'travel-sample t1')
+   *  .select(selectExpr)
+   *  .let(letExpr)
+   *  .where(whereExpr)
+   *  .build();
+   *
+   * console.log(query);
+   *
+   * // QUERY output
    * ```
-   * > SELECT address FROM `travel-sample LET amount_val = 10`
+   * ```sql
+   * SELECT t1.airportname,
+   *        t1.geo.lat,
+   *        t1.geo.lon,
+   *        t1.city,
+   *        t1.type
+   * FROM `travel-sample` t1
+   * LET min_lat=71,
+   *     max_lat=ABS(t1.geo.lon)*4+1,
+   *     place=(
+   *         SELECT RAW t2.country
+   *         FROM `travel-sample` t2
+   *         WHERE t2.type = "landmark")
+   * WHERE (t1.type="airport"
+   *         AND t1.geo.lat>min_lat
+   *         AND t1.geo.lat<max_lat
+   *         AND t1.country IN place);
+   * ```
+   *
+   * ```ts
+   * // OTTOMAN initialization
+   * const ottoman = getDefaultInstance();
+   * await startInTest(ottoman);
+   *
+   * // QUERY excecution
+   * const { rows } = await ottoman.query(query);
+   *
+   * // RESULTS
+   * console.log(rows)
+   * ```
+   * ```sh
+   * [
+   *   {
+   *     airportname: 'Wiley Post Will Rogers Mem',
+   *     city: 'Barrow',
+   *     lat: 71.285446,
+   *     lon: -156.766003,
+   *     type: 'airport',
+   *   },
+   *   {
+   *     airportname: 'Dillant Hopkins Airport',
+   *     city: 'Keene',
+   *     lat: 72.270833,
+   *     lon: 42.898333,
+   *     type: 'airport',
+   *   },
+   * ]
+   * ```
    */
-  let(value: ILetExpr[]): Query {
+  let(value: LetExprType): Query {
     this.letExpr = value;
     return this;
   }
@@ -365,14 +439,14 @@ export class Query extends BaseQuery {
    * @example
    * ```ts
    *   const groupByExpr = [{ expr: 'COUNT(amount_val)', as: 'amount' }];
-   *   const letExpr = [{ key: 'amount_val', value: 10 }];
+   *   const letExpr = { amount_val: 10 };
    *   const query = new Query({}, 'travel-sample');
    *   const result = query.select([{$field: 'address'}]).groupBy(groupByExpr).let(letExpr).build()
    *   console.log(result)
    * ```
    * > SELECT address FROM `travel-sample GROUP BY COUNT(amount) AS amount LETTING amount = 10`
    */
-  letting(value: ILetExpr[]): Query {
+  letting(value: LetExprType): Query {
     this.lettingExpr = value;
     return this;
   }
@@ -428,7 +502,7 @@ export class Query extends BaseQuery {
           this.select(conditionals[value]);
           break;
         case 'let':
-          !!conditionals[value] && this.let(conditionals[value] as ILetExpr[]);
+          !!conditionals[value] && this.let(conditionals[value] as LetExprType);
           break;
         case 'where':
           !!conditionals[value] && this.where(conditionals[value] as LogicalWhereExpr);
@@ -440,7 +514,7 @@ export class Query extends BaseQuery {
           !!conditionals[value] && this.groupBy(conditionals[value] as IGroupBy[]);
           break;
         case 'letting':
-          !!conditionals[value] && this.letting(conditionals[value] as ILetExpr[]);
+          !!conditionals[value] && this.letting(conditionals[value] as LetExprType);
           break;
         case 'having':
           !!conditionals[value] && this.having(conditionals[value] as LogicalWhereExpr);

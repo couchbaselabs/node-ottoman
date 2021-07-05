@@ -1,7 +1,7 @@
 import {
   IConditionExpr,
-  ILetExpr,
   ISelectType,
+  LetExprType,
   LogicalWhereExpr,
   QueryBuildOptionsType,
   SortType,
@@ -18,7 +18,7 @@ export abstract class BaseQuery {
   abstract orderBy(value: Record<string, SortType>): BaseQuery;
   abstract limit(value: number): BaseQuery;
   abstract offset(value: number): BaseQuery;
-  abstract let(value: [ILetExpr]): BaseQuery;
+  abstract let(value: LetExprType): BaseQuery;
   abstract useKeys(value: [string]): BaseQuery;
   abstract build(options: QueryBuildOptionsType): string;
 }

@@ -8,21 +8,17 @@ export class SelectClauseException extends OttomanError {
 }
 
 export class WhereClauseException extends OttomanError {
-  constructor() {
-    super('The WHERE clause does not have the proper structure');
+  constructor(message = '') {
+    super(`The WHERE clause does not have the proper structure. ${message}`);
   }
 }
 
-export class InWithinOperatorExceptions extends WhereClauseException {
-  constructor() {
+export class CollectionInWithinExceptions extends WhereClauseException {
+  constructor(
+    message = 'The Collection Operator needs to have the following clauses declared (IN | WITHIN) and SATISFIES.',
+  ) {
     super();
-    this.message = `The search_expr, target_expr and operator (IN | WITHIN) values are required for collection operators.`;
-  }
-}
-export class CollectionInWithInExceptions extends WhereClauseException {
-  constructor() {
-    super();
-    this.message = 'The Collection Operator needs to have the following clauses declared (IN | WITHIN) and SATISFIES.';
+    this.message = message;
   }
 }
 export class MultipleQueryTypesException extends OttomanError {
