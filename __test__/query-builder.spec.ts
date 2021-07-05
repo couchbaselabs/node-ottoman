@@ -1,16 +1,16 @@
 import {
+  buildIndexExpr,
   buildSelectExpr,
-  SelectClauseException,
-  ISelectType,
   buildWhereClauseExpr,
-  QueryOperatorNotFoundException,
-  WhereClauseException,
-  LogicalWhereExpr,
   IIndexOnParams,
   IIndexWithParams,
-  buildIndexExpr,
+  ISelectType,
+  LogicalWhereExpr,
+  QueryOperatorNotFoundException,
+  SelectClauseException,
+  WhereClauseException,
 } from '../src';
-import { CollectionInWithInExceptions } from '../src/query/exceptions';
+import { CollectionInWithinExceptions } from '../src/query/exceptions';
 
 describe('Test Query Builder functions', () => {
   test('Check select clause parameter types', async () => {
@@ -45,10 +45,7 @@ describe('Test Query Builder functions', () => {
     expect(run).toThrow(SelectClauseException);
   });
   test('Check the exception WHERE with an operator not found', async () => {
-    const expr_where: LogicalWhereExpr = {
-      // @ts-ignore
-      $nill: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }, { free_lunch: [1] }],
-    };
+    const expr_where: LogicalWhereExpr = { address: { $nill: '%57-59%' } };
 
     const run = () => buildWhereClauseExpr('', expr_where);
     expect(run).toThrow(QueryOperatorNotFoundException);
@@ -120,57 +117,6 @@ describe('Test Query Builder functions', () => {
         $satisfies: { address: '10' },
       },
     };
-    try {
-      buildWhereClauseExpr('', where);
-    } catch (e) {
-      const { message } = e;
-      expect(e).toBeInstanceOf(CollectionInWithInExceptions);
-      expect(message).toBe(
-        'The Collection Operator needs to have the following clauses declared (IN | WITHIN) and SATISFIES.',
-      );
-    }
-  });
-
-  test('extractIndexFieldNames -> should throw a BuildIndexQueryError', async () => {
-    const where: LogicalWhereExpr = {
-      $any: {
-        $expr: [{ $dummyIn: { search_expr: 'search', target_expr: 'address' } }],
-        $satisfies: { address: '10' },
-      },
-    };
-    try {
-      buildWhereClauseExpr('', where);
-    } catch (e) {
-      const { message } = e;
-      expect(e).toBeInstanceOf(CollectionInWithInExceptions);
-      expect(message).toBe(
-        'The Collection Operator needs to have the following clauses declared (IN | WITHIN) and SATISFIES.',
-      );
-    }
-  });
-
-  test('buildWhereClauseExpr -> ANY X SATISFIES Clause ', async () => {
-    const filter = {
-      $and: [
-        {
-          $any: {
-            $expr: [{ $in: { search_expr: 'visibility', target_expr: 'network_visibility' } }],
-            $satisfies: { $in: { search_expr: 'visibility', target_expr: [2] } },
-          },
-        },
-        {
-          $any: {
-            $expr: [{ $in: { search_expr: 'visibility', target_expr: 'network_visibility' } }],
-            $satisfies: { visibility: [2] },
-          },
-        },
-      ],
-    };
-
-    const result = buildWhereClauseExpr('', filter);
-
-    expect(result).toBe(
-      '(ANY visibility IN network_visibility SATISFIES visibility IN [2] END AND ANY visibility IN network_visibility SATISFIES visibility=[2] END)',
-    );
+    expect(() => buildWhereClauseExpr('', where)).toThrow(CollectionInWithinExceptions);
   });
 });

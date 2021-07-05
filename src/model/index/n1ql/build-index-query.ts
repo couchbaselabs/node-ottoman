@@ -1,5 +1,5 @@
-import { FindOptions } from '../../../handler';
 import { BuildIndexQueryError } from '../../../exceptions/ottoman-errors';
+import { FindOptions } from '../../../handler';
 
 /**
  * View index function factory.
@@ -23,7 +23,7 @@ export const buildIndexQuery = (Model, fields, indexFnName, indexOptions = {}) =
       if (field.includes('[*]')) {
         const [target, targetField] = field.split('[*].');
         filter['$any'] = {
-          $expr: [{ $in: { search_expr: 'x', target_expr: target } }],
+          $expr: [{ x: { $in: target } }],
           $satisfies: { [`x.${targetField}`]: values[i] },
         };
       } else {

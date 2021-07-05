@@ -1,27 +1,35 @@
+import { BuildQueryError } from '../../exceptions/ottoman-errors';
+import {
+  CollectionInWithinExceptions,
+  QueryGroupByParamsException,
+  QueryOperatorNotFoundException,
+  SelectClauseException,
+  WhereClauseException,
+} from '../exceptions';
 import {
   BuildFieldClauseExprType,
-  CollectionExpressionType,
-  CollectionInWithinOperator,
-  CollectionInWithinOperatorType,
-  CollectionInWithinOperatorValue,
-  CollectionSelectOperator,
+  CollectionDeepSearchOperatorType,
+  CollectionRangePredicateDeepSearchExpressionType,
+  CollectionRangePredicateExpressionType,
+  CollectionRangePredicateOperatorType,
   ComparisonWhereExpr,
   IField,
   IGroupBy,
   IIndexOnParams,
   IIndexWithParams,
-  ILetExpr,
   IndexType,
   ISelectAggType,
   ISelectType,
+  LetExprType,
   LogicalWhereExpr,
   SortType,
 } from '../interface/query.types';
+import { escapeReservedWords } from '../utils';
 import {
   AggDict,
-  CollectionInWithinOperatorDict,
+  CollectionDeepSearchOperatorDict,
+  CollectionRangePredicateOperatorDict,
   CollectionSatisfiesOperatorDict,
-  CollectionSelectOperatorDict,
   ComparisonEmptyOperatorDict,
   ComparisonMultipleOperatorDict,
   ComparisonSingleOperatorDict,
@@ -30,16 +38,6 @@ import {
   ResultExprDict,
   ReturnResultDict,
 } from './dictionary';
-import {
-  CollectionInWithInExceptions,
-  InWithinOperatorExceptions,
-  QueryGroupByParamsException,
-  QueryOperatorNotFoundException,
-  SelectClauseException,
-  WhereClauseException,
-} from '../exceptions';
-import { escapeReservedWords } from '../utils';
-import { BuildQueryError } from '../../exceptions/ottoman-errors';
 
 // start of SELECT expression functions
 /**
@@ -53,6 +51,10 @@ import { BuildQueryError } from '../../exceptions/ottoman-errors';
  * @param limit LIMIT Clause
  * @param offset OFFSET Clause
  * @param useExpr USE Clause
+ * @param groupByExpr GROUP BY Clause
+ * @param lettingExpr LETTING Clause
+ * @param havingExpr HAVING Clause
+ * @param plainJoinExpr PLAIN JOIN string definition
  * @param ignoreCase boolean to ignore case
  *
  * @return N1QL SELECT Query
@@ -60,14 +62,14 @@ import { BuildQueryError } from '../../exceptions/ottoman-errors';
 export const selectBuilder = (
   collection: string,
   select: ISelectType[] | string,
-  letExpr?: ILetExpr[],
+  letExpr?: LetExprType,
   where?: LogicalWhereExpr,
   orderBy?: Record<string, SortType>,
   limit?: number,
   offset?: number,
   useExpr?: string[],
   groupByExpr?: IGroupBy[],
-  lettingExpr?: ILetExpr[],
+  lettingExpr?: LetExprType,
   havingExpr?: LogicalWhereExpr,
   plainJoinExpr?: string,
   ignoreCase?: boolean,
@@ -175,10 +177,14 @@ const _buildAggDictExpr = (clause: ISelectAggType, key: string) => {
 /**
  * @ignore
  * */
-const _buildLetExpr = (letExpr: ILetExpr[] | undefined, clause?: string) => {
-  return Array.isArray(letExpr)
-    ? ` ${clause ? clause : 'LET'} ${letExpr
-        .map((value: ILetExpr) => `${escapeReservedWords(value.key)}=${value.value}`)
+const _buildLetExpr = (letExpr?: LetExprType, clause = 'LET') => {
+  const entries = Object.entries(letExpr ?? {});
+  return entries.length
+    ? ` ${clause} ${entries
+        .map(([key, value]) => {
+          const parsedValue = Array.isArray(value) ? JSON.stringify(value) : value;
+          return `${escapeReservedWords(key)}=${parsedValue}`;
+        })
         .join(',')}`
     : '';
 };
@@ -221,7 +227,7 @@ const _buildUseKeysExpr = (useKeys: string[] | undefined) => {
 /**
  *@ignore
  */
-const _buildGroupByExpr = (groupByExpr?: IGroupBy[], lettingExpr?: ILetExpr[], havingExpr?: LogicalWhereExpr) => {
+const _buildGroupByExpr = (groupByExpr?: IGroupBy[], lettingExpr?: LetExprType, havingExpr?: LogicalWhereExpr) => {
   try {
     if ((lettingExpr || havingExpr) && !groupByExpr) {
       throw new QueryGroupByParamsException();
@@ -260,29 +266,41 @@ const _buildGroupBy = (groupByExpr: IGroupBy[]) => {
  * @param ignoreCase Apply ignore case
  * @return N1QL WHERE Expression
  * */
-export const buildWhereExpr = (expr: LogicalWhereExpr | undefined, clause?: string, ignoreCase = false): string => {
-  return expr ? ` ${clause ? clause : 'WHERE'} ${buildWhereClauseExpr('', expr, ignoreCase)}` : '';
+export const buildWhereExpr = (expr?: LogicalWhereExpr, clause = 'WHERE', ignoreCase = false): string => {
+  return expr ? ` ${clause} ${buildWhereClauseExpr('', expr, ignoreCase)}` : '';
 };
 
 /**
+ * Where object keys
  * @ignore
- *
  **/
-export const verifyWhereObjectKey = (clause: LogicalWhereExpr) => {
-  let exist = false;
-  for (const key in clause) {
-    if (['$and', '$or', '$not', '$any', '$every', '$in', '$within'].includes(key)) {
-      exist = true;
-      break;
-    }
+const WHERE_OBJECT_KEYS = ['$and', '$or', '$not', '$any', '$every'];
+
+export const verifyWhereObjectKey = (clause: LogicalWhereExpr): boolean => {
+  const keys = Object.keys(clause);
+  let invalid: any;
+  if (
+    keys.some((key) => {
+      if (!WHERE_OBJECT_KEYS.includes(key) && String(key).match(/^\$.+$/) && key !== '$field') {
+        invalid = { [key]: clause[key] };
+        return true;
+      }
+      return false;
+    })
+  ) {
+    throw new WhereClauseException(
+      `For clause:\n${JSON.stringify(invalid, null, 2)}\nwe expect { EXPRESSION : { OPERATOR: EXPRESSION } }`,
+    );
   }
-  return exist;
+
+  return keys.some((key) => WHERE_OBJECT_KEYS.includes(key));
 };
 
 /**
  * Recursive function to create WHERE N1QL expressions.
  * @param n1ql N1QL Query String
  * @param clause WHERE Clause param
+ * @param ignoreCase Apply ignoreCase
  *
  * @return N1QL WHERE expression
  * */
@@ -294,11 +312,8 @@ export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr, ign
 
     return Object.keys(clause)
       .map((key) => {
-        if (CollectionSelectOperatorDict[key]) {
-          return `${_buildWhereCollectionExpr(key as CollectionSelectOperator, clause[key])}`;
-        }
-        if (CollectionInWithinOperatorDict[key]) {
-          return `${_buildCollectionInWithinOperator(key as CollectionInWithinOperator, clause[key])}`;
+        if (CollectionRangePredicateOperatorDict[key]) {
+          return `${_buildWherePredicateRangeExpression(key as CollectionRangePredicateOperatorType, clause[key])}`;
         }
         if (Array.isArray(clause[key])) {
           const prefix = key === '$not' ? `${LogicalOperatorDict[key]} ` : '';
@@ -325,9 +340,19 @@ export const buildWhereClauseExpr = (n1ql: string, clause: LogicalWhereExpr, ign
 const _buildFieldClauseExpr = (field: BuildFieldClauseExprType, ignoreCase = false) => {
   try {
     const expr = Object.keys(field).map((value: string) => {
-      if (typeof field[value] === 'object' && !Array.isArray(field[value])) {
+      if (typeof field[value] === 'object' && !Array.isArray(field[value]) && !field[value]?.['$field']) {
         return `${_buildComparisonClauseExpr(value, field[value] as ComparisonWhereExpr, ignoreCase)}`;
       }
+
+      if (value === '$field') {
+        return escapeReservedWords(String(field[value]));
+      }
+
+      const fieldExpr = field[value]?.['$field'];
+      if (fieldExpr && typeof fieldExpr === 'string') {
+        return `${escapeReservedWords(value)}=${fieldExpr}`;
+      }
+
       if (!value.includes('$')) {
         if (typeof field[value] === 'string') {
           const comparator = escapeReservedWords(value);
@@ -359,40 +384,44 @@ const _buildComparisonClauseExpr = (fieldName: string, comparison: ComparisonWhe
     let ignore = ignoreCase;
     const keys = Object.keys(comparison).filter((key) => {
       if (key === '$ignoreCase') {
-        if (typeof comparison[key] !== 'boolean') {
+        const value = comparison[key];
+        if (typeof value !== 'boolean') {
           throw TypeError(`The data type of $ignoreCase must be Boolean`);
         }
-        ignore = comparison[key];
+        ignore = value;
         return false;
       }
       return true;
     });
 
     const expr = keys
-      .map((value: string) => {
-        if (!!comparison[value]) {
-          if (ComparisonEmptyOperatorDict.hasOwnProperty(value)) {
-            return `${escapeReservedWords(fieldName)} ${ComparisonEmptyOperatorDict[value]}`;
+      .map((key: string) => {
+        const value = comparison[key];
+        if (value != null) {
+          const field = escapeReservedWords(fieldName);
+          if (ComparisonEmptyOperatorDict.hasOwnProperty(key)) {
+            return `${field} ${ComparisonEmptyOperatorDict[key]}`;
           }
-          if (ComparisonSingleOperatorDict.hasOwnProperty(value)) {
-            const name = escapeReservedWords(fieldName);
-            const operator = ComparisonSingleOperatorDict[value];
-            const endValue = stringifyValues(comparison[value]);
-            return applyIgnoreCase(ignore, name, operator, endValue, true);
+          if (ComparisonSingleOperatorDict.hasOwnProperty(key)) {
+            const operator = ComparisonSingleOperatorDict[key];
+            const endValue = _parseEndValue(value);
+            return applyIgnoreCase(ignore, field, operator, endValue, true);
           }
-          if (ComparisonSingleStringOperatorDict.hasOwnProperty(value)) {
-            const name = escapeReservedWords(fieldName);
-            const operator = ComparisonSingleStringOperatorDict[value];
-            const endValue = stringifyValues(comparison[value]);
-            return applyIgnoreCase(ignore, name, operator, endValue);
+          if (ComparisonSingleStringOperatorDict.hasOwnProperty(key)) {
+            const operator = ComparisonSingleStringOperatorDict[key];
+            const endValue = _parseEndValue(value);
+            return applyIgnoreCase(ignore, field, operator, endValue);
           }
-          if (ComparisonMultipleOperatorDict.hasOwnProperty(value) && Array.isArray(comparison[value])) {
-            return `${escapeReservedWords(fieldName)} ${ComparisonMultipleOperatorDict[value]} ${comparison[value]
+          if (ComparisonMultipleOperatorDict.hasOwnProperty(key) && Array.isArray(value)) {
+            return `${field} ${ComparisonMultipleOperatorDict[key]} ${value
               .map((v) => stringifyValues(v))
               .join(' AND ')}`;
           }
+          if (CollectionDeepSearchOperatorDict.hasOwnProperty(key)) {
+            return `${_buildCollectionInWithinOperator(key as CollectionDeepSearchOperatorType, field, value)}`;
+          }
         }
-        throw new QueryOperatorNotFoundException(value);
+        throw new QueryOperatorNotFoundException(key);
       })
       .join(` AND `);
     return Object.keys(comparison).length > 1 ? `(${expr})` : expr;
@@ -408,17 +437,39 @@ const _buildComparisonClauseExpr = (fieldName: string, comparison: ComparisonWhe
 /**
  * @ignore
  * */
+function _parseEndValue(value: unknown): string {
+  return typeof value === 'object' && value?.['$field']
+    ? escapeReservedWords(value?.['$field'])
+    : stringifyValues(value);
+}
+
+/**
+ * @ignore
+ * */
 const _buildCollectionInWithinOperator = (
-  op: CollectionInWithinOperator,
-  expr: CollectionInWithinOperatorValue,
-  excludeOperator?: boolean,
+  operator: CollectionDeepSearchOperatorType,
+  searchExpr: string,
+  targetExpr: string | any[],
+  isRangePredicate = false,
 ): string => {
-  if (!op || !expr.target_expr || !expr.search_expr) {
-    throw new InWithinOperatorExceptions();
+  if (!(operator in CollectionDeepSearchOperatorDict)) {
+    throw new CollectionInWithinExceptions();
   }
-  return `${expr.search_expr}${!excludeOperator && expr.$not ? ' NOT ' : ' '}${CollectionInWithinOperatorDict[op]} ${
-    excludeOperator ? expr.target_expr : stringifyValues(expr.target_expr)
-  }`;
+  let target: any = targetExpr;
+  switch (typeof targetExpr) {
+    case 'object': {
+      if (Array.isArray(target)) {
+        target = JSON.stringify(target);
+      } else {
+        target = buildWhereClauseExpr('', target);
+      }
+      break;
+    }
+    default: {
+      target = isRangePredicate ? target : stringifyValues(target);
+    }
+  }
+  return `${searchExpr} ${CollectionDeepSearchOperatorDict[operator]} ${target}`;
 };
 
 const stringifyValues = (value: unknown) => {
@@ -428,23 +479,50 @@ const stringifyValues = (value: unknown) => {
 /**
  * @ignore
  * */
-const _buildCollectionInWithIn = (collection: CollectionInWithinOperatorType) => {
-  const op = collection.$in ? '$in' : collection.$within ? '$within' : undefined;
-  if (!op) {
-    throw new CollectionInWithInExceptions();
+const _buildCollectionInWithinExpression = (
+  collection: CollectionRangePredicateDeepSearchExpressionType,
+  rangePredicate: string,
+) => {
+  const entries = Object.entries(collection);
+  if (entries.length > 1) {
+    throw new CollectionInWithinExceptions(
+      `More than one property have been defined for range predicate '${rangePredicate}' as variable name in the same IN/WITHIN expression. You should select only one of the following '${Object.keys(
+        collection,
+      ).join(`'|'`)}'.`,
+    );
   }
-  return `${_buildCollectionInWithinOperator(op, collection[op] as CollectionInWithinOperatorValue, true)}`;
-};
+  const [searchExpr, inWithinExpr] = entries[0];
+  const [operator, targetExpr] = Object.entries(inWithinExpr)[0];
 
+  // TODO check if target expression is required
+  return _buildCollectionInWithinOperator(
+    operator as CollectionDeepSearchOperatorType,
+    searchExpr,
+    targetExpr as any,
+    true,
+  );
+};
 /**
  * @ignore
  * */
-const _buildWhereCollectionExpr = (op: CollectionSelectOperator, expr: CollectionExpressionType) => {
-  return `${CollectionSelectOperatorDict[op]} ${expr.$expr.map((value) => _buildCollectionInWithIn(value)).join(',')} ${
+const _buildWherePredicateRangeExpression = (
+  operator: CollectionRangePredicateOperatorType,
+  rangePredicate: CollectionRangePredicateExpressionType,
+) => {
+  const op = CollectionRangePredicateOperatorDict[operator];
+  const keys = Object.keys(rangePredicate);
+  if (keys.some((key) => !['$expr', '$satisfies'].includes(key))) {
+    throw new CollectionInWithinExceptions(
+      `Range predicate operator '${operator}' only allow required properties '$expr' and '$satisfies'. Properties ['${keys
+        .filter((key) => !['$expr', '$satisfies'].includes(key))
+        .join(`', '`)}'] are not valid.`,
+    );
+  }
+  const { $expr, $satisfies } = rangePredicate;
+  return `${op} ${$expr.map((value) => _buildCollectionInWithinExpression(value, op)).join(',')} ${
     CollectionSatisfiesOperatorDict['$satisfies']
-  } ${buildWhereClauseExpr('', expr.$satisfies)} END`;
+  } ${buildWhereClauseExpr('', $satisfies)} END`;
 };
-
 // end of WHERE expression functions
 
 // start of INDEX expression functions

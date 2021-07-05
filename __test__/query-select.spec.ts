@@ -1,7 +1,6 @@
 import {
-  ILetExpr,
-  InWithinOperatorExceptions,
   ISelectType,
+  LetExprType,
   LogicalWhereExpr,
   Query,
   QueryGroupByParamsException,
@@ -44,10 +43,7 @@ describe('Test Query Builder SELECT clause', () => {
       },
     ];
 
-    const letExpr: ILetExpr[] = [
-      { key: 'amount_val', value: 10 },
-      { key: 'size_val', value: 20 },
-    ];
+    const letExpr: LetExprType = { amount_val: 10, size_val: 20 };
     const query = new Query({}, bucketName).select(select).let(letExpr).limit(1).build();
     expect(query).toStrictEqual(
       `SELECT RAW COUNT(DISTINCT amount) AS odm FROM \`${bucketName}\` LET amount_val=10,size_val=20 LIMIT 1`,
@@ -245,10 +241,7 @@ describe('Test Query Builder SELECT clause', () => {
           },
         },
       ],
-      let: [
-        { key: 'amount_val', value: 10 },
-        { key: 'size_val', value: 20 },
-      ],
+      let: { amount_val: 10, size_val: 20 },
       where: {
         $or: [{ price: { $gt: 'amount_val', $isNotNull: true } }, { auto: { $gt: 10 } }, { amount: 10 }],
         $and: [
@@ -277,31 +270,14 @@ describe('Test Query Builder SELECT clause', () => {
   test('Test Collection Operator', async () => {
     const where: LogicalWhereExpr = {
       $any: {
-        $expr: [{ $in: { search_expr: 'search', target_expr: 'address' } }],
-        $satisfies: { address: '10' },
+        $expr: [{ search: { $in: 'address' } }],
+        $satisfies: { search: '10' },
       },
     };
     const query = new Query({}, bucketName).select().where(where).limit(10).build();
     expect(query).toStrictEqual(
-      `SELECT * FROM \`${bucketName}\` WHERE ANY search IN address SATISFIES address="10" END LIMIT 10`,
+      `SELECT * FROM \`${bucketName}\` WHERE ANY search IN address SATISFIES search="10" END LIMIT 10`,
     );
-  });
-
-  test('Test (IN|WITHIN) Operator', async () => {
-    const where: LogicalWhereExpr = {
-      $in: { search_expr: 'search', target_expr: ['address'] },
-    };
-    const query = new Query({}, bucketName).select().where(where).limit(10).build();
-    expect(query).toStrictEqual(`SELECT * FROM \`${bucketName}\` WHERE search IN ["address"] LIMIT 10`);
-  });
-
-  test('Test (IN|WITHIN) Operator Exception', () => {
-    const where: LogicalWhereExpr = {
-      // @ts-ignore
-      $in: { search_expr: 'search' },
-    };
-    const run = () => new Query({}, bucketName).select().where(where).limit(10).build();
-    expect(run).toThrow(InWithinOperatorExceptions);
   });
 
   test('Test GROUP BY clause', async () => {
@@ -309,10 +285,7 @@ describe('Test Query Builder SELECT clause', () => {
     const having: LogicalWhereExpr = {
       type: { $like: '%hotel%' },
     };
-    const letExpr: ILetExpr[] = [
-      { key: 'amount_val', value: 10 },
-      { key: 'size_val', value: 20 },
-    ];
+    const letExpr: LetExprType = { amount_val: 10, size_val: 20 };
     const query = new Query({}, bucketName)
       .select([{ $count: { $field: 'type' } }])
       .groupBy(groupBy)

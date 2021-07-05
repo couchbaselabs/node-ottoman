@@ -14,13 +14,12 @@ export {
   WhereClauseException,
   QueryOperatorNotFoundException,
   IndexParamsUsingGSIExceptions,
-  InWithinOperatorExceptions,
   QueryGroupByParamsException,
   IndexParamsOnExceptions,
 } from './exceptions';
 export { Query } from './query';
 export {
-  ILetExpr,
+  LetExprType,
   SortType,
   ISelectType,
   LogicalWhereExpr,

@@ -1,7 +1,7 @@
 import {
   AggType,
-  CollectionSelectOperator,
-  CollectionInWithinOperator,
+  CollectionRangePredicateOperatorType,
+  CollectionDeepSearchOperatorType,
   ComparisonEmptyOperatorType,
   ComparisonMultipleOperatorType,
   ComparisonSingleOperatorType,
@@ -9,7 +9,7 @@ import {
   LogicalOperatorType,
   ResultExprType,
   ReturnResultType,
-  CollectionSatisfiesOperator,
+  CollectionSatisfiesOperatorType,
 } from '../interface/query.types';
 
 /**
@@ -95,24 +95,26 @@ export const LogicalOperatorDict: Record<LogicalOperatorType, string> = {
 };
 
 /**
- * Dictionary for handling collection Select operators.
+ * Dictionary for handling collection of range predicates operators.
  * */
-export const CollectionSelectOperatorDict: Record<CollectionSelectOperator, string> = {
+export const CollectionRangePredicateOperatorDict: Record<CollectionRangePredicateOperatorType, string> = {
   $any: 'ANY',
   $every: 'EVERY',
 };
 
 /**
- * Dictionary for handling collection (In | Within) operators.
+ * Dictionary for handling collection ( [NOT] IN | WITHIN ) operators.
  * */
-export const CollectionInWithinOperatorDict: Record<CollectionInWithinOperator, string> = {
+export const CollectionDeepSearchOperatorDict: Record<CollectionDeepSearchOperatorType, string> = {
   $in: 'IN',
   $within: 'WITHIN',
+  $notIn: 'NOT IN',
+  $notWithin: 'NOT WITHIN',
 };
 
 /**
  * Dictionary for handling collection Satisfies operators.
  * */
-export const CollectionSatisfiesOperatorDict: Record<CollectionSatisfiesOperator, string> = {
+export const CollectionSatisfiesOperatorDict: Record<CollectionSatisfiesOperatorType, string> = {
   $satisfies: 'SATISFIES',
 };
