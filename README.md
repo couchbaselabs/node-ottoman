@@ -52,7 +52,7 @@ Nice Job!
 ```
 
 ::: tip Note
-If you are using legacy database must check out this [ottomanjs.com](https://ottomanjs.com/)
+If you are using legacy database must check out this [v1.ottomanjs.com](https://v1.ottomanjs.com/)
 :::
 
 

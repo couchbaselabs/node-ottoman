@@ -216,7 +216,11 @@ export class Ottoman {
    * const User = connection.model('User', { name: String }, { collectionName: 'users' });
    * ```
    */
-  model<T = any>(name: string, schema: Schema | Record<string, unknown>, options: ModelOptions = {}): ModelTypes<T> {
+  model<T = any, R = any>(
+    name: string,
+    schema: Schema | Record<string, unknown>,
+    options: ModelOptions = {},
+  ): ModelTypes<T> {
     if (this.models[name]) {
       throw new OttomanError(`A model with name '${name}' has already been registered.`);
     }
@@ -233,7 +237,7 @@ export class Ottoman {
     modelOptions.idKey = options.idKey || this.config.idKey || DEFAULT_ID_KEY;
     modelOptions.maxExpiry = options.maxExpiry || this.config.maxExpiry || DEFAULT_MAX_EXPIRY;
 
-    const ModelFactory = createModel<T>({ name, schemaDraft: schema, options: modelOptions, ottoman: this });
+    const ModelFactory = createModel<T, R>({ name, schemaDraft: schema, options: modelOptions, ottoman: this });
     this.models[name] = ModelFactory;
     return ModelFactory;
   }
@@ -467,8 +471,8 @@ export const start = () => __ottoman && __ottoman.start();
 export const getModel = (name: string) => __ottoman && __ottoman.getModel(name);
 export const getCollection = (collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) =>
   __ottoman && __ottoman.getCollection(collectionName, scopeName);
-export const model = <T = any>(
+export const model = <T = any, R = any>(
   name: string,
   schema: Schema | Record<string, unknown>,
   options?: ModelOptions,
-): ModelTypes<T> => __ottoman && __ottoman.model<T>(name, schema, options);
+): ModelTypes<T> => __ottoman && __ottoman.model<T, R>(name, schema, options);

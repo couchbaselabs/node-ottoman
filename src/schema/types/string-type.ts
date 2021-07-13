@@ -259,10 +259,10 @@ export class StringType extends CoreType {
   }
 
   private _checkEnum(value: string, errors: string[]): void {
-    if (typeof this.enumValues !== 'undefined') {
+    if (value !== 'undefined' && typeof this.enumValues !== 'undefined') {
       const _enumValues = typeof this.enumValues === 'function' ? this.enumValues() : this.enumValues;
       if (!_enumValues.includes(value)) {
-        errors.push(`Property ${this.name} value must be ${_enumValues.join(',')}`);
+        errors.push(`Property '${this.name}' value must be ${_enumValues.join(',')}`);
       }
     }
   }

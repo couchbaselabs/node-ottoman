@@ -46,23 +46,12 @@ test('Test Create Many Errors JSON Strict ', async () => {
   const docs = [{ name: 'Xbox', price: 10 }, { name: 'Yellow Box' }];
   const queryResult: IManyQueryResponse = await Box.createMany(docs);
 
-  const queryResultJson: IManyQueryResponse = {
-    status: 'FAILURE',
-    message: {
-      success: 1,
-      match_number: 2,
-      errors: [
-        {
-          payload: {
-            name: 'Yellow Box',
-          },
-          status: 'FAILURE',
-          exception: 'ValidationError',
-          message: `Property 'price' is required`,
-        },
-      ],
-    },
-  };
+  const queryResultJson: IManyQueryResponse = new ManyQueryResponse('FAILURE', {
+    data: [],
+    success: 1,
+    match_number: 2,
+    errors: [new StatusExecution({ name: 'Yellow Box' }, 'FAILURE', 'ValidationError', `Property 'price' is required`)],
+  });
   const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
   await cleanUp();
   expect(queryResult.status).toBe('FAILURE');

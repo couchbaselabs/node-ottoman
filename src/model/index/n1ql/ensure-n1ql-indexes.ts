@@ -36,7 +36,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
         indexesToBuild[on].push(name);
         await cluster.query(queryForIndexOttomanType(name, on, modelKey));
       } catch (e) {
-        if (e.context.first_error_message !== `The index ${name} already exists.`) {
+        if (e.context && e.context.first_error_message !== `The index ${name} already exists.`) {
           if (isDebugMode()) {
             console.error(`Failed creating N1QL index ${name}`);
           }
@@ -70,7 +70,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
             indexesToBuild[on].push(indexNameSanitized);
           })
           .catch((e) => {
-            if (e.context.first_error_message !== `The index ${indexNameSanitized} already exists.`) {
+            if (e.context && e.context.first_error_message !== `The index ${indexNameSanitized} already exists.`) {
               if (isDebugMode()) {
                 console.error(`Failed creating Secondary N1QL index ${indexNameSanitized}`);
               }

@@ -24,7 +24,7 @@ import { getModelMetadata, setModelMetadata } from './utils/model.utils';
 /**
  * @ignore
  */
-export const createModel = <T = any>({ name, schemaDraft, options, ottoman }: CreateModel) => {
+export const createModel = <T = any, R = any>({ name, schemaDraft, options, ottoman }: CreateModel) => {
   const schema = schemaDraft instanceof Schema ? schemaDraft : new Schema(schemaDraft);
 
   const { idKey: ID_KEY, modelKey, scopeName, collectionName, keyGenerator, keyGeneratorDelimiter } = options;
@@ -89,7 +89,7 @@ export const createModel = <T = any>({ name, schemaDraft, options, ottoman }: Cr
   }
 
   // @ts-ignore
-  return ModelFactory as ModelTypes<T>;
+  return ModelFactory as ModelTypes<T, R>;
 };
 
 export const _buildModel = (metadata: ModelMetadata) => {

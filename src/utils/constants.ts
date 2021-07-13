@@ -46,7 +46,7 @@ export const _keyGenerator = (keyGen, { metadata, id }, delimeter = KEY_GENERATO
 };
 
 function isValidDelimiter(str) {
-  return /[~!#$%&*_\-:<>?]/g.test(str);
+  return /[~!#$%&*_\-:<>?|]/g.test(str);
 }
 
 export const validateDelimiter = (delimiter: string) => {

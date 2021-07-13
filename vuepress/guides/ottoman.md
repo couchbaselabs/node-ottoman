@@ -154,7 +154,7 @@ import { Ottoman, CertificateAuthenticator } from 'ottoman';
 const ottoman = new Ottoman();
 
 ottoman.connect({
-  connectionString: 'couchbase://localhost',
+  connectionString: 'couchbases://localhost',
   bucketName: 'travel-sample',
   authenticator: new CertificateAuthenticator(
     "/path/to/client/certificate.pem",

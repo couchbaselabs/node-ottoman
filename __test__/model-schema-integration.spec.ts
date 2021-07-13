@@ -89,4 +89,94 @@ describe('Test Model-Schema Integration and Validations', () => {
     expect((user.created as any).toISOString()).toBe(dateString);
     expect((user.created as any) instanceof Date).toBe(true);
   });
+
+  test('optional enum values', async () => {
+    const schema = {
+      callsign: {
+        type: String,
+        required: true,
+      },
+      size: {
+        type: String,
+        enum: ['S', 'M', 'L'],
+      },
+      type: {
+        type: String,
+        enum: ['ECONOMY', 'FIRST CLASS', 'PRIVATE'],
+        uppercase: true,
+        trim: true,
+      },
+    };
+
+    const Airplane = model('Airplane', schema);
+
+    await startInTest(getDefaultInstance());
+
+    const response = await Airplane.createMany({ callsign: 'Hawk', capacity: 1000 });
+    expect(response.status).toBe('SUCCESS');
+  });
+
+  test('fail: wrong enum values', async () => {
+    const schema = {
+      callsign: {
+        type: String,
+        required: true,
+      },
+      size: {
+        type: String,
+        enum: ['S', 'M', 'L'],
+      },
+      type: {
+        type: String,
+        enum: ['ECONOMY', 'FIRST CLASS', 'PRIVATE'],
+        uppercase: true,
+        trim: true,
+      },
+    };
+
+    const Airplane = model('Airplane', schema);
+
+    await startInTest(getDefaultInstance());
+
+    const response = await Airplane.createMany({ callsign: 'Hawk', capacity: 1000, size: 'XL' });
+    expect(response.status).toBe('FAILURE');
+    expect(response.message.errors.length).toBe(1);
+    expect(response.message.errors[0].message).toBe(`Property 'size' value must be S,M,L`);
+  });
+
+  test('fail: required enum values', async () => {
+    const schema = {
+      callsign: {
+        type: String,
+        required: true,
+      },
+      size: {
+        type: String,
+        enum: ['S', 'M', 'L'],
+      },
+      type: {
+        type: String,
+        enum: ['ECONOMY', 'FIRST CLASS', 'PRIVATE'],
+        uppercase: true,
+        trim: true,
+        required: true,
+      },
+    };
+
+    interface IAirplane {
+      type?: string;
+      size?: string;
+      callsign: string;
+    }
+
+    const Airplane = model<IAirplane, IAirplane>('Airplane', schema);
+
+    await startInTest(getDefaultInstance());
+
+    const response = await Airplane.createMany<IAirplane, IAirplane>({ callsign: 'Hawk', size: 'S' });
+    response.message.data;
+    expect(response.status).toBe('FAILURE');
+    expect(response.message.errors.length).toBe(1);
+    expect(response.message.errors[0].message).toBe(`Property 'type' is required`);
+  });
 });
