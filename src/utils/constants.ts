@@ -41,8 +41,11 @@ export const KEY_GENERATOR_DELIMITER = '::';
  */
 export const _keyGenerator = (keyGen, { metadata, id }, delimeter = KEY_GENERATOR_DELIMITER) => {
   const prefix = keyGen({ metadata });
-  const key = prefix ? `${delimeter}${id}` : id;
-  return `${prefix}${key}`;
+  const prefixDelimeter = `${prefix || ''}${delimeter || ''}`;
+  if (prefixDelimeter && id.toString().startsWith(prefixDelimeter)) {
+    return id;
+  }
+  return `${prefixDelimeter}${id}`;
 };
 
 function isValidDelimiter(str) {
