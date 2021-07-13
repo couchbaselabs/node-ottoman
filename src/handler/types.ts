@@ -52,7 +52,7 @@ export class StatusExecution implements IStatusExecution {
  * @field errors List of errors thrown in the execution
  * */
 export interface ManyResponse<T = any> {
-  data?: T[];
+  data: T[];
   match_number: number;
   success: number;
   errors: StatusExecution[];
@@ -66,7 +66,7 @@ export interface IManyQueryResponse<T = any> {
 /**
  * Response class for bulk operations.
  * */
-export class ManyQueryResponse<T = any> extends QueryResponse<ManyResponse> implements IManyQueryResponse<T> {
+export class ManyQueryResponse<T = any> extends QueryResponse<ManyResponse<T>> implements IManyQueryResponse<T> {
   /**
    * @param status Status of Execution ('SUCCESS' | 'FAILURE')
    * @param message: Message of Response see [ManyResponse](/interfaces/manyresponse.html)
