@@ -24,10 +24,19 @@ const params = {
   ],
   let: { amount_val: 10, size_val: 20 },
   where: {
-    $or: [{ price: { $gt: 'amount_val', $isNotNull: true } }, { auto: { $gt: 10 } }, { amount: 10 }],
+    $or: [
+      { price: { $gt: 'amount_val', $isNotNull: true } }, 
+      { auto: { $gt: 10 } }, 
+      { amount: 10 }
+    ],
     $and: [
       { price2: { $gt: 1.99, $isNotNull: true } },
-      { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
+      { 
+        $or: [
+          { price3: { $gt: 1.99, $isNotNull: true } }, 
+          { id: '20' }
+        ] 
+      },
       { name: { $eq: 'John', $ignoreCase: true } },
     ],
     $any: {
@@ -51,9 +60,9 @@ console.log(query);
 ```sql
 -- N1QL query result:
 SELECT COUNT(type) AS odm
-FROM `travel-sample`._default._default USE KEYS ["airline_8093","airline_8094"]
-  LET amount_val=10,
-    size_val=20
+FROM `travel-sample`._default._default 
+ USE KEYS ["airline_8093","airline_8094"]
+ LET amount_val=10, size_val=20
 WHERE (( price>"amount_val"
   AND price IS NOT NULL )
   OR auto>10
@@ -66,8 +75,7 @@ WHERE (( price>"amount_val"
   AND (LOWER(name) = LOWER("John")) )
   AND ANY search IN address SATISFIES address="10" END
   AND search IN ["address"]
-GROUP BY type AS sch LETTING amount_v2=10,
-         size_v2=20
+GROUP BY type AS sch LETTING amount_v2=10, size_v2=20
 HAVING type LIKE "%hotel%"
 ORDER BY type DESC
 LIMIT 10
@@ -82,9 +90,7 @@ Creating queries by using the access function is very similar to create them wit
 const select = [
   {
     $count: {
-      $field: {
-        name: 'type',
-      },
+      $field: { name: 'type' },
       as: 'odm',
     },
   },
@@ -96,16 +102,23 @@ const select = [
 ];
 const letExpr = { amount_val: 10, size_val: 20 };
 const where = {
-  $or: [{ price: { $gt: 'amount_val', $isNotNull: true } }, { auto: { $gt: 10 } }, { amount: 10 }],
+  $or: [
+    { price: { $gt: 'amount_val', $isNotNull: true } }, 
+    { auto: { $gt: 10 } }, 
+    { amount: 10 }
+  ],
   $and: [
     { price2: { $gt: 1.99, $isNotNull: true } },
-    { $or: [{ price3: { $gt: 1.99, $isNotNull: true } }, { id: '20' }] },
+    { 
+      $or: [
+        { price3: { $gt: 1.99, $isNotNull: true } }, 
+        { id: '20' }
+      ]
+    },
   ],
 };
 const groupBy = [{ expr: 'type', as: 'sch' }];
-const having = {
-  type: { $like: '%hotel%' },
-};
+const having = { type: { $like: '%hotel%' } };
 const lettingExpr = { amount_v2: 10, size_v2: 20 };
 const orderBy = { type: 'DESC' };
 const limit = 10;
@@ -129,11 +142,9 @@ console.log(query);
 
 ```sql
 -- N1QL query result:
-SELECT COUNT(type) AS odm,
-       MAX(amount)
+SELECT COUNT(type) AS odm, MAX(amount)
 FROM `travel-sample` USE KEYS ['airline_8093','airline_8094']
-  LET amount_val = 10,
-    size_val = 20
+  LET amount_val = 10, size_val = 20
 WHERE ((price > amount_val
   AND price IS NOT NULL)
   OR auto > 10
@@ -143,8 +154,7 @@ WHERE ((price > amount_val
   AND ((price3 > 1.99
     AND price3 IS NOT NULL)
     OR id = '20') )
-GROUP BY type AS sch LETTING amount_v2=10,
-         size_v2=20
+GROUP BY type AS sch LETTING amount_v2=10, size_v2=20
 HAVING type LIKE "%hotel%"
 ORDER BY type = 'DESC'
 LIMIT 10
@@ -155,7 +165,10 @@ OFFSET 1
 
 ```ts
 const select = [{ $field: 'address' }];
-const query = new Query({ where: { price: { $gt: 5 } } }, 'travel-sample').select(select).limit(10).build();
+const query = new Query({ where: { price: { $gt: 5 } } }, 'travel-sample')
+  .select(select)
+  .limit(10)
+  .build();
 console.log(query);
 ```
 
@@ -182,7 +195,11 @@ const where = {
     { id: { $lt: 5000 } },
     { id: { $lte: 4999 } },
   ],
-  $and: [{ address: { $isNotNull: true } }, { address: { $isNotMissing: true } }, { address: { $isValued: true } }],
+  $and: [
+    { address: { $isNotNull: true } }, 
+    { address: { $isNotMissing: true } }, 
+    { address: { $isValued: true } }
+  ],
   $not: [
     {
       address: { $like: '%59%' },
@@ -194,7 +211,11 @@ const where = {
     },
   ],
 };
-const query = new Query({}, 'travel-sample').select().where(where).limit(20).build();
+const query = new Query({}, 'travel-sample')
+  .select()
+  .where(where)
+  .limit(20)
+  .build();
 console.log(query);
 ```
 
@@ -217,7 +238,7 @@ WHERE ( address IS NULL
   AND NOT ( address LIKE "%59%"
   AND name NOT LIKE "Otto%"
   AND (id BETWEEN 1 AND 2000
-    OR id NOT BETWEEN 2001 AND 8000)
+   OR id NOT BETWEEN 2001 AND 8000)
   AND (LOWER(address) LIKE LOWER("St%")) )
 LIMIT 20
 ```
@@ -228,9 +249,11 @@ Can also use `ignoreCase` as part of the `build` method, this will always priori
 ```ts
   const expr_where = {
    $or: [
-     { address: { $like: '%57-59%', $ignoreCase: false } }, // ignoreCase will not be applied
-     { free_breakfast: true },
-     { name: { $eq: 'John' } } //  ignoreCase will be applied
+    { address: { 
+      $like: '%57-59%', $ignoreCase: false } // ignoreCase not applied
+    },
+    { free_breakfast: true },
+    { name: { $eq: 'John' } } //  ignoreCase applied
    ],
  };
 /**
@@ -238,15 +261,16 @@ Can also use `ignoreCase` as part of the `build` method, this will always priori
  * const expr_where = {
  *   $or: [
  *     ...
- *     { name:'John' } //  ignoreCase will be applied
+ *     { name:'John' } //  ignoreCase applied
  *   ],
  * };
  * 
  */
 const query = new Query({}, 'travel-sample');
-const result = query.select([{ $field: 'address' }])
+const result = query
+  .select([{ $field: 'address' }])
   .where(expr_where)
-  .build({ ignoreCase: true }); // ignore case is enabled for where clause elements
+  .build({ ignoreCase: true }); // ignoreCase enabled for WHERE clause
 console.log(result)
 ```
 
@@ -257,8 +281,8 @@ Would have as output:
 SELECT address
 FROM `travel-sample`
 WHERE ( address LIKE "%57-59%"
-  OR free_breakfast = TRUE
-  OR (LOWER(name) = LOWER("John")) );
+   OR free_breakfast = TRUE
+   OR (LOWER(name) = LOWER("John")) );
 ```
 :::
 
@@ -268,7 +292,7 @@ See definition [here](/classes/query.html#select)
 
 The syntax of a SELECT clause in n1ql is documented [here](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/select-syntax.html).
 
-Available Result Expression Arguments:
+### Available Result Expression Arguments
 
 | key        | value    |
 | ---------- | -------- |
@@ -278,7 +302,7 @@ Available Result Expression Arguments:
 | \$element  | ELEMENT  |
 | \$value    | VALUE    |
 
-Available Aggregation Functions:
+### Available Aggregation Functions
 
 | key            | value         |
 | -------------- | ------------- |
@@ -305,7 +329,12 @@ Available Aggregation Functions:
 ```typescript
 const query = new Query({}, 'travel-sample a');
 const result = query
-  .select([{ $field: { name: '{"latLon": {geo.lat, geo.lon} }', as: 'geo' } }])
+  .select([{ 
+    $field: { 
+      name: '{ "latLon": { geo.lat, geo.lon } }', 
+      as: 'geo' 
+    }
+  }])
   .where({ 'a.type': 'hotel' })
   .build();
 ```
@@ -316,9 +345,9 @@ const result = query
 
 See definition [here](/classes/query.html#where)
 
-The syntax of a WHERE clause in n1ql is documented [here](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/where.html).
+The syntax of a WHERE clause in N1QL is documented [here](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/where.html).
 
-Available Comparison Operators:
+### Available Comparison Operators
 
 | key            | value          |
 | -------------- | -------------- |
@@ -339,7 +368,7 @@ Available Comparison Operators:
 | \$btw          | BETWEEN        |
 | \$notBtw       | NOT BETWEEN    |
 
-Available Logical operators:
+### Available Logical Operators
 
 | key   | value |
 | ----- | ----- |
@@ -347,7 +376,7 @@ Available Logical operators:
 | \$or  | OR    |
 | \$not | NOT   |
 
-Available COLLECTION operators:
+### Available Collection Operators
 
 | key         | value      |
 | ----------- | ---------- |
@@ -388,13 +417,11 @@ const query = new Query({}, `travel-sample t`)
 With the above implementation will get this sql query:
 
 ```sql
-SELECT name,
-       country,
-       id
+SELECT name, country, id
 FROM `travel-sample` t
 WHERE type="airline"
-    AND country IN ["United Kingdom","France"]
-    AND "CORSAIR" WITHIN t;
+  AND country IN ["United Kingdom","France"]
+  AND "CORSAIR" WITHIN t;
 ```
 
 Now we call to Ottoman instance
@@ -425,6 +452,7 @@ Here is the output:
 ```ts
 // Defining our selection
 const selectExpr = 'airline,airlineid,destinationairport,distance';
+
 // Using LET operator to store some data
 const letExpr: LetExprType = { destination: ['ATL'] };
 ```
@@ -473,18 +501,18 @@ console.log(query);
 We will obtain the query:
 
 ```sql
-SELECT airline,
-       airlineid,
-       destinationairport,
-       distance
+SELECT airline, airlineid, destinationairport, distance
 FROM `travel-sample`
 LET destination=["ATL"]
 WHERE type="route"
-    AND (sourceairport="ABQ"
-        AND ANY departure IN schedule,
-                         other WITHIN ["KL","AZ"] SATISFIES (departure.utc>"03:53"
-                                 AND other=airline) END
-        AND destinationairport IN destination)
+  AND (
+    sourceairport="ABQ"
+    AND ANY departure IN schedule,
+    other WITHIN ["KL","AZ"] 
+    SATISFIES (
+      departure.utc>"03:53" AND other=airline
+    ) END
+      AND destinationairport IN destination)
 ```
 
 ```ts
@@ -535,25 +563,25 @@ const whereExpr: LogicalWhereExpr = {
 };
 
 // Building the query
-const query = new Query({}, 'travel-sample').select(selectExpr).where(whereExpr).build();
+const query = new Query({}, 'travel-sample')
+  .select(selectExpr)
+  .where(whereExpr)
+  .build();
 console.log(query);
 ```
 
 The resulting query would be:
 
 ```sql
-SELECT airline,
-       airlineid,
-       destinationairport,
-       distance
+SELECT airline, airlineid, destinationairport, distance
 FROM `travel-sample`
 WHERE type="route"
-      AND (
-        airline="KL"
-        AND sourceairport LIKE "ABQ"
-        AND destinationairport IN ["ATL"]
-        AND EVERY departure IN schedule SATISFIES departure.utc>"00:35" END
-      );
+  AND (
+    airline="KL"
+    AND sourceairport LIKE "ABQ"
+    AND destinationairport IN ["ATL"]
+    AND EVERY departure IN schedule SATISFIES departure.utc>"00:35" END
+  );
 ```
 
 Now let's run the query:
@@ -585,10 +613,10 @@ Let's start from query:
 SELECT country, icao, name
 FROM `travel-sample`
 WHERE type="airline"
-      AND (country IN ["United Kingdom","France"])
-      AND callsign IS NOT NULL
-      AND ANY description WITHIN ["EU"] SATISFIES icao 
-      LIKE "%" || description END
+  AND (country IN ["United Kingdom","France"])
+  AND callsign IS NOT NULL
+  AND ANY description WITHIN ["EU"] SATISFIES icao 
+ LIKE "%" || description END
 LIMIT 2
 ```
 
