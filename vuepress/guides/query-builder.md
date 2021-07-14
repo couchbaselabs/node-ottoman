@@ -150,6 +150,7 @@ ORDER BY type = 'DESC'
 LIMIT 10
 OFFSET 1
 ```
+
 ### Build a Query by Using Parameters and Function Parameters
 
 ```ts
@@ -250,6 +251,7 @@ console.log(result)
 ```
 
 Would have as output:
+
 ```sql
 -- N1QL query result:
 SELECT address
@@ -363,9 +365,13 @@ Available String Modifiers:
 | ------------ | ------- |
 | \$ignoreCase | Boolean |
 
-### Lets see some functional examples
+### Functional Examples
+
+Let's take a deeper dive into using various operators with Ottoman's Query Builder
+
 #### Using Deep Search Operators *( [NOT] IN | WITHIN )*
 The [IN]((https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-in)) operator specifies the search depth to include only the current level of an array and not to include any child or descendant arrays. On the other hand the [WITHIN](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-within) operator include the current level of an array and all of its child and descendant arrays.
+
 ```ts
 // Defining our where clause
 const where: LogicalWhereExpr = {
@@ -374,11 +380,13 @@ const where: LogicalWhereExpr = {
   [`"CORSAIR"`]: { $within: { $field: 't' } },
 };
 const query = new Query({}, `travel-sample t`)
-                    .select('name,country,id')
-                    .where(where)
-                    .build();
+  .select('name,country,id')
+  .where(where)
+  .build();
 ```
+
 With the above implementation will get this sql query:
+
 ```sql
 SELECT name,
        country,
@@ -388,7 +396,9 @@ WHERE type="airline"
     AND country IN ["United Kingdom","France"]
     AND "CORSAIR" WITHIN t;
 ```
+
 Now we call to Ottoman instance
+
 ```ts
 const ottoman = getDefaultInstance();
 await ottoman.start();
@@ -396,7 +406,9 @@ await ottoman.start();
 const response = await ottoman.query(query);
 console.log(response);
 ```
+
 Here is the output:
+
 ```sh
 [
   {
@@ -406,14 +418,17 @@ Here is the output:
   }
 ]
 ```
+
 #### Using Range Predicate Operators *( ANY | EVERY )*
 [ANY](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-any) is a range predicate that tests a Boolean condition over the elements or attributes of a collection, object, or objects. It uses the `IN` and `WITHIN` operators to range through the collection. If at least one item in the array satisfies the `ANY` expression, then it returns the entire array; otherwise, it returns an empty array. Let's see it in action:
+
 ```ts
 // Defining our selection
 const selectExpr = 'airline,airlineid,destinationairport,distance';
 // Using LET operator to store some data
 const letExpr: LetExprType = { destination: ['ATL'] };
 ```
+
 For `ANY` and `EVERY` in Ottoman we use the operators `$expr` and `$satisfies`:
 > ***$expr:*** is an array of expressions with the structure: \
 > `[{ SEARCH_EXPRESSION: { [$in|$within]: TARGET_EXPRESSION } }]`
@@ -448,13 +463,15 @@ const whereExpr: LogicalWhereExpr = {
 };
 
 const query = new Query({}, 'travel-sample')
-                       .select(selectExpr)
-                       .let(letExpr)
-                       .where(whereExpr)
-                       .build();
+  .select(selectExpr)
+  .let(letExpr)
+  .where(whereExpr)
+  .build();
 console.log(query);
 ```
+
 We will obtain the query:
+
 ```sql
 SELECT airline,
        airlineid,
@@ -469,6 +486,7 @@ WHERE type="route"
                                  AND other=airline) END
         AND destinationairport IN destination)
 ```
+
 ```ts
 const ottoman = getDefaultInstance();
 await ottoman.start();
@@ -477,7 +495,9 @@ await ottoman.start();
 const { rows } = await ottoman.query(query);
 console.log(rows);
 ```
+
 The query output:
+
 ```sh
 [
   {
@@ -496,6 +516,7 @@ The query output:
 ```
 
 [EVERY](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-every) is very similar to` ANY` with the main difference being that all the elements of the array must satisfy the defined condition. Let's see how it works:
+
 ```ts
 // Changing a little the above where expression definition:
 const whereExpr: LogicalWhereExpr = {
@@ -517,7 +538,9 @@ const whereExpr: LogicalWhereExpr = {
 const query = new Query({}, 'travel-sample').select(selectExpr).where(whereExpr).build();
 console.log(query);
 ```
+
 The resulting query would be:
+
 ```sql
 SELECT airline,
        airlineid,
@@ -525,12 +548,16 @@ SELECT airline,
        distance
 FROM `travel-sample`
 WHERE type="route"
-    AND (airline="KL"
+      AND (
+        airline="KL"
         AND sourceairport LIKE "ABQ"
         AND destinationairport IN ["ATL"]
-        AND EVERY departure IN schedule SATISFIES departure.utc>"00:35" END);
+        AND EVERY departure IN schedule SATISFIES departure.utc>"00:35" END
+      );
 ```
+
 Now let's run the query:
+
 ```ts
 const ottoman = getDefaultInstance();
 await ottoman.start();
@@ -539,6 +566,7 @@ const { rows } = await ottoman.query(query);
 console.log(rows);
 ```
 We would have as a result:
+
 ```sh
 [
   {
@@ -552,18 +580,20 @@ We would have as a result:
 
 #### Query Builder & Model Find Method
 Let's start from query:
+
 ```sql
-SELECT country,
-       icao,
-       name
+SELECT country, icao, name
 FROM `travel-sample`
 WHERE type="airline"
-    AND (country IN ["United Kingdom","France"])
-    AND callsign IS NOT NULL
-    AND ANY description WITHIN ["EU"] SATISFIES icao LIKE "%"||description END
+      AND (country IN ["United Kingdom","France"])
+      AND callsign IS NOT NULL
+      AND ANY description WITHIN ["EU"] SATISFIES icao 
+      LIKE "%" || description END
 LIMIT 2
 ```
-Using Model find method
+
+Using Model find method:
+
 ```ts
 // Defining our SCHEMA
 const airlineSchema = new Schema({
@@ -599,7 +629,9 @@ const response = await Airline.find(
 // Print output
 console.log(response.rows);
 ```
-Via Query Builder
+
+Via Query Builder:
+
 ```ts
 // Defining our query
 const query = new Query({ select: 'country,icao,name' }, 'travel-sample')
@@ -625,7 +657,9 @@ const response = await ottoman.query(query);
 // Print output
 console.log(response.rows);
 ```
+
 For above examples we get this output:
+
 ```sh
 [
   {
