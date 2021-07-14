@@ -5,6 +5,7 @@ module.exports = {
     displayAllHeaders: true,
     nav: [
       { text: 'Home', link: '/' },
+      { text: 'FAQ', link: '/guides/faq.md' },
       { text: 'Quick Start', link: '/guides/quick-start.md' },
       {
         text: 'Basic',
