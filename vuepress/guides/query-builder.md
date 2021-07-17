@@ -25,17 +25,17 @@ const params = {
   let: { amount_val: 10, size_val: 20 },
   where: {
     $or: [
-      { price: { $gt: 'amount_val', $isNotNull: true } }, 
-      { auto: { $gt: 10 } }, 
+      { price: { $gt: 'amount_val', $isNotNull: true } },
+      { auto: { $gt: 10 } },
       { amount: 10 }
     ],
     $and: [
       { price2: { $gt: 1.99, $isNotNull: true } },
-      { 
+      {
         $or: [
-          { price3: { $gt: 1.99, $isNotNull: true } }, 
+          { price3: { $gt: 1.99, $isNotNull: true } },
           { id: '20' }
-        ] 
+        ]
       },
       { name: { $eq: 'John', $ignoreCase: true } },
     ],
@@ -60,26 +60,25 @@ console.log(query);
 ```sql
 -- N1QL query result:
 SELECT COUNT(type) AS odm
-FROM `travel-sample`._default._default 
+FROM `travel-sample`._default._default
  USE KEYS ["airline_8093","airline_8094"]
  LET amount_val=10, size_val=20
-WHERE (( price>"amount_val"
-  AND price IS NOT NULL )
-  OR auto>10
-  OR amount=10)
-  AND ( (price2>1.99
+WHERE ((price > "amount_val"
+  AND price IS NOT NULL)
+  OR auto > 10
+  OR amount = 10)
+  AND ((price2 > 1.99
   AND price2 IS NOT NULL)
   AND ((price3 > 1.99
     AND price3 IS NOT NULL)
-    OR id="20")
-  AND (LOWER(name) = LOWER("John")) )
-  AND ANY search IN address SATISFIES address="10" END
+    OR id = "20")
+  AND (LOWER(name) = LOWER("John")))
+  AND ANY search IN address SATISFIES address = "10" END
   AND search IN ["address"]
 GROUP BY type AS sch LETTING amount_v2=10, size_v2=20
 HAVING type LIKE "%hotel%"
 ORDER BY type DESC
-LIMIT 10
-OFFSET 1
+LIMIT 10 OFFSET 1
 ```
 
 ### Build a Query by Using Access Functions
@@ -103,15 +102,15 @@ const select = [
 const letExpr = { amount_val: 10, size_val: 20 };
 const where = {
   $or: [
-    { price: { $gt: 'amount_val', $isNotNull: true } }, 
-    { auto: { $gt: 10 } }, 
+    { price: { $gt: 'amount_val', $isNotNull: true } },
+    { auto: { $gt: 10 } },
     { amount: 10 }
   ],
   $and: [
     { price2: { $gt: 1.99, $isNotNull: true } },
-    { 
+    {
       $or: [
-        { price3: { $gt: 1.99, $isNotNull: true } }, 
+        { price3: { $gt: 1.99, $isNotNull: true } },
         { id: '20' }
       ]
     },
@@ -149,16 +148,15 @@ WHERE ((price > amount_val
   AND price IS NOT NULL)
   OR auto > 10
   OR amount = 10)
-  AND ( (price2 > 1.99
+  AND ((price2 > 1.99
   AND price2 IS NOT NULL)
   AND ((price3 > 1.99
     AND price3 IS NOT NULL)
-    OR id = '20') )
+    OR id = '20'))
 GROUP BY type AS sch LETTING amount_v2=10, size_v2=20
 HAVING type LIKE "%hotel%"
 ORDER BY type = 'DESC'
-LIMIT 10
-OFFSET 1
+LIMIT 10 OFFSET 1
 ```
 
 ### Build a Query by Using Parameters and Function Parameters
@@ -196,8 +194,8 @@ const where = {
     { id: { $lte: 4999 } },
   ],
   $and: [
-    { address: { $isNotNull: true } }, 
-    { address: { $isNotMissing: true } }, 
+    { address: { $isNotNull: true } },
+    { address: { $isNotMissing: true } },
     { address: { $isValued: true } }
   ],
   $not: [
@@ -223,7 +221,7 @@ console.log(query);
 -- N1QL query result:
 SELECT *
 FROM `travel-sample`
-WHERE ( address IS NULL
+WHERE (address IS NULL
   OR free_breakfast IS MISSING
   OR free_breakfast IS NOT VALUED
   OR id = 8000
@@ -231,15 +229,15 @@ WHERE ( address IS NULL
   OR id > 7000
   OR id >= 6999
   OR id < 5000
-  OR id <= 4999 )
-  AND ( address IS NOT NULL
+  OR id <= 4999)
+  AND (address IS NOT NULL
   AND address IS NOT MISSING
-  AND address IS VALUED )
-  AND NOT ( address LIKE "%59%"
+  AND address IS VALUED)
+  AND NOT (address LIKE "%59%"
   AND name NOT LIKE "Otto%"
   AND (id BETWEEN 1 AND 2000
-   OR id NOT BETWEEN 2001 AND 8000)
-  AND (LOWER(address) LIKE LOWER("St%")) )
+    OR id NOT BETWEEN 2001 AND 8000)
+  AND (LOWER(address) LIKE LOWER("St%")))
 LIMIT 20
 ```
 
@@ -247,24 +245,22 @@ LIMIT 20
 Can also use `ignoreCase` as part of the `build` method, this will always prioritize the `$ignoreCase` value defined in clause
 
 ```ts
-  const expr_where = {
-   $or: [
-    { address: { 
-      $like: '%57-59%', $ignoreCase: false } // ignoreCase not applied
-    },
+const expr_where = {
+  $or: [
+    { address: { $like: '%57-59%', $ignoreCase: false } }, // ignoreCase not applied
     { free_breakfast: true },
     { name: { $eq: 'John' } } //  ignoreCase applied
-   ],
- };
+  ],
+};
 /**
  * Can also use:
  * const expr_where = {
  *   $or: [
  *     ...
- *     { name:'John' } //  ignoreCase applied
+ *     { name: 'John' } // ignoreCase applied
  *   ],
  * };
- * 
+ *
  */
 const query = new Query({}, 'travel-sample');
 const result = query
@@ -280,10 +276,11 @@ Would have as output:
 -- N1QL query result:
 SELECT address
 FROM `travel-sample`
-WHERE ( address LIKE "%57-59%"
-   OR free_breakfast = TRUE
-   OR (LOWER(name) = LOWER("John")) );
+WHERE (address LIKE "%57-59%"
+  OR free_breakfast = TRUE
+  OR (LOWER(name) = LOWER("John")));
 ```
+
 :::
 
 ## N1QL SELECT Clause Structure
@@ -329,17 +326,21 @@ The syntax of a SELECT clause in n1ql is documented [here](https://docs.couchbas
 ```typescript
 const query = new Query({}, 'travel-sample a');
 const result = query
-  .select([{ 
-    $field: { 
-      name: '{ "latLon": { geo.lat, geo.lon } }', 
-      as: 'geo' 
+  .select([{
+    $field: {
+      name: '{ "latLon": { geo.lat, geo.lon } }',
+      as: 'geo'
     }
   }])
   .where({ 'a.type': 'hotel' })
   .build();
 ```
 
-> 'SELECT {"latLon": {geo.lat, geo.lon} } AS geo FROM `travel-sample` a WHERE a.type="hotel"'
+```sql
+SELECT {"latLon": {geo.lat, geo.lon} } AS geo
+FROM `travel-sample` a
+WHERE a.type = "hotel"
+```
 
 ## N1QL WHERE Clause Structure
 
@@ -394,12 +395,13 @@ Available String Modifiers:
 | ------------ | ------- |
 | \$ignoreCase | Boolean |
 
-### Functional Examples
+## Functional *COLLECTION* Operators Examples
 
-Let's take a deeper dive into using various operators with Ottoman's Query Builder
+Let's take a deeper dive into using various collection operators with Ottoman's Query Builder
 
-#### Using Deep Search Operators *( [NOT] IN | WITHIN )*
-The [IN]((https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-in)) operator specifies the search depth to include only the current level of an array and not to include any child or descendant arrays. On the other hand the [WITHIN](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-within) operator include the current level of an array and all of its child and descendant arrays.
+### Using Deep Search Operators *( [NOT] IN | WITHIN )*
+
+The [IN]((https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-in)) operator specifies the search depth to *include* ***only*** *the current level of an array and* ***not*** *to include any child or descendant arrays*. On the other hand the [WITHIN](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-within) operator *include the current level of an array and* ***all*** *of its child and descendant arrays*.
 
 ```ts
 // Defining our where clause
@@ -419,7 +421,7 @@ With the above implementation will get this sql query:
 ```sql
 SELECT name, country, id
 FROM `travel-sample` t
-WHERE type="airline"
+WHERE type = "airline"
   AND country IN ["United Kingdom","France"]
   AND "CORSAIR" WITHIN t;
 ```
@@ -446,7 +448,8 @@ Here is the output:
 ]
 ```
 
-#### Using Range Predicate Operators *( ANY | EVERY )*
+### Using Range Predicate Operators *( ANY | EVERY )*
+
 [ANY](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-any) is a range predicate that tests a Boolean condition over the elements or attributes of a collection, object, or objects. It uses the `IN` and `WITHIN` operators to range through the collection. If at least one item in the array satisfies the `ANY` expression, then it returns the entire array; otherwise, it returns an empty array. Let's see it in action:
 
 ```ts
@@ -460,12 +463,13 @@ const letExpr: LetExprType = { destination: ['ATL'] };
 For `ANY` and `EVERY` in Ottoman we use the operators `$expr` and `$satisfies`:
 > ***$expr:*** is an array of expressions with the structure: \
 > `[{ SEARCH_EXPRESSION: { [$in|$within]: TARGET_EXPRESSION } }]`
->   - *`SEARCH_EXPRESSION`*: A string or expression that evaluates to a string representing the variable name in the `ANY` loop.
+>   - *`SEARCH_EXPRESSION`*: A string or expression that evaluates to a string representing the variable name in the `ANY | EVERY` loop.
 >   - *`TARGET_EXPRESSION`*: A string or expression that evaluates to a string representing the array to loop through.
 >
 > ***$satisfies:*** An expression representing the limiting or matching clause to test against
 
 Now we create the `WHERE` clause including the `ANY` operator:
+
 ```ts
 const whereExpr: LogicalWhereExpr = {
   type: { $eq: 'route' },
@@ -504,15 +508,15 @@ We will obtain the query:
 SELECT airline, airlineid, destinationairport, distance
 FROM `travel-sample`
 LET destination=["ATL"]
-WHERE type="route"
+WHERE type = "route"
   AND (
-    sourceairport="ABQ"
+    sourceairport = "ABQ"
     AND ANY departure IN schedule,
-    other WITHIN ["KL","AZ"] 
+    other WITHIN ["KL","AZ"]
     SATISFIES (
-      departure.utc>"03:53" AND other=airline
+        departure.utc > "03:53" AND other = airline
     ) END
-      AND destinationairport IN destination)
+    AND destinationairport IN destination)
 ```
 
 ```ts
@@ -575,12 +579,12 @@ The resulting query would be:
 ```sql
 SELECT airline, airlineid, destinationairport, distance
 FROM `travel-sample`
-WHERE type="route"
+WHERE type = "route"
   AND (
-    airline="KL"
+    airline = "KL"
     AND sourceairport LIKE "ABQ"
     AND destinationairport IN ["ATL"]
-    AND EVERY departure IN schedule SATISFIES departure.utc>"00:35" END
+    AND EVERY departure IN schedule SATISFIES departure.utc > "00:35" END
   );
 ```
 
@@ -593,6 +597,7 @@ await ottoman.start();
 const { rows } = await ottoman.query(query);
 console.log(rows);
 ```
+
 We would have as a result:
 
 ```sh
@@ -606,21 +611,22 @@ We would have as a result:
 ]
 ```
 
-#### Query Builder & Model Find Method
+### Query Builder & Model Find Method
+
 Let's start from query:
 
 ```sql
 SELECT country, icao, name
 FROM `travel-sample`
-WHERE type="airline"
+WHERE type = "airline"
   AND (country IN ["United Kingdom","France"])
   AND callsign IS NOT NULL
-  AND ANY description WITHIN ["EU"] SATISFIES icao 
- LIKE "%" || description END
+  AND ANY description WITHIN ["EU"] SATISFIES icao
+  LIKE "%" || description END
 LIMIT 2
 ```
 
-Using Model find method:
+Using Model find method
 
 ```ts
 // Defining our SCHEMA
@@ -658,7 +664,7 @@ const response = await Airline.find(
 console.log(response.rows);
 ```
 
-Via Query Builder:
+Via Query Builder
 
 ```ts
 // Defining our query

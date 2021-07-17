@@ -120,7 +120,7 @@ const tom = new User({
 So far we have simply defined the model structure and created documents locally.
 
 Now that we want to persist the documents, all our interaction with the Couchbase server
-will be done asynchronously, so we will call Ottomonan's `save()` method on each
+will be done asynchronously, so we will call Ottoman's `save()` method on each
 object using the `async`/`await` technique.
 
 

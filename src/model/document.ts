@@ -130,7 +130,7 @@ export abstract class Document<T = any> {
    *
    * await user.save(); // user saved into the DB
    *
-   * You also can force save function to only create new Documents by passing true as argument
+   * // You also can force save function to only create new Documents by passing true as argument
    * await user.save(true); // ensure to execute a insert operation
    * ```
    */
@@ -425,28 +425,28 @@ export abstract class Document<T = any> {
       if (modelName) {
         const ref = this[fieldName];
         const refFields = Array.isArray(ref) ? ref : [ref];
-        for (let i = 0; i < refFields.length; i++) {
+        const refFieldsLength = refFields.length;
+        for (let i = 0; i < refFieldsLength; i++) {
           const refField = refFields[i];
           if (typeof refField === 'string' && modelName) {
             const { findById } = this.$.ottoman.getModel(modelName);
 
             const current = fieldsName?.[fieldName];
-            const populated = await findById(
-              refField,
+            const lean = (this.$ as any).lean || undefined;
+            const select =
               isObject && current !== '*' && current?.select !== '*'
-                ? {
-                    select:
-                      typeof current === 'string' || Array.isArray(current)
-                        ? current
-                        : extractPopulateFieldsFromObject(current) ?? undefined,
-                  }
-                : undefined,
-            );
+                ? typeof current === 'string' || Array.isArray(current)
+                  ? current
+                  : extractPopulateFieldsFromObject(current) ?? undefined
+                : undefined;
+            const populated = await findById(refField, { select });
             const currentDeep = deep - 1;
             if (currentDeep > 0) {
+              populated.$.lean = lean;
               await populated._populate(current?.populate ?? current ?? '*', currentDeep);
+              delete populated.$.lean;
             }
-            refFields[i] = populated;
+            refFields[i] = lean ? populated.toObject() : populated;
           }
         }
 

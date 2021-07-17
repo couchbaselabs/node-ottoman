@@ -2,7 +2,7 @@
  * Determine if a given field can be populated.
  */
 export const canBePopulated = (populate: string, fields: string[]): boolean => {
-  if (fields.some((field) => populate === field || field === `\`${populate}\``)) {
+  if (populate === '*' || fields.some((field) => populate === field || field === `\`${populate}\``)) {
     return true;
   }
 

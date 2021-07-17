@@ -118,7 +118,7 @@ your model will use the default Ottoman connection.
 
 ### Create Many
 
-Also you can use `createMany` static function to create multiples documents at once.
+Also, you can use `createMany` static function to create multiples documents at once.
 See the [API](/classes/model.html#static-createmany) docs for more detail.
 
 ```javascript
@@ -235,7 +235,7 @@ $> Documents:  []
 ```typescript
 const { rows: documents } = await UserModel.find(
     { name: { $eq: 'Couchbase', $ignoreCase: true } }, // Find filters
-    { lean: true } // Find ptions
+    { lean: true } // Find options
 );
 console.log(`Documents: `, documents);
 ```
@@ -245,12 +245,12 @@ console.log(`Documents: `, documents);
 ```typescript
 const { rows: documents } = await UserModel.find(
     { name: { $like: 'Couch%' } }, // Find filters
-    { lean: true, ignoreCase: true } // Find ptions
+    { lean: true, ignoreCase: true } // Find options
 );
 // Could also use:
 const { rows: documents } = await UserModel.find(
         { name: 'Couchbase' }, // Find filters
-        { lean: true, ignoreCase: true } // Find ptions 
+        { lean: true, ignoreCase: true } // Find options
 );
 console.log(`Documents: `, documents);
 ```
@@ -284,6 +284,169 @@ UserModel.find([
 :::
 
 See the chapter on queries for more details on how to use the [Query](/guides/query-builder) API.
+
+### Use of `lean`
+
+By default, Ottoman queries return an instance of the [Ottoman Document class](/classes/document.html). Documents have a lot of internal state for change tracking. Enabling the [`lean`](/classes/findoptions.html#optional-lean) option tells Ottoman to skip instantiating a full Ottoman Document and just give you the plain old JavaScript object (POJO).
+
+The `lean` feature is only for the documents (Models instances) query functions like [find](/interfaces/imodel.html#find), [findById](/interfaces/imodel.html#findbyid), [findOne](/interfaces/imodel.html#findone), etc.
+
+> In Ottoman when `lean` option is enabled we return an object using a spread operator, all methods, hooks, etc. are removed.
+
+
+```ts
+const UserModel = model('User', schema);
+const document = await UserModel.findById(id, { lean: true });
+const document1 = await UserModel.findById(id);
+
+// with lean:true
+// Under the hood, after executing a query, Ottoman converts the query results 
+// from POJOs to Ottoman Documents. If you turn on the lean option, Ottoman skips this step.
+console.log(document instanceof UserModel); // false
+console.log(document instanceof Model); // false
+console.log(document instanceof Document); // false
+console.log(document instanceof Object); // true
+console.log(document.constructor.name === 'Object'); // true
+
+// with lean:false
+console.log(document1 instanceof UserModel); // true
+console.log(document1 instanceof Model); // true
+console.log(document1 instanceof Document); // true
+console.log(document1 instanceof Object); // true
+console.log(document1.constructor.name === '_Model'); // true
+```
+
+::: warning
+[ManyQueryResponse](/classes/manyqueryresponse.html) is an util class and doesn't have this `lean` feature.
+:::
+
+### Use `lean` and  `populate`
+
+If you use both `populate` and `lean`, the `lean` option propagates to the populated documents as well. In the below example you can see it:
+
+```ts
+// Define schemas
+const IssueSchema = new Schema({
+  title: String,
+  description: String,
+});
+const CardSchema = new Schema({
+  cardNumber: String,
+  zipCode: String,
+  issues: [{ type: IssueSchema, ref: 'Issue' }],
+});
+const CatSchema = new Schema({
+  name: String,
+  age: Number,
+});
+const UserSchema = new Schema({
+  type: String,
+  isActive: Boolean,
+  name: String,
+  card: { type: CardSchema, ref: 'Card' },
+  cats: [{ type: CatSchema, ref: 'Cat' }],
+});
+
+// Create models
+const Issue = model('Issue', IssueSchema);
+const Card = model('Card', CardSchema);
+const Cat = model('Cat', CatSchema);
+const User = model('User', UserSchema);
+
+// Start Ottoman instance
+const ottoman = getDefaultInstance();
+await ottoman.start();
+
+// Initialize data
+const issueDoc = await Issue.create({ title: 'stolen card' });
+const cardDoc = await Card.create({
+  cardNumber: '4242 4242 4242 4242',
+  zipCode: '42424',
+  issues: [issueDoc.id],
+});
+const cat1Doc = await Cat.create({ name: 'Figaro', age: 6 });
+const cat2Doc = await Cat.create({ name: 'Garfield', age: 27 });
+const userDoc = new User({
+  type: 'userPopulate',
+  isActive: false,
+  name: 'John Torvald',
+  card: cardDoc.id,
+  cats: [cat1Doc.id, cat2Doc.id]
+});
+const saved = await userDoc.save();
+
+// Define query options
+const options = { select: 'card, cats, name', populate: '*', lean: true };
+
+// Execute a lean=true query
+const userWithLean = await User.findById(saved.id, options);
+
+// Execute a lean=false query
+options.lean = false;
+const userWithoutLean = await User.findById(saved.id, options);
+
+console.log(userWithLean);
+console.log(userWithoutLean);
+
+ottoman.close();
+```
+With `lean` will get a POJO output:
+```sh
+{
+  card: {
+    cardNumber: '4242 4242 4242 4242',
+    zipCode: '42424',
+    issues: [ '794f6771-6f8b-417d-a814-1b535176824f' ],
+    id: 'c725c1f5-68dc-4e3a-9b89-58ce52185f24',
+    _type: 'Card'
+  },
+  cats: [
+    {
+      name: 'Figaro',
+      age: 6,
+      id: '84fc7fca-6099-4299-a03a-286f7464457e',
+      _type: 'Cat'
+    },
+    {
+      name: 'Garfield',
+      age: 27,
+      id: '0acbb8f7-6771-4468-bd21-8de7739cadcb',
+      _type: 'Cat'
+    }
+  ],
+  name: 'John Torvald'
+}
+```
+
+Without `lean` output:
+```sh
+_Model {
+  card: _Model {
+    cardNumber: '4242 4242 4242 4242',
+    zipCode: '42424',
+    issues: [ '794f6771-6f8b-417d-a814-1b535176824f' ],
+    id: 'c725c1f5-68dc-4e3a-9b89-58ce52185f24',
+    _type: 'Card'
+  },
+  cats: [
+    _Model {
+      name: 'Figaro',
+      age: 6,
+      id: '84fc7fca-6099-4299-a03a-286f7464457e',
+      _type: 'Cat'
+    },
+    _Model {
+      name: 'Garfield',
+      age: 27,
+      id: '0acbb8f7-6771-4468-bd21-8de7739cadcb',
+      _type: 'Cat'
+    }
+  ],
+  name: 'John Torvald'
+}
+```
+
+> If we try to call `userWithLean.toJSON()` will get `TypeError: userWithLean.toJSON is not a function`
 
 ## Deleting
 

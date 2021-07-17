@@ -190,7 +190,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const ModelFactory = ottoman.getModel(modelName);
       let document = new ModelFactory({ ...value }, { strict: false, strategy: CAST_STRATEGY.KEEP });
       if (populate) {
-        document = await document._populate(populate);
+        document.$.lean = findOptions.lean;
+        document = await document._populate(populate, findOptions.populateMaxDeep || undefined);
+        delete document.$.lean;
       }
       if (findOptions.lean) {
         document = document.toObject();
