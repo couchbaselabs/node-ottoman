@@ -51,14 +51,12 @@ The meta above cannot have its own validation as a side-effect of this. If valid
 - [Reference](/classes/referencetype)
 - [Mixed](/classes/mixedtype)
 
-Schemas not only define the structure of your document and casting of properties,
-they also define document [instance methods](#instance-methods), [static Model methods](#statics),
+Schemas not only define the structure of your document and casting of properties, they also define document [instance methods](#instance-methods), [static Model methods](#statics),
 [compound indexes](#indexes), [plugins](#plugins), and document lifecycle [hooks](#hooks).
 
 ## Creating a Model
 
-To use our schema definition, we need to convert our `blogSchema` into a [Model](/guides/model.html) we can work with.
-To do so, we pass it into `model(modelName, schema)`:
+To use our schema definition, we need to convert our `blogSchema` into a [Model](/guides/model.html) we can work with. To do so, we pass it into `model(modelName, schema)`:
 
 ```javascript
 const Blog = model('Blog', blogSchema);
@@ -67,8 +65,7 @@ const Blog = model('Blog', blogSchema);
 
 ## Instance Methods
 
-Instances of `Models` are [documents](/guides/document.md). Documents have many of their own [built-in instance methods](/classes/document.html).
-We may also define our own custom document instance methods.
+Instances of `Models` are [documents](/guides/document.md). Documents have many of their own [built-in instance methods](/classes/document.html). We may also define our own custom document instance methods.
 
 ```javascript
 import { connect, Schema } from 'ottoman';
@@ -116,9 +113,9 @@ animalSchema.statics.findByName = function (name) {
 const Animal = model('Animal', animalSchema);
 let animals = await Animal.findByName('fido');
 ```
+
 ::: danger Note
-Do **not** declare _statics_ using ES6 arrow functions (`=>`). Arrow functions [explicitly prevent binding](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) `this`,
-so the above examples will **not** work because of the value of `this`.
+Do **not** declare _statics_ using ES6 arrow functions (`=>`). Arrow functions [explicitly prevent binding](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) `this`, so the above examples will **not** work because of the value of `this`.
 :::
 
 ## Indexes
@@ -158,12 +155,12 @@ schema.index.findByLastName = {
 To ensure that server is working, you must call the `start` method. This method will internally generate a list of indexes and scopes, collections (if you have the developer preview active) which will be used with the most optimal configuration for them and will build the structures that might be missing on the server. This method must be called after all models are defined, and it is a good idea to call this only when needed rather than any time your server is started.
 
 ```javascript
-const {connect, model, start, close} = require('ottoman');
+const { connect, model, start, close } = require('ottoman');
 connect('couchbase://localhost/travel-sample@admin:password');
 
 async function createUser() {
-  const User = model('User', { name: String } );
-  const user = new User( { name: 'Jane Doe' } );
+  const User = model('User', { name: String });
+  const user = new User({ name: 'Jane Doe' });
 
   try {
     await start();
@@ -173,9 +170,8 @@ async function createUser() {
 
     await close();
     console.log(`User '${ newUser.name }' successfully created`);
-  }
-  catch (e) {
-    console.log(`ERROR: ${e.message}`);
+  } catch (e) {
+    console.log(`ERROR: ${ e.message }`);
   }
 }
 
@@ -191,15 +187,13 @@ User 'Jane Doe' successfully created
 
 ## Index Types
 
-Below are some quick notes on the types of indexes available, and their pros and cons. For a more in-depth discussion, consider
-reading [Couchbasics: How Functional and Performance Needs Determine Data Access in Couchbase](https://blog.couchbase.com/determine-data-access-in-couchbase/)
+Below are some quick notes on the types of indexes available, and their pros and cons. For a more in-depth discussion, consider reading [Couchbasics: How Functional and Performance Needs Determine Data Access in Couchbase](https://blog.couchbase.com/determine-data-access-in-couchbase/)
 
 ### N1QL Query Language
 
 These indexes are the default and use the new SQL-like query language available from Couchbase Server 4.0.0. When `start` or `ensureIndexes` functions are executed, Ottoman automatically creates several secondary indexes so that the models can make queries to the database. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
 
-N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html). If you need the flexibility of queries and
-speed, this is the way to go.
+N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html). If you need the flexibility of queries and speed, this is the way to go.
 
 ```typescript
 const UserSchema = new Schema({
@@ -256,8 +250,7 @@ console.log(usersN1ql.rows);
 
 These indexes are the most performant, but the least flexible. They allow only a single document to occupy any particular value and do direct key-value lookups using a referential document to identify a matching document in Couchbase.
 
-In short, if you need to look up a document by a single value of a single attribute quickly (e.g. key lookups), this is the way to go. But you cannot combine multiple refdoc indexes to speed up finding
-something like "all customers with the first name of 'John' and last name of 'Smith'".
+In short, if you need to look up a document by a single value of a single attribute quickly (e.g. key lookups), this is the way to go. But you cannot combine multiple refdoc indexes to speed up finding something like "all customers with the first name of 'John' and last name of 'Smith'".
 
 ```typescript
 const UserSchema = new Schema({
@@ -295,26 +288,25 @@ console.log(userRefdoc);
 ```
 
 ```sh
-// Output!!!
-// {
-//   "name": "index",
-//   "email": "index@email.com",
-//   "card": {
-//     "cardNumber": "424242425252",
-//     "zipCode": "42424"
-//   },
-//   "roles": [
-//     {
-//       "name": "admin"
-//     }
-//   ],
-//   "id": "66c2d0dd-76ab-4b91-83b4-353893e3ede3",
-//   "_type": "User"
-// }
+{
+  "name": "index",
+  "email": "index@email.com",
+  "card": {
+    "cardNumber": "424242425252",
+    "zipCode": "42424"
+  },
+  "roles": [
+    {
+      "name": "admin"
+    }
+  ],
+  "id": "66c2d0dd-76ab-4b91-83b4-353893e3ede3",
+  "_type": "User"
+}
 ```
 
 ::: warning
-**Refdoc Index** is not managed by Couchbase but strictly by Ottoman. It does not guarantee consistency if the keys that are a part of these indexes are updated by an external operation, like N1QL for example. 
+**Refdoc Index** is not managed by Couchbase but strictly by Ottoman. It does not guarantee consistency if the keys that are a part of these indexes are updated by an external operation, like N1QL for example.
 
 **_Needs to be used with caution!!!_**
 :::
@@ -323,9 +315,7 @@ console.log(userRefdoc);
 
 This type of index is always available once `ensureIndexes` is called and will work with any Couchbase Server version.
 
-Because views use map-reduce, certain types of queries can be faster as the query can be parallelized over all nodes in the cluster, with each node
-returning only partial results. One of the cons of views is that they are eventually consistent by default, and incur a performance
-penalty if you want consistency in the result.
+Because views use map-reduce, certain types of queries can be faster as the query can be parallelized over all nodes in the cluster, with each node returning only partial results. One of the cons of views is that they are eventually consistent by default, and incur a performance penalty if you want consistency in the result.
 
 ```typescript
 const UserSchema = new Schema({
@@ -364,8 +354,7 @@ const usersView = await User.findByName(userData.name, viewIndexOptions);
 
 ## Hooks
 
-Hooks are functions that are passed control during the execution of asynchronous functions.
-Hooks are specified at the schema level and are useful for writing plugins.
+Hooks are functions that are passed control during the execution of asynchronous functions. Hooks are specified at the schema level and are useful for writing plugins.
 
 ### Available Hooks
 
@@ -379,10 +368,10 @@ Hooks are specified at the schema level and are useful for writing plugins.
 Pre functions are executed one after another, for each hook registered.
 
 ```javascript
-import {Schema} from 'ottoman';
+import { Schema } from 'ottoman';
 
 const schema = new Schema(...);
-schema.pre('save', function(document) {
+schema.pre('save', function (document) {
   // do stuff
 });
 ```
@@ -438,8 +427,8 @@ schema.pre('save', async function () {
 // Changes will not be persisted to Couchbase Server because a pre hook errored out
 try {
   await myDoc.save();
-} catch (err) {
-  console.log(err.message); // something went wrong
+} catch (e) {
+  console.log(e.message); // something went wrong
 }
 ```
 
@@ -478,9 +467,7 @@ new User({ name: 'test' }).save();
 
 ### Save/Validate Hooks
 
-The `save()` function triggers `validate()` hooks, because Ottoman has a built-in `pre('save')` hook that calls `validate()`.
-This means that all `pre('validate')` and `post('validate')` hooks get called before any `pre('save')` hooks.
-The `updateById()` function have the same behavior.
+The `save()` function triggers `validate()` hooks, because Ottoman has a built-in `pre('save')` hook that calls `validate()`. This means that all `pre('validate')` and `post('validate')` hooks get called before any `pre('save')` hooks. The `updateById()` function have the same behavior.
 
 ```javascript
 schema.pre('validate', function () {
@@ -503,9 +490,7 @@ Schemas are pluggable, that is, they allow for applying pre-packaged capabilitie
 
 ### Plugin Example
 
-Plugins are a tool for reusing logic in multiple schemas.
-Suppose you have several models in your database and want to add a function to log all doc before save.
-Just create a plugin once and apply it to each Schema using the `plugin` function:
+Plugins are a tool for reusing logic in multiple schemas. Suppose you have several models in your database and want to add a function to log all doc before save. Just create a plugin once and apply it to each Schema using the `plugin` function:
 
 ```javascript
 const pluginLog = (schema) => {
@@ -533,7 +518,7 @@ await user.save();
 Want to register a plugin for all schemas? The Ottoman `registerGlobalPlugin` function registers a plugin for every schema. For example:
 
 ```javascript
-import {registerGlobalPlugin} from 'ottoman';
+import { registerGlobalPlugin } from 'ottoman';
 
 const pluginLog = (schema) => {
   schema.pre('save', function (doc) {
@@ -557,17 +542,16 @@ await user.save();
 
 ## Strict Mode
 
-The strict option, (enabled by default),
-ensures that values passed to our model constructor that were not specified in our schema do not get saved to the database.
+The strict option, (enabled by default), ensures that values passed to our model constructor that were not specified in our schema do not get saved to the database.
 
 ```javascript
-const userSchema = new Schema({...})
+const userSchema = new Schema({ ... })
 const User = model('User', userSchema);
 const user = new User({ iAmNotInTheSchema: true });
 user.save(); // iAmNotInTheSchema is not saved to the db
 
 // set to false..
-const userSchema = new Schema({...}, { strict: false });
+const userSchema = new Schema({ ... }, { strict: false });
 const user = new User({ iAmNotInTheSchema: true });
 user.save(); // iAmNotInTheSchema is now saved to the db!
 ```
@@ -580,6 +564,100 @@ const user = new User(doc, { strict: true }); // enables strict mode
 const user = new User(doc, { strict: false }); // disables strict mode
 ```
 
+## Schema Types Immutable Option
+
+Defines this path as `immutable`. Ottoman prevents you from changing `immutable` paths allowing you to safely write untrusted data to Couchbase without any additional validation.
+
+With update functions Ottoman also strips updates to `immutable` properties from [updateById()](/interfaces/imodel.html#updatebyid), [updateMany()](/interfaces/imodel.html#updatemany), [replaceById()](/interfaces/imodel.html#replacebyid) and [findOneAndUpdate()](/interfaces/imodel.html#findoneandupdate). Your update will succeed if you try to overwrite an `immutable` property, Ottoman will just strip out the `immutable` property.
+
+Let's see this option in action using `findOneAndUpdate` on `immutable` properties:
+
+```ts
+// Define base data
+const cardData = {
+  cardNumber: '5678 5678 5678 5678',
+  zipCode: '56789',
+};
+
+const cardDataUpdate = {
+  cardNumber: '4321 4321 4321 4321',
+  zipCode: '43210',
+};
+
+// Define schemas
+const CardSchema = new Schema({
+  cardNumber: { type: String, immutable: true },
+  zipCode: String,
+});
+
+// Create model
+const Card = model('Card', CardSchema);
+
+// Start Ottoman instance
+const ottoman = getDefaultInstance();
+await ottoman.start();
+
+// Initialize data
+const { id } = await Card.create(cardData);
+```
+
+### Immutable with strategy `true` ***(default)***
+
+```ts
+await Card.findOneAndUpdate(
+  { cardNumber: { $like: '%5678 5678 5678 5678%' } }, cardDataUpdate,
+  { new: true, strict: true }
+);
+const result = await Card.findById(id);
+console.log(result);
+```
+
+Since `cardNumber` is immutable, Ottoman ignores the update to `cardNumber` and only `zipCode` changed:
+
+```sh
+{
+  cardNumber: '5678 5678 5678 5678',
+  zipCode: '43210'
+}
+```
+
+### Immutable with strategy `false`
+
+```ts
+await Card.findOneAndUpdate(
+  { cardNumber: { $like: '%5678 5678 5678 5678%' } }, cardDataUpdate,
+  { new: true, strict: false }
+);
+const result = await Card.findById(id);
+console.log(result);
+```
+
+All properties must change:
+
+```sh
+{
+  cardNumber: '4321 4321 4321 4321',
+  zipCode: '43210'
+}
+```
+
+### Immutable with strategy `THROW`
+
+If `strict` is set to `THROW`, Ottoman will throw an error if you try to update `cardNumber`
+
+```ts
+await Card.findOneAndUpdate(
+  { cardNumber: { $like: '%5678 5678 5678 5678%' } }, cardDataUpdate,
+  { new: true, strict: CAST_STRATEGY.THROW }
+);
+```
+
+will get:
+
+```sh
+ImmutableError: Field 'cardNumber' is immutable and current cast strategy is set to 'throw'
+```
+
 ## Schema Helpful Methods
 
 Each `Schema` instance has two helpful methods `cast` and `validate`.
@@ -590,22 +668,25 @@ The `cast` method gets a Javascript Object as the first parameter and enforces s
 
 ```javascript
 const schema = new Schema({
-    name: String,
-    price: Number,
-    createdAt: Date
+  name: String,
+  price: Number,
+  createdAt: Date
 })
 
 const result = schema.cast({
-    name: 'TV',
-    price: '345.99',
-    createdAt: '2020-12-20T16:00:00.000Z'
+  name: 'TV',
+  price: '345.99',
+  createdAt: '2020-12-20T16:00:00.000Z'
 })
+```
 
-// result variable now look like this:
+Result variable now look like this:
+
+```sh
 {
-    name: 'TV',
-    price: 345.99, // price was casted to Number
-    createdAt: 2020-12-20T16:00:00.000Z //createdAt was casted to Date
+  name: 'TV',
+  price: 345.99, // price was casted to Number
+  createdAt: 2020-12-20T16:00:00.000Z //createdAt was casted to Date
 }
 ```
 
@@ -627,40 +708,42 @@ interface CastOptions {
 
 Available strategies are:
 
-```javascript
+```js
 CAST_STRATEGY
 {
   KEEP = 'keep', // will return original value
-    drop = 'DROP', // will remove the field
-    THROW = 'throw', // will throw an exception
-    DEFAULT_OR_DROP = 'defaultOrDrop', // use default or remove the field if no default was provided
-    DEFAULT_OR_KEEP = 'defaultOrKeep', // use default or return original value
+  drop = 'DROP', // will remove the field
+  THROW = 'throw', // will throw an exception
+  DEFAULT_OR_DROP = 'defaultOrDrop', // use default or remove the field if no default was provided
+  DEFAULT_OR_KEEP = 'defaultOrKeep' // use default or return original value
 }
 ```
 
 ### Validate method
 
-The `validate` method gets a Javascript Object as the first parameter and enforces schema types, rules, and validations for each field in the schema definition.
-If something fails an exception will be throw up, else the `validate` method will return a valid object for the current Schema.
+The `validate` method gets a Javascript Object as the first parameter and enforces schema types, rules, and validations for each field in the schema definition. If something fails an exception will be throw up, else the `validate` method will return a valid object for the current Schema.
 
 ```javascript
 const schema = new Schema({
-    name: String,
-    price: Number,
-    createdAt: Date
+  name: String,
+  price: Number,
+  createdAt: Date
 })
 
 const result = schema.validate({
-    name: 'TV',
-    price: '345.99',
-    createdAt: '2020-12-20T16:00:00.000Z'
+  name: 'TV',
+  price: '345.99',
+  createdAt: '2020-12-20T16:00:00.000Z'
 })
+```
 
-// result variable now looks like this:
+Result variable now looks like this:
+
+```sh
 {
-    name: 'TV',
-    price: 345.99, // price was casted to Number
-    createdAt: 2020-12-20T16:00:00.000Z //createdAt was casted to Date
+  name: 'TV',
+  price: 345.99, # price was casted to Number
+  createdAt: 2020-12-20T16:00:00.000Z # createdAt was casted to Date
 }
 ```
 
@@ -692,8 +775,7 @@ boeing.add({ status: Boolean });
 ```
 
 ::: tip
-When a schema is added, the following properties are copied: fields, statics, indexes, methods, and hooks.
-Properties that already exist in the schema(fields, statics, indexes, methods) are overwritten by those of the added schema, except for hooks that are combined.
+When a schema is added, the following properties are copied: fields, statics, indexes, methods, and hooks. Properties that already exist in the schema(fields, statics, indexes, methods) are overwritten by those of the added schema, except for hooks that are combined.
 :::
 
 ## Next Up

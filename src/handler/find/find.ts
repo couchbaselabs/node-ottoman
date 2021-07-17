@@ -93,11 +93,11 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
             delete populate[toPopulate];
           }
         }
-        await execPopulationFromObject(result.rows, populate, populateMaxDeep);
+        await execPopulationFromObject(result.rows, populate, populateMaxDeep, lean);
       } else {
         for (const toPopulate of populateFields) {
           if (canBePopulated(toPopulate, projections)) {
-            await execPopulation(result.rows, toPopulate, ottoman, modelName, populateMaxDeep);
+            await execPopulation(result.rows, toPopulate, ottoman, modelName, populateMaxDeep, lean);
           }
         }
       }

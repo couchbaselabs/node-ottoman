@@ -33,6 +33,9 @@ export interface RequiredOption {
 
 export interface CoreTypeOptions {
   required?: boolean | RequiredOption | RequiredFunction;
+  /**
+   * If truthy, Ottoman will disallow changes to this path once the document is saved to the database for the first time.
+   **/
   immutable?: boolean;
   default?: unknown;
   validator?: ValidatorOption | ValidatorFunction | string;

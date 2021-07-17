@@ -1,4 +1,4 @@
-import { getDefaultInstance, model, Model, Schema } from '../src';
+import { FindByIdOptions, getDefaultInstance, model, Model, Query, Schema } from '../src';
 import { Document } from '../src/model/document';
 import { consistency, startInTest } from './testData';
 
@@ -53,13 +53,13 @@ describe('Test Support Query Lean', () => {
     validation(documents[0], documents1[0], UserModel);
   });
 
-  test('Query lean -> populate ', async () => {
-    const myCat = {
+  test('Query lean -> populate', async () => {
+    const catData = {
       name: 'Figaro',
       age: 6,
     };
 
-    const populateDoc = {
+    const userData = {
       type: 'airlineR',
       isActive: false,
       name: 'Populate User',
@@ -81,39 +81,49 @@ describe('Test Support Query Lean', () => {
       age: Number,
     });
 
-    const Issue = model('Issue', IssueSchema);
-    const Card = model('Card', CardSchema);
-    const Cat = model('Cat', CatSchema);
-    const schema = new Schema({
+    const UserSchema = new Schema({
       type: String,
       isActive: Boolean,
       name: String,
       card: { type: CardSchema, ref: 'Card' },
       cats: [{ type: CatSchema, ref: 'Cat' }],
     });
-    const User = model('User', schema);
+
+    const Issue = model('Issue', IssueSchema);
+    const Card = model('Card', CardSchema);
+    const Cat = model('Cat', CatSchema);
+    const User = model('User', UserSchema);
 
     await startInTest(getDefaultInstance());
 
-    const issueCreated = await Issue.create({ title: 'stolen card' });
+    const issueDoc = await Issue.create({ title: 'stolen card' });
     const cardInfoWithIssue = {
       cardNumber: '4242 4242 4242 4242',
       zipCode: '42424',
-      issues: [issueCreated.id],
+      issues: [issueDoc.id],
     };
-    const cardCreated = await Card.create(cardInfoWithIssue);
-    const catCreated = await Cat.create(myCat);
-    const catCreated2 = await Cat.create({ name: 'Garfield', age: 27 });
-    const user = new User(populateDoc);
-    user.card = cardCreated.id;
-    user.cats = [catCreated.id, catCreated2.id];
-    const saved = await user.save();
+    const cardDoc = await Card.create(cardInfoWithIssue);
+    const cat1Doc = await Cat.create(catData);
+    const cat2Doc = await Cat.create({ name: 'Garfield', age: 27 });
+    const userDoc = new User(userData);
+    userDoc.card = cardDoc.id;
+    userDoc.cats = [cat1Doc.id, cat2Doc.id];
+    const saved = await userDoc.save();
 
-    const options = { select: 'card, cats, name', populate: '*', lean: true };
-    const document = await User.findById(saved.id, options);
-    options.lean = false;
-    const document1 = await User.findById(saved.id, options);
-    validation(document, document1, User);
+    const options: FindByIdOptions = { select: 'card, cats, name', populate: '*', lean: true, populateMaxDeep: 2 };
+    // FIND BY ID
+    let userWithLean = await User.findById(saved.id, options);
+    let userWithoutLean = await User.findById(saved.id, { ...options, lean: false });
+    validation(userWithLean, userWithoutLean, User);
+    expect(() => userWithLean.toJSON()).toThrow('userWithLean.toJSON is not a function');
+    // FIND ONE
+    userWithLean = await User.findOne({ id: saved.id }, { ...options, ...consistency });
+    userWithoutLean = await User.findOne({ id: saved.id }, { ...options, lean: false, ...consistency });
+    validation(userWithLean, userWithoutLean, User);
+    // FIND
+    userWithLean = await User.find({ id: saved.id }, { ...options, ...consistency });
+    userWithoutLean = await User.find({ id: saved.id }, { ...options, lean: false, ...consistency });
+    validation(userWithLean.rows[0], userWithoutLean.rows[0], User);
   });
 
   function validation(document: any, document1: any, model: any) {

@@ -213,3 +213,4 @@ BlogModel.updateOne({ title: `Some blog's title` }, { title: 'New Blog title' },
 ```javascript
 const response = await BlogModel.findOneAndUpdate({ title: `Some blog's title` }, { title: 'New Blog title' });
 ```
+

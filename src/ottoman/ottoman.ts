@@ -327,15 +327,26 @@ export class Ottoman {
    * See the example below:
    *
    * @example
-   * ```javascript
-   * const expr_where = {$or: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }]};
+   * ```js
+   * const expr_where = {
+   *   $or: [
+   *     { address: { $like: '%57-59%' } },
+   *     { free_breakfast: true }
+   *   ]
+   * };
    * const query = new Query({}, 'travel-sample');
-   * const n1qlQuery = query.select([{ $field: 'address' }]).where(expr_where).build()
+   * const n1qlQuery = query.select([{ $field: 'address' }])
+   *    .where(expr_where)
+   *    .build()
    *
-   * connection.query(n1qlQuery).then(result => console.log(result))
+   * connection.query(n1qlQuery).then(result => console.log( result ))
    * ```
    * The above example will run this query:
-   * > `SELECT address FROM travel-sample WHERE (address LIKE '%57-59%' OR free_breakfast = true)`
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample`
+   * WHERE (address LIKE '%57-59%' OR free_breakfast = true)
+   * ```
    */
   async query(query: string) {
     return this.cluster.query(query);

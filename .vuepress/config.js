@@ -16,6 +16,8 @@ module.exports = {
           { text: 'Document', link: '/guides/document.md' },
           { text: 'Query Builder', link: '/guides/query-builder.md' },
           { text: 'Mongoose to Ottoman', link: '/guides/mongoose-to-couchbase.md' },
+          { text: 'Ottoman for Couchbase Node.js SDK devs', link: '/guides/ottoman-couchbase.md' },
+          { text: 'Ottoman V1 to Ottoman V2', link: '/guides/ottomanV1-to-ottomanV2.md' },
         ],
       },
       {

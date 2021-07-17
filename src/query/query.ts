@@ -87,6 +87,7 @@ export class Query extends BaseQuery {
    * INDEX WITH Expression.
    */
   private indexWith?: IIndexWithParams;
+
   /**
    * @summary Create an instance of Query.
    * @name Query
@@ -99,7 +100,17 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *  const query = new Query({$select: [{$field: 'address'}], $where: {$nill: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }, { free_lunch: [1] }]}}, 'travel-sample');
+   * const query = new Query({
+   *  $select: [{ $field: 'address' }],
+   *  $where: {
+   *    $nill: [
+   *      { address: { $like: '%57-59%' } },
+   *      { free_breakfast: true },
+   *      { free_lunch: [1] }
+   *    ]
+   *   }
+   *  },
+   *  'travel-sample');
    * ```
    */
   constructor(conditions: IConditionExpr, collection: string) {
@@ -116,11 +127,14 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const query = new Query({}, 'travel-sample');
-   *   const result = query.select([{$field: 'address'}]).build()
-   *   console.log(result)
+   * const query = new Query({}, 'travel-sample');
+   * const result = query.select([{ $field: 'address' }]).build()
+   * console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample`
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample`
+   * ```
    */
   select(value?: ISelectType[] | string | undefined): Query {
     if (this.queryType === undefined || this.queryType === 'SELECT') {
@@ -145,10 +159,14 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const result = new Query({}, 'travel-sample').index('DROP', 'travel_sample_id_test').build();
-   *   console.log(result)
+   * const result = new Query({}, 'travel-sample')
+   *  .index('DROP', 'travel_sample_id_test')
+   *  .build();
+   * console.log(result)
    * ```
-   * > DROP INDEX `travel-sample`.`travel_sample_id_test`
+   * ```sql
+   * DROP INDEX `travel-sample`.`travel_sample_id_test`
+   * ```
    */
   index(type: IndexType, name: string): Query {
     if (this.queryType === undefined) {
@@ -172,12 +190,17 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const on = [{ name: 'travel-sample.callsing', sort: 'ASC' }];
-   *   const result = new Query({}, 'travel-sample').index('CREATE', 'travel_sample_id_test').on(on).build();
-   *   console.log(result)
+   * const on = [{ name: 'travel-sample.callsing', sort: 'ASC' }];
+   * const result = new Query({}, 'travel-sample')
+   *    .index('CREATE', 'travel_sample_id_test')
+   *    .on(on)
+   *    .build();
+   * console.log(result)
    * ```
-   * > CREATE INDEX `travel_sample_id_test` ON `travel-sample`(`travel-sample.callsing`['ASC'])
-   */
+   * ```sql
+   * CREATE INDEX `travel_sample_id_test` ON `travel-sample` (`travel-sample.callsing`['ASC'])
+   * ```
+   **/
   on(value: IIndexOnParams[]): Query {
     if (this.queryType === 'INDEX' && ['CREATE', 'CREATE PRIMARY', 'BUILD'].includes(this.indexType || '')) {
       this.indexOn = value;
@@ -193,11 +216,16 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const result = new Query({}, 'travel-sample').index('CREATE', 'travel_sample_id_test').usingGSI().build();
-   *   console.log(result)
+   * const result = new Query({}, 'travel-sample')
+   *    .index('CREATE', 'travel_sample_id_test')
+   *    .usingGSI()
+   *    .build();
+   * console.log(result)
    * ```
-   * > CREATE INDEX `travel_sample_id_test` USING GSI)
-   */
+   * ```sql
+   * CREATE INDEX `travel_sample_id_test` USING GSI
+   * ```
+   **/
   usingGSI(): Query {
     if (this.queryType === 'INDEX') {
       this.indexUsingGSI = true;
@@ -213,12 +241,18 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const withExpr = {nodes: ['192.168.1.1:8078'],defer_build: true,num_replica: 2};
-   *   const result = new Query({}, 'travel-sample').index('CREATE', 'travel_sample_id_test').with(withExpr).build();
-   *   console.log(result)
+   * const withExpr = { nodes: ['192.168.1.1:8078'], defer_build: true, num_replica: 2 };
+   * const result = new Query({}, 'travel-sample')
+   *    .index('CREATE', 'travel_sample_id_test')
+   *    .with(withExpr)
+   *    .build();
+   * console.log(result)
    * ```
-   * > CREATE INDEX `travel_sample_id_test` WITH {'nodes': ['192.168.1.1:8078'],'defer_build': true,'num_replica': 2})
-   */
+   * ```sql
+   * CREATE INDEX `travel_sample_id_test`
+   * WITH {'nodes': ['192.168.1.1:8078'],'defer_build': true,'num_replica': 2}
+   * ```
+   **/
   with(value: IIndexWithParams): Query {
     if (this.queryType === 'INDEX') {
       this.indexWith = value;
@@ -234,14 +268,25 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const expr_where = {$or: [{ address: { $like: '%57-59%' } }, { free_breakfast: true }, {name: { $eq: 'John', $ignoreCase: true }}]};
-   *   const query = new Query({}, 'travel-sample');
-   *   const result = query.select([{$field: 'address'}]).where(expr_where).build()
-   *   console.log(result)
+   * const expr_where = {
+   *   $or: [
+   *     { address: { $like: '%57-59%' } },
+   *     { free_breakfast: true },
+   *     { name: { $eq: 'John', $ignoreCase: true } }
+   *   ]
+   * };
+   * const query = new Query({}, 'travel-sample');
+   * const result = query.select([{ $field: 'address' }])
+   *    .where(expr_where)
+   *    .build()
+   * console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample` WHERE (address LIKE "%57-59%" OR free_breakfast=true OR (LOWER(name) = LOWER("John")))
-   *
-   */
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample`
+   * WHERE (address LIKE "%57-59%" OR free_breakfast = true OR (LOWER(name) = LOWER("John")))
+   * ```
+   **/
   where(value: LogicalWhereExpr): Query {
     this.whereExpr = value;
     return this;
@@ -254,11 +299,19 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```tS
-   *   const query = new Query({}, 'beer-sample brewery');
-   *   const result = query.select([{$field: 'address'}]).plainJoin('JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_"))').build()
-   *   console.log(result)
+   * const query = new Query({}, 'beer-sample brewery');
+   * const result = query.select([{ $field: 'address' }])
+   *    .plainJoin(
+   *        'JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_"))'
+   *     )
+   *    .build()
+   * console.log(result)
    * ```
-   * > SELECT address FROM `beer-sample brewery` JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_")) LIMIT 1`
+   * ```sql
+   * SELECT beer.name
+   * FROM `beer-sample` brewery
+   * JOIN `beer-sample` beer ON beer.brewery_id = LOWER(REPLACE(brewery.name, " ", "_"))
+   * ```
    */
   plainJoin(value: string): Query {
     this.plainJoinExpr = value;
@@ -272,11 +325,17 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const query = new Query({}, 'travel-sample');
-   *   const result = query.select([{$field: 'address'}]).orderBy({ size: 'DESC' }).build()
-   *   console.log(result)
+   * const query = new Query({}, 'travel-sample');
+   * const result = query.select([{ $field: 'address' }])
+   *    .orderBy({ size: 'DESC' })
+   *    .build()
+   * console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample ORDER BY size = 'DESC'`
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample`
+   * ORDER BY size = 'DESC'
+   * ```
    */
   orderBy(value: Record<string, SortType>): Query {
     this.orderExpr = value;
@@ -290,12 +349,18 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const query = new Query({}, 'travel-sample');
-   *   const result = query.select([{$field: 'address'}]).limit(10).build()
-   *   console.log(result)
+   * const query = new Query({}, 'travel-sample');
+   * const result = query.select([{ $field: 'address' }])
+   *    .limit(10)
+   *    .build()
+   * console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample LIMIT 10`
-   */
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample`
+   * LIMIT 10
+   * ```
+   **/
   limit(value: number): Query {
     this.limitExpr = value;
     return this;
@@ -308,12 +373,18 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const query = new Query({}, 'travel-sample');
-   *   const result = query.select([{$field: 'address'}]).offset(10).build()
-   *   console.log(result)
+   * const query = new Query({}, 'travel-sample');
+   * const result = query.select([{ $field: 'address' }])
+   *    .offset(10)
+   *    .build()
+   * console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample OFFSET 10`
-   */
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample`
+   * OFFSET 10
+   * ```
+   **/
   offset(value: number): Query {
     this.offSetExpr = value;
     return this;
@@ -334,7 +405,7 @@ export class Query extends BaseQuery {
    * const letExpr: LetExprType = {
    *   min_lat: 71,
    *   max_lat: 'ABS(t1.geo.lon)*4+1',
-   *   place: `(SELECT RAW t2.country FROM \`travel-sample\` t2 WHERE t2.type = "landmark")`,
+   *   place: '(SELECT RAW t2.country FROM `travel-sample` t2 WHERE t2.type = "landmark")',
    * };
    *
    * // WHERE expression definition
@@ -382,7 +453,7 @@ export class Query extends BaseQuery {
    * const ottoman = getDefaultInstance();
    * await startInTest(ottoman);
    *
-   * // QUERY excecution
+   * // QUERY execution
    * const { rows } = await ottoman.query(query);
    *
    * // RESULTS
@@ -419,12 +490,18 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const groupByExpr = [{ expr: 'COUNT(amount_val)', as: 'amount' }];
-   *   const query = new Query({}, 'travel-sample');
-   *   const result = query.select([{$field: 'address'}]).groupBy(groupByExpr).build()
-   *   console.log(result)
+   * const groupByExpr = [{ expr: 'COUNT(amount_val)', as: 'amount' }];
+   * const query = new Query({}, 'travel-sample');
+   * const result = query.select([{ $field: 'address' }])
+   *    .groupBy(groupByExpr)
+   *    .build()
+   * console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample GROUP BY COUNT(amount) AS amount`
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample`
+   * GROUP BY COUNT(amount) AS amount
+   * ```
    */
   groupBy(value: IGroupBy[]): Query {
     this.groupByExpr = value;
@@ -438,13 +515,20 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const groupByExpr = [{ expr: 'COUNT(amount_val)', as: 'amount' }];
-   *   const letExpr = { amount_val: 10 };
-   *   const query = new Query({}, 'travel-sample');
-   *   const result = query.select([{$field: 'address'}]).groupBy(groupByExpr).let(letExpr).build()
-   *   console.log(result)
+   * const groupByExpr = [{ expr: 'COUNT(amount_val)', as: 'amount' }];
+   * const letExpr = { amount_val: 10 };
+   * const query = new Query({}, 'travel-sample');
+   * const result = query.select([{ $field: 'address' }])
+   *    .groupBy(groupByExpr)
+   *    .let(letExpr)
+   *    .build()
+   * console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample GROUP BY COUNT(amount) AS amount LETTING amount = 10`
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample`
+   * GROUP BY COUNT(amount) AS amount LETTING amount = 10
+   * ```
    */
   letting(value: LetExprType): Query {
     this.lettingExpr = value;
@@ -458,13 +542,21 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const groupByExpr = [{ expr: 'COUNT(amount_val)', as: 'amount' }];
-   *   const having = {address: {$like: '%58%'}};
-   *   const query = new Query({}, 'travel-sample');
-   *   const result = query.select([{$field: 'address'}]).groupBy(groupByExpr).having(having).build()
-   *   console.log(result)
+   * const groupByExpr = [{ expr: 'COUNT(amount_val)', as: 'amount' }];
+   * const having = { address: { $like: '%58%' } };
+   * const query = new Query({}, 'travel-sample');
+   * const result = query.select([{ $field: 'address' }])
+   *    .groupBy(groupByExpr)
+   *    .having(having)
+   *    .build()
+   * console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample GROUP BY COUNT(amount) AS amount HAVING address LIKE '%58%'`
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample`
+   * GROUP BY COUNT(amount) AS amount
+   * HAVING address LIKE '%58%'
+   * ```
    */
   having(value: LogicalWhereExpr): Query {
     this.havingExpr = value;
@@ -478,11 +570,16 @@ export class Query extends BaseQuery {
    *
    * @example
    * ```ts
-   *   const query = new Query({}, 'travel-sample');
-   *   const result = query.select([{$field: 'address'}]).useKeys(['airlineR_8093']).build()
-   *   console.log(result)
+   * const query = new Query({}, 'travel-sample');
+   * const result = query.select([{ $field: 'address' }])
+   *    .useKeys(['airlineR_8093'])
+   *    .build()
+   * console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample USE KEYS ['airlineR_8093']`
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample` USE KEYS ['airlineR_8093']
+   * ```
    */
   useKeys(value: string[]): Query {
     this.useKeysExpr = value;
@@ -543,20 +640,24 @@ export class Query extends BaseQuery {
    * Can also use `ignoreCase` as part of the `build` method, this will always prioritize the `$ignoreCase` value defined in clause.
    * @example
    * ```ts
-   *   const expr_where = {
-   *    $or: [
-   *      { address: { $like: '%57-59%', $ignoreCase: false } }, // ignoreCase will not be applied
-   *      { free_breakfast: true },
-   *      { name: 'John' } //  ignoreCase will be applied
-   *    ],
-   *  };
+   * const expr_where = {
+   *   $or: [
+   *     { address: { $like: '%57-59%', $ignoreCase: false } }, // ignoreCase will not be applied
+   *     { free_breakfast: true },
+   *     { name: 'John' } //  ignoreCase will be applied
+   *   ],
+   * };
    * const query = new Query({}, 'travel-sample');
    * const result = query.select([{ $field: 'address' }])
-   *                     .where(expr_where)
-   *                     .build({ ignoreCase: true }); // ignore case is enabled for where clause elements
+   *    .where(expr_where)
+   *    .build({ ignoreCase: true }); // ignore case is enabled for where clause elements
    * console.log(result)
    * ```
-   * > SELECT address FROM `travel-sample` WHERE (address LIKE "%57-59%" OR free_breakfast=true OR `(LOWER(name) = LOWER("John"))`)
+   * ```sql
+   * SELECT address
+   * FROM `travel-sample`
+   * WHERE (address LIKE "%57-59%" OR free_breakfast = true OR `(LOWER(name) = LOWER("John"))`)
+   * ```
    *
    * @method
    * @public
