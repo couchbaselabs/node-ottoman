@@ -18,7 +18,29 @@ describe('Test Schema Immutable', () => {
     zipCode: '43210',
   };
 
-  test("Test Schema Immutable integration on strict=false'", async () => {
+  test('Test Schema Immutable integration on new document', async () => {
+    const CardSchema = new Schema(CardSchemaBase);
+    const Card = model('Card', CardSchema);
+    const myCard = new Card({ cardNumber: '4321 4321 4321 4321', zipCode: '43210' });
+    // Document is new
+    expect(myCard.$isNew).toBe(true);
+    // can update the document because it's new
+    myCard.cardNumber = '0000 0000 0000 0000';
+    await startInTest(getDefaultInstance());
+    const myCardSaved = await myCard.save();
+    // after save or create can't update immutable properties
+    myCardSaved.cardNumber = '1111 1111 1111 1111';
+    const myCard2 = await Card.create({ cardNumber: '4321 4321 4321 4321', zipCode: '43210' });
+    const myCard3 = await Card.findOne({ cardNumber: '4321 4321 4321 4321' }, consistency);
+    await Card.removeMany({ _type: 'Card' });
+    expect(myCardSaved.cardNumber).toStrictEqual('0000 0000 0000 0000');
+    expect(myCard.cardNumber).toStrictEqual('0000 0000 0000 0000');
+    expect(myCard.$isNew).toBe(false);
+    expect(myCard2.$isNew).toBe(false);
+    expect(myCard3.$isNew).toBe(false);
+  });
+
+  test('Test Schema Immutable integration on strict=false', async () => {
     const CardSchema = new Schema(CardSchemaBase, { strict: false });
     const Card = model('Card', CardSchema);
     await startInTest(getDefaultInstance());
@@ -270,7 +292,7 @@ describe('Test Schema Immutable', () => {
   });
   test('Test Schema Immutable integration -> updateMany -> using ApplyStrategy:true', async () => {
     const result: any[] = [];
-    await updateManyHelper(result, true);
+    await updateManyHelper(result);
     const [result1, result2, response] = result;
 
     expect(response.message.success).toBe(2);

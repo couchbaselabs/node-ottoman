@@ -658,6 +658,50 @@ will get:
 ImmutableError: Field 'cardNumber' is immutable and current cast strategy is set to 'throw'
 ```
 
+::: tip NOTE
+Ottoman's immutability only applies to `document` that have already been saved to the database.
+```ts
+// Define schema
+const CardSchema = new Schema({
+  cardNumber: { type: String, immutable: true },
+  zipCode: String,
+});
+// Create model
+const Card = model('Card', CardSchema);
+// Create document
+const myCard = new Card({ cardNumber: '4321 4321 4321 4321', zipCode: '43210' });
+// Document is new
+myCard.$isNew; // true
+
+// can update the document because $isNew: true
+myCard.cardNumber = '0000 0000 0000 0000';
+myCard.cardNumber; // '0000 0000 0000 0000'
+
+// now let's save myCard
+const ottoman = getDefaultInstance();
+await ottoman.start();
+
+const myCardSaved = await myCard.save();
+
+// after save
+myCardSaved.cardNumber = '1111 1111 1111 1111';
+myCardSaved.cardNumber; // '0000 0000 0000 0000', because `cardNumber` is immutable
+
+// Example with create
+const myCard2 = await Card.create({
+  cardNumber: '4321 4321 4321 4321',
+  zipCode: '3232'
+});
+const myCard3 = await Card.findOne(
+  { cardNumber: '4321 4321 4321 4321' }, // filters
+  { consistency: SearchConsistency.LOCAL } // options
+);
+
+myCard2.$isNew; // false
+myCard3.$isNew; // false
+```
+:::
+
 ## Schema Helpful Methods
 
 Each `Schema` instance has two helpful methods `cast` and `validate`.

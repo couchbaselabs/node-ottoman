@@ -2,6 +2,7 @@ import { getModelMetadata, SearchConsistency } from '../..';
 import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
 import { LogicalWhereExpr, Query } from '../../query';
 import { CAST_STRATEGY } from '../../utils/cast-strategy';
+import { isDebugMode } from '../../utils/is-debug-mode';
 import { canBePopulated } from '../../utils/populate/can-be-populated';
 import { execPopulation, execPopulationFromObject } from '../../utils/populate/exec-populate';
 import { isPopulateAnObject } from '../../utils/populate/is-populate-object';
@@ -9,7 +10,6 @@ import { extractPopulate } from '../../utils/query/extract-populate';
 import { getProjectionFields } from '../../utils/query/extract-select';
 import { isNumber } from '../../utils/type-helpers';
 import { FindOptions } from './find-options';
-import { isDebugMode } from '../../utils/is-debug-mode';
 
 /**
  * Find documents using filter and options.
@@ -82,7 +82,9 @@ export const find = (metadata: ModelMetadata) => async (filter: LogicalWhereExpr
   const result = await cluster.query(n1ql, queryOptions);
 
   if (select !== 'RAW COUNT(*) as count') {
-    result.rows = result.rows.map((row) => new Model(row, { strict: false, strategy: CAST_STRATEGY.KEEP }));
+    const newModelOptions = { strict: false, strategy: CAST_STRATEGY.KEEP };
+    result.rows = result.rows.map((row) => new Model(row, newModelOptions).$wasNew());
+
     if (populate) {
       const isObject = isPopulateAnObject(populate);
       const populateFields = extractPopulate(isObject ? Object.keys(populate) : populate);
