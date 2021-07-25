@@ -43,6 +43,10 @@ export abstract class Document<T = any> {
   /**
    * @ignore
    */
+  #isNew = true;
+  /**
+   * @ignore
+   */
   // eslint-disable-next-line no-unused-vars
   protected constructor(data, options: CastOptions = {}) {
     const { get, set, getStrategy, setStrategy, hasOwnProperty } = (function immutables() {
@@ -83,13 +87,17 @@ export abstract class Document<T = any> {
         },
       },
       getCurrentStrategy: {
-        value: function () {
-          return getStrategy();
-        },
+        value: getStrategy,
       },
       setCurrentStrategy: {
         value: function (value?: ApplyStrategy) {
           setStrategy(value);
+        },
+      },
+      $wasNew: {
+        value: () => {
+          this.#isNew = false;
+          return this;
         },
       },
     });
@@ -184,8 +192,7 @@ export abstract class Document<T = any> {
     }
     const addedMetadata = { ...data, [modelKey]: modelName };
     const { document } = await storeLifeCycle({ key, id, data: addedMetadata, options, metadata, refKeys });
-    this._applyData(document);
-    return this;
+    return this._applyData(document).$wasNew();
   }
 
   /**
@@ -569,6 +576,10 @@ export abstract class Document<T = any> {
             return this.getImmutable(key);
           },
           set(value) {
+            if (this.#isNew) {
+              this.setImmutable(key, value);
+              return;
+            }
             const currentStrategy = this.getCurrentStrategy();
             if (currentStrategy === CAST_STRATEGY.THROW && this.getImmutable(key) !== value) {
               throw new ImmutableError(`Field '${key}' is immutable and current cast strategy is set to 'throw'`);
@@ -580,6 +591,7 @@ export abstract class Document<T = any> {
         });
       }
     }
+    return this;
   }
 
   /**
@@ -619,5 +631,30 @@ export abstract class Document<T = any> {
    */
   $toObject() {
     return { ...this };
+  }
+
+  /**
+   * Boolean flag specifying if the document is new.
+   * @example
+   * ```typescript
+   * const CardSchema = new Schema({
+   *   cardNumber: { type: String, immutable: true },
+   *   zipCode: String,
+   * });
+   *
+   * // Create model
+   * const Card = model('Card', CardSchema);
+   *
+   * // Create document
+   * const myCard = new Card({ cardNumber: '4321 4321 4321 4321', zipCode: '43210' });
+   * myCard.$isNew; // true
+   *
+   * // Save document
+   * const myCardSaved = await myCard.save();
+   * myCardSaved.$isNew; // false
+   * ```
+   */
+  get $isNew(): boolean {
+    return this.#isNew;
   }
 }

@@ -111,6 +111,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const strict = options.strict !== undefined ? options.strict : schema.options.strict;
       const skip = options.skip || [modelKey, ID_KEY];
       const schemaData = cast(data, schema, { strategy, strict, skip });
+
       this._applyData(schemaData, strategy === CAST_STRATEGY.THROW ? CAST_STRATEGY.THROW : true);
 
       // Adding methods to the model instance
@@ -188,7 +189,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const { value } = await collection().get(key, findOptions);
 
       const ModelFactory = ottoman.getModel(modelName);
-      let document = new ModelFactory({ ...value }, { strict: false, strategy: CAST_STRATEGY.KEEP });
+      let document = new ModelFactory({ ...value }, { strict: false, strategy: CAST_STRATEGY.KEEP }).$wasNew();
       if (populate) {
         document.$.lean = findOptions.lean;
         document = await document._populate(populate, findOptions.populateMaxDeep || undefined);
@@ -205,7 +206,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
         ...options,
         limit: 1,
       });
-      if (response.hasOwnProperty('rows') && response.rows.length > 0) {
+      if (response?.rows?.length) {
         return response.rows[0];
       }
       throw new (couchbase as any).DocumentNotFoundError();
@@ -254,7 +255,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
           });
         }
 
-        const replace = new _Model({ ...temp });
+        const replace = new _Model({ ...temp }).$wasNew();
         replace._applyData(
           {
             ...data,
@@ -289,7 +290,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       options: UpdateManyOptions = { strict: true },
     ) => {
       const response = await find(metadata)(filter, options);
-      if (response.hasOwnProperty('rows') && response.rows.length > 0) {
+      if (response?.rows?.length) {
         return updateMany(metadata)(response.rows, doc, options?.strict ?? true);
       }
       if (options.upsert) {
@@ -312,7 +313,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       try {
         const before = await _Model.findOne(filter, { ...options, consistency: 1 });
         if (before) {
-          const toSave = _Model.fromData({ ...before });
+          const toSave = new _Model({ ...before }).$wasNew();
           toSave._applyData({ ...doc }, options.strict);
           const after = await toSave.save();
           return options.new ? after : before;
