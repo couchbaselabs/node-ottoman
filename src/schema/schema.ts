@@ -1,21 +1,21 @@
 import {
+  ArrayType,
   arrayTypeFactory,
+  BooleanType,
   booleanTypeFactory,
   CoreType,
-  dateTypeFactory,
-  embedTypeFactory,
-  numberTypeFactory,
-  referenceTypeFactory,
-  stringTypeFactory,
-  mixedTypeFactory,
-  EmbedType,
-  ArrayType,
   DateType,
-  NumberType,
-  BooleanType,
-  StringType,
+  dateTypeFactory,
+  EmbedType,
+  embedTypeFactory,
   MixedType,
+  mixedTypeFactory,
+  NumberType,
+  numberTypeFactory,
   ReferenceType,
+  referenceTypeFactory,
+  StringType,
+  stringTypeFactory,
 } from './types';
 import { BuildSchemaError } from './errors';
 import { SchemaIndex, SchemaQuery } from '../model/index/types/index.types';
@@ -23,18 +23,29 @@ import { getGlobalPlugins } from '../plugins/global-plugin-handler';
 import { buildFields, validate } from './helpers';
 import { HOOKS, HookTypes } from '../utils/hooks';
 import {
-  IOttomanType,
   CustomValidations,
   FieldMap,
+  HookHandler,
+  IOttomanType,
   PluginConstructor,
   SchemaDef,
   SchemaOptions,
   SupportFactoryTypes,
   SupportTypes,
 } from './interfaces/schema.types';
-import { HookHandler } from './interfaces/schema.types';
 import { cast, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
 import { mergeHooks } from './helpers/fn-schema';
+
+const addTimestamp = (obj, field, currentTime) => {
+  if (obj[field]) {
+    if (typeof obj[field] === 'function') {
+      obj[field] = { type: obj[field] };
+    }
+    obj[field].default = currentTime;
+  } else {
+    obj[field] = { type: Date, default: currentTime };
+  }
+};
 
 export class Schema {
   static FactoryTypes: SupportFactoryTypes = {
@@ -90,6 +101,34 @@ export class Schema {
     const postHooks = options?.postHooks;
     this.options = options;
     const strict = options?.strict || false;
+    let timestamps = options.timestamps;
+    if (timestamps === true) {
+      timestamps = { createdAt: true, updatedAt: true };
+    }
+    if (timestamps) {
+      let createdAt = 'createdAt';
+      let updatedAt = 'updatedAt';
+
+      if (typeof timestamps === 'object') {
+        const currentTime =
+          timestamps.currentTime ||
+          function () {
+            return new Date();
+          };
+        if (timestamps.createdAt || timestamps.currentTime) {
+          createdAt = typeof timestamps.createdAt === 'string' ? timestamps.createdAt : createdAt;
+          addTimestamp(obj, createdAt, currentTime);
+        }
+        if (timestamps.updatedAt || timestamps.currentTime) {
+          updatedAt = typeof timestamps.updatedAt === 'string' ? timestamps.updatedAt : updatedAt;
+          addTimestamp(obj, updatedAt, currentTime);
+          this.pre(HOOKS.UPDATE, (doc) => {
+            doc[updatedAt] = typeof currentTime === 'function' ? currentTime() : currentTime;
+            return doc;
+          });
+        }
+      }
+    }
     this.fields = buildFields(obj, strict);
     this.plugin(...getGlobalPlugins());
     if (preHooks !== undefined) {
