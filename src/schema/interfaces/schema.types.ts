@@ -31,6 +31,12 @@ export interface RequiredOption {
   message: string;
 }
 
+interface SchemaTimestampsConfig {
+  createdAt?: boolean | string;
+  updatedAt?: boolean | string;
+  currentTime?: () => Date | number;
+}
+
 export interface CoreTypeOptions {
   required?: boolean | RequiredOption | RequiredFunction;
   /**
@@ -51,4 +57,10 @@ export interface SchemaOptions {
   strict?: boolean;
   preHooks?: Hook;
   postHooks?: Hook;
+  /**
+   * The timestamps option tells Ottoman to assign createdAt and updatedAt fields to your schema. The type
+   * assigned is `Date`. By default, the names of the fields are createdAt and updatedAt. Customize the
+   * field names by setting timestamps.createdAt and timestamps.updatedAt.
+   */
+  timestamps?: boolean | SchemaTimestampsConfig;
 }

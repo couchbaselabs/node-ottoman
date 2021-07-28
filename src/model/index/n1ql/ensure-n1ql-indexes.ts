@@ -86,6 +86,14 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
     }
   }
 
+  if (ottoman.onIndexReady) {
+    let names: string[] = [];
+    for (const key in indexesToBuild) {
+      names = [...names, ...(indexesToBuild[key] || [])];
+    }
+    ottoman.queryIndexManager.watchIndexes(bucketName, names, 300000, {}, ottoman.onIndexReady);
+  }
+
   // All indexes were built deferred, so now kick off the actual build.
   for (const key in indexesToBuild) {
     const buildIndexes = indexesToBuild[key];

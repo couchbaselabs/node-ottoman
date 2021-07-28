@@ -54,6 +54,60 @@ The meta above cannot have its own validation as a side-effect of this. If valid
 Schemas not only define the structure of your document and casting of properties, they also define document [instance methods](#instance-methods), [static Model methods](#statics),
 [compound indexes](#indexes), [plugins](#plugins), and document lifecycle [hooks](#hooks).
 
+## Schema Options
+
+Schemas have a few configurable options which can be passed to the constructor:
+
+```typescript
+new Schema({...}, options);
+```
+
+The availables options are:
+```typescript
+export interface SchemaOptions {
+  strict?: boolean;
+  preHooks?: Hook;
+  postHooks?: Hook;
+  timestamps?: boolean | SchemaTimestampsConfig;
+}
+```
+
+### Option Timestamps
+
+The timestamps option tells `Ottoman` to assign `createdAt` and `updatedAt` fields to your schema. The type assigned is `Date`.
+
+By default, the names of the fields are `createdAt` and `updatedAt`. Customize the field names by setting `timestamps.createdAt` and `timestamps.updatedAt`.
+
+Basic example:
+```typescript
+const travelSchema = new Schema({..}, { timestamps: true });
+const Travel = model('Travel', thingSchema);
+const travel = new Travel();
+await travel.save(); // `createdAt` & `updatedAt` will be included
+```
+
+Customize `createdAt` to `created_at`
+```typescript
+const travelSchema = new Schema({..}, { timestamps: { createdAt: 'created_at' } });
+const Travel = model('Travel', thingSchema);
+const travel = new Travel();
+await travel.save(); // `created_at` & `updatedAt` will be included
+```
+
+By default, Ottoman uses `new Date()` to get the current time. If you want to overwrite the function Ottoman uses to get the current time, you can set the `timestamps.currentTime` option.
+Ottoman will call the `timestamps.currentTime` function whenever it needs to get the current time.
+
+```typescript
+const schema = Schema({
+  createdAt: Number,
+  updatedAt: Number,
+  name: String
+}, {
+  // Make Ottoman use Unix time (seconds since Jan 1, 1970)
+  timestamps: { currentTime: () => Math.floor(Date.now() / 1000) }
+});
+```
+
 ## Creating a Model
 
 To use our schema definition, we need to convert our `blogSchema` into a [Model](/guides/model.html) we can work with. To do so, we pass it into `model(modelName, schema)`:
@@ -117,6 +171,7 @@ let animals = await Animal.findByName('fido');
 ::: danger Note
 Do **not** declare _statics_ using ES6 arrow functions (`=>`). Arrow functions [explicitly prevent binding](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) `this`, so the above examples will **not** work because of the value of `this`.
 :::
+
 
 ## Indexes
 
@@ -245,6 +300,13 @@ console.log(usersN1ql.rows);
   }
 ]
 ```
+
+:::warning Not Recommended
+`ensureIndex` is nice for development, but it's recommended this behavior be disabled in production since index creation can cause a significant performance impact.
+Disable the behavior by don't execute `ensureIndex` function. (for example you can use node env variable to know when you are in development mode [process.ENV.development])
+
+Notice: the `start` function should be disabled too, due to it use `ensureIndexes` internally.
+:::
 
 ### RefDoc
 

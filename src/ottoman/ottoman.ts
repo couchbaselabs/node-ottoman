@@ -46,6 +46,45 @@ interface OttomanConfig {
   keyGeneratorDelimiter?: string;
 }
 
+interface queryOptions {
+  /** Specifies whether this is an ad-hoc query, or if it should be prepared for faster execution in the future. **/
+  adhoc?: boolean;
+  /** The returned client context id for this query. **/
+  clientContextId?: string;
+  /** Specifies a MutationState which the query should be consistent with. **/
+  consistentWith?: any;
+  /** Specifies whether flex-indexes should be enabled. Allowing the use of full-text search from the query service. **/
+  flexIndex?: boolean;
+  /** This is an advanced option, see the query service reference for more information on the proper use and tuning of this option. **/
+  maxParallelism?: number;
+  /** Specifies whether metrics should be captured as part of the execution of the query. **/
+  metrics?: boolean;
+  /** Values to be used for the placeholders within the query. **/
+  parameters?: any[] | any;
+  /** The parent tracing span that this operation will be part of. **/
+  parentSpan?: { addTag(key: string, value: string | number | boolean): void; end(): void };
+  /** This is an advanced option, see the query service reference for more information on the proper use and tuning of this option. **/
+  pipelineBatch?: number;
+  /** This is an advanced option, see the query service reference for more information on the proper use and tuning of this option. **/
+  pipelineCap?: number;
+  /** Specifies the level of profiling that should be used for the query. **/
+  profile?: 'off' | 'phases' | 'timings';
+  /** Specifies the context within which this query should be executed. This can be scoped to a scope or a collection within the dataset. **/
+  queryContext?: string;
+  /** Specifies any additional parameters which should be passed to the query engine when executing the query. **/
+  raw?: Record<string, any>;
+  /** Specifies that this query should be executed in read-only mode, disabling the ability for the query to make any changes to the data. **/
+  readOnly?: boolean;
+  /** This is an advanced option, see the query service reference for more information on the proper use and tuning of this option. **/
+  scanCap?: number;
+  /** Specifies the consistency requirements when executing the query. **/
+  scanConsistency?: 'not_bounded' | 'request_plus';
+  /** This is an advanced option, see the query service reference for more information on the proper use and tuning of this option. **/
+  scanWait?: number;
+  /** The timeout for this operation, represented in milliseconds. **/
+  timeout?: number;
+}
+
 /**
  * CertificateAuthenticator provides an authenticator implementation using TLS Cert Authentication.
  */
@@ -68,6 +107,7 @@ export class Ottoman {
   private n1qlIndexes: Record<string, { fields: string[]; modelName: string }> = {};
   private viewIndexes: Record<string, { views: { map?: string } }> = {};
   private refdocIndexes: Record<string, { fields: string[] }[]> = {};
+  public onIndexReady?: () => void;
 
   /**
    * @ignore
@@ -348,8 +388,8 @@ export class Ottoman {
    * WHERE (address LIKE '%57-59%' OR free_breakfast = true)
    * ```
    */
-  async query(query: string) {
-    return this.cluster.query(query);
+  async query(query: string, options: queryOptions = {}) {
+    return this.cluster.query(query, options);
   }
 
   /**

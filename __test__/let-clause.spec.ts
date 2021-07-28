@@ -33,7 +33,7 @@ describe('LET clause', () => {
     const ottoman = getDefaultInstance();
     await startInTest(ottoman);
 
-    const response = await ottoman.query(query);
+    const response = await ottoman.query(query, { scanConsistency: 'request_plus' });
 
     expect(response.rows).toStrictEqual([
       {
