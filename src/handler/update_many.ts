@@ -2,7 +2,7 @@ import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
 import { batchProcessQueue } from './utils';
 import { ManyQueryResponse, StatusExecution } from './types';
 import { ModelTypes } from '../model/model.types';
-import { ApplyStrategy } from '../utils/cast-strategy';
+import { MutationFunctionOptions } from '../utils/cast-strategy';
 
 /**
  * Async Function: Update all of the documents that match conditions from the collection.
@@ -16,12 +16,12 @@ import { ApplyStrategy } from '../utils/cast-strategy';
 export const updateMany = (metadata: ModelMetadata) => async (
   documents: ModelTypes[],
   doc: Partial<ModelTypes>,
-  strict: ApplyStrategy,
+  options: MutationFunctionOptions,
 ): Promise<ManyQueryResponse> => {
   async function cb(document: ModelTypes, metadata: ModelMetadata, extra: Record<string, unknown>) {
-    return updateCallback(document, metadata, extra, strict);
+    return updateCallback(document, metadata, extra, options);
   }
-  return await batchProcessQueue(metadata)(documents, cb, doc, 100);
+  return await batchProcessQueue(metadata)(documents, cb, doc, options, 100);
 };
 
 /**
@@ -31,11 +31,11 @@ export const updateCallback = (
   document: ModelTypes,
   metadata: ModelMetadata,
   extra: Record<string, unknown>,
-  strict: ApplyStrategy = true,
+  options: MutationFunctionOptions,
 ): Promise<StatusExecution> => {
   const model = metadata.ottoman.getModel(metadata.modelName);
   return model
-    .updateById(document[metadata.ID_KEY], { ...document, ...extra }, { strict })
+    .updateById(document[metadata.ID_KEY], { ...document, ...extra }, options)
     .then((updated) => {
       return Promise.resolve(new StatusExecution(updated, 'SUCCESS'));
     })

@@ -6,14 +6,19 @@ test('Test Create Many', async () => {
   const Box = model('Box', { name: String, price: Number });
   await startInTest(getDefaultInstance());
   const docs = [{ name: 'Xbox' }, { name: 'Yellow Box' }];
-  const queryResult: IManyQueryResponse = await Box.createMany(docs);
+  interface Doc {
+    id?: string;
+    name: string;
+    price?: number;
+  }
+  const queryResult = await Box.createMany<Doc, Doc>(docs);
   const boxs = await Box.find({}, consistency);
   const cleanUp = async () => await Box.removeMany({ _type: 'Box' });
   await cleanUp();
   expect(queryResult.message.success).toBe(docs.length);
   expect(boxs.rows.length).toBeGreaterThanOrEqual(2);
-  expect(queryResult.message.data?.length).toStrictEqual(docs.length);
-  expect(queryResult.message.data![0]?.id).toBeDefined();
+  expect(queryResult.message.data.length).toStrictEqual(docs.length);
+  expect(queryResult.message.data[0].id).toBeDefined();
 });
 
 test('Test Create Many with find limit 0', async () => {

@@ -74,7 +74,7 @@ describe('Test Document Update Many', () => {
     await Cat.create({ name: 'Cat0', age: 27 });
     const doc = await Cat.find({ name: { $like: 'Cat0' } });
     try {
-      await updateCallback({ ...doc, id: 'dummy_id' }, metadata, { name: 'Cat' });
+      await updateCallback({ ...doc, id: 'dummy_id' }, metadata, { name: 'Cat' }, {});
     } catch (error) {
       const dnf = new (couchbase as any).DocumentNotFoundError();
       const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' }, consistency);

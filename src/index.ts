@@ -11,6 +11,7 @@ export {
   CertificateAuthenticator,
 } from './ottoman/ottoman';
 export { Model } from './model/model';
+export { Document, IDocument } from './model/document';
 export { ModelOptions } from './model/interfaces/create-model.interface';
 export { ModelTypes } from './model/model.types';
 export { getModelMetadata } from './model/utils/model.utils';

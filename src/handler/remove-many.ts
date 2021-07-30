@@ -11,7 +11,7 @@ import { ManyQueryResponse, StatusExecution } from './types';
  * @return (ManyQueryResponse)[(/classes/queryresponse.html)]
  */
 export const removeMany = (metadata: ModelMetadata) => async (ids): Promise<ManyQueryResponse> => {
-  return await batchProcessQueue(metadata)(ids, removeCallback, {}, 100);
+  return await batchProcessQueue(metadata)(ids, removeCallback, {}, {}, 100);
 };
 
 /**

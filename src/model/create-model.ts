@@ -18,7 +18,7 @@ import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { Model } from './model';
-import { ModelTypes } from './model.types';
+import { ModelTypes, saveOptions } from './model.types';
 import { getModelMetadata, setModelMetadata } from './utils/model.utils';
 
 /**
@@ -212,31 +212,38 @@ export const _buildModel = (metadata: ModelMetadata) => {
       throw new (couchbase as any).DocumentNotFoundError();
     };
 
-    static create = async (data: Record<string, any>): Promise<any> => {
+    static create = async (data: Record<string, any>, options: saveOptions = {}): Promise<any> => {
       const instance = new _Model({ ...data });
-      await instance.save(true);
+      await instance.save(true, options);
       return instance;
     };
 
-    static createMany = async (docs: Record<string, unknown>[] | Record<string, unknown>) => {
+    static createMany = async (
+      docs: Record<string, unknown>[] | Record<string, unknown>,
+      options: saveOptions = {},
+    ) => {
       const _docs = Array.isArray(docs) ? docs : [docs];
-      return await createMany(metadata)(_docs);
+      return await createMany(metadata)(_docs, options);
     };
 
     static updateById = async (id: string, data, options: MutationFunctionOptions = { strict: true }) => {
       const key = id || data[ID_KEY];
-      const value = await _Model.findById(key);
+      const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
       if (value[ID_KEY]) {
         const strategy = CAST_STRATEGY.THROW;
         value._applyData({ ...value, ...data, ...{ [modelKey]: value[modelKey] } }, options.strict);
         const instance = new _Model({ ...value }, { strategy });
-        return instance.save();
+        const _options: any = {};
+        if (options.maxExpiry) {
+          _options.maxExpiry = options.maxExpiry;
+        }
+        return instance.save(false, options);
       }
     };
 
     static replaceById = async (id: string, data, options: MutationFunctionOptions = { strict: true }) => {
       const key = id || data[ID_KEY];
-      const value = await _Model.findById(key);
+      const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
       if (value[ID_KEY]) {
         const temp = {};
         Object.keys(data).map((key) => {
@@ -263,7 +270,11 @@ export const _buildModel = (metadata: ModelMetadata) => {
           },
           options?.strict,
         );
-        return replace.save();
+        const _options: any = {};
+        if (options.maxExpiry) {
+          _options.maxExpiry = options.maxExpiry;
+        }
+        return replace.save(false, _options);
       }
     };
 
@@ -291,7 +302,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
     ) => {
       const response = await find(metadata)(filter, options);
       if (response?.rows?.length) {
-        return updateMany(metadata)(response.rows, doc, options?.strict ?? true);
+        return updateMany(metadata)(response.rows, doc, options);
       }
       if (options.upsert) {
         const ModelFactory = ottoman.getModel(modelName);
@@ -310,17 +321,21 @@ export const _buildModel = (metadata: ModelMetadata) => {
       doc: Record<string, unknown>,
       options: FindOneAndUpdateOption = { strict: true },
     ) => {
+      const saveOptions: any = {};
+      if (options.maxExpiry) {
+        saveOptions.maxExpiry = options.maxExpiry;
+      }
       try {
         const before = await _Model.findOne(filter, { ...options, consistency: 1 });
         if (before) {
           const toSave = new _Model({ ...before }).$wasNew();
           toSave._applyData({ ...doc }, options.strict);
-          const after = await toSave.save();
+          const after = await toSave.save(false, saveOptions);
           return options.new ? after : before;
         }
       } catch (e) {
         if (options.upsert) {
-          return await _Model.create(doc);
+          return await _Model.create(doc, saveOptions);
         }
         throw e;
       }

@@ -13,4 +13,5 @@ export interface FindOneAndUpdateOption extends IFindOptions, MutationFunctionOp
    * if true, return a document after update otherwise return the document before update.
    * */
   new?: boolean;
+  maxExpiry?: number;
 }
