@@ -13,11 +13,14 @@ import {
 } from '../utils/schema.utils';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { PopulateFieldsType } from './populate.types';
+import { saveOptions } from './model.types';
 import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
 import { getModelMetadata } from './utils/model.utils';
 import { removeLifeCycle } from './utils/remove-life-cycle';
 import { storeLifeCycle } from './utils/store-life-cycle';
+
+export type IDocument<T = any> = Document & T;
 
 /**
  * Document class represents a database document and provides useful methods to work with.
@@ -34,7 +37,7 @@ import { storeLifeCycle } from './utils/store-life-cycle';
  * const jane = new User({ name: "Jane Doe" })
  * ```
  */
-export abstract class Document<T = any> {
+export abstract class Document {
   /**
    * @ignore
    */
@@ -142,7 +145,7 @@ export abstract class Document<T = any> {
    * await user.save(true); // ensure to execute a insert operation
    * ```
    */
-  async save(onlyCreate = false) {
+  async save(onlyCreate = false, options: saveOptions = {}) {
     const {
       scopeName,
       collectionName,
@@ -154,7 +157,7 @@ export abstract class Document<T = any> {
       keyGeneratorDelimiter,
     } = this.$;
     const data = extractDataFromModel(this);
-    const options: any = {};
+    const _options: saveOptions & { cas?: any } = options;
     let id = this._getId();
     const prefix = `${scopeName}${collectionName}`;
     const newRefKeys = getModelRefKeys(data, prefix, ottoman);
@@ -182,7 +185,7 @@ export abstract class Document<T = any> {
         refKeys.add = arrayDiff(newRefKeys, oldRefKeys);
         refKeys.remove = arrayDiff(oldRefKeys, newRefKeys);
         if (cas) {
-          options.cas = cas;
+          _options.cas = cas;
         }
       } catch (e) {
         if (e instanceof DocumentNotFoundError) {
@@ -191,7 +194,7 @@ export abstract class Document<T = any> {
       }
     }
     const addedMetadata = { ...data, [modelKey]: modelName };
-    const { document } = await storeLifeCycle({ key, id, data: addedMetadata, options, metadata, refKeys });
+    const { document } = await storeLifeCycle({ key, id, data: addedMetadata, options: _options, metadata, refKeys });
     return this._applyData(document).$wasNew();
   }
 

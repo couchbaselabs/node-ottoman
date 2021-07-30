@@ -1,7 +1,7 @@
 import { ModelMetadata } from '../model/interfaces/model-metadata.interface';
 import { batchProcessQueue } from './utils';
 import { StatusExecution } from './types';
-import { ModelTypes } from '../model/model.types';
+import { ModelTypes, saveOptions } from '../model/model.types';
 
 /**
  * Async Function: Create many documents at once
@@ -10,16 +10,24 @@ import { ModelTypes } from '../model/model.types';
  *
  * @return (ManyQueryResponse)[(/classes/queryresponse.html)]
  */
-export const createMany = <T = any>(metadata: ModelMetadata) => async (documents: unknown[]) => {
-  return await batchProcessQueue(metadata)(documents, createManyCallback, {}, 100);
+export const createMany = <T = any>(metadata: ModelMetadata) => async (
+  documents: unknown[],
+  options: saveOptions = {},
+) => {
+  return await batchProcessQueue(metadata)(documents, createManyCallback, {}, options, 100);
 };
 
 /**
  * @ignore
  */
-export const createManyCallback = (document: ModelTypes, metadata: ModelMetadata): Promise<StatusExecution> => {
+export const createManyCallback = (
+  document: ModelTypes,
+  metadata: ModelMetadata,
+  extra: any,
+  options: saveOptions = {},
+): Promise<StatusExecution> => {
   const Model = metadata.ottoman.getModel(metadata.modelName);
-  return Model.create(document)
+  return Model.create(document, options)
     .then((created) => {
       return Promise.resolve(new StatusExecution(created, 'SUCCESS'));
     })

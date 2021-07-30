@@ -1,12 +1,12 @@
-import { Document } from './document';
+import { Document, IDocument } from './document';
 import { FindByIdOptions, FindOptions, ManyQueryResponse } from '../handler';
 import { LogicalWhereExpr } from '../query';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
-import { ModelTypes } from './model.types';
+import { ModelTypes, saveOptions } from './model.types';
 
-export class Model<T = any, R = any> extends Document<T> {}
+export class Model<T = any, R = any> extends Document {}
 /**
  * Constructor to build a model instance based on schema and options.
  * Provides methods to handle documents of the current collection in the database.
@@ -26,7 +26,7 @@ export interface IModel<T = any, R = any> {
    * Creates a document from this model.
    * Implements schema validations, defaults, methods, static and hooks
    */
-  new (data: T, options?: CastOptions): Document<T> & T;
+  new (data: T, options?: CastOptions): IDocument<T>;
 
   /**
    * Finds documents.
@@ -82,7 +82,7 @@ export interface IModel<T = any, R = any> {
    * ```
    */
   findById<Result = R>(id: string, options?: FindByIdOptions): Promise<Result>;
-  findById<Result = R>(id: string, options?: FindByIdOptions): Promise<Document<Result>>;
+  findById<Result = R>(id: string, options?: FindByIdOptions): Promise<IDocument<Result>>;
 
   /**
    * Finds a document.
@@ -97,7 +97,7 @@ export interface IModel<T = any, R = any> {
    * ```
    */
   findOne<Doc = T, Result = R>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<Result>;
-  findOne<Doc = T, Result = R>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<Document<Result>>;
+  findOne<Doc = T, Result = R>(filter?: LogicalWhereExpr<Doc>, options?: FindOptions): Promise<IDocument<Result>>;
 
   /**
    * Creates a new document.
@@ -107,7 +107,7 @@ export interface IModel<T = any, R = any> {
    * const user = await User.create({ name: "John Doe" });
    * ```
    */
-  create<Doc = T>(doc: Doc): Promise<Document<T>>;
+  create<Doc = T>(doc: Doc, options?: saveOptions): Promise<IDocument<T>>;
 
   /**
    * Creates many documents at once.
@@ -119,7 +119,7 @@ export interface IModel<T = any, R = any> {
    * const user = await User.createMany([{ name: "John Doe" }, { name: "Jane Doe" }]);
    * ```
    */
-  createMany<Doc = T, Result = R>(docs: Doc[] | Doc): Promise<ManyQueryResponse<Document<Result>>>;
+  createMany<Doc = T, Result = R>(docs: Doc[] | Doc): Promise<ManyQueryResponse<IDocument<Result>>>;
 
   /**
    * Updates a document.
@@ -167,15 +167,15 @@ export interface IModel<T = any, R = any> {
    */
   updateById<Doc = T, Result = R>(
     id: string,
-    data: Doc | Partial<Doc> | Document<Doc>,
+    data: Doc | Partial<Doc> | IDocument<Doc>,
     options?: MutationFunctionOptions,
   ): Promise<Result>;
 
   updateById<Doc = T, Result = R>(
     id: string,
-    data: Doc | Partial<Doc> | Document<Doc>,
+    data: Doc | Partial<Doc> | IDocument<Doc>,
     options?: MutationFunctionOptions,
-  ): Promise<Document<Result>>;
+  ): Promise<IDocument<Result>>;
 
   /**
    * Same as **updateById**, except it replaces the existing document with the given document.
@@ -224,15 +224,15 @@ export interface IModel<T = any, R = any> {
    */
   replaceById<Doc = T, Result = R>(
     id: string,
-    data: Doc | Document<Doc>,
+    data: Doc | IDocument<Doc>,
     options?: MutationFunctionOptions,
   ): Promise<Result>;
 
   replaceById<Doc = T, Result = R>(
     id: string,
-    data: Doc | Document<Doc>,
+    data: Doc | IDocument<Doc>,
     options?: MutationFunctionOptions,
-  ): Promise<Document<Result>>;
+  ): Promise<IDocument<Result>>;
 
   /**
    * Removes a document by id.
@@ -397,7 +397,7 @@ export interface IModel<T = any, R = any> {
     filter?: LogicalWhereExpr<Query>,
     doc?: T | Partial<T>,
     options?: UpdateManyOptions,
-  ): Promise<ManyQueryResponse<Document<Result>>>;
+  ): Promise<ManyQueryResponse<IDocument<Result>>>;
 
   /**
    * Finds a document that matches the conditions of the collection and updates it.
@@ -472,7 +472,7 @@ export interface IModel<T = any, R = any> {
     filter?: LogicalWhereExpr<Query>,
     doc?: T | Partial<T>,
     options?: FindOneAndUpdateOption,
-  ): Promise<Document<Result>>;
+  ): Promise<IDocument<Result>>;
 
   /**
    * dropCollection drops a collection from a scope in a bucket.
