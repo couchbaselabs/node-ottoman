@@ -21,16 +21,26 @@ import { buildMapViewIndexFn } from '../model/index/view/build-map-view-index-fn
 import { ensureViewIndexes } from '../model/index/view/ensure-view-indexes';
 import { OttomanError } from '../exceptions/ottoman-errors';
 import { parseError } from '../utils/parse-errors';
+import {
+  Bucket,
+  BucketManager,
+  Cluster,
+  CollectionManager,
+  DropBucketOptions,
+  DropCollectionOptions,
+  DropScopeOptions,
+  QueryOptions,
+  ConnectOptions as CouchbaseConnectOptions,
+  NoopTracer,
+  NoopMeter,
+  QueryIndexManager,
+  ViewIndexManager,
+  Collection,
+} from 'couchbase';
 
-export interface ConnectOptions {
+export interface ConnectOptions extends CouchbaseConnectOptions {
   connectionString: string;
-  username: string;
-  password: string;
   bucketName: string;
-  authenticator?: CertificateAuthenticator;
-  trustStorePath?: string;
-  transcoder?: unknown;
-  logFunc?: unknown;
 }
 
 interface OttomanConfig {
@@ -44,57 +54,6 @@ interface OttomanConfig {
   maxExpiry?: number;
   keyGenerator?: (params: { metadata: ModelMetadata }) => string;
   keyGeneratorDelimiter?: string;
-}
-
-interface queryOptions {
-  /** Specifies whether this is an ad-hoc query, or if it should be prepared for faster execution in the future. **/
-  adhoc?: boolean;
-  /** The returned client context id for this query. **/
-  clientContextId?: string;
-  /** Specifies a MutationState which the query should be consistent with. **/
-  consistentWith?: any;
-  /** Specifies whether flex-indexes should be enabled. Allowing the use of full-text search from the query service. **/
-  flexIndex?: boolean;
-  /** This is an advanced option, see the query service reference for more information on the proper use and tuning of this option. **/
-  maxParallelism?: number;
-  /** Specifies whether metrics should be captured as part of the execution of the query. **/
-  metrics?: boolean;
-  /** Values to be used for the placeholders within the query. **/
-  parameters?: any[] | any;
-  /** The parent tracing span that this operation will be part of. **/
-  parentSpan?: { addTag(key: string, value: string | number | boolean): void; end(): void };
-  /** This is an advanced option, see the query service reference for more information on the proper use and tuning of this option. **/
-  pipelineBatch?: number;
-  /** This is an advanced option, see the query service reference for more information on the proper use and tuning of this option. **/
-  pipelineCap?: number;
-  /** Specifies the level of profiling that should be used for the query. **/
-  profile?: 'off' | 'phases' | 'timings';
-  /** Specifies the context within which this query should be executed. This can be scoped to a scope or a collection within the dataset. **/
-  queryContext?: string;
-  /** Specifies any additional parameters which should be passed to the query engine when executing the query. **/
-  raw?: Record<string, any>;
-  /** Specifies that this query should be executed in read-only mode, disabling the ability for the query to make any changes to the data. **/
-  readOnly?: boolean;
-  /** This is an advanced option, see the query service reference for more information on the proper use and tuning of this option. **/
-  scanCap?: number;
-  /** Specifies the consistency requirements when executing the query. **/
-  scanConsistency?: 'not_bounded' | 'request_plus';
-  /** This is an advanced option, see the query service reference for more information on the proper use and tuning of this option. **/
-  scanWait?: number;
-  /** The timeout for this operation, represented in milliseconds. **/
-  timeout?: number;
-}
-
-/**
- * CertificateAuthenticator provides an authenticator implementation using TLS Cert Authentication.
- */
-export class CertificateAuthenticator {
-  /**
-   *
-   * @param {string} certificatePath
-   * @param {string} keyPath
-   */
-  constructor(public certificatePath, public keyPath) {}
 }
 
 /**
@@ -147,7 +106,7 @@ export class Ottoman {
   /**
    * Bucket represents a storage grouping of data within a Couchbase Server cluster.
    */
-  bucket;
+  bucket?: Bucket;
 
   /**
    * CollectionManager allows the management of collections within a Bucket.
@@ -156,8 +115,8 @@ export class Ottoman {
    * [Collection Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/CollectionManager.html)
    * documentation for more details.
    */
-  get collectionManager() {
-    return this.bucket.collections();
+  get collectionManager(): CollectionManager {
+    return this.bucket!.collections();
   }
 
   /**
@@ -167,7 +126,7 @@ export class Ottoman {
    * [Bucket Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/BucketManager.html)
    * documentation for more details.
    */
-  get bucketManager() {
+  get bucketManager(): BucketManager {
     return this.cluster.buckets();
   }
 
@@ -178,19 +137,20 @@ export class Ottoman {
    * [Query Index Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/QueryIndexManager.html)
    * documentation for more details.
    */
-  get queryIndexManager() {
+  get queryIndexManager(): QueryIndexManager {
     return this.cluster.queryIndexes();
   }
 
   /**
    * ViewIndexManager is an interface which enables the management of view indexes on the cluster.
    *
+   * @deprecated
    * Check the
    * [View Index Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/ViewIndexManager.html)
    * documentation for more details.
    */
-  get viewIndexManager() {
-    return this.bucket.viewIndexes();
+  get viewIndexManager(): ViewIndexManager {
+    return this.bucket!.viewIndexes();
   }
 
   /**
@@ -198,12 +158,12 @@ export class Ottoman {
    */
   models = {};
 
-  private _cluster;
+  private _cluster?: Cluster;
 
   /**
    * Cluster represents an entire Couchbase Server cluster.
    */
-  get cluster() {
+  get cluster(): Cluster {
     if (!this._cluster) {
       throw new OttomanError('No active connection detected, please try to connect.');
     }
@@ -241,11 +201,20 @@ export class Ottoman {
    */
   connect = (connectOptions: ConnectOptions | string): Ottoman => {
     const options = typeof connectOptions === 'object' ? connectOptions : extractConnectionString(connectOptions);
+
+    // temporary solution to segmentation fault, this code will be removed after brett notification.
+    if (!options.tracer) {
+      options.tracer = new NoopTracer();
+    }
+    if (!options.meter) {
+      options.meter = new NoopMeter();
+    }
+
     const { connectionString, bucketName, ..._options } = options;
     this._cluster = new (couchbase as any).Cluster(connectionString, _options);
     this.bucketName = bucketName;
     this.couchbase = couchbase;
-    this.bucket = this._cluster.bucket(bucketName);
+    this.bucket = this._cluster!.bucket(bucketName);
     return this;
   };
 
@@ -291,8 +260,8 @@ export class Ottoman {
   async dropCollection(
     collectionName: string,
     scopeName: string,
-    options: { timeout?: number } = {},
-  ): Promise<boolean | undefined> {
+    options: DropCollectionOptions = {},
+  ): Promise<boolean | undefined | void> {
     try {
       return await this.collectionManager.dropCollection(collectionName, scopeName, options);
     } catch (e) {
@@ -305,7 +274,7 @@ export class Ottoman {
    * @param scopeName
    * @param options
    */
-  async dropScope(scopeName: string, options: { timeout?: number } = {}): Promise<boolean | undefined> {
+  async dropScope(scopeName: string, options: DropScopeOptions = {}): Promise<boolean | undefined | void> {
     try {
       return await this.collectionManager.dropScope(scopeName, options);
     } catch (e) {
@@ -318,7 +287,7 @@ export class Ottoman {
    * @param bucketName
    * @param options
    */
-  async dropBucket(bucketName: string, options: { timeout?: number } = {}): Promise<boolean | undefined> {
+  async dropBucket(bucketName: string, options: DropBucketOptions = {}): Promise<boolean | undefined | void> {
     try {
       return await this.bucketManager.dropBucket(bucketName, options);
     } catch (e) {
@@ -342,10 +311,10 @@ export class Ottoman {
    * Return a collection from the given collectionName in this bucket
    * or default collection if collectionName is missing.
    */
-  getCollection(collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) {
-    return this.bucket
-      .scope(scopeName === '_default' ? '' : scopeName)
-      .collection(collectionName === '_default' ? '' : collectionName);
+  getCollection(collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE): Collection {
+    return this.bucket!.scope(scopeName === '_default' ? '' : scopeName).collection(
+      collectionName === '_default' ? '' : collectionName,
+    );
   }
 
   /**
@@ -356,8 +325,9 @@ export class Ottoman {
    * connection.close().then(() => console.log('connection closed'));
    * ```
    */
-  close() {
-    this.cluster && this.cluster.close();
+  async close(): Promise<void> {
+    this.cluster && (await this.cluster.close());
+    (__ottoman as any) = undefined;
   }
 
   /**
@@ -388,7 +358,7 @@ export class Ottoman {
    * WHERE (address LIKE '%57-59%' OR free_breakfast = true)
    * ```
    */
-  async query(query: string, options: queryOptions = {}) {
+  async query(query: string, options: QueryOptions = {}) {
     return this.cluster.query(query, options);
   }
 
@@ -512,10 +482,9 @@ export const connect = (connectOptions: ConnectOptions | string) => {
   }
   __ottoman && __ottoman.connect(connectOptions);
 };
-export const close = () => {
+export const close = async (): Promise<void> => {
   if (__ottoman) {
-    __ottoman.close();
-    (__ottoman as any) = undefined;
+    await __ottoman.close();
   }
 };
 export const start = () => __ottoman && __ottoman.start();

@@ -1,5 +1,6 @@
 import { getDefaultInstance, LetExprType, LogicalWhereExpr, Query } from '../src';
 import { startInTest } from './testData';
+import { QueryScanConsistency } from 'couchbase';
 
 describe('LET clause', () => {
   const selectExpr = 't1.airportname, t1.geo.lat, t1.geo.lon, t1.city, t1.type';
@@ -33,7 +34,7 @@ describe('LET clause', () => {
     const ottoman = getDefaultInstance();
     await startInTest(ottoman);
 
-    const response = await ottoman.query(query, { scanConsistency: 'request_plus' });
+    const response = await ottoman.query(query, { scanConsistency: QueryScanConsistency.RequestPlus });
 
     expect(response.rows).toStrictEqual([
       {

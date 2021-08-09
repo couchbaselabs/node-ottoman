@@ -10,12 +10,11 @@ import { ModelTypes, saveOptions } from '../model/model.types';
  *
  * @return (ManyQueryResponse)[(/classes/queryresponse.html)]
  */
-export const createMany = <T = any>(metadata: ModelMetadata) => async (
-  documents: unknown[],
-  options: saveOptions = {},
-) => {
-  return await batchProcessQueue(metadata)(documents, createManyCallback, {}, options, 100);
-};
+export const createMany =
+  <T = any>(metadata: ModelMetadata) =>
+  async (documents: unknown[], options: saveOptions = {}) => {
+    return await batchProcessQueue(metadata)(documents, createManyCallback, {}, options, 100);
+  };
 
 /**
  * @ignore

@@ -1,5 +1,4 @@
-import couchbase from 'couchbase';
-import { getDefaultInstance, getModelMetadata, model, Schema } from '../src';
+import { getDefaultInstance, getModelMetadata, model, Schema, DocumentNotFoundError } from '../src';
 import { batchProcessQueue, chunkArray, IManyQueryResponse, removeCallback, StatusExecution } from '../src/handler';
 import { ModelMetadata } from '../src/model/interfaces/model-metadata.interface';
 import { consistency, startInTest } from './testData';
@@ -73,7 +72,7 @@ describe('Test Document Remove Many', () => {
     try {
       await removeCallback('dummy_id', metadata);
     } catch (error) {
-      const dnf = new (couchbase as any).DocumentNotFoundError();
+      const dnf = new DocumentNotFoundError();
       const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
       await cleanUp();
       expect(error.exception).toBe(dnf.constructor.name);

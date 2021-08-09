@@ -262,7 +262,8 @@ describe('Collection operators', () => {
       type: String,
     });
 
-    const Airline = model('airline', airlineSchema, { modelKey: 'type' });
+    const collectionName = 'airline';
+    const Airline = model(collectionName, airlineSchema, { modelKey: 'type' });
 
     const ottoman = getDefaultInstance();
     await startInTest(ottoman);
@@ -279,8 +280,11 @@ describe('Collection operators', () => {
       },
       { limit: 2, select: 'country,icao,name', lean: true },
     );
-
-    const query = new Query({ select: 'country,icao,name' }, 'travel-sample')
+    let fromClause = `\`${bucketName}\``;
+    if (!process.env.OTTOMAN_LEGACY_TEST) {
+      fromClause = `\`${bucketName}\`.\`_default\`.\`${collectionName}\``;
+    }
+    const query = new Query({ select: 'country,icao,name' }, fromClause)
       .where({
         type: 'airline',
         $and: [{ country: { $in: ['United Kingdom', 'France'] } }],
@@ -296,7 +300,7 @@ describe('Collection operators', () => {
     const response3 = await Airline.find({ $and: [{ country: { $in: 'United Kingdom' } }] });
     expect(response3.rows).toStrictEqual([]);
     expect(query).toBe(
-      'SELECT country,icao,name FROM `travel-sample` WHERE type="airline" AND (country IN ["United Kingdom","France"]) AND callsign IS NOT NULL AND ANY description WITHIN ["EU"] SATISFIES icao LIKE "%"||description END LIMIT 2',
+      `SELECT country,icao,name FROM ${fromClause} WHERE type="airline" AND (country IN ["United Kingdom","France"]) AND callsign IS NOT NULL AND ANY description WITHIN ["EU"] SATISFIES icao LIKE "%"||description END LIMIT 2`,
     );
     expect(response1.rows).toStrictEqual(response2.rows);
   });

@@ -1,5 +1,5 @@
-import { Ottoman, close } from '../src';
-import { connectUri } from './testData';
+import { Ottoman, getDefaultInstance } from '../src';
+import { password, username, connectionString, bucketName } from './testData';
 
 beforeEach(async () => {
   let options = {};
@@ -7,9 +7,14 @@ beforeEach(async () => {
     options = { collectionName: '_default' };
   }
   const ottoman = new Ottoman(options);
-  ottoman.connect(connectUri);
+  ottoman.connect({
+    password,
+    username,
+    connectionString,
+    bucketName,
+  });
 });
 
 afterEach(async () => {
-  close();
+  await getDefaultInstance()?.close();
 });

@@ -1,4 +1,4 @@
-import couchbase from 'couchbase';
+import { DesignDocument } from 'couchbase';
 import { Ottoman } from '../../../ottoman/ottoman';
 
 export const ensureViewIndexes = async (ottoman: Ottoman, indexes) => {
@@ -17,7 +17,7 @@ export const ensureViewIndexes = async (ottoman: Ottoman, indexes) => {
   }
 
   for (const designDoc of designDocs) {
-    const doc = (couchbase as any).DesignDocument._fromData(designDoc.name, designDoc.data);
+    const doc = DesignDocument._fromNsData(designDoc.name, designDoc.data);
     await ottoman.viewIndexManager.upsertDesignDocument(doc);
   }
   return true;

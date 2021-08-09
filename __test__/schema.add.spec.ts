@@ -200,13 +200,14 @@ describe('Test Schema Add Function', () => {
     const Drink = model('Drink', drink);
     await startInTest(getDefaultInstance());
 
+    const cleanUp = async () => await Drink.removeMany({ _type: 'Drink' });
+    await cleanUp();
+
     await Drink.create({ name: 'Te', brand: 'TE S.A' });
     await delay(1000);
     const response = await Drink.findByName('Te');
 
     expect(response.rows).toHaveLength(1);
-    const cleanUp = async () => await Drink.removeMany({ _type: 'Drink' });
-    await cleanUp();
   });
 
   test('Test Schema Add Object', () => {

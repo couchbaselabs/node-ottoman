@@ -10,7 +10,7 @@ describe('Options to ignore case', () => {
   const doc2 = {
     type: 'airline',
     isActive: false,
-    name: 'OTTOMAN ACCESS FIND',
+    name: 'OTTOMAN ACCESS FIND UPPER',
   };
   const schema = {
     type: String,
@@ -123,44 +123,40 @@ describe('Options to ignore case', () => {
 
     const { rows: documents } = await UserModel.find(
       {
-        name: { $like: 'OTTOMAN ACCESS FIND', $ignoreCase: false },
+        name: { $like: 'OTTOMAN ACCESS FIND UPPER', $ignoreCase: false },
       },
       { ignoreCase: true, ...consistency },
     );
     await UserModel.removeById(id1);
     await UserModel.removeById(id2);
     expect(documents[0].id).toStrictEqual(id2);
-    expect(documents[0].name).toStrictEqual('OTTOMAN ACCESS FIND');
+    expect(documents[0].name).toStrictEqual('OTTOMAN ACCESS FIND UPPER');
   });
 
   test('Using findOne with ignoreCase option', async () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
-    const { id: idToRemove } = await UserModel.create(doc1);
+    await UserModel.create(doc1);
 
-    const { id, name } = await UserModel.findOne(
+    const { name } = await UserModel.findOne(
       {
         name: { $like: 'oTToman aCCess find' },
       },
       { ignoreCase: true, ...consistency },
     );
-    await UserModel.removeById(idToRemove);
-    expect(id).toStrictEqual(idToRemove);
     expect(name).toStrictEqual('Ottoman Access Find');
   });
   test('Using findOne with ignoreCase option without $like or $eq', async () => {
     const UserModel = model('User', schema);
     await startInTest(getDefaultInstance());
-    const { id: idToRemove } = await UserModel.create(doc1);
+    await UserModel.create(doc1);
 
-    const { id, name } = await UserModel.findOne(
+    const { name } = await UserModel.findOne(
       {
         name: 'oTToman aCCess find',
       },
       { ignoreCase: true, ...consistency },
     );
-    await UserModel.removeById(idToRemove);
-    expect(id).toStrictEqual(idToRemove);
     expect(name).toStrictEqual('Ottoman Access Find');
   });
 

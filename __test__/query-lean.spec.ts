@@ -1,5 +1,4 @@
-import { FindByIdOptions, getDefaultInstance, model, Model, Query, Schema } from '../src';
-import { Document } from '../src/model/document';
+import { FindByIdOptions, getDefaultInstance, model, Model, Schema, Document } from '../src';
 import { consistency, startInTest } from './testData';
 
 describe('Test Support Query Lean', () => {
@@ -108,21 +107,21 @@ describe('Test Support Query Lean', () => {
     const userDoc = new User(userData);
     userDoc.card = cardDoc.id;
     userDoc.cats = [cat1Doc.id, cat2Doc.id];
-    const saved = await userDoc.save();
+    await userDoc.save();
 
     const options: FindByIdOptions = { select: 'card, cats, name', populate: '*', lean: true, populateMaxDeep: 2 };
     // FIND BY ID
-    let userWithLean = await User.findById(saved.id, options);
-    let userWithoutLean = await User.findById(saved.id, { ...options, lean: false });
+    let userWithLean = await User.findById(userDoc.id, options);
+    let userWithoutLean = await User.findById(userDoc.id, { ...options, lean: false });
     validation(userWithLean, userWithoutLean, User);
     expect(() => userWithLean.toJSON()).toThrow('userWithLean.toJSON is not a function');
     // FIND ONE
-    userWithLean = await User.findOne({ id: saved.id }, { ...options, ...consistency });
-    userWithoutLean = await User.findOne({ id: saved.id }, { ...options, lean: false, ...consistency });
+    userWithLean = await User.findOne({ id: userDoc.id }, { ...options, ...consistency });
+    userWithoutLean = await User.findOne({ id: userDoc.id }, { ...options, lean: false, ...consistency });
     validation(userWithLean, userWithoutLean, User);
     // FIND
-    userWithLean = await User.find({ id: saved.id }, { ...options, ...consistency });
-    userWithoutLean = await User.find({ id: saved.id }, { ...options, lean: false, ...consistency });
+    userWithLean = await User.find({ id: userDoc.id }, { ...options, ...consistency });
+    userWithoutLean = await User.find({ id: userDoc.id }, { ...options, lean: false, ...consistency });
     validation(userWithLean.rows[0], userWithoutLean.rows[0], User);
   });
 
