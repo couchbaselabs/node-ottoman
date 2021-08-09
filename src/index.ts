@@ -8,7 +8,6 @@ export {
   getOttomanInstances,
   getModel,
   Ottoman,
-  CertificateAuthenticator,
 } from './ottoman/ottoman';
 export { Model } from './model/model';
 export { Document, IDocument } from './model/document';
@@ -69,3 +68,4 @@ export {
 export { getProjectionFields } from './utils/query/extract-select';
 export { SearchConsistency } from './utils/search-consistency';
 export * from './exceptions/exceptions';
+export { CertificateAuthenticator } from 'couchbase';

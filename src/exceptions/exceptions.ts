@@ -45,7 +45,6 @@ export {
   PathExistsError,
   PlanningFailureError,
   IndexFailureError,
-  PreparedStatementFailure,
   CompilationFailureError,
   JobQueueFullError,
   DatasetNotFoundError,

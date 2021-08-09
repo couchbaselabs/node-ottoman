@@ -44,7 +44,7 @@ npm init
 Now with a node package manager and manifest (`package.json`) in place, let’s add Ottoman to our dependencies for the project:
 
 ```bash
-npm install ottoman@alpha
+npm install ottoman
 ```
 
 Now we will create a file named `server.js` and launch Visual Studio Code:

@@ -1,4 +1,4 @@
-import couchbase from 'couchbase';
+import { DocumentNotFoundError, DropCollectionOptions } from 'couchbase';
 import { SearchConsistency } from '..';
 import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 import { createMany, find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
@@ -93,17 +93,8 @@ export const createModel = <T = any, R = any>({ name, schemaDraft, options, otto
 };
 
 export const _buildModel = (metadata: ModelMetadata) => {
-  const {
-    schema,
-    collection,
-    ID_KEY,
-    modelKey,
-    scopeName,
-    ottoman,
-    modelName,
-    keyGenerator,
-    keyGeneratorDelimiter,
-  } = metadata;
+  const { schema, collection, ID_KEY, modelKey, scopeName, ottoman, modelName, keyGenerator, keyGeneratorDelimiter } =
+    metadata;
   return class _Model<T> extends Model<T> {
     constructor(data, options: CastOptions = {}) {
       super(data);
@@ -158,8 +149,8 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static dropCollection(
       collectionName?: string,
       scopeName?: string,
-      options: { timeout?: number } = {},
-    ): Promise<boolean | undefined> {
+      options: DropCollectionOptions = {},
+    ): Promise<boolean | undefined | void> {
       const _collectionName = collectionName || metadata.collectionName;
       const _scopeName = scopeName || metadata.scopeName;
       return ottoman.dropCollection(_scopeName, _collectionName, options);
@@ -209,7 +200,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       if (response?.rows?.length) {
         return response.rows[0];
       }
-      throw new (couchbase as any).DocumentNotFoundError();
+      throw new DocumentNotFoundError();
     };
 
     static create = async (data: Record<string, any>, options: saveOptions = {}): Promise<any> => {
@@ -339,6 +330,15 @@ export const _buildModel = (metadata: ModelMetadata) => {
         }
         throw e;
       }
+    };
+
+    static findOneAndRemove = async (filter: LogicalWhereExpr = {}) => {
+      const doc = await _Model.findOne(filter, { consistency: 1 });
+      if (doc) {
+        await doc.remove();
+        return doc;
+      }
+      throw new DocumentNotFoundError();
     };
   };
 };

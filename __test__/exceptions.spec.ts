@@ -1,5 +1,5 @@
-import couchbase from 'couchbase';
-import { DocumentNotFoundError, KeyValueErrorContext } from '../src';
+import * as couchbase from 'couchbase';
+import { DocumentNotFoundError, IndexExistsError } from '../src';
 
 describe('exceptions test', () => {
   test('DocumentNotFoundError Exception Error', () => {
@@ -8,7 +8,7 @@ describe('exceptions test', () => {
   });
 
   test('KeyValueErrorContext Exception Context', () => {
-    expect(couchbase.KeyValueErrorContext.name).toBe(KeyValueErrorContext.name);
-    expect(new KeyValueErrorContext()).toBeInstanceOf(couchbase.KeyValueErrorContext);
+    expect(couchbase.IndexExistsError.name).toBe(IndexExistsError.name);
+    expect(new IndexExistsError()).toBeInstanceOf(couchbase.IndexExistsError);
   });
 });

@@ -165,7 +165,7 @@ describe('Test populate feature', () => {
     const catCreated2 = await Cat.create({ name: 'Garfield', age: 27 });
     const userData = { ...findPopulateDoc, ...{ name: `${findPopulateDoc.name} ${Date.now()}` } };
     const user = new User(userData);
-    user.card = cardCreated.id;
+    user.card = cardCreated;
     user.cats = [catCreated, catCreated2];
 
     await user.save();
