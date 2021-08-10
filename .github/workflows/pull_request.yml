@@ -13,10 +13,10 @@ jobs:
           - 8091-8094:8091-8094
           - 11210:11210
 
-    runs-on: macos-latest
+    runs-on: [ubuntu-latest, windows-latest]
     strategy:
       matrix:
-        node_version: ['12']
+        node_version: ['14']
 
     steps:
       - uses: actions/checkout@v2
