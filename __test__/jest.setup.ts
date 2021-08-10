@@ -1,4 +1,4 @@
-import { Ottoman, getDefaultInstance } from '../src';
+import { Ottoman, close } from '../src';
 import { password, username, connectionString, bucketName } from './testData';
 
 beforeEach(async () => {
@@ -16,5 +16,5 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  await getDefaultInstance()?.close();
+  await close();
 });

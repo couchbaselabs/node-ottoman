@@ -326,8 +326,10 @@ export class Ottoman {
    * ```
    */
   async close(): Promise<void> {
-    this.cluster && (await this.cluster.close());
-    (__ottoman as any) = undefined;
+    if (this.cluster) {
+      await this.cluster.close();
+      (__ottoman as any) = undefined;
+    }
   }
 
   /**

@@ -13,7 +13,7 @@ jobs:
           - 8091-8094:8091-8094
           - 11210:11210
 
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     strategy:
       matrix:
         node_version: ['12']
