@@ -13,10 +13,12 @@ jobs:
           - 8091-8094:8091-8094
           - 11210:11210
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
-        node_version: ['12']
+        os: [ubuntu-latest]
+        node_version: ['14']
 
     steps:
       - uses: actions/checkout@v2
