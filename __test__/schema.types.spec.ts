@@ -300,7 +300,6 @@ describe('SchemaTypes -> String', () => {
       code: { type: String, uppercase: true },
     });
     const User = model('User', schema);
-    await startInTest(getDefaultInstance());
     const user = await User.create({
       email: 'Dummy.ExamPle@Email.CoM',
       code: 'asd',
@@ -333,7 +332,7 @@ describe('SchemaTypes -> String', () => {
     });
 
     const Message = model('Message', schema);
-    await startInTest(getDefaultInstance());
+    startInTest(getDefaultInstance());
 
     const review = 'test null value';
     await Message.create({ text: null, review });

@@ -4,14 +4,14 @@ import { isModel } from '../src/utils/is-model';
 import { OttomanError } from '../src/exceptions/ottoman-errors';
 
 describe('Test ottoman instances', () => {
-  test('Multiple instances with string param', async () => {
+  test('Multiple instances with string param', () => {
     const instance2 = new Ottoman();
     instance2.connect(connectUri);
     expect(instance2.bucket).toBeDefined();
-    await instance2.close();
+    instance2.close();
   });
 
-  test('Multiple instances with object param', async () => {
+  test('Multiple instances with object param', () => {
     const instance3 = new Ottoman();
     instance3.connect({
       bucketName,
@@ -22,25 +22,25 @@ describe('Test ottoman instances', () => {
     expect(instance3.bucket).toBeDefined();
     instance3.model('Dog', { name: String });
     const ModelDog = instance3.getModel('Dog');
-    await instance3.close();
+    instance3.close();
     expect(isModel(ModelDog)).toBe(true);
   });
 
-  test('Get default collection', async () => {
+  test('Get default collection', () => {
     const instance = new Ottoman();
     instance.connect(connectUri);
     const defaultCollection = instance.getCollection();
-    expect(defaultCollection.name).toBe('');
-    await instance.close();
+    expect(defaultCollection._name).toBe('');
+    instance.close();
   });
 
-  test('Get collection by name', async () => {
+  test('Get collection by name', () => {
     const instance = new Ottoman();
     instance.connect(connectUri);
     const collectionName = 'test';
     const testCollection = instance.getCollection(collectionName);
-    expect(testCollection.name).toBe(collectionName);
-    await instance.close();
+    expect(testCollection._name).toBe(collectionName);
+    instance.close();
   });
 
   test('Get cluster -> throw error', () => {
@@ -67,7 +67,7 @@ describe('Test ottoman instances', () => {
     }
   });
 
-  test('Change idKey at global level', async () => {
+  test('Change idKey at global level', () => {
     const idKey = '_id';
     const instance = new Ottoman({ idKey });
     instance.connect({
@@ -81,7 +81,7 @@ describe('Test ottoman instances', () => {
     const ModelDog = instance.getModel('Dog');
     const metadata = getModelMetadata(ModelDog);
     expect(metadata.ID_KEY).toBe(idKey);
-    await instance.close();
+    instance.close();
     expect(isModel(ModelDog)).toBe(true);
   });
 });

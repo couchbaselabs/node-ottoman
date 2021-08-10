@@ -99,7 +99,11 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
     const buildIndexes = indexesToBuild[key];
     if (buildIndexes && buildIndexes.length > 0) {
       const buildIndexesQuery = queryBuildIndexes(key, [...new Set(buildIndexes)]);
-      await cluster.query(buildIndexesQuery);
+      try {
+        await cluster.query(buildIndexesQuery);
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 

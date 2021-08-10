@@ -8,7 +8,7 @@ jobs:
   build:
     services:
       couchbase:
-        image: couchbase/server-sandbox:7.0.0
+        image: couchbase/server-sandbox:6.5.0
         ports:
           - 8091-8094:8091-8094
           - 11210:11210

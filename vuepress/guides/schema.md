@@ -375,10 +375,6 @@ console.log(userRefdoc);
 
 ### View
 
-:::warning Deprecated
-View indexes were deprecated in Ottoman v2 and will be remove the next mayor version of the package.
-:::
-
 This type of index is always available once `ensureIndexes` is called and will work with any Couchbase Server version.
 
 Because views use map-reduce, certain types of queries can be faster as the query can be parallelized over all nodes in the cluster, with each node returning only partial results. One of the cons of views is that they are eventually consistent by default, and incur a performance penalty if you want consistency in the result.

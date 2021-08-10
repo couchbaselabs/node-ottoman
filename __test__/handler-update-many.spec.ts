@@ -1,4 +1,5 @@
-import { getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema, DocumentNotFoundError } from '../src';
+import couchbase from 'couchbase';
+import { getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema } from '../src';
 import { updateCallback } from '../src/handler';
 import { consistency, startInTest } from './testData';
 
@@ -75,7 +76,7 @@ describe('Test Document Update Many', () => {
     try {
       await updateCallback({ ...doc, id: 'dummy_id' }, metadata, { name: 'Cat' }, {});
     } catch (error) {
-      const dnf = new DocumentNotFoundError();
+      const dnf = new (couchbase as any).DocumentNotFoundError();
       const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' }, consistency);
       await cleanUp();
       expect(error.exception).toBe(dnf.constructor.name);

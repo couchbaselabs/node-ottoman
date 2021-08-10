@@ -13,18 +13,16 @@ import { MutationFunctionOptions } from '../utils/cast-strategy';
  *
  * @return (ManyQueryResponse)[(/classes/queryresponse.html)]
  */
-export const updateMany =
-  (metadata: ModelMetadata) =>
-  async (
-    documents: ModelTypes[],
-    doc: Partial<ModelTypes>,
-    options: MutationFunctionOptions,
-  ): Promise<ManyQueryResponse> => {
-    async function cb(document: ModelTypes, metadata: ModelMetadata, extra: Record<string, unknown>) {
-      return updateCallback(document, metadata, extra, options);
-    }
-    return await batchProcessQueue(metadata)(documents, cb, doc, options, 100);
-  };
+export const updateMany = (metadata: ModelMetadata) => async (
+  documents: ModelTypes[],
+  doc: Partial<ModelTypes>,
+  options: MutationFunctionOptions,
+): Promise<ManyQueryResponse> => {
+  async function cb(document: ModelTypes, metadata: ModelMetadata, extra: Record<string, unknown>) {
+    return updateCallback(document, metadata, extra, options);
+  }
+  return await batchProcessQueue(metadata)(documents, cb, doc, options, 100);
+};
 
 /**
  * @ignore

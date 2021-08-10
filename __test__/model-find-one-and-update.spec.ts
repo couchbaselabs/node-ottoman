@@ -1,4 +1,5 @@
-import { DocumentNotFoundError, getDefaultInstance, model, Schema, SearchConsistency } from '../src';
+import couchbase from 'couchbase';
+import { getDefaultInstance, model, Schema } from '../src';
 import { startInTest } from './testData';
 
 describe('Test findOneAndUpdate function', () => {
@@ -69,32 +70,6 @@ describe('Test findOneAndUpdate function', () => {
     const Cat = model<ICat>('Cat', CatSchema);
     await startInTest(getDefaultInstance());
     const run = async () => await Cat.findOneAndUpdate({ name: { $like: 'DummyCatName91' } }, { name: 'Kitty' });
-    await expect(run).rejects.toThrow(DocumentNotFoundError);
-  });
-
-  test('findOneAndRemove', async () => {
-    const CatSchema = new Schema({
-      name: String,
-      age: Number,
-    });
-    interface ICat {
-      name: string;
-      age: number;
-    }
-    const Cat = model<ICat>('Cat', CatSchema);
-    await startInTest(getDefaultInstance());
-    const catName = `FindOneAndRemove-${Date.now()}`;
-    await Cat.create({ name: catName });
-
-    const cat = await Cat.findOne({ name: catName }, { consistency: SearchConsistency.LOCAL });
-    expect(cat.name).toBe(catName);
-
-    await Cat.findOneAndRemove({ name: catName });
-
-    try {
-      await Cat.findOne({ name: catName }, { consistency: SearchConsistency.LOCAL });
-    } catch (e) {
-      expect(e).toBeInstanceOf(DocumentNotFoundError);
-    }
+    await expect(run).rejects.toThrow((couchbase as any).DocumentNotFoundError);
   });
 });

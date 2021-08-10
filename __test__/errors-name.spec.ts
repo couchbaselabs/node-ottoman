@@ -45,7 +45,7 @@ describe('Errors Name', () => {
     const CardSchema = new Schema(CardSchemaBase);
     CardSchema.index.findByCardNumber = {
       by: 'number',
-      type: 'dummyIndexType' as unknown as undefined,
+      type: ('dummyIndexType' as unknown) as undefined,
     };
     try {
       model('Card', CardSchema);

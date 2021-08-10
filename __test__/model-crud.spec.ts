@@ -350,7 +350,7 @@ describe('Test Document Access Functions', () => {
     });
     const result = await Model.find({ id: user.id }, { select: 'meta().id', ...consistency });
     const document = result.rows[0];
-    await ottoman2.close();
+    ottoman2.close();
     expect(document).toBeDefined();
     expect(document.id.startsWith('Airlines__')).toBeDefined();
   });

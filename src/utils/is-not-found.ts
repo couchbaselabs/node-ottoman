@@ -1,6 +1,7 @@
-import { DocumentNotFoundError } from 'couchbase';
+import couchbase from 'couchbase';
 
 /**
  * Return a boolean value if an exception is DocumentNotFoundError.
  */
-export const isDocumentNotFoundError = (exception: any): boolean => exception instanceof DocumentNotFoundError;
+export const isDocumentNotFoundError = (exception): boolean =>
+  exception instanceof (couchbase as any).DocumentNotFoundError;

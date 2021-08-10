@@ -146,8 +146,16 @@ export abstract class Document {
    * ```
    */
   async save(onlyCreate = false, options: saveOptions = {}) {
-    const { scopeName, collectionName, modelKey, collection, keyGenerator, modelName, ottoman, keyGeneratorDelimiter } =
-      this.$;
+    const {
+      scopeName,
+      collectionName,
+      modelKey,
+      collection,
+      keyGenerator,
+      modelName,
+      ottoman,
+      keyGeneratorDelimiter,
+    } = this.$;
     const data = extractDataFromModel(this);
     const _options: saveOptions & { cas?: any } = options;
     let id = this._getId();

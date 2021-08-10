@@ -475,20 +475,6 @@ export interface IModel<T = any, R = any> {
   ): Promise<IDocument<Result>>;
 
   /**
-   * Finds a document that matches the conditions of the collection and remove it.
-   *
-   * @example
-   * ```javascript
-   * const result = await User.findOneAndRemove({ name: { $like: '%John Doe%' } })
-   * ```
-   *
-   * @param filter Filter Condition [Where Expression](/classes/query.html#where)
-   *
-   */
-  findOneAndRemove<Query = T, Result = R>(filter?: LogicalWhereExpr<Query>): Promise<Result>;
-  findOneAndRemove<Query = T, Result = R>(filter?: LogicalWhereExpr<Query>): Promise<IDocument<Result>>;
-
-  /**
    * dropCollection drops a collection from a scope in a bucket.
    * @param collectionName
    * @param scopeName
