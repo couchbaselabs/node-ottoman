@@ -130,7 +130,9 @@ describe('Options to ignore case', () => {
     await UserModel.removeById(id1);
     await UserModel.removeById(id2);
     expect(documents[0].id).toStrictEqual(id2);
-    expect(documents[0].name).toStrictEqual('OTTOMAN ACCESS FIND UPPER');
+    for (const document of documents) {
+      expect(document.name).toStrictEqual('OTTOMAN ACCESS FIND UPPER');
+    }
   });
 
   test('Using findOne with ignoreCase option', async () => {
