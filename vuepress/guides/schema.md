@@ -29,16 +29,16 @@ const blogSchema = new Schema({
 });
 ```
 
-For more information about options, please [review the types](/guides/schema.html#allowed-schematypes-are)
+For more information about options, please [review the types](/guides/schema.html#allowed-schematypes)
 
-Each key in our code `blogSchema` defines a property in our documents which will be cast to its associated [SchemaType](#allowed-schematypes-are). For example, we've defined a property `title` that will be cast to the [String](/classes/stringtype.html) SchemaType and property `date` which will be cast to a [Date](/classes/datetype.html) SchemaType.
+Each key in our code `blogSchema` defines a property in our documents which will be cast to its associated [SchemaType](#allowed-schematypes). For example, we've defined a property `title` that will be cast to the [String](/classes/stringtype.html) SchemaType and property `date` which will be cast to a [Date](/classes/datetype.html) SchemaType.
 
 Please note above that if a property only requires a type, it can be specified using a shorthand notation (contrast the `title` property above with the `date` property).
 
 Keys may also be assigned to nested objects containing further key/type definitions like the `meta` property above.
-This will happen whenever a key's value is a POJO that lacks a bonafide-type property.
+This will happen whenever a key's value is a POJO that lacks a bona fide `type` property.
 In these cases, only the leaves in a tree are given actual paths in the schema (like `meta.votes` and `meta.favs` above), and the branches do not have actual paths.
-The meta above cannot have its own validation as a side-effect of this. If validation is needed up the tree, a path needs to be created up the tree.
+The `meta` above cannot have its own validation as a side-effect of this. If validation is needed up the tree, a path needs to be created up the tree.
 
 ## Allowed SchemaTypes
 
@@ -242,13 +242,13 @@ User 'Jane Doe' successfully created
 
 ## Index Types
 
-Below are some quick notes on the types of indexes available, and their pros and cons. For a more in-depth discussion, consider reading [Couchbasics: How Functional and Performance Needs Determine Data Access in Couchbase](https://blog.couchbase.com/determine-data-access-in-couchbase/)
+Below are some quick notes on the types of indexes available, and their pros and cons. For a more in-depth discussion, consider reading [Couchbasics: How Functional and Performance Needs Determine Data Access in Couchbase](https://blog.couchbase.com/determine-data-access-in-couchbase/).
 
 ### N1QL Query Language
 
-These indexes are the default and use the new SQL-like query language available from Couchbase Server 4.0.0. When `start` or `ensureIndexes` functions are executed, Ottoman automatically creates several secondary indexes so that the models can make queries to the database. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
+These indexes are the default and use the Couchbase Server's SQL-like query language, [N1QL](https://docs.couchbase.com/server/current/n1ql/query.html). When `start` or `ensureIndexes` functions are executed, Ottoman automatically creates several secondary indexes so that the models can make queries to the database. These indexes are more performant than views in many cases and are significantly more flexible, allowing even un-indexed searches.
 
-N1QL indexes in Ottoman use [Couchbase GSIs](http://developer.couchbase.com/documentation/server/current/indexes/gsi-for-n1ql.html). If you need the flexibility of queries and speed, this is the way to go.
+N1QL indexes in Ottoman use [Couchbase GSIs](https://docs.couchbase.com/server/current/learn/services-and-indexes/indexes/global-secondary-indexes.html). If you need speed, and the flexibility of queries, this is the way to go.
 
 ```typescript
 const UserSchema = new Schema({
@@ -303,9 +303,9 @@ console.log(usersN1ql.rows);
 
 :::warning Not Recommended
 `ensureIndex` is nice for development, but it's recommended this behavior be disabled in production since index creation can cause a significant performance impact.
-Disable the behavior by don't execute `ensureIndex` function. (for example you can use node env variable to know when you are in development mode [process.ENV.development])
+Disable the behavior by not executing `ensureIndex` function. (for example you can use node env variable to know when you are in development mode [process.ENV.development])
 
-Notice: the `start` function should be disabled too, due to it use `ensureIndexes` internally.
+Notice: the `start` function should be disabled too, owing to its use of `ensureIndexes` internally.
 :::
 
 ### RefDoc
@@ -458,12 +458,12 @@ schema.pre('save', async function () {
 
 ### Hooks Use Cases
 
-Hooks are useful for atomizing model logic. Here we list some ideas:
+Hooks are useful for atomizing model logic, such as:
 
-- complex validation
-- removing dependent documents (removing a user removes all his blogposts)
-- asynchronous defaults
-- asynchronous tasks that a certain action triggers
+- Complex validation;
+- Removing dependent documents (removing a user removes all his blogposts);
+- Asynchronous defaults;
+- Asynchronous tasks that a certain action triggers.
 
 ### Errors in Pre Hooks
 
@@ -608,7 +608,7 @@ await user.save();
 
 ## Strict Mode
 
-The strict option, (enabled by default), ensures that values passed to our model constructor that were not specified in our schema do not get saved to the database.
+The `strict` option (enabled by default) ensures that values passed to our model constructor that were not specified in our schema do not get saved to the database.
 
 ```javascript
 const userSchema = new Schema({ ... })
@@ -632,7 +632,7 @@ const user = new User(doc, { strict: false }); // disables strict mode
 
 ## Schema Types Immutable Option
 
-Defines this path as `immutable`. Ottoman prevents you from changing `immutable` paths allowing you to safely write untrusted data to Couchbase without any additional validation.
+Defines this path as `immutable`. Ottoman prevents you from changing `immutable` paths allowing, you to safely write untrusted data to Couchbase without any additional validation.
 
 With update functions Ottoman also strips updates to `immutable` properties from [updateById()](/interfaces/imodel.html#updatebyid), [updateMany()](/interfaces/imodel.html#updatemany), [replaceById()](/interfaces/imodel.html#replacebyid) and [findOneAndUpdate()](/interfaces/imodel.html#findoneandupdate). Your update will succeed if you try to overwrite an `immutable` property, Ottoman will just strip out the `immutable` property.
 
@@ -770,7 +770,7 @@ myCard3.$isNew; // false
 
 ## Schema Helpful Methods
 
-Each `Schema` instance has two helpful methods `cast` and `validate`.
+Each `Schema` instance has two helpful methods: `cast` and `validate`.
 
 ### Cast Method
 
@@ -814,7 +814,7 @@ interface CastOptions {
 
 - `strict` will remove fields not defined in the schema. The default value is set to true.
 - `skip` will be a string array with values of the key you may want to prevent to cast. The default value is empty [].
-- `strategy` when cast action fails, defined strategy is applied. The default strategy is set to `defaultOrDrop`
+- `strategy` when cast action fails, defined strategy is applied. The default strategy is set to `defaultOrDrop`.
 
 Available strategies are:
 
@@ -885,7 +885,7 @@ boeing.add({ status: Boolean });
 ```
 
 ::: tip
-When a schema is added, the following properties are copied: fields, statics, indexes, methods, and hooks. Properties that already exist in the schema(fields, statics, indexes, methods) are overwritten by those of the added schema, except for hooks that are combined.
+When a schema is added, the following properties are copied: fields, statics, indexes, methods, and hooks. Properties that already exist in the schema (fields, statics, indexes, methods) are overwritten by those of the added schema, except for hooks that are combined.
 :::
 
 ## Next Up
