@@ -13,9 +13,11 @@ jobs:
           - 8091-8094:8091-8094
           - 11210:11210
 
-    runs-on: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest]
         node_version: ['14']
 
     steps:
