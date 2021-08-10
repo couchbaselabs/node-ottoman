@@ -1,4 +1,4 @@
-import { CouchbaseError, BucketNotFoundError, CollectionNotFoundError, ScopeNotFoundError } from '../../src';
+import { CouchbaseError, BucketNotFoundError, CollectionNotFoundError, ScopeNotFoundError } from 'couchbase';
 
 export function parseError(e: CouchbaseError, info: any): void {
   const { message, cause } = e;
