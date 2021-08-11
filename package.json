@@ -33,7 +33,8 @@
     "test:legacy": "jest --clearCache && OTTOMAN_LEGACY_TEST=1 jest -i",
     "test:coverage": "jest --clearCache && OTTOMAN_LEGACY_TEST=1 jest -i --coverage",
     "test:dev": "jest --watch",
-    "test:ready": "jest --clearCache && jest -i --coverage"
+    "test:ready": "jest --clearCache && jest -i --coverage",
+    "prepare": "husky install"
   },
   "engines": {
     "node": ">=8.0.0"
