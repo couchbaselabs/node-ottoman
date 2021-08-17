@@ -22,7 +22,7 @@ async function* addRefKeys(refKeys, collection, key) {
   for (const ref of refKeys) {
     if (ref.length < 250) {
       yield collection.insert(ref, key).catch((e) => {
-        if (!process.env.CI || (process.env.CI && process.env.CI.toLowerCase() !== 'true')) {
+        if (isDebugMode()) {
           console.warn(e);
         }
       });
@@ -36,7 +36,7 @@ async function* addRefKeys(refKeys, collection, key) {
 async function* removeRefKeys(refKeys, collection) {
   for (const ref of refKeys) {
     yield collection.remove(ref).catch((e) => {
-      if (!process.env.CI || (process.env.CI && process.env.CI.toLowerCase() !== 'true')) {
+      if (isDebugMode()) {
         console.warn(e);
       }
     });

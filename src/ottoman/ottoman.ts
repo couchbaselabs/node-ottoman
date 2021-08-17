@@ -457,18 +457,18 @@ const tryCreateCollection = async (
   delayMS = 5000,
 ) => {
   try {
-    return await createCollection({ collectionManager, collectionName, scopeName, maxExpiry });
+    await createCollection({ collectionManager, collectionName, scopeName, maxExpiry });
+    return;
   } catch (e) {
     if (!(e instanceof (couchbase as any).CollectionExistsError)) {
       if (retries > 0) {
         await delay(delayMS);
-        return await tryCreateCollection(
+        await tryCreateCollection(
           { collectionManager, collectionName, scopeName, maxExpiry },
           retries - 1,
           delayMS + 5000,
         );
-      } else {
-        throw e;
+        return;
       }
     }
   }

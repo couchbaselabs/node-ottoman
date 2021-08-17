@@ -82,13 +82,7 @@ export const selectBuilder = (
     if (Array.isArray(select)) {
       expr = buildSelectArrayExpr(select);
     }
-    const _collection =
-      collection.indexOf(' ') !== -1
-        ? `\`${collection}`.replace(' ', '` ')
-        : collection.indexOf('`') !== -1
-        ? collection
-        : `\`${collection}\``;
-    return `SELECT ${expr} FROM ${_collection}${plainJoinExpr ? ` ${plainJoinExpr} ` : ''}${_buildUseKeysExpr(
+    return `SELECT ${expr} FROM ${collection}${plainJoinExpr ? ` ${plainJoinExpr} ` : ''}${_buildUseKeysExpr(
       useExpr,
     )}${_buildLetExpr(letExpr)}${buildWhereExpr(where, undefined, ignoreCase)}${_buildGroupByExpr(
       groupByExpr,

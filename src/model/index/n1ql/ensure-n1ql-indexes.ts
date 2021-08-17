@@ -4,6 +4,7 @@ import { ModelMetadata } from '../../interfaces/model-metadata.interface';
 import { isDebugMode } from '../../../utils/is-debug-mode';
 import { Ottoman } from '../../../ottoman/ottoman';
 import { DEFAULT_COLLECTION } from '../../../utils/constants';
+import { IndexExistsError } from 'couchbase';
 
 /**
  * Creates the register index in the Database Server.
@@ -36,7 +37,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
         indexesToBuild[on].push(name);
         await cluster.query(queryForIndexOttomanType(name, on, modelKey));
       } catch (e) {
-        if (e.context && e.context.first_error_message !== `The index ${name} already exists.`) {
+        if (e instanceof IndexExistsError) {
           if (isDebugMode()) {
             console.error(`Failed creating N1QL index ${name}`);
           }
@@ -70,7 +71,12 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
             indexesToBuild[on].push(indexNameSanitized);
           })
           .catch((e) => {
-            if (e.context && e.context.first_error_message !== `The index ${indexNameSanitized} already exists.`) {
+            if (e instanceof IndexExistsError) {
+              // Is needed to try build existing indexes, due to they could be in defer_build state.
+              if (!indexesToBuild[on]) {
+                indexesToBuild[on] = [];
+              }
+              indexesToBuild[on].push(indexNameSanitized);
               if (isDebugMode()) {
                 console.error(`Failed creating Secondary N1QL index ${indexNameSanitized}`);
               }
