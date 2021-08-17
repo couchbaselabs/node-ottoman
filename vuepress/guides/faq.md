@@ -79,7 +79,7 @@ No, when documents are created and attempted to be retrieved via non-kv operatio
 
 ## Can I upsert a document?
 
-Model method [findOneAndUpdate](/interfaces/imodel.html#findoneandupdate) allows you to upsert a document by passing in an option called `upsert` with a value of `true`.
+Our [findOneAndUpdate()](/interfaces/imodel.html#findoneandupdate) model method allows you to upsert a document by passing in an option called `upsert` with a value of `true`. Find more on this in the [Model/Updating](/guides/model.html#updating) section of the docs.
 
 ## Can I make certain fields immutable?
 
@@ -95,7 +95,7 @@ You can find more info in our [Schema Types Immutable Option](/guides/schema.htm
 
 Yes, in Ottoman version 2 you can select certain fields while populating a referenced object.
 
-You can find more info in our [_populate](/guides/schema.html#schema-types-immutable-option) documentation.
+You can find more info in our [_populate](/advanced/ottoman.html#populatemaxdeep-option) documentation.
 
 ## What is lean and when should you use lean?
 
