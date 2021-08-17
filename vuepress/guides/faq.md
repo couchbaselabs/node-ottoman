@@ -10,13 +10,15 @@ Like the name suggests it *“maps a document to an application object”*. ODM 
 
 ## How Is an ODM different from an ORM?
 
-ODM  are very light weight but at the same time they are very powerful and all it does it maps to a document in the database. It's more suitable for a document based database like Couchbase.
+ODM's are very light weight powerful, focusing on mapping documents to your database through models defined in your application. ODM's are specific to document based databases like Couchbase.
 
-An ORM does a lot of heavy lifting like maintaining and tracking the state of each object and its respective field, managing relationships that come with a performance overhead.
+An ORM does a lot of heavy lifting. They maintain and track the state of each object and its respective field, and management of relationships that come with a performance overhead.
 
 ## Is Ottoman version 2 backward compatible with version 1?
 
-Ottoman 2.0 is written on top of the [Couchbse Nodejs SDK 3.x](https://docs.couchbase.com/nodejs-sdk/current/hello-world/start-using-sdk.html) and focusses on support for Scopes and Collections. The migration path from other document databases and starting from a code first perspective have been improved. There has been a major overhaul with respect to the way bootstrapping occurs in Ottoman. Refer to the [Bootstrapping documentation](/guides/ottoman.html#not-using-scopes-collections) for more details.
+Ottoman 2.0 is written on top of the [Couchbase Nodejs SDK 3.x](https://docs.couchbase.com/nodejs-sdk/current/hello-world/start-using-sdk.html) and enables support for Scopes and Collections as well as writing your applications in TypeScript. 
+
+Migration from other document databases is much more achievable as well as starting from a code first perspective. We've made a major overhaul in respect to the way bootstrapping occurs. Refer to the [Bootstrapping documentation](/guides/ottoman.html#not-using-scopes-collections) for more details.
 
 ## What are the benefits of using Ottoman?
 
