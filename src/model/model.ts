@@ -6,7 +6,8 @@ import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
 import { ModelTypes, saveOptions } from './model.types';
 
-export class Model<T = any, R = any> extends Document {}
+//@ts-ignore
+export class Model<T = any, R = any> extends Document implements IModel<T, R> {}
 /**
  * Constructor to build a model instance based on schema and options.
  * Provides methods to handle documents of the current collection in the database.
@@ -20,7 +21,7 @@ export class Model<T = any, R = any> extends Document {}
  * const User = model('User', { name: String });
  * ```
  */
-/* istanbul ignore file */
+
 export interface IModel<T = any, R = any> {
   /**
    * Creates a document from this model.

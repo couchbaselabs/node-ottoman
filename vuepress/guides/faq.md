@@ -63,11 +63,11 @@ We have a sample project that utilizes ExpressJS, Ottoman, and Swagger using Van
 
 ## What are the different operations in Ottoman that use N1QL Queries under the hood?
 
-- [find()](/guides/ottoman-couchbase.html#find-documents)
-- [findOne()](/interfaces/imodel.html#findone)
-- [findOneAndUpdate()](/interfaces/imodel.html#findoneandupdate)
-- [removeMany()](/globals.html#const-removemany)
-- [updateMany()](/globals.html#const-updatemany)
+- [find()](/interfaces/IModel.html#find)
+- [findOne()](/interfaces/IModel.html#findone)
+- [findOneAndUpdate()](/interfaces/IModel.html#findoneandupdate)
+- [removeMany()](/interfaces/IModel.html#removemany)
+- [updateMany()](/interfaces/IModel.html#updatemany)
 
 ## What is Ottoman’s compatibility with Couchbase Server?
 

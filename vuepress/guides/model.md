@@ -119,7 +119,7 @@ your model will use the default Ottoman connection.
 ### Create Many
 
 Also, you can use `createMany` static function to create multiples documents at once.
-See the [API](/classes/model.html#static-createmany) docs for more detail.
+See the [API](/interfaces/imodel.html#static-createmany) docs for more detail.
 
 ```javascript
 User.createMany([{ name: 'John' }, { name: 'Jane' }]);
@@ -451,14 +451,14 @@ _Model {
 ## Deleting
 
 Models have static `removeById()` function to remove documents matching the given id value.
-See the [API](/classes/model.html#static-removebyid) docs for more detail.
+See the [API](/interfaces/imodel.html#static-removebyid) docs for more detail.
 
 ```javascript
 User.removeById('userId');
 ```
 
 Models have static `removeMany()` function to remove all documents matching the given condition.
-See the [API](/classes/model.html#static-removemany) docs for more detail.
+See the [API](/interfaces/imodel.html#static-removemany) docs for more detail.
 
 ```javascript
 User.removeMany({ name: { $like: '%JohnDoe%' } });
@@ -471,7 +471,7 @@ The response status will be **SUCCESS** as long as no error occurs, otherwise it
 ## Updating
 
 Each `model` has its own `updateById` method for modifying documents in the database without returning them to your application.
-See the [API](/classes/model.html#static-updatebyid) docs for more detail.
+See the [API](/interfaces/imodel.html#static-updatebyid) docs for more detail.
 
 ```javascript
 User.updateById('userId', { age: 30 });
@@ -479,7 +479,7 @@ User.updateById('userId', { age: 30 });
 ```
 
 Models have static method `replaceById` which has the same behavior as **updateById**, except that the replaceById replaces the existing document with the given document.
-See the [API](/classes/model.html#static-replacebyid) docs for more detail.
+See the [API](/interfaces/imodel.html#static-replacebyid) docs for more detail.
 
 ```javascript
 User.replaceById('userId', { age: 30, name: 'John' });
@@ -490,7 +490,7 @@ The replaceById method completely replaces the existing document as long as the 
 :::
 
 Models have static `updateMany` function to update all documents matching the given condition.
-See the [API](/classes/model.html#static-updatemany) docs for more detail.
+See the [API](/interfaces/imodel.html#static-updatemany) docs for more detail.
 
 ```javascript
 User.updateMany({ name: { $like: '%JohnDoe%' } }, { name: 'John' });
@@ -501,7 +501,7 @@ The response status will be **SUCCESS** as long as no error occurs, otherwise it
 :::
 
 Models have static `findOneAndUpdate` function to finds a document that matches the conditions of the collection and updates it.
-See the [API](/classes/model.html#static-findoneandupdate) docs for more detail.
+See the [API](/interfaces/imodel.html#static-findoneandupdate) docs for more detail.
 
 ```javascript
 User.findOneAndUpdate({ name: { $like: '%John Doe%' } }, { name: 'John' }, { new: true, upsert: true });
@@ -579,7 +579,7 @@ User.dropCollection('Cat')
 User.dropCollection('Cat', 'scopeB')
 ```
 
-To check the dropCollection API click [here](/classes/model.html#static-dropcollection)
+To check the dropCollection API click [here](/interfaces/imodel.html#static-dropcollection)
 
 ## Next Up
 
