@@ -5,7 +5,7 @@ describe(`Schema timestamps options`, () => {
   test('timestamps set to true', async () => {
     const schema = new Schema({ title: String }, { timestamps: true });
     const Travel = model('Travel', schema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const travelLA = await Travel.create({ title: 'go to LA' });
     expect(travelLA.createdAt).toBeDefined();
     expect(travelLA.updatedAt).toBeDefined();
@@ -14,7 +14,7 @@ describe(`Schema timestamps options`, () => {
   test('timestamps set createdAt to true and updatedAt to false', async () => {
     const schema = new Schema({ title: String }, { timestamps: { createdAt: true, updatedAt: false } });
     const Travel = model('Travel', schema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const travelCA = await Travel.create({ title: 'go to CA' });
     expect(travelCA.createdAt).toBeDefined();
     expect(travelCA.updatedAt).toBeUndefined();
@@ -26,7 +26,7 @@ describe(`Schema timestamps options`, () => {
       { timestamps: { createdAt: 'dateCreated', updatedAt: 'dateUpdated' } },
     );
     const Travel = model('Travel', schema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const travelDC = await Travel.create({ title: 'go to Washington DC' });
     expect(travelDC['dateCreated']).toBeDefined();
     expect(travelDC['dateUpdated']).toBeDefined();
@@ -35,7 +35,7 @@ describe(`Schema timestamps options`, () => {
   test('timestamps test updateAt after update document', async () => {
     const schema = new Schema({ title: String }, { timestamps: true });
     const Travel = model('Travel', schema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const travelFL = await Travel.create({ title: 'go to FL' });
     expect(travelFL.updatedAt).toBeDefined();
     await delay(3000);
@@ -50,7 +50,7 @@ describe(`Schema timestamps options`, () => {
       { timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } },
     );
     const Travel = model('Travel', schema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const travelCH = await Travel.create({ title: 'go to CH' });
     expect(travelCH.createdAt).toBeDefined();
     expect(travelCH.updatedAt).toBeDefined();
@@ -62,7 +62,7 @@ describe(`Schema timestamps options`, () => {
       { timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } },
     );
     const Travel = model('Travel', schema);
-    startInTest(getDefaultInstance());
+    await startInTest(getDefaultInstance());
     const travelCH = await Travel.create({ title: 'go to CH' });
     expect(typeof travelCH.createdAt).toBe('number');
     expect(typeof travelCH.updatedAt).toBe('number');
