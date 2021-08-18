@@ -291,30 +291,44 @@ By default, Ottoman queries return an instance of the [Ottoman Document class](/
 
 The `lean` feature is only for the documents (Models instances) query functions like [find](/interfaces/imodel.html#find), [findById](/interfaces/imodel.html#findbyid), [findOne](/interfaces/imodel.html#findone), etc.
 
-> In Ottoman when `lean` option is enabled we return an object using a spread operator, all methods, hooks, etc. are removed.
-
-
 ```ts
 const UserModel = model('User', schema);
-const document = await UserModel.findById(id, { lean: true });
-const document1 = await UserModel.findById(id);
+const leanDoc = await UserModel.findById(id, { lean: true });
+const normalDoc = await UserModel.findById(id);
 
+// In case you were wondering, the JSON form of a Ottoman document is the same
+// as the POJO. The lean option only affects how much memory your
+// Node.js process uses, not how much data is sent over the network.
+console.log(JSON.stringify(normalDoc).length === JSON.stringify(leanDoc).length); // true
+```
+
+Under the hood, after executing a query, Ottoman converts the query results from POJOs to Ottoman Documents. If you turn on the lean option, Ottoman skips this step.
+
+```ts
 // with lean:true
-// Under the hood, after executing a query, Ottoman converts the query results 
-// from POJOs to Ottoman Documents. If you turn on the lean option, Ottoman skips this step.
-console.log(document instanceof UserModel); // false
-console.log(document instanceof Model); // false
-console.log(document instanceof Document); // false
-console.log(document instanceof Object); // true
-console.log(document.constructor.name === 'Object'); // true
+console.log(leanDoc instanceof UserModel); // false
+console.log(leanDoc instanceof Model); // false
+console.log(leanDoc instanceof Document); // false
+console.log(leanDoc instanceof Object); // true
+console.log(leanDoc.constructor.name === 'Object'); // true
 
 // with lean:false
-console.log(document1 instanceof UserModel); // true
-console.log(document1 instanceof Model); // true
-console.log(document1 instanceof Document); // true
-console.log(document1 instanceof Object); // true
-console.log(document1.constructor.name === '_Model'); // true
+console.log(normalDoc instanceof UserModel); // true
+console.log(normalDoc instanceof Model); // true
+console.log(normalDoc instanceof Document); // true
+console.log(normalDoc instanceof Object); // true
+console.log(normalDoc.constructor.name === '_Model'); // true
 ```
+
+::: tip NOTE
+The downside of enabling `lean` is that lean docs don't have:
+- Change tracking
+- Casting and validations
+- Hooks
+- `save()`, `remove()` and others `model`'s [methods](/classes/Model.html#methods-2)
+- 
+This is the main `lean` feature difference when is applied over an Ottoman document
+:::
 
 ::: warning
 [ManyQueryResponse](/classes/manyqueryresponse.html) is an util class and doesn't have this `lean` feature.
@@ -447,6 +461,40 @@ _Model {
 ```
 
 > If we try to call `userWithLean.toJSON()` will get `TypeError: userWithLean.toJSON is not a function`
+
+### When to Use `lean`
+
+You should use `lean` when:
+- You're executing a query and sending the results without modification to, say, an [Express response](http://expressjs.com/en/4x/api.html#res).
+- If you do not modify the query results and do not use custom getters.
+
+You should not use `lean` when:
+- Need modify the query results or rely on features like getters or transforms.
+
+Below is an example of an [Express route](http://expressjs.com/en/guide/routing.html) that is a good candidate for `lean`. This route does not modify the `person` document and doesn't rely on any Ottoman-specific functionality.
+
+```js
+app.get('/person/:id', function(req, res) {
+  Person.findById(req.params.id, { lean: true })
+    .then(person => res.json(person))
+    .catch(error => res.json({ error: error.message }));
+});
+```
+
+Below is an example of an Express route that should **not** use `lean`. As a general rule of thumb, `GET` routes are good candidates for `lean` in a [RESTful API](https://en.wikipedia.org/wiki/Representational_state_transfer). On the other hand, `PUT`, `POST`, etc. routes generally should not use `lean`.
+
+```js
+// This route should **not** use `lean()`, because lean means no `save()`.
+app.put('/person/:id', function (req, res) {
+  Person.findOne(req.params.id).then(person => {
+    assert.ok(person);
+    Object.assign(person, req.body);
+    return person.save();
+  })
+    .then(person => res.json(person))
+    .catch(error => res.json({ error: error.message }));
+});
+```
 
 ## Deleting
 
