@@ -2,6 +2,18 @@ import { n1qlReservedWords } from './helpers';
 
 const replaceList = ['ALL', 'DISTINCT', 'RAW', 'ELEMENT', 'VALUE'];
 
+export const escapeFromClause = (str: string) => {
+  const trimStr = str.trim();
+  const [collection, ...rest] = trimStr.split(' ');
+  const parts = collection.split('.');
+  const result: string[] = [];
+  for (const part of parts) {
+    const cleanBacksticks = part.replace(/`/g, '');
+    result.push(`\`${cleanBacksticks}\``);
+  }
+  return `${result.join('.')}${rest.length > 0 ? ` ${rest.map((item) => item.replace(/`/g, '')).join(' ')}` : ''}`;
+};
+
 /**
  * Convert select expression into an Array of selection keys
  * */
