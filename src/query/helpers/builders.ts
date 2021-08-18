@@ -24,7 +24,7 @@ import {
   LogicalWhereExpr,
   SortType,
 } from '../interface/query.types';
-import { escapeReservedWords } from '../utils';
+import { escapeFromClause, escapeReservedWords } from '../utils';
 import {
   AggDict,
   CollectionDeepSearchOperatorDict,
@@ -82,7 +82,8 @@ export const selectBuilder = (
     if (Array.isArray(select)) {
       expr = buildSelectArrayExpr(select);
     }
-    return `SELECT ${expr} FROM ${collection}${plainJoinExpr ? ` ${plainJoinExpr} ` : ''}${_buildUseKeysExpr(
+    const _collection = escapeFromClause(collection);
+    return `SELECT ${expr} FROM ${_collection}${plainJoinExpr ? ` ${plainJoinExpr} ` : ''}${_buildUseKeysExpr(
       useExpr,
     )}${_buildLetExpr(letExpr)}${buildWhereExpr(where, undefined, ignoreCase)}${_buildGroupByExpr(
       groupByExpr,
