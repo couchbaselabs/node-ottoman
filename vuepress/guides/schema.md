@@ -50,9 +50,63 @@ The `meta` above cannot have its own validation as a side-effect of this. If val
 - [Embed](/classes/embedtype)
 - [Reference](/classes/referencetype)
 - [Mixed](/classes/mixedtype)
+- *[Custom](/guides/schema.html#custom-schematypes)*
 
 Schemas not only define the structure of your document and casting of properties, they also define document [instance methods](#instance-methods), [static Model methods](#statics),
 [compound indexes](#indexes), [plugins](#plugins), and document lifecycle [hooks](#hooks).
+
+### Custom SchemaTypes
+
+Ottoman supports custom types. Before you reach for a custom type, however, know that a custom type is overkill for most use cases.
+
+Let's take a look at an example of a basic schema type: a 1-byte integer. To create a new schema type, you need to inherit from `IOttomanType` and add the corresponding `registerType`. The only methods you need to implement are [cast()](/guides/schema.html#cast-method) and [validate()](/guides/schema.html#validate-method).
+
+```typescript
+class Int8 extends IOttomanType {
+  constructor(name: string) {
+    super(name, 'Int8');
+  }
+
+  cast(value: unknown): unknown {
+    const castedValue = Number(value);
+    return isNaN(castedValue)
+      ? checkCastStrategy(value, CAST_STRATEGY.THROW, this)
+      : castedValue;
+  }
+
+  validate(value: unknown): unknown {
+    let int8Value = Number(value);
+    if (isNaN(int8Value)) {
+      throw new ValidationError(`Int8: ${value} is not a number`);
+    }
+    int8Value = Math.round(int8Value);
+    if (int8Value < -0x80 || int8Value > 0x7f) {
+      throw new ValidationError(`Int8: ${value} is outside of the range of valid 8-bit ints`);
+    }
+    return int8Value;
+  }
+}
+
+// Don't forget to add `Int8` to the type registry
+registerType(Int8.name, (fieldName) => new Int8(fieldName));
+
+// Define schema and model
+const CustomTypeSchema = new Schema({ test: Int8 });
+const CustomTypeModel = model('CustomTypeExample', CustomTypeSchema);
+
+CustomTypeSchema instanceof Schema; // true
+CustomTypeSchema.path('test') instanceof Int8; // true
+
+const value = new CustomTypeModel({ test: 0x6f });
+value._validate().test; // 111
+
+const bigger = new CustomTypeModel({ test: 0x8f });
+bigger._validate(); // ValidationError: Int8: 143 is outside of the range of valid 8-bit ints
+
+const invalid = new CustomTypeModel({ test: 'invalid test value' });
+invalid._validate(); // ValidationError: Property 'test' must be of type 'Int8'
+
+```
 
 ## Schema Options
 
