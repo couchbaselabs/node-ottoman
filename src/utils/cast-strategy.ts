@@ -105,7 +105,7 @@ export const cast = (
   return result;
 };
 
-export const checkCastStrategy = (value, strategy, type: CoreType) => {
+export const checkCastStrategy = (value: unknown, strategy: CAST_STRATEGY, type: CoreType | IOttomanType) => {
   switch (strategy) {
     case CAST_STRATEGY.KEEP:
     case CAST_STRATEGY.DEFAULT_OR_KEEP:
