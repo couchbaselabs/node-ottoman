@@ -1,4 +1,4 @@
-import { validate, ValidationError, BuildSchemaError, Schema, IOttomanType, registerType } from '../src';
+import { BuildSchemaError, IOttomanType, registerType, Schema, validate, ValidationError } from '../src';
 import { MixedType } from '../src/schema';
 
 describe('Schema Types', () => {

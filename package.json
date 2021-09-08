@@ -28,7 +28,7 @@
     "docs:serve": "yarn docs && serve docs/.vuepress/dist",
     "docs:start": "yarn docs:generate && vuepress dev docs",
     "is:ready": "yarn lint && yarn build && yarn test:ready",
-    "lint": "eslint --ignore-pattern '/lib/' '*/**/*.ts' --quiet --fix",
+    "lint": "eslint '*/**/*.ts' --ignore-pattern '/lib/*' --quiet --fix",
     "test": "jest --clearCache && jest -i",
     "test:legacy": "jest --clearCache && OTTOMAN_LEGACY_TEST=1 jest -i",
     "test:coverage": "jest --clearCache && OTTOMAN_LEGACY_TEST=1 jest -i --coverage",
