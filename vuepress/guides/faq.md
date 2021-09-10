@@ -8,6 +8,10 @@ Ottoman is an ODM (Object Document Mapper) for Couchbase. It leverages Couchbase
 
 Like the name suggests it *“maps a document to an application object”*. ODM enables ways to define the structure of a document in the form of SCHEMAS and MODELS.
 
+## What Can Ottoman Do That the NodeJS SDK Cannot?
+
+We have created a [side-by-side comparison chart](/guides/sdk-comparison) of Ottoman v2.0 vs NodeJS SDK v3.2 to show the differences.
+
 ## How Is an ODM different from an ORM?
 
 ODM's are very light weight powerful, focusing on mapping documents to your database through models defined in your application. ODM's are specific to document based databases like Couchbase.
