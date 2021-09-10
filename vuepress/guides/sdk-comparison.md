@@ -8,16 +8,19 @@ and also demonstrate the value proposition (advantages) that Ottoman brings over
 Data Integrity:
 Defining structure to data, validating data and enforcing constraints using lightweight code patterns.
 
-Cost:  
+### Cost
+
 Open Source, secure, fully supported, less maintenance overhead, less infrastructure cost, extensible and can work with any Javascript or Typescript native application.
 
-Agile Development:
+### Agile Development
+
 Be a leader in your space, build and deliver applications quickly and timely. Spend your time solving business problems rather than coding.
 
-Adaptability:
+### Adaptability
+
 Minimal learning curve, resource with skill set available in abundance.
 
-| Feature     | Ottoman     | NodeJS SDK  | Value Prop  | Description |
+| Feature    | Ottoman     | NodeJS SDK  | Value Prop  | Description |
 | ---------- | :---------: | :---------: | ----------- | ----------- |
 | Schema, Constraints | ✅ | 🚫 | Data Integrity | Schemas and Constraints enables end users to control document shape. |
 | Validators | ✅ | 🚫 | Data Integrity | Provides data quality. |
@@ -25,11 +28,10 @@ Minimal learning curve, resource with skill set available in abundance.
 | Scopes and collections | ✅ | ✅ | Data Integrity | Organize data enabling multi-tenancy and microservices. |
 | Certificate Authentication | ✅ | ✅| Cost | Sets up a secure channel between the application and the Couchbase server. |
 | Document Expiry (TTL) | ✅ | ✅  | Cost, Data Integrity | Ensures documents get removed from a collection post expiry set. |
-| Model Methods `find()`<br/>`findOne()`<br/>`findOneAndRemove()`| ✅ | 🚫 | Agile Development, Adaptability | Provides methods to easily access documents. |
+| Model Methods <br/>`find()`<br/>`findOne()`<br/>`findOneAndRemove()`| ✅ | 🚫 | Agile Development, Adaptability | Provides methods to easily access documents. |
 | Bootstrapping | ✅ | 🚫 | Agile Development, Cost | Establishes the connection, issues command to create scopes, collection and build indexes. |
 | Audit Fields (Timestamp) | ✅ | 🚫 | Agile Development | Auto enables auditing of fields. |
 | Refdoc Index | ✅ | 🚫 | Data Integrity | Empowers co-existence of non-key unique values. |
-| Typescript, Javascript, Generics support | ✅ | ✅ | Adaptability, Cost | Written and supported in Javascript and Typescript. |
 | Typescript, Javascript, Generics support | ✅ | ✅ | Adaptability, Cost | Written and supported in Javascript and Typescript. |
 | Hooks | ✅ | 🚫 | Agile Development, Data Integrity | Asynchronous middleware components that perform actions before and after a document is mutated. |
 | Plugins | ✅ | 🚫 | Agile Development | Reusable components that can be exported and used across multiple schemas. |
