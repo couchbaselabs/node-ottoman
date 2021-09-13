@@ -401,7 +401,7 @@ Let's take a deeper dive into using various collection operators with Ottoman's 
 
 ### Using Deep Search Operators *( [NOT] IN | WITHIN )*
 
-The [IN]((https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-in)) operator specifies the search depth to *include* ***only*** *the current level of an array and* ***not*** *to include any child or descendant arrays*. On the other hand the [WITHIN](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-within) operator *include the current level of an array and* ***all*** *of its child and descendant arrays*.
+The [IN](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-in) operator specifies the search depth to *include* ***only*** *the current level of an array and* ***not*** *to include any child or descendant arrays*. On the other hand the [WITHIN](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/collectionops.html#collection-op-within) operator *include the current level of an array and* ***all*** *of its child and descendant arrays*.
 
 ```ts
 // Defining our where clause

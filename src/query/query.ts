@@ -16,6 +16,8 @@ import {
   QueryBuildOptionsType,
   SortType,
 } from './interface/query.types';
+import { getDefaultInstance } from '../ottoman/ottoman';
+import { QueryOptions, QueryResult } from 'couchbase';
 
 export class Query extends BaseQuery {
   /**
@@ -712,6 +714,14 @@ export class Query extends BaseQuery {
         }
     }
     return '';
+  }
+
+  execute<Result = any>(
+    options: QueryBuildOptionsType = { ignoreCase: false },
+    queryOptions: QueryOptions = {},
+    ottomanInstance = getDefaultInstance(),
+  ): Promise<QueryResult<Result>> | Promise<Result> {
+    return ottomanInstance.query(this.build(options), queryOptions);
   }
 
   get conditions(): IConditionExpr {

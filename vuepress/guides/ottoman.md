@@ -132,7 +132,7 @@ interface ConnectOptions {
 ```
 
 `transcoder`: Provides an interface for performing custom transcoding of document contents being retrieved and stored to the cluster. For more details see [transcoders-nonjson](https://docs.couchbase.com/nodejs-sdk/current/howtos/transcoders-nonjson.html).
-`logFunc`: A callback function that receives the [entry](https://docs.couchbase.com/sdk-api/couchbase-node-client/global.html#LoggingEntry) variable as paramater.
+`logFunc`: A callback function that receives the `entry` variable as paramater.
 
 ## Certificate Authentication
 
@@ -140,7 +140,7 @@ Couchbase Server supports the use of **X.509** certificates to authenticate clie
 
 The process relies on a certificate authority for the issuing of certificates that validate identities. A certificate includes information such as the name of the entity it identifies, an expiration date, the name of the authority that issued the certificate, and the digital signature of the authority. A client attempting to access Couchbase Server can present a certificate to the server allowing the server to check the validity of the certificate. If the certificate is valid, the user under whose identity the client is running and the roles assigned to that user are verified. If the assigned roles are appropriate for the level of access requested to the specified resource, access is granted.
 
-For a more detailed conceptual description of using certificates, see [Certificates](https://docs.couchbase.com/server/6.5/learn/security/certificates.html1).
+For a more detailed conceptual description of using certificates, see [Certificates](https://docs.couchbase.com/server/7.0/learn/security/certificates.html).
 
 ### Authenticating Ottoman by Certificate
 

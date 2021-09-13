@@ -6,14 +6,14 @@ import { OttomanError } from '../src/exceptions/ottoman-errors';
 describe('Test ottoman instances', () => {
   test('Multiple instances with string param', async () => {
     const instance2 = new Ottoman();
-    instance2.connect(connectUri);
+    await instance2.connect(connectUri);
     expect(instance2.bucket).toBeDefined();
     await instance2.close();
   });
 
   test('Multiple instances with object param', async () => {
     const instance3 = new Ottoman();
-    instance3.connect({
+    await instance3.connect({
       bucketName,
       password,
       connectionString,
@@ -28,7 +28,7 @@ describe('Test ottoman instances', () => {
 
   test('Get default collection', async () => {
     const instance = new Ottoman();
-    instance.connect(connectUri);
+    await instance.connect(connectUri);
     const defaultCollection = instance.getCollection();
     expect(defaultCollection.name).toBe('');
     await instance.close();
@@ -36,7 +36,7 @@ describe('Test ottoman instances', () => {
 
   test('Get collection by name', async () => {
     const instance = new Ottoman();
-    instance.connect(connectUri);
+    await instance.connect(connectUri);
     const collectionName = 'test';
     const testCollection = instance.getCollection(collectionName);
     expect(testCollection.name).toBe(collectionName);
@@ -70,7 +70,7 @@ describe('Test ottoman instances', () => {
   test('Change idKey at global level', async () => {
     const idKey = '_id';
     const instance = new Ottoman({ idKey });
-    instance.connect({
+    await instance.connect({
       bucketName,
       password,
       connectionString,

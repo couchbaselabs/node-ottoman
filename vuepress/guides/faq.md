@@ -83,7 +83,7 @@ No, when documents are created and attempted to be retrieved via non-kv operatio
 
 ## Can I upsert a document?
 
-Model method [findOneAndUpdate](/interfaces/imodel.html#findoneandupdate) allows you to upsert a document by passing in an option called `upsert` with a value of `true`.
+Model method [findOneAndUpdate](/interfaces/IModel.html#findoneandupdate) allows you to upsert a document by passing in an option called `upsert` with a value of `true`.
 
 ## Can I make certain fields immutable?
 
