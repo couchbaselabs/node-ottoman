@@ -88,22 +88,22 @@ describe('Ottoman.dropCollection', () => {
       );
     }
   });
-  // test(`-> should throw ScopeNotFoundError`, async () => {
-  //   const ottoman = getDefaultInstance();
-  //   try {
-  //     if (process.env.OTTOMAN_LEGACY_TEST) {
-  //       const error = new ScopeNotFoundError(new Error(''));
-  //       error.message = 'failed to drop collection';
-  //       parseError(error, { collectionName: 'DummyCollectionTestError', scopeName: 'DummyScopeTestError' });
-  //     } else await ottoman.dropCollection('DummyCollectionTestError', 'DummyScopeTestError');
-  //   } catch (e) {
-  //     const { message } = e;
-  //     expect(e).toBeInstanceOf(ScopeNotFoundError);
-  //     expect(message).toBe(
-  //       `failed to drop collection 'DummyCollectionTestError', scope 'DummyScopeTestError' not found`,
-  //     );
-  //   }
-  // });
+  test(`-> should throw ScopeNotFoundError`, async () => {
+    const ottoman = getDefaultInstance();
+    try {
+      if (process.env.OTTOMAN_LEGACY_TEST) {
+        const error = new ScopeNotFoundError(new Error(''));
+        error.message = 'failed to drop collection';
+        parseError(error, { collectionName: 'DummyCollectionTestError', scopeName: 'DummyScopeTestError' });
+      } else await ottoman.dropCollection('DummyCollectionTestError', 'DummyScopeTestError');
+    } catch (e) {
+      const { message } = e;
+      expect(e).toBeInstanceOf(ScopeNotFoundError);
+      expect(
+        e.cause.message.endsWith(`collection 'DummyCollectionTestError', scope 'DummyScopeTestError' not found`),
+      ).toBe(true);
+    }
+  });
   test(`-> on legacy should throw CouchbaseError`, async () => {
     const ottoman = getDefaultInstance();
     try {

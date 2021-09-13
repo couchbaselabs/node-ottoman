@@ -1,5 +1,5 @@
 import { DocumentNotFoundError, DropCollectionOptions } from 'couchbase';
-import { SearchConsistency } from '..';
+import { Query, SearchConsistency } from '..';
 import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 import { createMany, find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
 import { FindByIdOptions, IFindOptions } from '../handler/';
@@ -20,6 +20,7 @@ import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { Model } from './model';
 import { ModelTypes, saveOptions } from './model.types';
 import { getModelMetadata, setModelMetadata } from './utils/model.utils';
+import { IConditionExpr } from '../query/interface/query.types';
 
 /**
  * @ignore
@@ -132,6 +133,18 @@ export const _buildModel = (metadata: ModelMetadata) => {
           throw new BuildIndexQueryError('The "by" and "of" properties are required to build the queries.');
         }
       }
+    }
+
+    static get namespace(): string {
+      const { ottoman, collectionName, scopeName } = metadata;
+      if (collectionName !== '_default') {
+        return `\`${ottoman.bucketName}\`.\`${scopeName}\`.\`${collectionName}\``;
+      }
+      return ottoman.bucketName;
+    }
+
+    static query(params: IConditionExpr): Query {
+      return new Query(params, this.namespace);
     }
 
     static find = (filter: LogicalWhereExpr = {}, options: IFindOptions = {}) => {

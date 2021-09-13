@@ -37,6 +37,7 @@ import {
   ViewIndexManager,
   Collection,
 } from 'couchbase';
+import { generateUUID } from '../utils/generate-uuid';
 
 export interface ConnectOptions extends CouchbaseConnectOptions {
   connectionString: string;
@@ -60,14 +61,14 @@ interface OttomanConfig {
  * Store default connection.
  */
 export let __ottoman: Ottoman;
-export const __ottomanInstances: Ottoman[] = [];
+export let __ottomanInstances: Ottoman[] = [];
 
 export class Ottoman {
   private n1qlIndexes: Record<string, { fields: string[]; modelName: string }> = {};
   private viewIndexes: Record<string, { views: { map?: string } }> = {};
   private refdocIndexes: Record<string, { fields: string[] }[]> = {};
+  private id: string;
   public onIndexReady?: () => void;
-
   /**
    * @ignore
    */
@@ -164,10 +165,7 @@ export class Ottoman {
    * Cluster represents an entire Couchbase Server cluster.
    */
   get cluster(): Cluster {
-    if (!this._cluster) {
-      throw new OttomanError('No active connection detected, please try to connect.');
-    }
-    return this._cluster;
+    return this._cluster!;
   }
 
   /**
@@ -184,6 +182,7 @@ export class Ottoman {
     if (config.keyGeneratorDelimiter) {
       validateDelimiter(config.keyGeneratorDelimiter);
     }
+    this.id = generateUUID();
     this.config = config;
     if (!__ottoman) {
       __ottoman = this;
@@ -199,7 +198,7 @@ export class Ottoman {
    *  const connection = connect("couchbase://localhost/travel-sample@admin:password");
    * ```
    */
-  connect = (connectOptions: ConnectOptions | string): Ottoman => {
+  connect = async (connectOptions: ConnectOptions | string): Promise<Ottoman> => {
     const options = typeof connectOptions === 'object' ? connectOptions : extractConnectionString(connectOptions);
 
     // temporary solution to segmentation fault, this code will be removed after brett notification.
@@ -211,7 +210,7 @@ export class Ottoman {
     }
 
     const { connectionString, bucketName, ..._options } = options;
-    this._cluster = new (couchbase as any).Cluster(connectionString, _options);
+    this._cluster = await Cluster.connect(connectionString, _options);
     this.bucketName = bucketName;
     this.couchbase = couchbase;
     this.bucket = this._cluster!.bucket(bucketName);
@@ -326,8 +325,13 @@ export class Ottoman {
    * ```
    */
   async close(): Promise<void> {
-    this.cluster && (await this.cluster.close());
-    (__ottoman as any) = undefined;
+    if (this.cluster) {
+      await this.cluster.close();
+      __ottomanInstances = __ottomanInstances.filter((instance) => instance.id !== this.id);
+      if (__ottoman?.id === this.id) {
+        (__ottoman as any) = undefined;
+      }
+    }
   }
 
   /**

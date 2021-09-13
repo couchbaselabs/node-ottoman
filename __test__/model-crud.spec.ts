@@ -340,7 +340,7 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel keyGeneratorDelimiter at Instance Level', async () => {
     const ottoman2 = new Ottoman({ keyGeneratorDelimiter: '__', collectionName: '_default' });
-    ottoman2.connect(connectUri);
+    await ottoman2.connect(connectUri);
     const Model = ottoman2.model('Airlines', schema);
     await startInTest(ottoman2);
     const user = await Model.create({

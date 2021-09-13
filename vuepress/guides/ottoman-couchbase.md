@@ -127,14 +127,14 @@ Here we define three properties **(callsign, country, name)** within our `schema
 
 The following [Schema Types]() are permitted:
 
-- [String](/classes/schema.html#string)
-- [Number](/classes/schema.html#number)
-- [Array](/classes/schema.html#array)
-- [Boolean](/classes/schema.html#boolean)
-- [Date](/classes/schema.html#date)
-- [EmbedType](/classes/embedtype.html)
-- [MixedType](/classes/mixedtype.html)
-- [ReferenceTypes](/classes/referencetype.html)
+- [String](/classes/StringType)
+- [Number](/classes/NumberType)
+- [Boolean](/classes/BooleanType)
+- [Date](/classes/DateType)
+- [Array](/classes/ArrayType)
+- [Embed](/classes/EmbedType)
+- [Reference](/classes/ReferenceType)
+- [Mixed](/classes/MixedType)
 
 ### Defining a Document Model
 
@@ -403,7 +403,7 @@ _Model {
 
 ### Remove Documents
 
-Ottoman has several methods that deal with removing documents: [remove](/classes/document.html#remove), [removeById](/interfaces/imodel.html#removebyid) and [removeMany](/interfaces/imodel.html#removemany). Considering the many examples we have had so far, each of these should be very easy to understand how to use, so we will just provide a simple example here to show how to remove a `document` that we have already found using the [find](/interfaces/imodel.html#find) method.
+Ottoman has several methods that deal with removing documents: [remove](/classes/document.html#remove), [removeById](/interfaces/IModel.html#removebyid) and [removeMany](/interfaces/IModel.html#removemany). Considering the many examples we have had so far, each of these should be very easy to understand how to use, so we will just provide a simple example here to show how to remove a `document` that we have already found using the [find](/interfaces/IModel.html#find) method.
 
 ::: tip Remove Airline Document by ID
 ```js

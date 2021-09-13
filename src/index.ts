@@ -11,8 +11,9 @@ export {
 } from './ottoman/ottoman';
 export { Model, IModel } from './model/model';
 export { Document, IDocument } from './model/document';
-export { ModelOptions } from './model/interfaces/create-model.interface';
-export { ModelTypes } from './model/model.types';
+export { ModelOptions, CreateModelOptions } from './model/interfaces/create-model.interface';
+export { FindOneAndUpdateOption } from './model/interfaces/find.interface';
+export { ModelTypes, saveOptions } from './model/model.types';
 export { getModelMetadata } from './model/utils/model.utils';
 export { ViewIndexOptions } from './model/index/view/view-index-options';
 export {
@@ -24,10 +25,23 @@ export {
   Schema,
   ValidationError,
   BuildSchemaError,
+  EmbedType,
+  StringType,
+  ArrayType,
+  BooleanType,
+  NumberType,
+  DateType,
+  CoreType,
+  ValidatorOption,
 } from './schema';
-export { FindByIdOptions, FindOptions, IManyQueryResponse, IStatusExecution } from './handler';
+export { FindByIdOptions, FindOptions, IManyQueryResponse, ManyQueryResponse, IStatusExecution } from './handler';
 export { registerGlobalPlugin } from './plugins/global-plugin-handler';
 export * from './utils';
+export { getProjectionFields } from './utils/query/extract-select';
+export { SearchConsistency } from './utils/search-consistency';
+export * from './exceptions/exceptions';
+export { CertificateAuthenticator } from 'couchbase';
+export { MutationFunctionOptions } from './utils/cast-strategy';
 export {
   ReturnResultDict,
   ResultExprDict,
@@ -65,7 +79,3 @@ export {
   parseStringSelectExpr,
   escapeReservedWords,
 } from './query';
-export { getProjectionFields } from './utils/query/extract-select';
-export { SearchConsistency } from './utils/search-consistency';
-export * from './exceptions/exceptions';
-export { CertificateAuthenticator } from 'couchbase';

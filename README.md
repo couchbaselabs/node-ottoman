@@ -67,7 +67,7 @@ If you are using legacy database must check out this [v1.ottomanjs.com](https://
 
 ## Documentation
 
-Checkout our [examples](https://v2.ottomanjs.com/guides/first-app.html)  and [docs](https://v2.ottomanjs.com/guides/quick-start.html) for typescript and javascript implementation.
+Checkout our [examples](https://ottomanjs.com/guides/first-app.html)  and [docs](https://ottomanjs.com/guides/quick-start.html) for typescript and javascript implementation.
 
 ## Questions
 
