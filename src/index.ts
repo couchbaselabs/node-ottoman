@@ -32,6 +32,8 @@ export {
   NumberType,
   DateType,
   CoreType,
+  ReferenceType,
+  MixedType,
   ValidatorOption,
 } from './schema';
 export { FindByIdOptions, FindOptions, IManyQueryResponse, ManyQueryResponse, IStatusExecution } from './handler';
@@ -78,4 +80,5 @@ export {
   ReturnResultType,
   parseStringSelectExpr,
   escapeReservedWords,
+  IConditionExpr,
 } from './query';

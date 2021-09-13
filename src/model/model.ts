@@ -246,7 +246,7 @@ export interface IModel<T = any, R = any> {
   removeById(id: string): Promise<{ cas: any }>;
 
   /**
-   * Creates a [document](/classes/document) from the given data.
+   * Creates a [document](/classes/Document) from the given data.
    * Result will be the same that -> new Model(data)
    *
    * @example

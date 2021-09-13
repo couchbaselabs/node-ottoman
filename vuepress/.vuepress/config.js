@@ -15,9 +15,6 @@ module.exports = {
           { text: 'Model', link: '/guides/model.md' },
           { text: 'Document', link: '/guides/document.md' },
           { text: 'Query Builder', link: '/guides/query-builder.md' },
-          { text: 'Mongoose to Ottoman', link: '/guides/mongoose-to-couchbase.md' },
-          { text: 'Ottoman for Couchbase Node.js SDK devs', link: '/guides/ottoman-couchbase.md' },
-          { text: 'Ottoman V1 to Ottoman V2', link: '/guides/ottomanV1-to-ottomanV2.md' },
         ],
       },
       {
@@ -25,6 +22,9 @@ module.exports = {
         items: [
           { text: 'How Ottoman Works', link: '/advanced/how-ottoman-works.md' },
           { text: 'Ottoman', link: '/advanced/ottoman.md' },
+          { text: 'Mongoose to Ottoman', link: '/guides/mongoose-to-couchbase.md' },
+          { text: 'Ottoman for Couchbase Node.js SDK devs', link: '/guides/ottoman-couchbase.md' },
+          { text: 'Ottoman V1 to Ottoman V2', link: '/guides/ottomanV1-to-ottomanV2.md' },
         ],
       },
       { text: 'Example', link: '/guides/first-app.md' },

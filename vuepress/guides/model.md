@@ -159,7 +159,7 @@ User.findById('userId', { select: 'name, cards', populate: 'cards' });
 // will return the user document with the current id only with the fields name and cards populated
 ```
 
-The find options are: [link](/classes/findoptions.html#hierarchy)
+The find options are: [link](/classes/FindOptions.html#hierarchy)
 
 ```typescript
 export interface IFindOptions {
@@ -287,7 +287,7 @@ See the chapter on queries for more details on how to use the [Query](/guides/qu
 
 ### Use of `lean`
 
-By default, Ottoman queries return an instance of the [Ottoman Document class](/classes/document.html). Documents have a lot of internal state for change tracking. Enabling the [`lean`](/classes/findoptions.html#optional-lean) option tells Ottoman to skip instantiating a full Ottoman Document and just give you the plain old JavaScript object (POJO).
+By default, Ottoman queries return an instance of the [Ottoman Document class](/classes/document.html). Documents have a lot of internal state for change tracking. Enabling the [`lean`](/classes/FindOptions.html#optional-lean) option tells Ottoman to skip instantiating a full Ottoman Document and just give you the plain old JavaScript object (POJO).
 
 The `lean` feature is only for the documents (Models instances) query functions like [find](/interfaces/IModel.html#find), [findById](/interfaces/IModel.html#findbyid), [findOne](/interfaces/IModel.html#findone), etc.
 
@@ -331,7 +331,7 @@ This is the main `lean` feature difference when is applied over an Ottoman docum
 :::
 
 ::: warning
-[ManyQueryResponse](/classes/manyqueryresponse.html) is an util class and doesn't have this `lean` feature.
+[ManyQueryResponse](/classes/ManyQueryResponse.html) is an util class and doesn't have this `lean` feature.
 :::
 
 ### Use `lean` and  `populate`

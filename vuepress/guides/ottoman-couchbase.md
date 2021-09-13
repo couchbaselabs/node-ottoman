@@ -175,7 +175,7 @@ In the example above, wee see how to create a custom `validator`, we just happen
 
 [Validators]() registered with Ottoman (as we have done here with the `ottoman.addValidators()` method) will be called once for every value our document’s property has in the array. If the property did not have an array and instead just a single *String* value, the validator would only be run once. For this reason, I print out the problematic phone number if the validation fails.
 
-There is however an easier way to validate any document properties value so long as the check you are performing uses a regular expression. The [ValidatorOption](/interfaces/validatoroption.html#hierarchy') can take a regexp and message as an argument, so we can reduce our code down to:
+There is however an easier way to validate any document properties value so long as the check you are performing uses a regular expression. The [ValidatorOption](/interfaces/ValidatorOption.html#hierarchy') can take a regexp and message as an argument, so we can reduce our code down to:
 
 ::: tip Update Schema to use Validator
 ```js
