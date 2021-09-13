@@ -37,5 +37,6 @@ export {
   LogicalOperatorType,
   ResultExprType,
   ReturnResultType,
+  IConditionExpr,
 } from './interface/query.types';
 export { parseStringSelectExpr, escapeReservedWords } from './utils';
