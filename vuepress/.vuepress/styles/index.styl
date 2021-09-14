@@ -1,0 +1,7 @@
+h4
+  font-size 18px
+
+// required because 'node_modules/vuepress-plugin-one-click-copy/bin/assets/css/style.css' override highlight lines
+// don't affect one click copy
+div[class*="language-"] pre, div[class*="language-"] pre[class*="language-"]
+  position relative!important

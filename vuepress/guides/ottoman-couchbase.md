@@ -135,6 +135,7 @@ The following [Schema Types]() are permitted:
 - [Embed](/classes/EmbedType)
 - [Reference](/classes/ReferenceType)
 - [Mixed](/classes/MixedType)
+- *[Custom](/guides/schema.html#custom-schematypes)*
 
 ### Defining a Document Model
 

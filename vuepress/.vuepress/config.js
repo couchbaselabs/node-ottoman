@@ -43,4 +43,7 @@ module.exports = {
     sidebar: 'auto',
   },
   plugins: ['@vuepress/medium-zoom', '@vuepress/back-to-top', 'vuepress-plugin-smooth-scroll', 'one-click-copy'],
+  markdown: {
+    lineNumbers: true
+  }
 };

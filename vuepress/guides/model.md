@@ -326,7 +326,7 @@ The downside of enabling `lean` is that lean docs don't have:
 - Casting and validations
 - Hooks
 - `save()`, `remove()` and others `model`'s [methods](/classes/Model.html#methods-2)
-- 
+
 This is the main `lean` feature difference when is applied over an Ottoman document
 :::
 
