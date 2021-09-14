@@ -1,6 +1,6 @@
 import { Document, IDocument } from './document';
 import { FindByIdOptions, FindOptions, ManyQueryResponse } from '../handler';
-import { LogicalWhereExpr } from '../query';
+import { IConditionExpr, LogicalWhereExpr, Query } from '../query';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
@@ -488,6 +488,27 @@ export interface IModel<T = any, R = any> {
    */
   findOneAndRemove<Query = T, Result = R>(filter?: LogicalWhereExpr<Query>): Promise<Result>;
   findOneAndRemove<Query = T, Result = R>(filter?: LogicalWhereExpr<Query>): Promise<IDocument<Result>>;
+
+  /**
+   * Return a [Query](/classes/Query) instance in the model context
+   * @example
+   * ```typescript
+   * const query = User.query({name: 'John Smith'})
+   * console.log(query.build())
+   * // select * from `travel-sample`.`inventory`.`user` where name = 'John Smith'
+   * ```
+   */
+  query(params: IConditionExpr): Query;
+
+  /**
+   * Return string value with the model context
+   * @example
+   * ```javascript
+   * console.log(User.namespace)
+   * // `travel-sample`.`inventory`.`user`
+   * ```
+   */
+  namespace: string;
 
   /**
    * dropCollection drops a collection from a scope in a bucket.
