@@ -8,7 +8,7 @@ There are 3 ways to use the Query Builder: by using parameters, by using access 
 
 ### Build a Query by Using Parameters
 
-To create queries by using parameters it is mandatory to define in the query constructor the [**parameters**](/interfaces/IConditionExpr.html#hierarchy) of the query and the **name** of the collection.
+To create queries by using parameters it is mandatory to define in the query constructor the [**parameters**](/interfaces/iconditionexpr.html#hierarchy) of the query and the **name** of the collection.
 
 ```ts
 const params = {

@@ -67,11 +67,11 @@ We have a sample project that utilizes ExpressJS, Ottoman, and Swagger using Van
 
 ## What are the different operations in Ottoman that use N1QL Queries under the hood?
 
-- [find()](/interfaces/IModel.html#find)
-- [findOne()](/interfaces/IModel.html#findone)
-- [findOneAndUpdate()](/interfaces/IModel.html#findoneandupdate)
-- [removeMany()](/interfaces/IModel.html#removemany)
-- [updateMany()](/interfaces/IModel.html#updatemany)
+- [find()](/interfaces/imodel.html#find)
+- [findOne()](/interfaces/imodel.html#findone)
+- [findOneAndUpdate()](/interfaces/imodel.html#findoneandupdate)
+- [removeMany()](/interfaces/imodel.html#removemany)
+- [updateMany()](/interfaces/imodel.html#updatemany)
 
 ## What is Ottoman’s compatibility with Couchbase Server?
 
@@ -83,7 +83,7 @@ No, when documents are created and attempted to be retrieved via non-kv operatio
 
 ## Can I upsert a document?
 
-Model method [findOneAndUpdate](/interfaces/IModel.html#findoneandupdate) allows you to upsert a document by passing in an option called `upsert` with a value of `true`.
+Model method [findOneAndUpdate](/interfaces/imodel.html#findoneandupdate) allows you to upsert a document by passing in an option called `upsert` with a value of `true`.
 
 ## Can I make certain fields immutable?
 
