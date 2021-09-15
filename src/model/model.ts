@@ -413,7 +413,7 @@ export interface IModel<T = any, R = any> {
    * @param options [FindOneAndUpdateOptions](/interfaces/findoneandupdateoption.html)
    *
    *
-   * Return a [Model](/classes/model.html) if at least one item matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/DocumentNotFoundError.html) will be thrown.
+   * Return a [Model](/classes/model.html) if at least one item matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/classes/DocumentNotFoundError.html) will be thrown.
    * If options.new is **true** return the document after update otherwise by default return the document before update.
    * If options.upsert is **true** insert a document if the document does not exist.
    * options.strict used for strategy to apply on immutables properties

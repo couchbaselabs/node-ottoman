@@ -136,7 +136,7 @@ const bucket = cluster.bucket('travel-sample');
 const collection = bucket.scope('inventory').collection('airport');
 ```
 
-### Model *[find](/interfaces/IModel.html#find)*
+### Model *[find](/interfaces/imodel.html#find)*
 
 - Let's see a simple filterless search implementation.
 
@@ -241,7 +241,7 @@ Result: [
 ]
 ```
 
-### Model *[findOneAndUpdate](/interfaces/IModel.html#findoneandupdate)*
+### Model *[findOneAndUpdate](/interfaces/imodel.html#findoneandupdate)*
 
 #### SDK:
 
@@ -305,7 +305,7 @@ Result: {
 }
 ```
 
-### Model *[findOneAndRemove](/interfaces/IModel.html#findoneandremove)*
+### Model *[findOneAndRemove](/interfaces/imodel.html#findoneandremove)*
 
 #### SDK:
 
