@@ -113,7 +113,7 @@ export class Ottoman {
    * CollectionManager allows the management of collections within a Bucket.
    *
    * Check the
-   * [Collection Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/CollectionManager.html)
+   * [Collection Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/classes/CollectionManager.html)
    * documentation for more details.
    */
   get collectionManager(): CollectionManager {
@@ -124,7 +124,7 @@ export class Ottoman {
    * Gets a bucket manager for this cluster.
    *
    * Check the
-   * [Bucket Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/BucketManager.html)
+   * [Bucket Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/classes/BucketManager.html)
    * documentation for more details.
    */
   get bucketManager(): BucketManager {
@@ -135,7 +135,7 @@ export class Ottoman {
    * QueryIndexManager provides an interface for managing the query indexes on the cluster.
    *
    * Check the
-   * [Query Index Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/QueryIndexManager.html)
+   * [Query Index Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/classes/QueryIndexManager.html)
    * documentation for more details.
    */
   get queryIndexManager(): QueryIndexManager {
@@ -147,7 +147,7 @@ export class Ottoman {
    *
    * @deprecated
    * Check the
-   * [View Index Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/ViewIndexManager.html)
+   * [View Index Manager Couchbase SDK API](https://docs.couchbase.com/sdk-api/couchbase-node-client/classes/ViewIndexManager.html)
    * documentation for more details.
    */
   get viewIndexManager(): ViewIndexManager {
