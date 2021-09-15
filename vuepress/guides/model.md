@@ -119,7 +119,7 @@ your model will use the default Ottoman connection.
 ### Create Many
 
 Also, you can use `createMany` static function to create multiples documents at once.
-See the [API](/interfaces/IModel.html#static-createmany) docs for more detail.
+See the [API](/interfaces/imodel.html#static-createmany) docs for more detail.
 
 ```javascript
 User.createMany([{ name: 'John' }, { name: 'Jane' }]);
@@ -132,7 +132,7 @@ The response status will be **SUCCESS** as long as no error occurs, otherwise it
 ## Querying
 
 Finding documents is easy with Ottoman, powered by the built-in Query Builder.
-Documents can be retrieved using each `models` [find](/interfaces/IModel.html#find), [findById](/interfaces/IModel.html#findbyid), [findOne](/interfaces/IModel.html#findone), defined [indexes](/guides/schema.html#indexes) or where [static methods](/guides/schema.html#statics).
+Documents can be retrieved using each `models` [find](/interfaces/imodel.html#find), [findById](/interfaces/imodel.html#findbyid), [findOne](/interfaces/imodel.html#findone), defined [indexes](/guides/schema.html#indexes) or where [static methods](/guides/schema.html#statics).
 
 ```javascript
 User.find({ name: 'Jane' });
@@ -159,7 +159,7 @@ User.findById('userId', { select: 'name, cards', populate: 'cards' });
 // will return the user document with the current id only with the fields name and cards populated
 ```
 
-The find options are: [link](/classes/FindOptions.html#hierarchy)
+The find options are: [link](/classes/findoptions.html#hierarchy)
 
 ```typescript
 export interface IFindOptions {
@@ -287,9 +287,9 @@ See the chapter on queries for more details on how to use the [Query](/guides/qu
 
 ### Use of `lean`
 
-By default, Ottoman queries return an instance of the [Ottoman Document class](/classes/document.html). Documents have a lot of internal state for change tracking. Enabling the [`lean`](/classes/FindOptions.html#optional-lean) option tells Ottoman to skip instantiating a full Ottoman Document and just give you the plain old JavaScript object (POJO).
+By default, Ottoman queries return an instance of the [Ottoman Document class](/classes/document.html). Documents have a lot of internal state for change tracking. Enabling the [`lean`](/classes/findoptions.html#optional-lean) option tells Ottoman to skip instantiating a full Ottoman Document and just give you the plain old JavaScript object (POJO).
 
-The `lean` feature is only for the documents (Models instances) query functions like [find](/interfaces/IModel.html#find), [findById](/interfaces/IModel.html#findbyid), [findOne](/interfaces/IModel.html#findone), etc.
+The `lean` feature is only for the documents (Models instances) query functions like [find](/interfaces/imodel.html#find), [findById](/interfaces/imodel.html#findbyid), [findOne](/interfaces/imodel.html#findone), etc.
 
 ```ts
 const UserModel = model('User', schema);
@@ -325,13 +325,13 @@ The downside of enabling `lean` is that lean docs don't have:
 - Change tracking
 - Casting and validations
 - Hooks
-- `save()`, `remove()` and others `model`'s [methods](/classes/Model.html#methods-2)
+- `save()`, `remove()` and others `model`'s [methods](/classes/model.html#methods-2)
 
 This is the main `lean` feature difference when is applied over an Ottoman document
 :::
 
 ::: warning
-[ManyQueryResponse](/classes/ManyQueryResponse.html) is an util class and doesn't have this `lean` feature.
+[ManyQueryResponse](/classes/manyqueryresponse.html) is an util class and doesn't have this `lean` feature.
 :::
 
 ### Use `lean` and  `populate`
@@ -499,14 +499,14 @@ app.put('/person/:id', function (req, res) {
 ## Deleting
 
 Models have static `removeById()` function to remove documents matching the given id value.
-See the [API](/interfaces/IModel.html#static-removebyid) docs for more detail.
+See the [API](/interfaces/imodel.html#static-removebyid) docs for more detail.
 
 ```javascript
 User.removeById('userId');
 ```
 
 Models have static `removeMany()` function to remove all documents matching the given condition.
-See the [API](/interfaces/IModel.html#static-removemany) docs for more detail.
+See the [API](/interfaces/imodel.html#static-removemany) docs for more detail.
 
 ```javascript
 User.removeMany({ name: { $like: '%JohnDoe%' } });
@@ -519,7 +519,7 @@ The response status will be **SUCCESS** as long as no error occurs, otherwise it
 ## Updating
 
 Each `model` has its own `updateById` method for modifying documents in the database without returning them to your application.
-See the [API](/interfaces/IModel.html#static-updatebyid) docs for more detail.
+See the [API](/interfaces/imodel.html#static-updatebyid) docs for more detail.
 
 ```javascript
 User.updateById('userId', { age: 30 });
@@ -527,7 +527,7 @@ User.updateById('userId', { age: 30 });
 ```
 
 Models have static method `replaceById` which has the same behavior as **updateById**, except that the replaceById replaces the existing document with the given document.
-See the [API](/interfaces/IModel.html#static-replacebyid) docs for more detail.
+See the [API](/interfaces/imodel.html#static-replacebyid) docs for more detail.
 
 ```javascript
 User.replaceById('userId', { age: 30, name: 'John' });
@@ -538,7 +538,7 @@ The replaceById method completely replaces the existing document as long as the 
 :::
 
 Models have static `updateMany` function to update all documents matching the given condition.
-See the [API](/interfaces/IModel.html#static-updatemany) docs for more detail.
+See the [API](/interfaces/imodel.html#static-updatemany) docs for more detail.
 
 ```javascript
 User.updateMany({ name: { $like: '%JohnDoe%' } }, { name: 'John' });
@@ -549,7 +549,7 @@ The response status will be **SUCCESS** as long as no error occurs, otherwise it
 :::
 
 Models have static `findOneAndUpdate` function to finds a document that matches the conditions of the collection and updates it.
-See the [API](/interfaces/IModel.html#static-findoneandupdate) docs for more detail.
+See the [API](/interfaces/imodel.html#static-findoneandupdate) docs for more detail.
 
 ```javascript
 User.findOneAndUpdate({ name: { $like: '%John Doe%' } }, { name: 'John' }, { new: true, upsert: true });
@@ -627,7 +627,7 @@ User.dropCollection('Cat')
 User.dropCollection('Cat', 'scopeB')
 ```
 
-To check the dropCollection API click [here](/interfaces/IModel.html#static-dropcollection)
+To check the dropCollection API click [here](/interfaces/imodel.html#static-dropcollection)
 
 ## Next Up
 

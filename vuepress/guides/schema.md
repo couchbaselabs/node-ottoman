@@ -42,14 +42,14 @@ The `meta` above cannot have its own validation as a side-effect of this. If val
 
 ## Allowed SchemaTypes
 
-- [String](/classes/StringType)
-- [Number](/classes/NumberType)
-- [Boolean](/classes/BooleanType)
-- [Date](/classes/DateType)
-- [Array](/classes/ArrayType)
-- [Embed](/classes/EmbedType)
-- [Reference](/classes/ReferenceType)
-- [Mixed](/classes/MixedType)
+- [String](/classes/stringtype)
+- [Number](/classes/numbertype)
+- [Boolean](/classes/booleantype)
+- [Date](/classes/datetype)
+- [Array](/classes/arraytype)
+- [Embed](/classes/embedtype)
+- [Reference](/classes/referencetype)
+- [Mixed](/classes/mixedtype)
 - *[Custom](/guides/schema.html#custom-schematypes)*
 
 Schemas not only define the structure of your document and casting of properties, they also define document [instance methods](#instance-methods), [static Model methods](#statics),
@@ -688,7 +688,7 @@ const user = new User(doc, { strict: false }); // disables strict mode
 
 Defines this path as `immutable`. Ottoman prevents you from changing `immutable` paths allowing, you to safely write untrusted data to Couchbase without any additional validation.
 
-With update functions Ottoman also strips updates to `immutable` properties from [updateById()](/interfaces/IModel.html#updatebyid), [updateMany()](/interfaces/IModel.html#updatemany), [replaceById()](/interfaces/IModel.html#replacebyid) and [findOneAndUpdate()](/interfaces/IModel.html#findoneandupdate). Your update will succeed if you try to overwrite an `immutable` property, Ottoman will just strip out the `immutable` property.
+With update functions Ottoman also strips updates to `immutable` properties from [updateById()](/interfaces/imodel.html#updatebyid), [updateMany()](/interfaces/imodel.html#updatemany), [replaceById()](/interfaces/imodel.html#replacebyid) and [findOneAndUpdate()](/interfaces/imodel.html#findoneandupdate). Your update will succeed if you try to overwrite an `immutable` property, Ottoman will just strip out the `immutable` property.
 
 Let's see this option in action using `findOneAndUpdate` on `immutable` properties:
 

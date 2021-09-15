@@ -246,7 +246,7 @@ export interface IModel<T = any, R = any> {
   removeById(id: string): Promise<{ cas: any }>;
 
   /**
-   * Creates a [document](/classes/Document) from the given data.
+   * Creates a [document](/classes/document) from the given data.
    * Result will be the same that -> new Model(data)
    *
    * @example
@@ -490,7 +490,7 @@ export interface IModel<T = any, R = any> {
   findOneAndRemove<Query = T, Result = R>(filter?: LogicalWhereExpr<Query>): Promise<IDocument<Result>>;
 
   /**
-   * Return a [Query](/classes/Query) instance in the model context
+   * Return a [Query](/classes/query) instance in the model context
    * @example
    * ```typescript
    * const query = User.query({name: 'John Smith'})

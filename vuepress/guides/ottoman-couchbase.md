@@ -127,14 +127,14 @@ Here we define three properties **(callsign, country, name)** within our `schema
 
 The following [Schema Types]() are permitted:
 
-- [String](/classes/StringType)
-- [Number](/classes/NumberType)
-- [Boolean](/classes/BooleanType)
-- [Date](/classes/DateType)
-- [Array](/classes/ArrayType)
-- [Embed](/classes/EmbedType)
-- [Reference](/classes/ReferenceType)
-- [Mixed](/classes/MixedType)
+- [String](/classes/stringtype)
+- [Number](/classes/numbertype)
+- [Boolean](/classes/booleantype)
+- [Date](/classes/datetype)
+- [Array](/classes/arraytype)
+- [Embed](/classes/embedtype)
+- [Reference](/classes/referencetype)
+- [Mixed](/classes/mixedtype)
 - *[Custom](/guides/schema.html#custom-schematypes)*
 
 ### Defining a Document Model
@@ -176,7 +176,7 @@ In the example above, wee see how to create a custom `validator`, we just happen
 
 [Validators]() registered with Ottoman (as we have done here with the `ottoman.addValidators()` method) will be called once for every value our document’s property has in the array. If the property did not have an array and instead just a single *String* value, the validator would only be run once. For this reason, I print out the problematic phone number if the validation fails.
 
-There is however an easier way to validate any document properties value so long as the check you are performing uses a regular expression. The [ValidatorOption](/interfaces/ValidatorOption.html#hierarchy') can take a regexp and message as an argument, so we can reduce our code down to:
+There is however an easier way to validate any document properties value so long as the check you are performing uses a regular expression. The [ValidatorOption](/interfaces/validatoroption.html#hierarchy') can take a regexp and message as an argument, so we can reduce our code down to:
 
 ::: tip Update Schema to use Validator
 ```js
@@ -404,7 +404,7 @@ _Model {
 
 ### Remove Documents
 
-Ottoman has several methods that deal with removing documents: [remove](/classes/document.html#remove), [removeById](/interfaces/IModel.html#removebyid) and [removeMany](/interfaces/IModel.html#removemany). Considering the many examples we have had so far, each of these should be very easy to understand how to use, so we will just provide a simple example here to show how to remove a `document` that we have already found using the [find](/interfaces/IModel.html#find) method.
+Ottoman has several methods that deal with removing documents: [remove](/classes/document.html#remove), [removeById](/interfaces/imodel.html#removebyid) and [removeMany](/interfaces/imodel.html#removemany). Considering the many examples we have had so far, each of these should be very easy to understand how to use, so we will just provide a simple example here to show how to remove a `document` that we have already found using the [find](/interfaces/imodel.html#find) method.
 
 ::: tip Remove Airline Document by ID
 ```js
