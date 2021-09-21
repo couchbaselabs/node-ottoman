@@ -71,9 +71,28 @@ Ottoman provides a `findById` method at the `Model` level to retrieve a document
 
 In this section we will be reviewing some methods of the Ottoman Model, and comparing them with their respective implementation in the Couchbase NodeJs SDK.
 
+The environment on which these tests were run has the following characteristics:
+
+| Info        |  Properties  |
+| ----------- | -------------- |
+| Processor   |   Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz |
+| RAM         |   16.0 GB |
+| System type |   64-bit operating system, x64-based processor |
+| Storage     |   SSD 500GB|
+| SO          |   Windows 10  |
+| **_Couchbase_**   |   Enterprise Edition 7.0.0 |
+| **_Couchbase Node.js SDK_**  |   v3.2.2 |
+| **_Ottoman_** |   v2.0.0-beta.9 |
+
+:::tip About metrics
+For metrics we run each example around a thousand times and take the average tests run time and [heapUsed*](https://nodejs.org/api/process.html#process_process)
+##### **heapUsed*: is the actual memory used during the process execution, according to the documentation, the memory used by "C++ objects bound to JavaScript objects managed by V8"
+:::
+
+
 ### Ottoman Schema and Model Definitions
 
-We will use the data model corresponding to the type of `airport` collection, within the `travel-sample` bucket and scope `inventory`;
+We will use the data model corresponding to the type of `airport` collection, within the `travel-sample` bucket and scope `inventory`.
 
 ```ts
 // Define Geolocation Schema will be part of Airport Schema
@@ -192,6 +211,13 @@ Result: [
 ]
 ```
 
+:::tip Metrics
+|      Library       |  Time (*ms*)  | Heap Use (*MB*) |
+| ----------- |--------------:| --------:|
+| Ottoman     |   6.8 |  9.1 |
+| NodeJs SDK  |     6 |  9.6 |
+:::
+
 - Now using some conditions and sort:
 
 #### SDK:
@@ -240,6 +266,13 @@ Result: [
   }
 ]
 ```
+
+:::tip Metrics
+|      Library      |  Time (*ms*)  | Heap Use (*MB*) |
+| ----------- |--------------:| --------:|
+| Ottoman     | 3.47 |  9.1 |
+| NodeJs SDK  | 3.43 |  9.78 |
+:::
 
 ### Model *[findOneAndUpdate](/interfaces/imodel.html#findoneandupdate)*
 
@@ -304,6 +337,13 @@ Result: {
   "type": "airport"
 }
 ```
+
+:::tip Metrics
+|     Library        |  Time (*ms*)  | Heap Use (*MB*) |
+| ----------- |--------------:| --------:|
+| Ottoman     | 10.08 | 10.49 |
+| NodeJs SDK  | 11.06 |  7.95 |
+:::
 
 ### Model *[findOneAndRemove](/interfaces/imodel.html#findoneandremove)*
 
@@ -371,6 +411,13 @@ Result: {
   "tz": "Europe/Paris"
 }
 ```
+
+:::tip Metrics
+|      Library       |  Time (*ms*)  | Heap Use (*MB*) |
+| ----------- |--------------:| --------:|
+| Ottoman     | 11.44 | 11.047   |
+| NodeJs SDK  | 14.86 |  7.95* |
+:::
 
 ## Bulk Operations
 
