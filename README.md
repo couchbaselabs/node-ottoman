@@ -25,7 +25,7 @@ Supported version are:
 
 | Ottoman     | Nodejs      | Couchbase SDK   | Couchbase Server 
 | ----------- | ----------- | --------------- | -----------------
-| ^2.0.0      | ^8.0.0      |  ^3.0.0         | ^6.5.0
+| ^2.0.0      | ^8.0.0      |  ^3.2.2         | ^6.5.0
 
 ***Notice: make sure you are using supported versions***
 
@@ -33,16 +33,23 @@ Supported version are:
 
 ```javascript
 const { connect, model, start, close } = require('ottoman');
-connect("couchbase://localhost/travel-sample@admin:password");
 
-const User = model('User', { name: String });
+const main = async () => {
+  await connect("couchbase://localhost/travel-sample@admin:password");
 
-const user = new User({ name: 'Jane Doe' });
-user.save()
-    .then(() => console.log('Nice Job!'))
-    .finally(() => close());
+  const User = model('User', { name: String });
 
-start();
+  const user = new User({ name: 'Jane Doe' });
+  
+  await start(); 
+  
+  await user.save();
+  console.log('Nice Job!');
+  
+  await close();
+}
+
+main();
 ```
 
 You should see results similar to the following:
