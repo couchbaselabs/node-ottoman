@@ -63,7 +63,8 @@ Taking each code sample below, we will add each new block of code done after one
 
 ## Connecting to a Couchbase Bucket
 
-Create a connection to our Couchbase Server running in Docker. Your password may be different, just swap out yours if it is different.
+Create a connection to our Couchbase Server running in Docker. 
+Your password may be different, just swap out yours if it is different.
 
 ```javascript
 const ottoman = require('ottoman');
@@ -75,6 +76,8 @@ const main = async () => {
     username: 'Administrator',
     password: 'password'
   });
+  
+  await ottoman.start();
 }
 ```
 
@@ -127,7 +130,9 @@ object using the `async`/`await` technique.
 
 
 ```javascript
-const runAsync = async () => {
+main = async () => {
+  ...
+  
   await perry.save();
   console.log(`success: user ${perry.firstName} added!`)
 
@@ -135,10 +140,7 @@ const runAsync = async () => {
   console.log(`success: user ${tom.firstName} added!`)
 }
 
-ottoman.start()
-  .then(runAsync)
-  .catch((error) => console.log(error))
-  .finally(process.exit)
+main();
 ```
 
 Now that we have added the code to save (persist) each record to the database, let’s run our app for the first time with Node:
@@ -170,10 +172,10 @@ Let’s remove these two documents, write some more code that will add the docum
 ## Write a Query with Ottoman’s Query API
 
 In Ottoman, we can retrieve records from our bucket using the adaptive index we have in place by calling the `find()` method.
-Append the `find()` logic to our `runAsync` function.
+Append the `find()` logic to our `main` function.
 
 ```javascript
-runAsync = async () => {
+main = async () => {
   //...saving users
   const result = await User.find(
     { lastName: 'Tom' },
@@ -188,7 +190,7 @@ Instead of passing objects along as parameters,
 let’s write our code to define the filter and options as objects first and then pass them into the function as arguments.
 
 ```javascript
-runAsync = async () => {
+main = async () => {
   //...saving users
 
   const filter = { lastName: 'Tom' };
