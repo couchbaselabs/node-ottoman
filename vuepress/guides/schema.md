@@ -177,16 +177,20 @@ Instances of `Models` are [documents](/guides/document.md). Documents have many 
 
 ```javascript
 import { connect, Schema } from 'ottoman';
-// connecting
-const connection = connect('couchbase://localhost/travel-sample@admin:password');
+const main = async () => {
+  // connecting
+  const connection = await connect('couchbase://localhost/travel-sample@admin:password');
 
-// define a schema
-const animalSchema = new Schema({ name: String, type: String });
+  // define a schema
+  const animalSchema = new Schema({ name: String, type: String });
 
-// assign a function to the "methods" object of our animalSchema
-animalSchema.methods.findSimilarTypes = function () {
-  return connection.getModel('Animal').find({ type: this.type });
-};
+  // assign a function to the "methods" object of our animalSchema
+  animalSchema.methods.findSimilarTypes = function () {
+    return connection.getModel('Animal').find({ type: this.type });
+  };
+}
+
+main();
 ```
 
 Now all of our `animal` instances have a `findSimilarTypes` method available to them.
@@ -265,9 +269,10 @@ To ensure that server is working, you must call the `start` method. This method 
 
 ```javascript
 const { connect, model, start, close } = require('ottoman');
-connect('couchbase://localhost/travel-sample@admin:password');
 
 async function createUser() {
+  await connect('couchbase://localhost/travel-sample@admin:password');
+  
   const User = model('User', { name: String });
   const user = new User({ name: 'Jane Doe' });
 

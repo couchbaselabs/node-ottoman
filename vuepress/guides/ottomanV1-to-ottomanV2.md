@@ -54,12 +54,16 @@ if (!ottoman) {
   ottoman = new Ottoman({collectionName: '_default'});
 }
 
-ottoman.connect({
-  connectionString: 'couchbase://127.0.0.1', // with default port 8091
-  bucketName: 'bucket-name-here',
-  username: 'Administrator',
-  password: 'password'
-});
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://127.0.0.1', // with default port 8091
+    bucketName: 'bucket-name-here',
+    username: 'Administrator',
+    password: 'password'
+  });
+}
+
+main();
 ```
 
 ## Sample Model Definition

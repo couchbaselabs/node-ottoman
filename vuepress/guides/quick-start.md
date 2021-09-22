@@ -68,12 +68,14 @@ Create a connection to our Couchbase Server running in Docker. Your password may
 ```javascript
 const ottoman = require('ottoman');
 
-connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'default',
-  username: 'Administrator',
-  password: 'password'
-});
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'default',
+    username: 'Administrator',
+    password: 'password'
+  });
+}
 ```
 
 ## Creating an Ottoman Model
@@ -251,13 +253,6 @@ In our case indexes were added manually, if not Ottoman would have given us this
 ```javascript
 const ottoman = require('ottoman');
 
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'default',
-  username: 'Administrator',
-  password: 'password'
-});
-
 const User = ottoman.model('User', {
   firstName: String,
   lastName: String,
@@ -279,24 +274,34 @@ const tom = new User({
   tagLine : 'Send me up a drink'
 })
 
-const runAsync = async () => {
-  await perry.save();
-  console.log(`success: user ${perry.firstName} added!`)
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'default',
+    username: 'Administrator',
+    password: 'password'
+  });
+  
+  await ottoman.start();
+  
+  try {
+    await perry.save();
+    console.log(`success: user ${perry.firstName} added!`)
 
-  await tom.save();
-  console.log(`success: user ${tom.firstName} added!`)
+    await tom.save();
+    console.log(`success: user ${tom.firstName} added!`)
 
-  const filter = { lastName: 'Tom' };
-  const options = { consistency: ottoman.SearchConsistency.LOCAL };
+    const filter = { lastName: 'Tom' };
+    const options = { consistency: ottoman.SearchConsistency.LOCAL };
 
-  const result = await User.find(filter, options)
-  console.log('Query Result: ', result.rows)
+    const result = await User.find(filter, options)
+    console.log('Query Result: ', result.rows)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-ottoman.start()
-  .then(runAsync)
-  .catch((error) => console.log(error))
-  .finally(process.exit)
+main();
 ```
 :::
 

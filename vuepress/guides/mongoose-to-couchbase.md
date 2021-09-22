@@ -97,9 +97,8 @@ createBlog();
 ```javascript
 import { connect, start, close } from 'ottoman';
 
-const connection = connect('couchbase://localhost/travel-sample@Administrator:password');
-
 async function createBlog() {
+    const connection = await connect('couchbase://localhost/travel-sample@Administrator:password');
     const blog = new Blog({ name: 'Jane Doe' });
 
     try {
