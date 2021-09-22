@@ -92,12 +92,17 @@ We will start working out of the file `./createAirline.js` under the project roo
 const { Ottoman, model, Schema } = require('ottoman')
 
 const ottoman = new Ottoman({ collectionName: '_default' });
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-});
+
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
+  });
+}
+
+main();
 ```
 :::
 
@@ -299,14 +304,19 @@ Now we can create a few new files, `findAirline.js`, `updateAirline.js`, and `re
 ```js
 const { Ottoman } = require('ottoman')
 const ottoman = new Ottoman({ collectionName: '_default' });
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-});
 
 const { Airline } = require('./airline-schema-and-model')
+
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
+  });
+}
+
+main();
 ```
 :::
 
@@ -446,12 +456,6 @@ Let’s try an example by simply generating a log in the console before and afte
 ```js
 const { Ottoman } = require('ottoman')
 const ottoman = new Ottoman({ collectionName: '_default' });
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-});
 
 const { Airline, airlineSchema } = require('./airline-schema-and-model')
 
@@ -486,12 +490,24 @@ const saveDocument = async () => {
   }
 }
 
-ottoman.start()
-  .then(async () => {
-    saveDocument()
-      .then(() => process.exit(0))
-      .catch((error) => console.log(error))
-  })
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
+  });
+
+  await ottoman.start();
+  try {
+    await saveDocument()
+    process.exit(0);
+  } catch(error) {
+    console.log(error)
+  }
+}
+
+main();
 ```
 :::
 
@@ -536,13 +552,6 @@ Let’s first create a new file named `findWithQueryBuilder.js`, and add the fol
 const { Ottoman, Query } = require('ottoman')
 const ottoman = new Ottoman({ collectionName: '_default' });
 
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel',
-  username: 'Administrator',
-  password: 'password'
-});
-
 /* Replace with QueryBuilder Example */
 
 const executeQuery = async (query) => {
@@ -554,12 +563,24 @@ const executeQuery = async (query) => {
   }
 }
 
-generateQuery()
-  .then((query) => {
-    executeQuery(query)
-      .then(() => process.exit(0))
-  })
-  .catch((error) => console.log(error))
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel',
+    username: 'Administrator',
+    password: 'password'
+  });
+  
+  try {
+      const query = await generateQuery();
+      await executeQuery(query);
+      process.exit(0);
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+main();
 ```
 :::
 

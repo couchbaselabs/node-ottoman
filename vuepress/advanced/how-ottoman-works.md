@@ -116,7 +116,7 @@ Create our Ottoman instance and connect:
 
 ```typescript
 const ottoman = new Ottoman();
-ottoman.connect({
+await ottoman.connect({
   connectionString: 'couchbase://127.0.0.1',
   bucketName: 'travel-sample',
   username: 'Administrator',

@@ -90,7 +90,13 @@ You can connect to Couchbase Server with the [connect()](/classes/ottoman.html#c
 import { Ottoman } from 'ottoman';
 
 const ottoman = new Ottoman();
-ottoman.connect('couchbase://localhost/travel-sample@admin:password');
+
+const main = async () => {
+  await ottoman.connect('couchbase://localhost/travel-sample@admin:password');
+  // connected to Couchbase Server
+}
+
+main();
 ```
 
 This is the minimum needed to connect to the travel-sample bucket.
@@ -108,12 +114,17 @@ If the connection fails on your machine, try using `127.0.0.1` instead of `local
 import { Ottoman } from 'ottoman';
 
 const ottoman = new Ottoman();
-ottoman.connect({
-  connectionString: 'couchbase://localhost',
-  bucketName: 'travel-sample',
-  username: 'admin',
-  password: 'password'
-});
+
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbase://localhost',
+    bucketName: 'travel-sample',
+    username: 'admin',
+    password: 'password'
+  });
+}
+
+main();
 ```
 
 The available connections options are:
@@ -153,15 +164,19 @@ The rest of this document assumes that the processes there, or something similar
 import { Ottoman, CertificateAuthenticator } from 'ottoman';
 const ottoman = new Ottoman();
 
-ottoman.connect({
-  connectionString: 'couchbases://localhost',
-  bucketName: 'travel-sample',
-  authenticator: new CertificateAuthenticator(
-    "/path/to/client/certificate.pem",
-    "/path/to/client/key.pem"
-  ),
-  trustStorePath: "/path/to/ca/certificates.pem"
-})
+const main = async () => {
+  await ottoman.connect({
+    connectionString: 'couchbases://localhost',
+    bucketName: 'travel-sample',
+    authenticator: new CertificateAuthenticator(
+      "/path/to/client/certificate.pem",
+      "/path/to/client/key.pem"
+    ),
+    trustStorePath: "/path/to/ca/certificates.pem"
+  })
+}
+
+main();
 ```
 
 ## Default Ottoman Instance
@@ -175,22 +190,26 @@ Let's see an example of how to create an Ottoman application.
 ```js
 import {Ottoman, connect, model, start} from 'ottoman';
 
-// Create the ottoman instance
-const ottoman = new Ottoman ();
+const main = async () => {
+  // Create the ottoman instance
+  const ottoman = new Ottoman();
 
-// Connect to DB
-connect ('couchbase://localhost/travel-sample@admin:password');
+  // Connect to DB
+  await connect('couchbase://localhost/travel-sample@admin:password');
 
-// Define your model
-const User = model ('User', {name: String});
+  // Define your model
+  const User = model ('User', {name: String});
 
-// Bootstrap the application
-start ();
+  // Bootstrap the application
+  await start();
+}
+
+main();
 ```
 
 Notice: We do not have to explicitly call the `connect`, `model`, or `start` methods using the Ottoman instance, since the first Ottoman instance created is registered and stored as the default instance which will be used by the standalone under the hood functions.
 
-e.g. `connect (...)` will run for the default instance like this `getDefaultInstance().connect(...)` Ottoman handles this logic for you.
+e.g. `connect(...)` will run for the default instance like this `getDefaultInstance().connect(...)` Ottoman handles this logic for you.
 
 
 The default instance can be obtained with the `getDefaultInstance` function, which will return the default instance if it was created or` undefined` otherwise.
@@ -211,11 +230,16 @@ This can greatly simplify work in modular applications.
 
 ```javascript
 import { connect, model } from 'ottoman';
-// connecting to server
-connect('couchbase://localhost/travel-sample@admin:password');
 
-// Now you can use the model function to create Models in the default instance
-const User = model('User', { name: String });
+const main = async () => {
+  // connecting to server
+  await connect('couchbase://localhost/travel-sample@admin:password');
+
+  // Now you can use the model function to create Models in the default instance
+  const User = model('User', { name: String });
+}
+
+main();
 ```
 
 ::: tip
@@ -244,7 +268,7 @@ let's see an example:
 import {Ottoman} from 'ottoman';
 
 const ottoman = new Ottoman ();
-ottoman.connect ('couchbase://localhost/travel-sample@admin:password')
+await ottoman.connect('couchbase://localhost/travel-sample@admin:password')
 ```
 
 2. Create the models and start Ottoman.
@@ -252,12 +276,16 @@ ottoman.connect ('couchbase://localhost/travel-sample@admin:password')
 ```js
 import {Ottoman} from 'ottoman';
 
-const ottoman = new Ottoman ();
-ottoman.connect ('couchbase://localhost/travel-sample@admin:password')
+const main = async () => {
+  const ottoman = new Ottoman ();
+  await ottoman.connect('couchbase://localhost/travel-sample@admin:password')
 
-const User = ottoman.model ('User', schema)
+  const User = ottoman.model ('User', schema)
 
-ottoman.start ()
+  await ottoman.start()
+}
+
+main();
 ```
 
 With these simple steps, we create an Ottoman application as simple as possible.
@@ -266,19 +294,25 @@ If we want to have multiple instances, we only have to repeat the steps describe
 
 ```js
 import {Ottoman} from 'ottoman';
-const ottoman1 = new Ottoman ();
-ottoman1.connect ('couchbase://localhost/travel-sample@admin:password');
 
-const ottoman2 = new Ottoman ();
-ottoman2.connect ('couchbase://localhost/other-bucket@admin:password');
+
+const main = async () => {
+  const ottoman1 = new Ottoman ();
+  await ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
+
+  const ottoman2 = new Ottoman ();
+  await ottoman2.connect('couchbase://localhost/other-bucket@admin:password');
 
 // After connect you can create an explicitly Model from a given instance
 
 // Creating UserModel from ottoman1
-const UserModel = ottoman1.model ('User', {name: String});
+  const UserModel = ottoman1.model ('User', {name: String});
 
 // Creating CatModel from ottoman2
-const CatModel = ottoman2.model ('Cat', {age: Number});
+  const CatModel = ottoman2.model ('Cat', {age: Number});
+}
+
+main();
 ```
 
 You can create as many Ottoman instances as you need, there is not a defined limit.
@@ -290,8 +324,8 @@ Example:
 
 ```js
 // working with multiple instances
-ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
-ottoman2.connect('couchbase://localhost/other-bucket@admin:password');
+await ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
+await ottoman2.connect('couchbase://localhost/other-bucket@admin:password');
 
 // not recommended
 const User = model(User, schema);
@@ -306,7 +340,7 @@ const User = ottoman2.model(User, schema);
 ```javascript
 import { Ottoman } from 'ottoman';
 const ottoman1 = new Ottoman();
-ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
+await ottoman1.connect('couchbase://localhost/travel-sample@admin:password');
 
 // Closing connection1
 ottoman1.close();
