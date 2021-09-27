@@ -1,12 +1,9 @@
 import { getModelMetadata, SearchConsistency } from '../..';
 import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
+import { getPopulated, PopulateAuxOptionsType } from '../../model/utils/model.utils';
 import { LogicalWhereExpr, Query } from '../../query';
 import { CAST_STRATEGY } from '../../utils/cast-strategy';
 import { isDebugMode } from '../../utils/is-debug-mode';
-import { canBePopulated } from '../../utils/populate/can-be-populated';
-import { execPopulation, execPopulationFromObject } from '../../utils/populate/exec-populate';
-import { isPopulateAnObject } from '../../utils/populate/is-populate-object';
-import { extractPopulate } from '../../utils/query/extract-populate';
 import { getProjectionFields } from '../../utils/query/extract-select';
 import { isNumber } from '../../utils/type-helpers';
 import { FindOptions } from './find-options';
@@ -25,7 +22,7 @@ export const find =
       populate,
       select,
       noCollection,
-      populateMaxDeep,
+      populateMaxDeep: deep,
       consistency,
       lean,
       ignoreCase,
@@ -89,45 +86,29 @@ export const find =
         break;
     }
 
+    const direct = (lean && !populate) || select === 'RAW COUNT(*) as count';
     const n1ql = query.build({ ignoreCase });
     if (isDebugMode()) {
       console.log(n1ql);
     }
     const result = await cluster.query(n1ql, queryOptions);
 
-    if (select !== 'RAW COUNT(*) as count') {
+    if (direct) return result;
+
+    if (populate) {
+      const params = {
+        deep,
+        lean,
+        schema,
+        ottoman,
+        modelName,
+        fieldsName: populate,
+        enforceRefCheck,
+      } as PopulateAuxOptionsType;
+      result.rows = await Promise.all(result.rows.map((pojo) => getPopulated({ ...params, pojo })));
+    } else {
       const newModelOptions = { strict: false, strategy: CAST_STRATEGY.KEEP };
       result.rows = result.rows.map((row) => new Model(row, newModelOptions).$wasNew());
-
-      if (populate) {
-        const isObject = isPopulateAnObject(populate);
-        const populateFields = extractPopulate(isObject ? Object.keys(populate) : populate);
-        const projections = projectionFields.fields;
-        if (isObject) {
-          for (const toPopulate of populateFields) {
-            if (!canBePopulated(toPopulate, projections)) {
-              delete populate[toPopulate];
-            }
-          }
-          await execPopulationFromObject(result.rows, populate, { deep: populateMaxDeep, enforceRefCheck }, lean);
-        } else {
-          for (const toPopulate of populateFields) {
-            if (canBePopulated(toPopulate, projections)) {
-              await execPopulation(
-                result.rows,
-                toPopulate,
-                ottoman,
-                modelName,
-                { deep: populateMaxDeep, enforceRefCheck },
-                lean,
-              );
-            }
-          }
-        }
-      }
-    }
-    if (lean) {
-      result.rows = result.rows.map((value: any) => value.toObject());
     }
     return result;
   };

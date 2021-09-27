@@ -1,16 +1,20 @@
 import {
   applyDefaultValue,
+  ArrayType,
   BuildSchemaError,
+  DateType,
+  EmbedType,
   getDefaultInstance,
   IOttomanType,
   model,
+  NumberType,
   Schema,
   SearchConsistency,
+  StringType,
   validate,
   ValidationError,
 } from '../src';
 import { isOttomanType } from '../src/schema/helpers';
-import { ArrayType, DateType, EmbedType, NumberType, StringType } from '../src/schema/types';
 import { startInTest } from './testData';
 
 const validData = {

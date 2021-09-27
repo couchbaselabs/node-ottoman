@@ -350,7 +350,6 @@ async function updateManyHelper(result: any[], strict: ApplyStrategy = true) {
   const result1 = await Card.findById(card1.id);
   const result2 = await Card.findById(card2.id);
 
-  const cleanUp = async () => await Card.removeMany({ _type: 'CardMany' }, consistency);
-  await cleanUp();
+  await Card.removeMany({ _type: 'CardMany' }, consistency);
   result.push(result1, result2, response);
 }

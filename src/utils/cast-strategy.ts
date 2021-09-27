@@ -1,5 +1,4 @@
-import { applyDefaultValue, IOttomanType, Schema, ValidationError } from '../schema';
-import { CoreType } from '../schema/types';
+import { applyDefaultValue, CoreType, IOttomanType, Schema, ValidationError } from '../schema';
 
 /**
  * Cast Strategies

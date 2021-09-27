@@ -1,4 +1,4 @@
-import { getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema, DocumentNotFoundError } from '../src';
+import { DocumentNotFoundError, getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema } from '../src';
 import { updateCallback } from '../src/handler';
 import { consistency, startInTest } from './testData';
 

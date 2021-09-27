@@ -104,7 +104,7 @@ describe('Test Model Find projection on referenced objects', () => {
     await startInTest(getDefaultInstance());
     await fillData({ Address, Company, Person });
     const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
-    await spaceX._populate({ president: '*', ceo: '*' }, 2);
+    await spaceX._populate({ president: '*', ceo: '*' }, { deep: 2 });
 
     await cleanUp({ Address, Company, Person });
 
@@ -130,7 +130,7 @@ describe('Test Model Find projection on referenced objects', () => {
     await startInTest(getDefaultInstance());
     await fillData({ Address, Company, Person });
     const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
-    await spaceX._populate({ president: 'name', ceo: 'name,age' }, 2);
+    await spaceX._populate({ president: 'name', ceo: 'name,age' }, { deep: 2 });
 
     await cleanUp({ Address, Company, Person });
 
@@ -146,7 +146,7 @@ describe('Test Model Find projection on referenced objects', () => {
     await startInTest(getDefaultInstance());
     await fillData({ Address, Company, Person });
     const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
-    await spaceX._populate({ president: 'name', ceo: ['name', 'age'] }, 2);
+    await spaceX._populate({ president: 'name', ceo: ['name', 'age'] }, { deep: 2 });
 
     await cleanUp({ Address, Company, Person });
 
@@ -163,7 +163,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const { johnAddress } = await fillData({ Address, Company, Person });
 
     const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
-    await spaceX._populate({ president: 'name, address', ceo: 'age' }, 1);
+    await spaceX._populate({ president: 'name, address', ceo: 'age' }, { deep: 1 });
 
     await cleanUp({ Address, Company, Person });
 
@@ -180,7 +180,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const { johnAddress } = await fillData({ Address, Company, Person });
 
     const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
-    await spaceX._populate({ president: 'address', ceo: 'age' }, 2);
+    await spaceX._populate({ president: 'address', ceo: 'age' }, { deep: 2 });
     await cleanUp({ Address, Company, Person });
 
     expect(spaceX).toBeDefined();
@@ -198,7 +198,7 @@ describe('Test Model Find projection on referenced objects', () => {
     const { john, johnAddress, jane, janeAddress } = await fillData({ Address, Company, Person });
     const spaceX = await Company.findOne({ name: 'Space X' }, consistency);
 
-    await spaceX._populate({ president: { select: '*', populate: '*' }, ceo: { populate: 'address' } }, 2);
+    await spaceX._populate({ president: { select: '*', populate: '*' }, ceo: { populate: 'address' } }, { deep: 2 });
 
     await cleanUp({ Address, Company, Person });
 
@@ -228,7 +228,7 @@ describe('Test Model Find projection on referenced objects', () => {
         president: { select: 'address,id', populate: 'address' },
         ceo: { select: 'age', populate: { address: { select: 'address' } } },
       },
-      2,
+      { deep: 2 },
     );
 
     await cleanUp({ Address, Company, Person });
