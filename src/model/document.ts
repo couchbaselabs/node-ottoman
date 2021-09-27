@@ -1,22 +1,17 @@
-import { DocumentExistsError, DocumentNotFoundError } from '../exceptions/exceptions';
+import { DocumentExistsError, DocumentNotFoundError } from 'couchbase';
 import { ImmutableError, InvalidModelReferenceError } from '../exceptions/ottoman-errors';
 import { validate } from '../schema';
 import { ApplyStrategy, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
 import { _keyGenerator } from '../utils/constants';
 import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
-import { isPopulateAnObject } from '../utils/populate/is-populate-object';
-import {
-  extractPopulateFieldsFromObject,
-  extractSchemaReferencesFields,
-  extractSchemaReferencesFromGivenFields,
-} from '../utils/schema.utils';
+import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
-import { PopulateFieldsType } from './populate.types';
 import { saveOptions } from './model.types';
+import { PopulateFieldsType, PopulateOptionsType } from './populate.types';
 import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
-import { getModelMetadata } from './utils/model.utils';
+import { getModelMetadata, getPopulated } from './utils/model.utils';
 import { removeLifeCycle } from './utils/remove-life-cycle';
 import { storeLifeCycle } from './utils/store-life-cycle';
 
@@ -47,6 +42,7 @@ export abstract class Document {
    * @ignore
    */
   #isNew = true;
+
   /**
    * @ignore
    */
@@ -112,6 +108,7 @@ export abstract class Document {
   get $(): ModelMetadata {
     return getModelMetadata(this.constructor);
   }
+
   /**
    * Returns id value, useful when working with dynamic ID_KEY.
    *
@@ -410,71 +407,9 @@ export abstract class Document {
    * }
    * ```
    */
-  async _populate(
-    fieldsName?: PopulateFieldsType,
-    options: { deep?: number; enforceRefCheck?: boolean | 'throw' } | number = 1,
-  ) {
-    const deep = typeof options === 'object' ? options.deep || 1 : options || 1;
-    let enforceRefCheck = typeof options === 'object' ? options.enforceRefCheck : undefined;
-    if (!enforceRefCheck) {
-      enforceRefCheck = this.$.schema.options.enforceRefCheck;
-    }
-    let fieldsToPopulate;
-    const isObject = isPopulateAnObject(fieldsName);
-    if (isObject) {
-      fieldsToPopulate = extractSchemaReferencesFromGivenFields(Object.keys(fieldsName ?? ''), this.$.schema);
-    } else if (fieldsName && fieldsName !== '*') {
-      fieldsToPopulate = extractSchemaReferencesFromGivenFields(fieldsName, this.$.schema);
-    } else {
-      fieldsToPopulate = extractSchemaReferencesFields(this.$.schema);
-    }
-
-    for (const fieldName in fieldsToPopulate) {
-      const field = fieldsToPopulate[fieldName];
-      const modelName = (field as any).refModel;
-      if (modelName) {
-        const ref = this[fieldName];
-        const refFields = Array.isArray(ref) ? ref : [ref];
-        const refFieldsLength = refFields.length;
-        for (let i = 0; i < refFieldsLength; i++) {
-          const refField = refFields[i];
-          if (typeof refField === 'string' && modelName) {
-            const { findById } = this.$.ottoman.getModel(modelName);
-
-            const current = fieldsName?.[fieldName];
-            const lean = (this.$ as any).lean || undefined;
-            const select =
-              isObject && current !== '*' && current?.select !== '*'
-                ? typeof current === 'string' || Array.isArray(current)
-                  ? current
-                  : extractPopulateFieldsFromObject(current) ?? undefined
-                : undefined;
-            try {
-              const populated = await findById(refField, { select });
-              const currentDeep = deep - 1;
-              if (currentDeep > 0) {
-                populated.$.lean = lean;
-                await populated._populate(current?.populate ?? current ?? '*', { deep: currentDeep, enforceRefCheck });
-                delete populated.$.lean;
-              }
-              refFields[i] = lean ? populated.toObject() : populated;
-            } catch (e) {
-              if (e instanceof DocumentNotFoundError) {
-                switch (enforceRefCheck) {
-                  case true:
-                    console.warn(`Reference to ${fieldName} can be populated!`);
-                    break;
-                  case 'throw':
-                    throw new InvalidModelReferenceError(`Reference to ${fieldName} can be populated!`);
-                }
-              }
-            }
-          }
-        }
-
-        this[fieldName] = Array.isArray(ref) ? refFields : refFields[0];
-      }
-    }
+  async _populate(fieldsName?: PopulateFieldsType, options?: PopulateOptionsType) {
+    const { schema, modelName, ottoman } = this.$;
+    await getPopulated({ ...options, fieldsName, pojo: this, schema, modelName, ottoman });
     return this;
   }
 

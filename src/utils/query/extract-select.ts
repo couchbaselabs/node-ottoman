@@ -1,7 +1,7 @@
 /**
  * Extract the values to be used on select clause.
  */
-import { buildSelectArrayExpr, parseStringSelectExpr, ISelectType } from '../../query';
+import { buildSelectArrayExpr, ISelectType, parseStringSelectExpr } from '../../query';
 import { MODEL_KEY } from '../constants';
 
 export const extractSelect = (
@@ -14,11 +14,7 @@ export const extractSelect = (
   let selectProjection: string[] = [];
 
   if (select) {
-    if (Array.isArray(select)) {
-      selectProjection = select;
-    } else {
-      selectProjection = parseStringSelectExpr(select);
-    }
+    selectProjection = Array.isArray(select) ? select : parseStringSelectExpr(select);
   }
   const metadata = excludeMeta ? [] : getMetadata(noCollection, modelKey);
   return [...new Set([...selectProjection, ...metadata])];

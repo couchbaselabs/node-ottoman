@@ -1,5 +1,5 @@
-import { Ottoman, getOttomanInstances } from '../src';
-import { password, username, connectionString, bucketName } from './testData';
+import { getOttomanInstances, Ottoman } from '../src';
+import { bucketName, connectionString, password, username } from './testData';
 
 beforeEach(async () => {
   let options = {};

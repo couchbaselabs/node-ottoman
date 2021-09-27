@@ -19,8 +19,8 @@ import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { Model } from './model';
 import { ModelTypes, saveOptions } from './model.types';
-import { getModelMetadata, setModelMetadata } from './utils/model.utils';
-import { IConditionExpr } from '../query/interface/query.types';
+import { getModelMetadata, getPopulated, setModelMetadata } from './utils/model.utils';
+import { IConditionExpr } from '../query';
 
 /**
  * @ignore
@@ -181,33 +181,20 @@ export const _buildModel = (metadata: ModelMetadata) => {
       throw new OttomanError('The query did not return any results.');
     };
 
-    static findById = async (id: string, options: FindByIdOptions = {}): Promise<Model> => {
-      const findOptions = { ...options };
-      const populate = findOptions.populate;
-      const enforceRefCheck = findOptions.enforceRefCheck || false;
-      delete findOptions.enforceRefCheck;
-      delete findOptions.populate;
-      if (findOptions.select) {
-        findOptions['project'] = extractSelect(findOptions.select, { noCollection: true }, false, modelKey);
-        delete findOptions.select;
+    static findById = async (id: string, options: FindByIdOptions = {}): Promise<Model | Record<string, unknown>> => {
+      const { populate, populateMaxDeep: deep, select, lean, enforceRefCheck = false, ...findOptions } = options;
+      if (select) {
+        findOptions['project'] = extractSelect(select, { noCollection: true }, false, modelKey);
       }
       const key = _keyGenerator!(keyGenerator, { metadata, id }, keyGeneratorDelimiter);
-      const { value } = await collection().get(key, findOptions);
+      const { value: pojo } = await collection().get(key, findOptions);
 
-      const ModelFactory = ottoman.getModel(modelName);
-      let document = new ModelFactory({ ...value }, { strict: false, strategy: CAST_STRATEGY.KEEP }).$wasNew();
       if (populate) {
-        document.$.lean = findOptions.lean;
-        document = await document._populate(populate, {
-          deep: findOptions.populateMaxDeep || undefined,
-          enforceRefCheck,
-        });
-        delete document.$.lean;
+        return getPopulated({ fieldsName: populate, deep, lean, pojo, schema, modelName, ottoman, enforceRefCheck });
       }
-      if (findOptions.lean) {
-        document = document.toObject();
-      }
-      return document;
+      if (lean) return pojo;
+      const ModelFactory = ottoman.getModel(modelName);
+      return new ModelFactory(pojo, { strict: false, strategy: CAST_STRATEGY.KEEP }).$wasNew();
     };
 
     static findOne = async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
@@ -240,7 +227,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
       if (value[ID_KEY]) {
         const strategy = CAST_STRATEGY.THROW;
-        value._applyData({ ...value, ...data, ...{ [modelKey]: value[modelKey] } }, options.strict);
+        (value as Model)._applyData({ ...value, ...data, ...{ [modelKey]: value[modelKey] } }, options.strict);
         const instance = new _Model({ ...value }, { strategy });
         const _options: any = {};
         if (options.maxExpiry) {

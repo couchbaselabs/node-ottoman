@@ -227,7 +227,7 @@ describe('Test populate feature', () => {
     expect(result.cats).toBeDefined();
     expect(result.isActive).toBeUndefined();
     expect(result._populated('card')).toBe(false);
-    await result._populate('*', 2);
+    await result._populate('*', { deep: 2 });
     expect(result._populated('card')).toBe(true);
     expect(result.card.cardNumber).toBe('4242 4242 4242 4242');
     expect(result.card.issues[0].title).toBe('stolen card');

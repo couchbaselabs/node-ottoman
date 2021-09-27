@@ -1,4 +1,4 @@
-import { FindByIdOptions, getDefaultInstance, model, Model, Schema, Document } from '../src';
+import { Document, FindByIdOptions, getDefaultInstance, Model, model, Schema } from '../src';
 import { consistency, startInTest } from './testData';
 
 describe('Test Support Query Lean', () => {

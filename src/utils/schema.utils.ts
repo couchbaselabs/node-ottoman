@@ -1,5 +1,5 @@
 import { PopulateSelectBaseType } from '../model/populate.types';
-import { Schema } from '../schema';
+import { ReferenceType, Schema } from '../schema';
 import { extractPopulate } from './query/extract-populate';
 
 export const extractSchemaReferencesFields = (schema: Schema) => {
@@ -16,7 +16,7 @@ export const extractSchemaReferencesFields = (schema: Schema) => {
   return populableFields;
 };
 
-export const extractSchemaReferencesFromGivenFields = (fields, schema: Schema) => {
+export const extractSchemaReferencesFromGivenFields = (fields, schema: Schema): Record<string, ReferenceType> => {
   const toPopulate = extractPopulate(fields);
   const fieldsToPopulate: any = {};
   for (const fieldName of toPopulate) {
