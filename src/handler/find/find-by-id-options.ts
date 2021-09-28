@@ -14,6 +14,7 @@ export class FindByIdOptions {
    * ```
    **/
   lean?: boolean;
+  enforceRefCheck?: boolean | 'throw';
   constructor(data: FindByIdOptions) {
     for (const key in data) {
       this[key] = data[key];

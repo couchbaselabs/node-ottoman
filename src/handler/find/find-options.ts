@@ -21,6 +21,7 @@ export class FindOptions implements IFindOptions {
    **/
   lean?: boolean;
   ignoreCase?: boolean;
+  enforceRefCheck?: boolean | 'throw';
   constructor(data: FindOptions) {
     for (const key in data) {
       this[key] = data[key];

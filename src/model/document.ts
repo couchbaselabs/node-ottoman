@@ -1,5 +1,5 @@
 import { DocumentExistsError, DocumentNotFoundError } from '../exceptions/exceptions';
-import { ImmutableError } from '../exceptions/ottoman-errors';
+import { ImmutableError, InvalidModelReferenceError } from '../exceptions/ottoman-errors';
 import { validate } from '../schema';
 import { ApplyStrategy, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
 import { _keyGenerator } from '../utils/constants';
@@ -410,7 +410,15 @@ export abstract class Document {
    * }
    * ```
    */
-  async _populate(fieldsName?: PopulateFieldsType, deep = 1) {
+  async _populate(
+    fieldsName?: PopulateFieldsType,
+    options: { deep?: number; enforceRefCheck?: boolean | 'throw' } | number = 1,
+  ) {
+    const deep = typeof options === 'object' ? options.deep || 1 : options || 1;
+    let enforceRefCheck = typeof options === 'object' ? options.enforceRefCheck : undefined;
+    if (!enforceRefCheck) {
+      enforceRefCheck = this.$.schema.options.enforceRefCheck;
+    }
     let fieldsToPopulate;
     const isObject = isPopulateAnObject(fieldsName);
     if (isObject) {
@@ -441,14 +449,26 @@ export abstract class Document {
                   ? current
                   : extractPopulateFieldsFromObject(current) ?? undefined
                 : undefined;
-            const populated = await findById(refField, { select });
-            const currentDeep = deep - 1;
-            if (currentDeep > 0) {
-              populated.$.lean = lean;
-              await populated._populate(current?.populate ?? current ?? '*', currentDeep);
-              delete populated.$.lean;
+            try {
+              const populated = await findById(refField, { select });
+              const currentDeep = deep - 1;
+              if (currentDeep > 0) {
+                populated.$.lean = lean;
+                await populated._populate(current?.populate ?? current ?? '*', { deep: currentDeep, enforceRefCheck });
+                delete populated.$.lean;
+              }
+              refFields[i] = lean ? populated.toObject() : populated;
+            } catch (e) {
+              if (e instanceof DocumentNotFoundError) {
+                switch (enforceRefCheck) {
+                  case true:
+                    console.warn(`Reference to ${fieldName} can be populated!`);
+                    break;
+                  case 'throw':
+                    throw new InvalidModelReferenceError(`Reference to ${fieldName} can be populated!`);
+                }
+              }
             }
-            refFields[i] = lean ? populated.toObject() : populated;
           }
         }
 

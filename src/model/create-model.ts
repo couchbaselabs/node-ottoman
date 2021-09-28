@@ -184,6 +184,8 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static findById = async (id: string, options: FindByIdOptions = {}): Promise<Model> => {
       const findOptions = { ...options };
       const populate = findOptions.populate;
+      const enforceRefCheck = findOptions.enforceRefCheck || false;
+      delete findOptions.enforceRefCheck;
       delete findOptions.populate;
       if (findOptions.select) {
         findOptions['project'] = extractSelect(findOptions.select, { noCollection: true }, false, modelKey);
@@ -196,7 +198,10 @@ export const _buildModel = (metadata: ModelMetadata) => {
       let document = new ModelFactory({ ...value }, { strict: false, strategy: CAST_STRATEGY.KEEP }).$wasNew();
       if (populate) {
         document.$.lean = findOptions.lean;
-        document = await document._populate(populate, findOptions.populateMaxDeep || undefined);
+        document = await document._populate(populate, {
+          deep: findOptions.populateMaxDeep || undefined,
+          enforceRefCheck,
+        });
         delete document.$.lean;
       }
       if (findOptions.lean) {
