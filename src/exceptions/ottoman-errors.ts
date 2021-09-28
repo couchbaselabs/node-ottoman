@@ -13,3 +13,6 @@ export class BuildQueryError extends OttomanError {}
 export class BadKeyGeneratorDelimiterError extends OttomanError {
   name = 'BadKeyGeneratorDelimiter';
 }
+export class InvalidModelReferenceError extends OttomanError {
+  name = 'InvalidModelReferenceError';
+}

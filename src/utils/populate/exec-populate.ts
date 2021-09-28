@@ -7,7 +7,7 @@ export const execPopulation = (
   toPopulate: string,
   connection,
   modelName: string,
-  deep?,
+  options?,
   lean = false,
 ): Promise<any[]> => {
   const promises: Promise<any>[] = [];
@@ -17,7 +17,7 @@ export const execPopulation = (
     if (document[toPopulate] || toPopulate === '*') {
       document.$.lean = lean;
       promises.push(
-        document._populate(toPopulate, deep).then((populated) => {
+        document._populate(toPopulate, options).then((populated) => {
           rows[i] = populated;
           delete document.$.lean;
         }),
@@ -27,14 +27,14 @@ export const execPopulation = (
   return Promise.all(promises);
 };
 
-export const execPopulationFromObject = (rows, populate, deep?, lean = false): Promise<any[]> => {
+export const execPopulationFromObject = (rows, populate, options?, lean = false): Promise<any[]> => {
   const promises: Promise<any>[] = [];
   const l = rows.length;
   for (let i = 0; i < l; ++i) {
     const document = rows[i];
     document.$.lean = lean;
     promises.push(
-      document._populate(populate, deep).then((populated) => {
+      document._populate(populate, options).then((populated) => {
         rows[i] = populated;
         delete document.$.lean;
       }),

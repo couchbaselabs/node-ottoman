@@ -1,4 +1,4 @@
-import { Ottoman, getDefaultInstance, getOttomanInstances } from '../src';
+import { Ottoman, getOttomanInstances } from '../src';
 import { password, username, connectionString, bucketName } from './testData';
 
 beforeEach(async () => {
@@ -6,6 +6,7 @@ beforeEach(async () => {
   if (process.env.OTTOMAN_LEGACY_TEST) {
     options = { collectionName: '_default' };
   }
+
   const ottoman = new Ottoman(options);
   await ottoman.connect({
     password,

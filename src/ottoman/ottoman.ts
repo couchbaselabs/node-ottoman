@@ -57,6 +57,8 @@ interface OttomanConfig {
   keyGeneratorDelimiter?: string;
 }
 
+export type OttomanEvents = 'IndexOnline';
+
 /**
  * Store default connection.
  */
@@ -67,8 +69,31 @@ export class Ottoman {
   private n1qlIndexes: Record<string, { fields: string[]; modelName: string }> = {};
   private viewIndexes: Record<string, { views: { map?: string } }> = {};
   private refdocIndexes: Record<string, { fields: string[] }[]> = {};
-  private id: string;
-  public onIndexReady?: () => void;
+  private readonly id: string;
+  private events: Record<OttomanEvents, ((ottoman?: Ottoman) => void)[]> = {
+    IndexOnline: [],
+  };
+  indexOnline = false;
+
+  /**
+   * Retrieve all register callbacks to "IndexOnline" event
+   */
+  get indexReadyHooks() {
+    return this.events['IndexOnline'];
+  }
+
+  /**
+   * Register Ottoman events
+   * @param event the name of the event you want to listen to.
+   * @param fn callback function to be executed when the event trigger up.
+   */
+  on(event: OttomanEvents, fn: (ottoman?: Ottoman) => void | any) {
+    switch (event) {
+      case 'IndexOnline':
+        this.events.IndexOnline.push(fn);
+        break;
+    }
+  }
   /**
    * @ignore
    */

@@ -63,4 +63,5 @@ export interface SchemaOptions {
    * field names by setting timestamps.createdAt and timestamps.updatedAt.
    */
   timestamps?: boolean | SchemaTimestampsConfig;
+  enforceRefCheck?: boolean | 'throw';
 }

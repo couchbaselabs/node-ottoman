@@ -18,8 +18,19 @@ import { FindOptions } from './find-options';
 export const find =
   (metadata: ModelMetadata) =>
   async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
-    const { skip, limit, sort, populate, select, noCollection, populateMaxDeep, consistency, lean, ignoreCase } =
-      options;
+    const {
+      skip,
+      limit,
+      sort,
+      populate,
+      select,
+      noCollection,
+      populateMaxDeep,
+      consistency,
+      lean,
+      ignoreCase,
+      enforceRefCheck,
+    } = options;
     const { ottoman, collectionName, modelKey, scopeName, modelName, ID_KEY, schema } = metadata;
     const { bucketName, cluster, couchbase } = ottoman;
     let fromClause = bucketName;
@@ -98,11 +109,18 @@ export const find =
               delete populate[toPopulate];
             }
           }
-          await execPopulationFromObject(result.rows, populate, populateMaxDeep, lean);
+          await execPopulationFromObject(result.rows, populate, { deep: populateMaxDeep, enforceRefCheck }, lean);
         } else {
           for (const toPopulate of populateFields) {
             if (canBePopulated(toPopulate, projections)) {
-              await execPopulation(result.rows, toPopulate, ottoman, modelName, populateMaxDeep, lean);
+              await execPopulation(
+                result.rows,
+                toPopulate,
+                ottoman,
+                modelName,
+                { deep: populateMaxDeep, enforceRefCheck },
+                lean,
+              );
             }
           }
         }

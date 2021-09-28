@@ -390,6 +390,38 @@ set('DEBUG', true);
 
 Remember: You must define your environment variables at the very beginning.
 
+## Events
+
+Ottoman will enable you to handle some events:
+- `IndexOnline`
+
+### Event IndexOnline
+This event will be trigger when the Ottoman's instance N1QL indexes are online to be used.
+
+usage:
+```typescript
+import { Ottoman } from 'ottoman';
+
+const ottoman = new Ottoman();
+
+const main = async () => {
+  await ottoman.connect(...)
+  
+  ... // do some stuff
+  
+  await ottoman.start(); // Ottoman start will attempt to create scope/collections and indexes
+  
+  // sometimes you will need to use the `IndexOnline` event
+  // to ensure the indexes were built and all the documents were indexed
+  // to can accept queries.
+  ottoman.on('IndexOnline', () => {
+    // this way you can start your web-server with your database ready to work.
+    app.listen(4000)
+  })
+}
+```
+
+
 ## Helper Functions
 
 Ottoman provides these helpers functions:
