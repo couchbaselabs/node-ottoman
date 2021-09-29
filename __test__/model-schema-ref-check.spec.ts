@@ -82,11 +82,29 @@ test('find with schema enforceRefCheck option', async () => {
   } catch (e) {
     expect(e).toBeInstanceOf(InvalidModelReferenceError);
   }
+});
+
+test('find with schema enforceRefCheck option set to true', async () => {
+  model('Card', CardSchema);
+
+  const schema = new Schema({
+    type: String,
+    isActive: Boolean,
+    name: String,
+    card: { type: CardSchema, ref: 'Card' },
+  });
+
+  const User = model('User', schema);
+  await startInTest(getDefaultInstance());
+
+  const user = new User(accessDoc);
+  user.card = 'find-no-existing-ID-true';
+  await user.save();
   jest.spyOn(console, 'warn').mockImplementation();
-  await User.find({ id: user.id }, { populate: '*', enforceRefCheck: true });
+  await User.findOne({ card: 'find-no-existing-ID-true' }, { populate: '*', enforceRefCheck: true });
   expect(console.warn).toHaveBeenCalledWith(
     expect.stringContaining(
-      `Reference to 'card' can't be populated cause document with id 'find-no-existing-ID' not found!`,
+      `Reference to 'card' can't be populated cause document with id 'find-no-existing-ID-true' not found!`,
     ),
   );
 });
