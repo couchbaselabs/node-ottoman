@@ -78,10 +78,10 @@ export const getPopulated = async (options: PopulateAuxOptionsType): Promise<Mod
           const response = await Promise.all(promises);
           i = -1;
           while (++i < l) {
-            ref[i] = response[i];
+            ref[i] = response[i] || ref[i];
           }
         } else {
-          pojo[field] = await processSubModel(_SubModel, ref, params, enforceRefCheck, field);
+          pojo[field] = (await processSubModel(_SubModel, ref, params, enforceRefCheck, field)) || ref;
         }
       }
     }

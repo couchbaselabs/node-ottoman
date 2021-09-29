@@ -462,6 +462,28 @@ _Model {
 
 > If we try to call `userWithLean.toJSON()` will get `TypeError: userWithLean.toJSON is not a function`
 
+::: tip NOTE
+
+When document to populate does not exist, the corresponding id is kept:
+
+```typescript
+// Update user from above example
+await User.updateById(saved.id, {
+  card: 'dummy-user-card-ID', // Reference card ID that does't not exist
+  cats: [
+    'dummy-user-cat-ID', // Reference cat ID that does't exist
+    ...saved.cats
+  ]
+});
+
+// Retrieving data
+userWithLean = await User.findById(saved.id, options);
+
+console.log(userWithLean.card); // 'dummy-user-card-ID'
+console.log(userWithLean.cats[0]) ; // 'dummy-user-cat-ID'
+```
+:::
+
 ### When to Use `lean`
 
 You should use `lean` when:
