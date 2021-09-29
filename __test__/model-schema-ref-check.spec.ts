@@ -1,4 +1,4 @@
-import { getDefaultInstance, model, Schema } from '../src';
+import { getDefaultInstance, model, Schema, SearchConsistency } from '../src';
 import { startInTest } from './testData';
 import { InvalidModelReferenceError } from '../src/exceptions/ottoman-errors';
 
@@ -101,7 +101,7 @@ test('find with schema enforceRefCheck option set to true', async () => {
   user.card = 'find-no-existing-ID-true';
   await user.save();
   jest.spyOn(console, 'warn').mockImplementation();
-  await User.findOne({ card: 'find-no-existing-ID-true' }, { populate: '*', enforceRefCheck: true });
+  await User.find({ id: user.id }, { populate: '*', enforceRefCheck: true, consistency: SearchConsistency.LOCAL });
   expect(console.warn).toHaveBeenCalledWith(
     expect.stringContaining(
       `Reference to 'card' can't be populated cause document with id 'find-no-existing-ID-true' not found!`,
