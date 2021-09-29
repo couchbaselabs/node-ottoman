@@ -107,22 +107,33 @@ describe('Test Support Query Lean', () => {
     const userDoc = new User(userData);
     userDoc.card = cardDoc.id;
     userDoc.cats = [cat1Doc.id, cat2Doc.id];
-    await userDoc.save();
+    const { id } = await userDoc.save();
 
     const options: FindByIdOptions = { select: 'card, cats, name', populate: '*', lean: true, populateMaxDeep: 2 };
     // FIND BY ID
-    let userWithLean = await User.findById(userDoc.id, options);
-    let userWithoutLean = await User.findById(userDoc.id, { ...options, lean: false });
+    let userWithLean = await User.findById(id, options);
+    let userWithoutLean = await User.findById(id, { ...options, lean: false });
     validation(userWithLean, userWithoutLean, User);
     expect(() => userWithLean.toJSON()).toThrow('userWithLean.toJSON is not a function');
     // FIND ONE
-    userWithLean = await User.findOne({ id: userDoc.id }, { ...options, ...consistency });
-    userWithoutLean = await User.findOne({ id: userDoc.id }, { ...options, lean: false, ...consistency });
+    userWithLean = await User.findOne({ id }, { ...options, ...consistency });
+    userWithoutLean = await User.findOne({ id }, { ...options, lean: false, ...consistency });
     validation(userWithLean, userWithoutLean, User);
     // FIND
-    userWithLean = await User.find({ id: userDoc.id }, { ...options, ...consistency });
-    userWithoutLean = await User.find({ id: userDoc.id }, { ...options, lean: false, ...consistency });
+    userWithLean = await User.find({ id }, { ...options, ...consistency });
+    userWithoutLean = await User.find({ id }, { ...options, lean: false, ...consistency });
     validation(userWithLean.rows[0], userWithoutLean.rows[0], User);
+
+    await User.updateById(id, { card: 'dummy-user-card-ID', cats: ['dummy-user-cat-ID', ...userDoc.cats] });
+    userWithLean = await User.findById(id, options);
+    userWithoutLean = await User.findById(id, { ...options, lean: false });
+    const { cats, card } = userWithLean;
+    expect(cats[0]).toStrictEqual('dummy-user-cat-ID');
+    expect(cats[0]).toStrictEqual(userWithoutLean.cats[0]);
+    expect(card).toStrictEqual('dummy-user-card-ID');
+    expect(card).toStrictEqual(userWithoutLean.card);
+    validation(userWithLean, userWithoutLean, User);
+    await User.removeById(id);
   });
 
   function validation(document: any, document1: any, model: any) {
