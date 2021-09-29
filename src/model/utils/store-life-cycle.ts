@@ -24,7 +24,10 @@ export const storeLifeCycle = async ({ key, id, data, options, metadata, refKeys
   });
 
   // enforceRefCheck logic
-  const { enforceRefCheck } = schema.options;
+  let enforceRefCheck = schema.options.enforceRefCheck;
+  if (options.hasOwnProperty('enforceRefCheck')) {
+    enforceRefCheck = options.enforceRefCheck;
+  }
   if (enforceRefCheck) {
     for (const key in schema.fields) {
       const fieldType = schema.fields[key];
