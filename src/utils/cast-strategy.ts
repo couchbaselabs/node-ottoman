@@ -50,6 +50,7 @@ export type ApplyStrategy = boolean | CAST_STRATEGY.THROW;
 export type MutationFunctionOptions = {
   strict?: ApplyStrategy;
   maxExpiry?: number;
+  enforceRefCheck?: boolean | 'throw';
 };
 
 export const cast = (

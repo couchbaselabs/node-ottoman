@@ -23,7 +23,6 @@
     "docs": "yarn docs:generate && yarn docs:build  && cp vuepress/CNAME docs/.vuepress/dist",
     "docs:build": "vuepress build docs",
     "docs:cp": "cp -r vuepress/* docs/",
-    "docs:dev": "vuepress dev vuepress",
     "docs:generate": "rimraf docs && typedoc && cp -r vuepress/* docs/ && cp -r vuepress/.vuepress docs",
     "docs:serve": "yarn docs && serve docs/.vuepress/dist",
     "docs:start": "yarn docs:generate && vuepress dev docs",

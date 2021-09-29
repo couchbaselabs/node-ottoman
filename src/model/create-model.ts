@@ -269,9 +269,12 @@ export const _buildModel = (metadata: ModelMetadata) => {
           },
           options?.strict,
         );
-        const _options: any = {};
+        const _options: any = { enforceRefCheck: options.enforceRefCheck };
         if (options.maxExpiry) {
           _options.maxExpiry = options.maxExpiry;
+        }
+        if (options.hasOwnProperty('enforceRefCheck')) {
+          _options.enforceRefCheck = options.enforceRefCheck;
         }
         return replace.save(false, _options);
       }
@@ -323,6 +326,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const saveOptions: any = {};
       if (options.maxExpiry) {
         saveOptions.maxExpiry = options.maxExpiry;
+      }
+      if (options.hasOwnProperty('enforceRefCheck')) {
+        saveOptions.enforceRefCheck = options.enforceRefCheck;
       }
       try {
         const before = await _Model.findOne(filter, { ...options, consistency: 1 });

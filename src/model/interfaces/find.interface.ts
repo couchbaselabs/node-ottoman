@@ -14,4 +14,11 @@ export interface FindOneAndUpdateOption extends IFindOptions, MutationFunctionOp
    * */
   new?: boolean;
   maxExpiry?: number;
+  /**
+   * Default: false
+   * enforceRefCheck will check if the referenced document exists
+   * set to true: will log a warning message.
+   * set to 'throw': will throw an exception.
+   */
+  enforceRefCheck?: boolean | 'throw';
 }
