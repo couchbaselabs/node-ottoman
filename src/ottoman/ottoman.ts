@@ -36,6 +36,7 @@ import {
   QueryIndexManager,
   ViewIndexManager,
   Collection,
+  NodeCallback,
 } from 'couchbase';
 import { generateUUID } from '../utils/generate-uuid';
 
@@ -57,6 +58,14 @@ interface OttomanConfig {
   keyGeneratorDelimiter?: string;
 }
 
+interface EnsureIndexesOptions {
+  ignoreWatchIndexes?: boolean;
+}
+
+interface StartOptions {
+  ignoreWatchIndexes?: boolean;
+}
+
 export type OttomanEvents = 'IndexOnline';
 
 /**
@@ -70,10 +79,11 @@ export class Ottoman {
   private viewIndexes: Record<string, { views: { map?: string } }> = {};
   private refdocIndexes: Record<string, { fields: string[] }[]> = {};
   private readonly id: string;
-  private events: Record<OttomanEvents, ((ottoman?: Ottoman) => void)[]> = {
+  private events: Record<OttomanEvents, NodeCallback<Ottoman>[]> = {
     IndexOnline: [],
   };
-  indexOnline = false;
+  indexOnline: Error | boolean = false;
+  indexOnlinePromise: Promise<any> | undefined;
 
   /**
    * Retrieve all register callbacks to "IndexOnline" event
@@ -87,10 +97,13 @@ export class Ottoman {
    * @param event the name of the event you want to listen to.
    * @param fn callback function to be executed when the event trigger up.
    */
-  on(event: OttomanEvents, fn: (ottoman?: Ottoman) => void | any) {
+  on(event: OttomanEvents, fn: NodeCallback<Ottoman>) {
     switch (event) {
       case 'IndexOnline':
         this.events.IndexOnline.push(fn);
+        if (this.indexOnline) {
+          setTimeout(() => fn(this.indexOnline instanceof Error ? this.indexOnline : null, this));
+        }
         break;
     }
   }
@@ -443,19 +456,28 @@ export class Ottoman {
 
   /**
    * `ensureIndexes` will attempt to create indexes defined in your schema if they do not exist.
+   * * @param options
+   * - `ignoreWatchIndexes`: by default `ensureIndexes` function will wait for indexes, but you can disabled it setting ignoreWatchIndexes to true.
    */
-  async ensureIndexes() {
+  async ensureIndexes(options: EnsureIndexesOptions = {}) {
     await ensureN1qlIndexes(this, this.n1qlIndexes);
     await ensureViewIndexes(this, this.viewIndexes);
+
+    if (!options.ignoreWatchIndexes && this.indexOnlinePromise) {
+      return this.indexOnlinePromise;
+    }
   }
 
   /**
    * `start` method is just a shortcut to run `ensureCollections` and `ensureIndexes`.
-   *  Notice: It's not required to execute the `start` method in order for Ottoman work.
+   * @param options
+   * - `ignoreWatchIndexes`: by default `start` function will wait for indexes, but you can disabled it setting ignoreWatchIndexes to true.
+   *
+   * Notice: It's not required to execute the `start` method in order for Ottoman work.
    */
-  async start() {
+  async start(options: StartOptions = {}) {
     await this.ensureCollections();
-    await this.ensureIndexes();
+    await this.ensureIndexes(options);
   }
 }
 

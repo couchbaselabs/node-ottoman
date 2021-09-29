@@ -243,7 +243,7 @@ main();
 ```
 
 ::: tip
-Notice we start using Ottoman without creating any instance, it's possible by using the `connect` function.
+Notice we [start](/classes/ottoman.html#start) using Ottoman without creating any instance, it's possible by using the `connect` function.
 `connect` function will create a default ottoman instance with default options if there's not an ottoman default instance created yet.
 :::
 
@@ -372,7 +372,7 @@ The **Ottoman** class will provide three main methods to bootstrap the app:
 
 - `ensureCollections` will attempt to create collections and scopes for each model
 - `ensureIndexes` will attempt to create all indexes defined in the schema definition
-- `start` method is just a shortcut to run `ensureCollections` and `ensureIndexes`
+- [start](/classes/ottoman.html#start) method is just a shortcut to run `ensureCollections` and `ensureIndexes`
 
 Notice: It's not required to execute the `start` method for Ottoman work.
 
@@ -414,13 +414,17 @@ const main = async () => {
   // sometimes you will need to use the `IndexOnline` event
   // to ensure the indexes were built and all the documents were indexed
   // to can accept queries.
-  ottoman.on('IndexOnline', () => {
-    // this way you can start your web-server with your database ready to work.
-    app.listen(4000)
+  ottoman.on('IndexOnline', (err) => {
+    if (!err) {
+      // this way you can start your web-server with your database ready to work.
+      app.listen(4000);
+    }
+    console.log(err);
   })
 }
 ```
 
+Notice: `IndexOnline` event will depend on `start` or `ensureIndexes` been called to be executed.
 
 ## Helper Functions
 
