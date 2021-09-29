@@ -223,6 +223,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
     };
 
     static updateById = async (id: string, data, options: MutationFunctionOptions = { strict: true }) => {
+      if (data[ID_KEY] && id !== data[ID_KEY]) {
+        throw new Error(`data contains id field with different value to the id provided! -> ${id} != ${data[ID_KEY]}`);
+      }
       const key = id || data[ID_KEY];
       const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
       if (value[ID_KEY]) {
