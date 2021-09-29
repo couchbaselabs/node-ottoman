@@ -435,7 +435,7 @@ console.log(userRefdoc);
 ### View
 
 :::warning Deprecated
-View indexes were deprecated in Ottoman v2 and will be remove the next mayor version of the package.
+View indexes were deprecated in Ottoman v2 and will be removed in the next major version of the package.
 :::
 
 This type of index is always available once `ensureIndexes` is called and will work with any Couchbase Server version.
