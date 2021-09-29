@@ -43,7 +43,6 @@ export * from './couchbase';
 export { getProjectionFields } from './utils/query/extract-select';
 export { SearchConsistency } from './utils/search-consistency';
 export * from './exceptions/exceptions';
-export { CertificateAuthenticator } from 'couchbase';
 export { MutationFunctionOptions } from './utils/cast-strategy';
 export {
   ReturnResultDict,
