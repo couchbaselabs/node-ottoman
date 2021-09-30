@@ -1,6 +1,6 @@
 {
   "name": "ottoman",
-  "version": "2.0.0-beta.10",
+  "version": "2.0.0-beta.11",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
   "description": "Ottoman Couchbase ODM",
