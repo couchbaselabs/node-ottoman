@@ -17,7 +17,7 @@ import { CreateModel } from './interfaces/create-model.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
-import { Model } from './model';
+import { IModel } from './model';
 import { ModelTypes, saveOptions } from './model.types';
 import { getModelMetadata, getPopulated, setModelMetadata } from './utils/model.utils';
 import { IConditionExpr } from '../query';
@@ -96,7 +96,7 @@ export const createModel = <T = any, R = any>({ name, schemaDraft, options, otto
 export const _buildModel = (metadata: ModelMetadata) => {
   const { schema, collection, ID_KEY, modelKey, scopeName, ottoman, modelName, keyGenerator, keyGeneratorDelimiter } =
     metadata;
-  return class _Model<T> extends Model<T> {
+  return class _Model<T> extends IModel<T> {
     constructor(data, options: CastOptions = {}) {
       super(data);
       const strategy = options.strategy || CAST_STRATEGY.DEFAULT_OR_DROP;
@@ -181,7 +181,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       throw new OttomanError('The query did not return any results.');
     };
 
-    static findById = async (id: string, options: FindByIdOptions = {}): Promise<Model | Record<string, unknown>> => {
+    static findById = async (id: string, options: FindByIdOptions = {}): Promise<IModel | Record<string, unknown>> => {
       const { populate, populateMaxDeep: deep, select, lean, enforceRefCheck = false, ...findOptions } = options;
       if (select) {
         findOptions['project'] = extractSelect(select, { noCollection: true }, false, modelKey);
@@ -230,7 +230,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
       if (value[ID_KEY]) {
         const strategy = CAST_STRATEGY.THROW;
-        (value as Model)._applyData({ ...value, ...data, ...{ [modelKey]: value[modelKey] } }, options.strict);
+        (value as IModel)._applyData({ ...value, ...data, ...{ [modelKey]: value[modelKey] } }, options.strict);
         const instance = new _Model({ ...value }, { strategy });
         const _options: any = {};
         if (options.maxExpiry) {

@@ -11,7 +11,7 @@ import {
 } from '../../utils/schema.utils';
 import { Document } from '../document';
 import { ModelMetadata } from '../interfaces/model-metadata.interface';
-import { Model } from '../model';
+import { IModel } from '../model';
 import { ModelTypes } from '../model.types';
 import { PopulateFieldsType, PopulateOptionsType } from '../populate.types';
 
@@ -28,7 +28,7 @@ export type PopulateAuxOptionsType = {
   modelName: string;
 } & Partial<PopulateOptionsType>;
 
-export const getPopulated = async (options: PopulateAuxOptionsType): Promise<Model | Record<string, unknown>> => {
+export const getPopulated = async (options: PopulateAuxOptionsType): Promise<IModel | Record<string, unknown>> => {
   const {
     deep = 1,
     lean = false,

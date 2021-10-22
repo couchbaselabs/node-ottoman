@@ -9,7 +9,7 @@ export {
   getModel,
   Ottoman,
 } from './ottoman/ottoman';
-export { Model, IModel } from './model/model';
+export { IModel } from './model/model';
 export { Document, IDocument } from './model/document';
 export { ModelOptions, CreateModelOptions } from './model/interfaces/create-model.interface';
 export { FindOneAndUpdateOption } from './model/interfaces/find.interface';

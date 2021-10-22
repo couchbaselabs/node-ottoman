@@ -7,7 +7,7 @@ import { CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
 import { ModelTypes, saveOptions } from './model.types';
 
 //@ts-ignore
-export class Model<T = any, R = any> extends Document implements IModel<T, R> {}
+export class IModel<T = any, R = any> extends Document implements IModel<T, R> {}
 /**
  * Constructor to build a model instance based on schema and options.
  * Provides methods to handle documents of the current collection in the database.
