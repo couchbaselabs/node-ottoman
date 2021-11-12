@@ -23,7 +23,7 @@ That's it, you are ready to use Ottoman.
 
 Supported version are:
 
-| Ottoman     | Nodejs      | Couchbase SDK   | Couchbase Server 
+| Ottoman     | Nodejs      | Couchbase SDK   | Couchbase Server
 | ----------- | ----------- | --------------- | -----------------
 | ^2.0.0      | ^8.0.0      |  ^3.2.2         | ^6.5.0
 
@@ -40,12 +40,12 @@ const main = async () => {
   const User = model('User', { name: String });
 
   const user = new User({ name: 'Jane Doe' });
-  
-  await start(); 
-  
+
+  await start();
+
   await user.save();
   console.log('Nice Job!');
-  
+
   await close();
 }
 
@@ -83,7 +83,7 @@ Please make sure to read the [Issue Reporting Checklist](https://github.com/couc
 
 ## Changelog
 
-Detailed changes for each release are documented in the [release notes](https://github.com/couchbaselabs/node-ottoman/releases).
+Detailed changes for each release are documented in the [release notes](https://docs.couchbase.com/nodejs-sdk/current/project-docs/ottoman-release-notes.html).
 
 ## Stay In Touch
 
