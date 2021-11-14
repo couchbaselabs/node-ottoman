@@ -92,13 +92,17 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
     }
   }
 
+  let names: string[] = [];
+  for (const key in indexesToBuild) {
+    names = [...names, ...(indexesToBuild[key] || [])];
+  }
+
+  ottoman.indexOnlinePromise = ottoman.queryIndexManager.watchIndexes(bucketName, names, 600000, {
+    watchPrimary: false,
+  });
+
   if (ottoman.indexReadyHooks && ottoman.indexReadyHooks.length > 0) {
-    let names: string[] = [];
-    for (const key in indexesToBuild) {
-      names = [...names, ...(indexesToBuild[key] || [])];
-    }
-    ottoman.indexOnlinePromise = ottoman.queryIndexManager
-      .watchIndexes(bucketName, names, 600000, { watchPrimary: false })
+    ottoman.indexOnlinePromise
       .then(() => {
         ottoman.indexOnline = true;
         ottoman.indexReadyHooks.forEach((fn) => fn(null, ottoman));
