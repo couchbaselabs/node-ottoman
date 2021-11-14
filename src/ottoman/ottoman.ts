@@ -509,7 +509,7 @@ const tryCreateCollection = async (
 ) => {
   let collectionDoesNotExists = true;
   let testDelay = 0;
-  let testCount = 1;
+  let testCount = 0;
   while (collectionDoesNotExists && testCount < retries + 1) {
     await delay(testDelay);
     try {
