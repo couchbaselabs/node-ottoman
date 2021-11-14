@@ -508,17 +508,17 @@ const tryCreateCollection = async (
   delayMS = 5000,
 ) => {
   let collectionDoesNotExists = true;
-  let testDelay = 0;
-  let testCount = 0;
-  while (collectionDoesNotExists && testCount < retries + 1) {
-    await delay(testDelay);
+  let tryDelay = 0;
+  let tryCount = 0;
+  while (collectionDoesNotExists && tryCount < retries + 1) {
+    await delay(tryDelay);
     try {
       await createCollection({ collectionManager, collectionName, scopeName, maxExpiry });
     } catch (e) {
       if (e instanceof (couchbase as any).CollectionExistsError) collectionDoesNotExists = false;
     }
-    testDelay += Math.max(Math.min(testDelay * 10, delayMS), 100);
-    testCount++;
+    tryDelay += Math.max(Math.min(tryDelay * 10, delayMS), 100);
+    tryCount++;
   }
 };
 
