@@ -508,6 +508,7 @@ const tryCreateCollection = async (
   delayMS = 5000,
 ) => {
   let collectionDoesNotExists = true;
+  let err = null;
   let tryDelay = 0;
   let tryCount = 0;
   while (collectionDoesNotExists && tryCount < retries + 1) {
@@ -516,10 +517,12 @@ const tryCreateCollection = async (
       await createCollection({ collectionManager, collectionName, scopeName, maxExpiry });
     } catch (e) {
       if (e instanceof (couchbase as any).CollectionExistsError) collectionDoesNotExists = false;
+      err = e;
     }
     tryDelay += Math.max(Math.min(tryDelay * 10, delayMS), 100);
     tryCount++;
   }
+  if (collectionDoesNotExists && err) throw new Error(err);
 };
 
 export const getDefaultInstance = () => __ottoman;
