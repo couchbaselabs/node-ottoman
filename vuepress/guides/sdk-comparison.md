@@ -53,4 +53,4 @@ Affordability, Adaptability, Supportability and Sustainability are available by 
 | Field Level Encryption | 🚫 | ✅ | N/A | Currently not available in Ottoman 2.0. |
 | Subdocument Operations | 🚫 | ✅ | N/A | Currently not available in Ottoman 2.0. |
 | MapReduce Views | 🚫 | ✅ | N/A | Currently not available in Ottoman 2.0. |
-| Transactions | 🚫 | ✅ | N/A | Currently not available in Ottoman 2.0. |
+| Transactions | 🚫 | 🚫 | N/A | Currently not available in Ottoman 2.0. |
