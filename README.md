@@ -59,7 +59,7 @@ Nice Job!
 ```
 
 ::: tip Note
-If you are using legacy database must check out this [v1.ottomanjs.com](https://v1.ottomanjs.com/)
+If you are using the legacy version of Ottoman, check out the [V1 docs](https://v1.ottomanjs.com/).
 :::
 
 
