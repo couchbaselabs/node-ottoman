@@ -1,6 +1,6 @@
 {
   "name": "ottoman",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
   "description": "Ottoman Couchbase ODM",
@@ -73,7 +73,7 @@
     "vuepress-plugin-one-click-copy": "^1.0.2"
   },
   "dependencies": {
-    "couchbase": "3.2.2",
+    "couchbase": "3.2.3",
     "jsonpath": "1.1.1",
     "uuid": "8.3.2"
   },
