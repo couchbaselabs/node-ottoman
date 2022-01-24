@@ -9,6 +9,7 @@ import {
 } from '../src';
 import { OttomanError } from '../src/exceptions/ottoman-errors';
 import { connectUri, consistency, startInTest } from './testData';
+import { MODEL_KEY } from '../src/utils/constants';
 
 const accessDoc = {
   type: 'airlineR',
@@ -257,7 +258,8 @@ describe('Test Document Access Functions', () => {
 
   test('UserModel find function, also check return correct custom idKey', async () => {
     const CUSTOM_ID_KEY = 'userListId';
-    const UserModel = model<IUser>('User', schema, { idKey: CUSTOM_ID_KEY });
+    const modelName = 'User';
+    const UserModel = model<IUser>(modelName, schema, { idKey: CUSTOM_ID_KEY });
     await startInTest(getDefaultInstance());
     await UserModel.create({
       type: 'airline',
@@ -267,6 +269,7 @@ describe('Test Document Access Functions', () => {
     const documents = await UserModel.find({ name: 'Ottoman Access List Custom ID' }, consistency);
     expect(documents.rows).toBeDefined();
     const document = documents.rows[0];
+    expect(document[MODEL_KEY]).toBe(modelName);
     expect(typeof document[CUSTOM_ID_KEY]).toBe('string');
   });
 
@@ -322,6 +325,20 @@ describe('Test Document Access Functions', () => {
     const document = await UserModel.findById(user[idKey]);
     expect(document[idKey]).toBe(user[idKey]);
     expect(document[idKey]).toBe(key);
+  });
+
+  test('UserModel keyGeneratorDelimiter to empty string at Model Level', async () => {
+    const Model = model('Airlines', schema, { keyGeneratorDelimiter: '', keyGenerator: () => '', idKey: 'Id' });
+    await startInTest(getDefaultInstance());
+    const user = await Model.create({
+      type: 'airline',
+      isActive: false,
+      name: 'Ottoman Access List',
+    });
+    const result = await Model.find({ Id: user.Id }, { select: 'meta().id, Id', ...consistency });
+    const document = result.rows[0];
+    expect(document).toBeDefined();
+    expect(document.Id).toBe(document.id);
   });
 
   test('UserModel keyGeneratorDelimiter at Model Level', async () => {

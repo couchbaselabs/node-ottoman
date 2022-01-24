@@ -7,6 +7,7 @@ import { isDebugMode } from '../../utils/is-debug-mode';
 import { getProjectionFields } from '../../utils/query/extract-select';
 import { isNumber } from '../../utils/type-helpers';
 import { FindOptions } from './find-options';
+import { MODEL_KEY } from '../../utils/constants';
 
 /**
  * Find documents using filter and options.
@@ -43,10 +44,16 @@ export const find =
     if (!fields.includes(ID_KEY)) {
       fields.push(ID_KEY);
     }
+
+    if (!fields.includes(MODEL_KEY)) {
+      fields.push(MODEL_KEY);
+    }
+
     fields = fields.map((field) => `\`${field}\``);
     if (select || !schema.options.strict) {
       fields = select;
     }
+
     const projectionFields = getProjectionFields(
       selectDot,
       fields,
