@@ -31,7 +31,7 @@ describe('Test Model Find projection', () => {
       Object.keys(document)
         .sort((a, b) => (a < b ? -1 : 1))
         .join(','),
-    ).toBe('isActive,name,type,userListId');
+    ).toBe('_type,isActive,name,type,userListId');
     expect(document1).toStrictEqual({ _type: 'User' });
   });
   test('UserModel find function non strict schema', async () => {
