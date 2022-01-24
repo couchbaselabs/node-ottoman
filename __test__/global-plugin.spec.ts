@@ -1,6 +1,7 @@
-import { registerGlobalPlugin } from '../src';
+import { registerGlobalPlugin, Schema, model, getDefaultInstance } from '../src';
 import { __plugins, getGlobalPlugins } from '../src/plugins/global-plugin-handler';
 import { GlobalPluginHandlerError } from '../src/plugins/global-plugin-handler-error';
+import { startInTest } from './testData';
 
 describe('Global Plugin', () => {
   test('-> test add global plugin', () => {
@@ -45,5 +46,43 @@ describe('Global Plugin', () => {
 
   test('-> should throw a GlobalPluginHandlerError', () => {
     expect(() => registerGlobalPlugin([null])).toThrow(GlobalPluginHandlerError);
+  });
+
+  test('global plugin with hook to modify document', async () => {
+    const pluginLog = (pSchema: any) => {
+      pSchema.pre('save', function (doc: any) {
+        doc.operational = false;
+        return doc;
+      });
+    };
+
+    const pluginLog2 = (pSchema: any) => {
+      pSchema.pre('save', function (doc: any) {
+        doc.plugin = 'registered from plugin 2!';
+        return doc;
+      });
+    };
+
+    registerGlobalPlugin(pluginLog);
+    registerGlobalPlugin(pluginLog2);
+
+    const schema = new Schema({
+      name: String,
+      operational: Boolean,
+    });
+
+    const schemaData = {
+      name: 'hello',
+      operational: true,
+    };
+
+    const GlobalPlugins = model('globalPlugins', schema);
+
+    await startInTest(getDefaultInstance());
+
+    const doc = await GlobalPlugins.create(schemaData);
+    console.log(doc);
+    expect(doc.operational).toBe(false); // plugin
+    expect(doc.plugin).toBe('registered from plugin 2!'); // plugin2
   });
 });

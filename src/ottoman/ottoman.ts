@@ -277,8 +277,13 @@ export class Ottoman {
     modelOptions.collectionName = options.collectionName || this.config.collectionName || name;
     modelOptions.scopeName = options.scopeName || this.config.scopeName || DEFAULT_SCOPE;
     modelOptions.keyGenerator = options.keyGenerator || this.config.keyGenerator || KEY_GENERATOR;
-    modelOptions.keyGeneratorDelimiter =
-      options.keyGeneratorDelimiter || this.config.keyGeneratorDelimiter || KEY_GENERATOR_DELIMITER;
+    if (options.keyGeneratorDelimiter || options.keyGeneratorDelimiter === '') {
+      modelOptions.keyGeneratorDelimiter = options.keyGeneratorDelimiter;
+    } else if (this.config.keyGeneratorDelimiter || this.config.keyGeneratorDelimiter === '') {
+      modelOptions.keyGeneratorDelimiter = this.config.keyGeneratorDelimiter;
+    } else {
+      modelOptions.keyGeneratorDelimiter = KEY_GENERATOR_DELIMITER;
+    }
     modelOptions.modelKey = options.modelKey || this.config.modelKey || MODEL_KEY;
     modelOptions.idKey = options.idKey || this.config.idKey || DEFAULT_ID_KEY;
     modelOptions.maxExpiry = options.maxExpiry || this.config.maxExpiry || DEFAULT_MAX_EXPIRY;
