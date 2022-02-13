@@ -36,6 +36,7 @@ describe('Testing ensure collections and indexes', () => {
 
     await otto.cluster.buckets().createBucket({
       conflictResolutionType: ConflictResolutionType.SequenceNumber,
+      storageBackend: 'couchstore',
       ejectionMethod: EvictionPolicy.ValueOnly,
       name: 'testBucket',
       flushEnabled: false,
