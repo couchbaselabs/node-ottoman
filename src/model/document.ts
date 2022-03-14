@@ -186,7 +186,7 @@ export abstract class Document {
     }
     const modelKeyObj = {};
     setValueByPath(modelKeyObj, modelKey, modelName);
-    const addedMetadata = _.merge(data, modelKeyObj);
+    const addedMetadata = _.merge({}, data, modelKeyObj);
     const { document } = await storeLifeCycle({ key, id, data: addedMetadata, options: _options, metadata, refKeys });
     return this._applyData(document).$wasNew();
   }
