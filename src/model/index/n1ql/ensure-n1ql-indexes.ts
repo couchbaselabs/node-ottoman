@@ -23,8 +23,11 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
     const Model = ottoman.getModel(key);
     const metadata = getModelMetadata(Model);
     const { modelName, modelKey, scopeName, collectionName } = metadata;
+    const scapedModelKey = modelKey.replace(/./g, 'dot');
     const name =
-      collectionName !== DEFAULT_COLLECTION ? `Ottoman${scopeName}${modelName}` : `Ottoman${scopeName}${modelKey}`;
+      collectionName !== DEFAULT_COLLECTION
+        ? `Ottoman${scopeName}${modelName}`
+        : `Ottoman${scopeName}${scapedModelKey}`;
     if (!existingIndexesNames.includes(name)) {
       const on =
         collectionName !== DEFAULT_COLLECTION

@@ -1,4 +1,4 @@
-import { getModelMetadata, SearchConsistency } from '../..';
+import { getModelMetadata, SearchConsistency, setValueByPath } from '../..';
 import { ModelMetadata } from '../../model/interfaces/model-metadata.interface';
 import { getPopulated, PopulateAuxOptionsType } from '../../model/utils/model.utils';
 import { LogicalWhereExpr, Query } from '../../query';

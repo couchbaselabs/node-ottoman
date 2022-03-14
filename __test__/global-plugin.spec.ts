@@ -81,7 +81,6 @@ describe('Global Plugin', () => {
     await startInTest(getDefaultInstance());
 
     const doc = await GlobalPlugins.create(schemaData);
-    console.log(doc);
     expect(doc.operational).toBe(false); // plugin
     expect(doc.plugin).toBe('registered from plugin 2!'); // plugin2
   });
