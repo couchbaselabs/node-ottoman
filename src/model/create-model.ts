@@ -231,7 +231,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
       if (value[ID_KEY]) {
         const strategy = CAST_STRATEGY.THROW;
-        const obj = _.merge(value, data);
+        const obj = _.merge({}, value, data);
         (value as Model)._applyData(obj, options.strict);
         const instance = new _Model({ ...value }, { strategy });
         const _options: any = {};

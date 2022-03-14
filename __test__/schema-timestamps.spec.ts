@@ -94,7 +94,6 @@ describe(`Schema timestamps options`, () => {
     const data = new User({ name: 'Jane Doe', age: 20 });
 
     const doc = await data.save();
-    console.log(doc.toJSON());
     expect(doc.name).toBe('Jane Doe');
     expect(doc.metadata.doc_type).toBe('UserTimestamp');
     expect(doc.metadata.createdAt).toBeDefined();
@@ -103,7 +102,6 @@ describe(`Schema timestamps options`, () => {
     await delay(3000);
     const user = await User.updateById(doc.id, { age: 21 });
 
-    console.log(user.toJSON());
     expect(user.age).toBe(21);
     expect(doc.metadata.doc_type).toBe('UserTimestamp');
     expect(doc.metadata.createdAt).toBeDefined();

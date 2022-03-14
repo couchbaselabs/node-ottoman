@@ -170,8 +170,8 @@ describe('Test Schema Immutable', () => {
     await Card.updateById(id, cardInfoUpdate, { strict: false });
     const card = await Card.findById(id);
     await Card.removeById(id);
-    expect(card.cardNumber).toBe('4321 4321 4321 4321');
-    expect(card.zipCode).toBe('43210');
+    expect(card.cardNumber).toBe(cardInfoUpdate.cardNumber);
+    expect(card.zipCode).toBe(cardInfoUpdate.zipCode);
   });
   test('Test Schema Immutable integration -> Update a document -> using ApplyStrategy:true', async () => {
     const Card = model('Card', CardSchemaBase);
