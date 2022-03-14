@@ -1,5 +1,5 @@
 import { bucketName, connectionString, connectUri, password, username } from './testData';
-import { model, Ottoman, set, ValidationError } from '../src';
+import { model, Ottoman, set, ValidationError, setValueByPath, getValueByPath } from '../src';
 import { isModel } from '../src/utils/is-model';
 import { extractConnectionString } from '../src/utils/extract-connection-string';
 import { is } from '../src';
@@ -212,4 +212,44 @@ test('set function fail', async () => {
     expect(e).toBeInstanceOf(ValidationError);
     expect(e.message).toBe('set second argument must be number | string | boolean value');
   }
+});
+
+test('set value', () => {
+  const doc: any = { name: 'Robert' };
+  setValueByPath(doc, 'meta.id', 'id');
+  expect(doc.name).toBe('Robert');
+  expect(doc.meta.id).toBe('id');
+});
+
+test('set value 5 level deep', () => {
+  const doc: any = { name: 'Robert' };
+  setValueByPath(doc, 'l1.l2.l3.l4.l5', 'id');
+  expect(doc.name).toBe('Robert');
+  expect(doc.l1.l2.l3.l4.l5).toBe('id');
+});
+
+test('set value keep nested object values', () => {
+  const doc: any = { name: 'Robert', meta: { page: 1 } };
+  setValueByPath(doc, 'meta.id', 'id');
+  expect(doc.name).toBe('Robert');
+  expect(doc.meta.id).toBe('id');
+  expect(doc.meta.page).toBe(1);
+});
+
+test('get value on nested object by path', () => {
+  const doc: any = { name: 'Robert', meta: { page: 1 } };
+  const valueInPath = getValueByPath(doc, 'meta.page');
+  expect(valueInPath).toBe(1);
+});
+
+test('get value on nested object by non-exists path', () => {
+  const doc: any = { name: 'Robert', meta: { page: 1 } };
+  const valueInPath = getValueByPath(doc, 'meta.page.x.y');
+  expect(valueInPath).toBe(undefined);
+});
+
+test('get value on nested object by non-exists path', () => {
+  const doc: any = { name: 'Robert', meta: { page: 1, l1: { l2: 'nested value' } } };
+  const valueInPath = getValueByPath(doc, 'meta.l1.l2');
+  expect(valueInPath).toBe('nested value');
 });

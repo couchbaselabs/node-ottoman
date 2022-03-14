@@ -14,6 +14,7 @@ import { getModelRefKeys } from './utils/get-model-ref-keys';
 import { getModelMetadata, getPopulated } from './utils/model.utils';
 import { removeLifeCycle } from './utils/remove-life-cycle';
 import { storeLifeCycle } from './utils/store-life-cycle';
+import { setValueByPath } from '../utils';
 
 export type IDocument<T = any> = Document & T;
 
@@ -182,7 +183,9 @@ export abstract class Document {
         }
       }
     }
-    const addedMetadata = { ...data, [modelKey]: modelName };
+    const modelKeyObj = {};
+    setValueByPath(modelKeyObj, modelKey, modelName);
+    const addedMetadata = { ...data, ...modelKeyObj };
     const { document } = await storeLifeCycle({ key, id, data: addedMetadata, options: _options, metadata, refKeys });
     return this._applyData(document).$wasNew();
   }

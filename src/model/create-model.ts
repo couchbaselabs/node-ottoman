@@ -1,5 +1,5 @@
 import { DocumentNotFoundError, DropCollectionOptions } from 'couchbase';
-import { Query, SearchConsistency } from '..';
+import { getValueByPath, Query, SearchConsistency, setValueByPath } from '..';
 import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 import { createMany, find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
 import { FindByIdOptions, IFindOptions } from '../handler/';
@@ -230,7 +230,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
       if (value[ID_KEY]) {
         const strategy = CAST_STRATEGY.THROW;
-        (value as Model)._applyData({ ...value, ...data, ...{ [modelKey]: value[modelKey] } }, options.strict);
+        const modelKeyObj = {};
+        setValueByPath(modelKeyObj, modelKey, getValueByPath(value, modelKey));
+        (value as Model)._applyData({ ...value, ...data, ...modelKeyObj }, options.strict);
         const instance = new _Model({ ...value }, { strategy });
         const _options: any = {};
         if (options.maxExpiry) {
@@ -262,10 +264,13 @@ export const _buildModel = (metadata: ModelMetadata) => {
         }
 
         const replace = new _Model({ ...temp }).$wasNew();
+        const modelKeyObj = {};
+        setValueByPath(modelKeyObj, modelKey, modelName);
         replace._applyData(
           {
             ...data,
-            ...{ [ID_KEY]: key, [modelKey]: modelName },
+            ...{ [ID_KEY]: key },
+            ...modelKeyObj,
           },
           options?.strict,
         );
@@ -281,7 +286,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
     };
 
     static removeById = (id: string) => {
-      const instance = new _Model({ ...{ [ID_KEY]: id, [modelKey]: modelName } });
+      const modelKeyObj = {};
+      setValueByPath(modelKeyObj, modelKey, modelName);
+      const instance = new _Model({ ...{ [ID_KEY]: id, ...modelKeyObj } });
       return instance.remove();
     };
 
