@@ -72,4 +72,41 @@ describe(`Schema timestamps options`, () => {
     expect(travelCH.updatedAt).toBeDefined();
     expect(typeof travelCH.updatedAt).toBe('number');
   });
+
+  test('nested timestamp create and update', async () => {
+    const modelKey = 'metadata.doc_type';
+
+    const metadataSchema = new Schema(
+      {
+        doc_type: String,
+      },
+      { timestamps: true },
+    );
+
+    const schema = new Schema({
+      name: String,
+      age: Number,
+      metadata: metadataSchema,
+    });
+
+    const User = model('UserTimestamp', schema, { modelKey });
+    await startInTest(getDefaultInstance());
+    const data = new User({ name: 'Jane Doe', age: 20 });
+
+    const doc = await data.save();
+    console.log(doc.toJSON());
+    expect(doc.name).toBe('Jane Doe');
+    expect(doc.metadata.doc_type).toBe('UserTimestamp');
+    expect(doc.metadata.createdAt).toBeDefined();
+    expect(doc.metadata.updatedAt).toBeDefined();
+
+    await delay(3000);
+    const user = await User.updateById(doc.id, { age: 21 });
+
+    console.log(user.toJSON());
+    expect(user.age).toBe(21);
+    expect(doc.metadata.doc_type).toBe('UserTimestamp');
+    expect(doc.metadata.createdAt).toBeDefined();
+    expect(doc.metadata.updatedAt).toBeDefined();
+  });
 });

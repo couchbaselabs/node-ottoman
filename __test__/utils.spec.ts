@@ -214,42 +214,44 @@ test('set function fail', async () => {
   }
 });
 
-test('set value', () => {
-  const doc: any = { name: 'Robert' };
-  setValueByPath(doc, 'meta.id', 'id');
-  expect(doc.name).toBe('Robert');
-  expect(doc.meta.id).toBe('id');
-});
+describe('nested object accessor', () => {
+  test('set value', () => {
+    const doc: any = { name: 'Robert' };
+    setValueByPath(doc, 'meta.id', 'id');
+    expect(doc.name).toBe('Robert');
+    expect(doc.meta.id).toBe('id');
+  });
 
-test('set value 5 level deep', () => {
-  const doc: any = { name: 'Robert' };
-  setValueByPath(doc, 'l1.l2.l3.l4.l5', 'id');
-  expect(doc.name).toBe('Robert');
-  expect(doc.l1.l2.l3.l4.l5).toBe('id');
-});
+  test('set value 5 level deep', () => {
+    const doc: any = { name: 'Robert' };
+    setValueByPath(doc, 'l1.l2.l3.l4.l5', 'id');
+    expect(doc.name).toBe('Robert');
+    expect(doc.l1.l2.l3.l4.l5).toBe('id');
+  });
 
-test('set value keep nested object values', () => {
-  const doc: any = { name: 'Robert', meta: { page: 1 } };
-  setValueByPath(doc, 'meta.id', 'id');
-  expect(doc.name).toBe('Robert');
-  expect(doc.meta.id).toBe('id');
-  expect(doc.meta.page).toBe(1);
-});
+  test('set value keep nested object values', () => {
+    const doc: any = { name: 'Robert', meta: { page: 1 } };
+    setValueByPath(doc, 'meta.id', 'id');
+    expect(doc.name).toBe('Robert');
+    expect(doc.meta.id).toBe('id');
+    expect(doc.meta.page).toBe(1);
+  });
 
-test('get value on nested object by path', () => {
-  const doc: any = { name: 'Robert', meta: { page: 1 } };
-  const valueInPath = getValueByPath(doc, 'meta.page');
-  expect(valueInPath).toBe(1);
-});
+  test('get value on nested object by path', () => {
+    const doc: any = { name: 'Robert', meta: { page: 1 } };
+    const valueInPath = getValueByPath(doc, 'meta.page');
+    expect(valueInPath).toBe(1);
+  });
 
-test('get value on nested object by non-exists path', () => {
-  const doc: any = { name: 'Robert', meta: { page: 1 } };
-  const valueInPath = getValueByPath(doc, 'meta.page.x.y');
-  expect(valueInPath).toBe(undefined);
-});
+  test('get value on nested object by non-exists path', () => {
+    const doc: any = { name: 'Robert', meta: { page: 1 } };
+    const valueInPath = getValueByPath(doc, 'meta.page.x.y');
+    expect(valueInPath).toBe(undefined);
+  });
 
-test('get value on nested object by non-exists path', () => {
-  const doc: any = { name: 'Robert', meta: { page: 1, l1: { l2: 'nested value' } } };
-  const valueInPath = getValueByPath(doc, 'meta.l1.l2');
-  expect(valueInPath).toBe('nested value');
+  test('get value on nested object by non-exists path', () => {
+    const doc: any = { name: 'Robert', meta: { page: 1, l1: { l2: 'nested value' } } };
+    const valueInPath = getValueByPath(doc, 'meta.l1.l2');
+    expect(valueInPath).toBe('nested value');
+  });
 });

@@ -1,5 +1,6 @@
 import { DocumentExistsError, DocumentNotFoundError } from 'couchbase';
-import { ImmutableError, InvalidModelReferenceError } from '../exceptions/ottoman-errors';
+import _ from 'lodash';
+import { ImmutableError } from '../exceptions/ottoman-errors';
 import { validate } from '../schema';
 import { ApplyStrategy, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
 import { _keyGenerator } from '../utils/constants';
@@ -185,7 +186,7 @@ export abstract class Document {
     }
     const modelKeyObj = {};
     setValueByPath(modelKeyObj, modelKey, modelName);
-    const addedMetadata = { ...data, ...modelKeyObj };
+    const addedMetadata = _.merge(data, modelKeyObj);
     const { document } = await storeLifeCycle({ key, id, data: addedMetadata, options: _options, metadata, refKeys });
     return this._applyData(document).$wasNew();
   }
