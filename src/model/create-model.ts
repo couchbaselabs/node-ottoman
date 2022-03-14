@@ -1,5 +1,5 @@
 import { DocumentNotFoundError, DropCollectionOptions } from 'couchbase';
-import { getValueByPath, Query, SearchConsistency, setValueByPath } from '..';
+import { Query, SearchConsistency, setValueByPath } from '..';
 import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 import { createMany, find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
 import { FindByIdOptions, IFindOptions } from '../handler/';
@@ -21,6 +21,7 @@ import { Model } from './model';
 import { ModelTypes, saveOptions } from './model.types';
 import { getModelMetadata, getPopulated, setModelMetadata } from './utils/model.utils';
 import { IConditionExpr } from '../query';
+import _ from 'lodash';
 
 /**
  * @ignore
@@ -230,9 +231,8 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
       if (value[ID_KEY]) {
         const strategy = CAST_STRATEGY.THROW;
-        const modelKeyObj = {};
-        setValueByPath(modelKeyObj, modelKey, getValueByPath(value, modelKey));
-        (value as Model)._applyData({ ...value, ...data, ...modelKeyObj }, options.strict);
+        const obj = _.merge(value, data);
+        (value as Model)._applyData(obj, options.strict);
         const instance = new _Model({ ...value }, { strategy });
         const _options: any = {};
         if (options.maxExpiry) {
@@ -264,13 +264,10 @@ export const _buildModel = (metadata: ModelMetadata) => {
         }
 
         const replace = new _Model({ ...temp }).$wasNew();
-        const modelKeyObj = {};
-        setValueByPath(modelKeyObj, modelKey, modelName);
         replace._applyData(
           {
             ...data,
             ...{ [ID_KEY]: key },
-            ...modelKeyObj,
           },
           options?.strict,
         );
