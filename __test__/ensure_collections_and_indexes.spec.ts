@@ -1,5 +1,4 @@
-/* eslint-disable prettier/prettier */
-import { getDefaultInstance, model, ModelTypes, Ottoman, Schema, StringType } from '../src';
+import { getDefaultInstance, model, ModelTypes, Ottoman, Schema } from '../src';
 import { DurabilityLevel, BucketType, CompressionMode, EvictionPolicy, ConflictResolutionType } from 'couchbase';
 import { connectionString, password, username, delay, consistency } from './testData';
 
@@ -56,7 +55,7 @@ describe('Testing ensure collections and indexes', () => {
     const newOtto = new Ottoman(consistency);
     const testBucket = await newOtto.connect(connOptions);
     expect(testBucket).toBeDefined();
-    testBucket.close();
+    await testBucket.close();
   });
   test('Ensure Collections and Indexes (ABUSIVE METHOD)', async () => {
     const newOtto = new Ottoman(consistency);
@@ -73,7 +72,7 @@ describe('Testing ensure collections and indexes', () => {
       expect(results).toBe('success');
     }
 
-    testBucket.close();
+    await testBucket.close();
   });
 
   test('Ensure Collections and Indexes (NORMAL METHOD)', async () => {
@@ -94,7 +93,7 @@ describe('Testing ensure collections and indexes', () => {
       expect(results).toBe('success');
     }
 
-    testBucket.close();
+    await testBucket.close();
   });
   test('Drop Collections', async () => {
     const newOtto = new Ottoman(consistency);
@@ -106,7 +105,7 @@ describe('Testing ensure collections and indexes', () => {
       const results = await testBucket.dropCollection('Test' + i, 'Test' + i);
       expect(results).toBeUndefined();
     }
-    testBucket.close();
+    await testBucket.close();
   });
 
   test('Drop Scope', async () => {
@@ -119,7 +118,7 @@ describe('Testing ensure collections and indexes', () => {
       const results = await testBucket.dropScope('Test' + i);
       expect(results).toBeUndefined();
     }
-    testBucket.close();
+    await testBucket.close();
   });
 
   test('Drop Bucket', async () => {
