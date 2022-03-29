@@ -107,4 +107,41 @@ describe(`Schema timestamps options`, () => {
     expect(doc.metadata.createdAt).toBeDefined();
     expect(doc.metadata.updatedAt).toBeDefined();
   });
+
+  test('nested timestamp create and update with currentTime', async () => {
+    const modelKey = 'metadata.doc_type';
+
+    const metadataSchema = new Schema(
+      {
+        doc_type: String,
+        createdAt: Number,
+        updatedAt: Number,
+      },
+      { timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } },
+    );
+
+    const schema = new Schema({
+      name: String,
+      age: Number,
+      metadata: metadataSchema,
+    });
+
+    const User = model('UserTimestampNumber', schema, { modelKey });
+    await startInTest(getDefaultInstance());
+    const data = new User({ name: 'Jane Doe', age: 20 });
+    const doc = await data.save();
+
+    expect(doc.name).toBe('Jane Doe');
+    expect(doc.metadata.doc_type).toBe('UserTimestampNumber');
+    expect(typeof doc.metadata.createdAt).toBe('number');
+    expect(typeof doc.metadata.updatedAt).toBe('number');
+
+    await delay(3000);
+    const user = await User.updateById(doc.id, { age: 21 });
+
+    expect(user.age).toBe(21);
+    expect(doc.metadata.doc_type).toBe('UserTimestampNumber');
+    expect(typeof doc.metadata.createdAt).toBe('number');
+    expect(typeof doc.metadata.updatedAt).toBe('number');
+  });
 });
