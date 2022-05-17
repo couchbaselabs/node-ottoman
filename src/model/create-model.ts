@@ -190,6 +190,10 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const key = _keyGenerator!(keyGenerator, { metadata, id }, keyGeneratorDelimiter);
       const { value: pojo } = await collection().get(key, findOptions);
 
+      if (pojo[metadata.modelKey] !== metadata.modelName) {
+        throw new DocumentNotFoundError();
+      }
+
       if (populate) {
         return getPopulated({ fieldsName: populate, deep, lean, pojo, schema, modelName, ottoman, enforceRefCheck });
       }
