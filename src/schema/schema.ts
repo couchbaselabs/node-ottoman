@@ -100,7 +100,7 @@ export class Schema {
     const preHooks = options?.preHooks;
     const postHooks = options?.postHooks;
     this.options = options;
-    const strict = options?.strict || false;
+    const strict = options?.strict === undefined ? true : options.strict;
     let timestamps = options.timestamps;
     if (timestamps === true) {
       timestamps = { createdAt: true, updatedAt: true };
