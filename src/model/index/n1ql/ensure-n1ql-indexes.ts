@@ -23,7 +23,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
     const Model = ottoman.getModel(key);
     const metadata = getModelMetadata(Model);
     const { modelName, modelKey, scopeName, collectionName } = metadata;
-    const scapedModelKey = modelKey.replace(/./g, 'dot');
+    const scapedModelKey = modelKey.replace(/\./g, 'dot');
     const name =
       collectionName !== DEFAULT_COLLECTION
         ? `Ottoman${scopeName}${modelName}`
@@ -40,7 +40,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
         indexesToBuild[on].push(name);
         await cluster.query(queryForIndexOttomanType(name, on, modelKey));
       } catch (e) {
-        if (e instanceof IndexExistsError) {
+        if (!(e instanceof IndexExistsError)) {
           if (isDebugMode()) {
             console.error(`Failed creating N1QL index ${name}`);
           }
@@ -80,6 +80,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
                 indexesToBuild[on] = [];
               }
               indexesToBuild[on].push(indexNameSanitized);
+            } else {
               if (isDebugMode()) {
                 console.error(`Failed creating Secondary N1QL index ${indexNameSanitized}`);
               }
@@ -90,7 +91,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
   }
 
   for await (const index of asyncIndexesQuery()) {
-    if (isDebugMode()) {
+    if (isDebugMode() && index) {
       console.log(index);
     }
   }
