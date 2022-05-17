@@ -61,7 +61,9 @@ export const createModel = <T = any, R = any>({ name, schemaDraft, options, otto
     if (schema.index.hasOwnProperty(key)) {
       const { by, options, type } = schema.index[key];
       const fields = Array.isArray(by) ? by : [by];
-      let indexName = `${ottoman.bucketName}_${scopeName}_${collectionName}$${indexFieldsName(fields)}`;
+      let indexName = `${ottoman.bucketName}_${scopeName}_${collectionName}_${metadata.modelName}$${indexFieldsName(
+        fields,
+      )}`;
       indexName = indexName.replace(/-/g, '_');
       switch (type) {
         case 'n1ql':
