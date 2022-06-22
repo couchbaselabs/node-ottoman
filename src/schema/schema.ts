@@ -200,9 +200,17 @@ export class Schema {
     for (const key in this.fields) {
       const field = this.fields[key];
       if (typeof obj[field.name] === 'undefined' && field instanceof CoreType) {
-        const _val = field.buildDefault();
-        if (typeof _val !== 'undefined') {
-          obj[field.name] = _val;
+        if (field instanceof EmbedType) {
+          const _val = {};
+          (field as EmbedType).schema.applyDefaultsToObject(_val);
+          if (Object.keys(_val).length > 0) {
+            obj[field.name] = _val;
+          }
+        } else {
+          const _val = field.buildDefault();
+          if (typeof _val !== 'undefined') {
+            obj[field.name] = _val;
+          }
         }
       }
     }

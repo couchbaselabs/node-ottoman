@@ -1,5 +1,5 @@
 import { DocumentNotFoundError, DropCollectionOptions } from 'couchbase';
-import { Query, SearchConsistency, setValueByPath } from '..';
+import { getValueByPath, Query, SearchConsistency, setValueByPath } from '..';
 import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 import { createMany, find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
 import { FindByIdOptions, IFindOptions } from '../handler/';
@@ -104,7 +104,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       super(data);
       const strategy = options.strategy || CAST_STRATEGY.DEFAULT_OR_DROP;
       const strict = options.strict !== undefined ? options.strict : schema.options.strict;
-      const skip = options.skip || [modelKey, ID_KEY];
+      const skip = options.skip || [modelKey.split('.')[0], ID_KEY];
       const schemaData = cast(data, schema, { strategy, strict, skip });
 
       this._applyData(schemaData, strategy === CAST_STRATEGY.THROW ? CAST_STRATEGY.THROW : true);
@@ -186,14 +186,25 @@ export const _buildModel = (metadata: ModelMetadata) => {
 
     static findById = async (id: string, options: FindByIdOptions = {}): Promise<Model | Record<string, unknown>> => {
       const { populate, populateMaxDeep: deep, select, lean, enforceRefCheck = false, ...findOptions } = options;
+      const modelKeyClean = modelKey.split('.')[0];
+      let isModelKeyAddedToSelect = false;
       if (select) {
-        findOptions['project'] = extractSelect(select, { noCollection: true }, false, modelKey);
+        const selectArray = typeof select === 'string' ? select.split(',').map((x) => x.trim()) : select;
+        if (selectArray.findIndex((x) => x === modelKeyClean) === -1) {
+          selectArray.push(modelKeyClean);
+          isModelKeyAddedToSelect = true;
+        }
+        findOptions['project'] = extractSelect(selectArray, { noCollection: true }, false, modelKey.split('.')[0]);
       }
       const key = _keyGenerator!(keyGenerator, { metadata, id }, keyGeneratorDelimiter);
       const { value: pojo } = await collection().get(key, findOptions);
 
-      if (pojo[metadata.modelKey] !== metadata.modelName) {
+      if (getValueByPath(pojo, metadata.modelKey) !== metadata.modelName) {
         throw new DocumentNotFoundError();
+      }
+
+      if (isModelKeyAddedToSelect) {
+        delete pojo[modelKeyClean];
       }
 
       if (populate) {

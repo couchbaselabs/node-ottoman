@@ -13,7 +13,6 @@ describe('Query Builder Array', () => {
   });
 
   test('Basics', async () => {
-    set('DEBUG', true);
     const House = model('House', houseSchema);
     await startInTest(getDefaultInstance());
 
@@ -27,13 +26,12 @@ describe('Query Builder Array', () => {
     const filter = {
       title: 'Beach House',
       $any: {
-        $expr: [{ search: 'numbers' }],
-        $satisfies: { search: { $in: [10] } },
+        $expr: [{ search: { $in: 'numbers' } }],
+        $satisfies: { search: 10 },
       },
     };
 
     const results = await House.find(filter, { consistency: SearchConsistency.LOCAL });
-    console.log(results);
     expect(results.rows.length).toBeGreaterThanOrEqual(1);
   });
 });

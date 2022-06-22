@@ -20,7 +20,7 @@ export const storeLifeCycle = async ({ key, id, data, options, metadata, refKeys
   document = validate(document, schema, {
     strict: schema.options.strict,
     strategy: CAST_STRATEGY.THROW,
-    skip: [modelKey, ID_KEY],
+    skip: [modelKey.split('.')[0], ID_KEY],
   });
 
   // enforceRefCheck logic

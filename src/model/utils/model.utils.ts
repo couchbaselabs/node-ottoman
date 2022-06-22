@@ -62,10 +62,13 @@ export const getPopulated = async (options: PopulateAuxOptionsType): Promise<Mod
         const current = fieldsName?.[field];
         let select: string | string[] = '';
         if (isObject && current !== '*' && current?.select !== '*') {
-          select =
-            typeof current === 'string' || Array.isArray(current)
-              ? current
-              : extractPopulateFieldsFromObject(current) ?? '';
+          if (typeof current === 'string') {
+            select = current;
+          } else if (Array.isArray(current)) {
+            select = current.join(',');
+          } else {
+            select = extractPopulateFieldsFromObject(current) ?? '';
+          }
         }
 
         const populate = populateMaxDeep === 0 ? undefined : current?.populate ?? current ?? '*';
