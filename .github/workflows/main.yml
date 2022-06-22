@@ -29,11 +29,11 @@ jobs:
       - name: Build
         run: yarn build
 
-#      - name: Test
-#        run: yarn test:coverage
-#
-#      - name: Upload coverage to Codecov
-#        uses: codecov/codecov-action@v1
+      - name: Test
+        run: yarn test:coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
 
       - name: Generate docs
         run: yarn docs
@@ -44,7 +44,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/.vuepress/dist
 
-      - name: Semantic Release
-        run: yarn semver
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Semantic Release
+#        run: yarn semver
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
