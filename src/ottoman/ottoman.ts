@@ -532,11 +532,11 @@ const tryCreateCollection = async (
 
 export const getDefaultInstance = () => __ottoman;
 export const getOttomanInstances = () => __ottomanInstances;
-export const connect = (connectOptions: ConnectOptions | string) => {
+export const connect = async (connectOptions: ConnectOptions | string) => {
   if (!__ottoman) {
     new Ottoman();
   }
-  __ottoman && __ottoman.connect(connectOptions);
+  __ottoman && (await __ottoman.connect(connectOptions));
 };
 export const close = async (): Promise<void> => {
   if (__ottoman) {
