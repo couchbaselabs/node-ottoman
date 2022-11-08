@@ -191,7 +191,7 @@ describe('Test Schema Immutable', () => {
     try {
       await Card.updateById(id, cardInfoUpdate, { strict: CAST_STRATEGY.THROW });
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(message).toBe("Field 'cardNumber' is immutable and current cast strategy is set to 'throw'");
     }
     const card = await Card.findById(id);
@@ -227,7 +227,7 @@ describe('Test Schema Immutable', () => {
     try {
       await Card.replaceById(id, cardInfoUpdate, { strict: CAST_STRATEGY.THROW });
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(message).toBe("Field 'cardNumber' is immutable and current cast strategy is set to 'throw'");
     }
     const card = await Card.findById(id);
@@ -273,7 +273,7 @@ describe('Test Schema Immutable', () => {
         ...consistency,
       });
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(message).toBe("Field 'cardNumber' is immutable and current cast strategy is set to 'throw'");
     }
   });

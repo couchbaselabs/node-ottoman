@@ -286,7 +286,7 @@ describe('SchemaTypes -> String', () => {
         code: 'asd',
       });
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(ValidationError);
       expect(message).toBe(`Property 'email' is longer than the maximum allowed length '4'`);
     }

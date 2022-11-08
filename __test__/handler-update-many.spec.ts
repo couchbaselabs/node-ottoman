@@ -1,6 +1,7 @@
 import { DocumentNotFoundError, getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema } from '../src';
 import { updateCallback } from '../src/handler';
 import { consistency, startInTest } from './testData';
+import { StatusExecution } from '../lib/types/handler';
 
 describe('Test Document Update Many', () => {
   test('Test Update Many Function', async () => {
@@ -74,7 +75,8 @@ describe('Test Document Update Many', () => {
     const doc = await Cat.find({ name: { $like: 'Cat0' } });
     try {
       await updateCallback({ ...doc, id: 'dummy_id' }, metadata, { name: 'Cat' }, {});
-    } catch (error) {
+    } catch (err) {
+      const error = err as StatusExecution;
       const dnf = new DocumentNotFoundError();
       const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' }, consistency);
       await cleanUp();

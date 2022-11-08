@@ -57,13 +57,15 @@ describe('Indexes', () => {
     try {
       await User.findByName();
     } catch (e) {
-      expect(e.message).toBe(`Function 'findByName' received wrong argument value, 'undefined' wasn't expected`);
+      expect((e as Error).message).toBe(
+        `Function 'findByName' received wrong argument value, 'undefined' wasn't expected`,
+      );
     }
 
     try {
       await User.findByName(['must', 'fail']);
     } catch (e) {
-      expect(e.message).toBe(
+      expect((e as Error).message).toBe(
         `Function 'findByName' received wrong number of arguments, '1:[name]' argument(s) was expected and '2:[must,fail]' were received`,
       );
     }
@@ -89,7 +91,7 @@ describe('Indexes', () => {
       await startInTest(getDefaultInstance());
       await user.save();
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(BuildIndexQueryError);
       expect(message).toBe('Cannot create an index with more than one wildcard in path');
     }

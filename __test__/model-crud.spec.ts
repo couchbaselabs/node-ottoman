@@ -236,7 +236,7 @@ describe('Test Document Access Functions', () => {
     try {
       await UserModel.count({ count: { $like: 'UserModelTestError' } });
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(OttomanError);
       expect(message).toBe('The query did not return any results.');
     }

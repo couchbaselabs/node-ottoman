@@ -119,6 +119,6 @@ test('Hook.pre.validate function', async () => {
   try {
     await user.save();
   } catch (e) {
-    expect(e.message).toBe(`Username '${validateDoc.name}' not allowed`);
+    expect((e as Error).message).toBe(`Username '${validateDoc.name}' not allowed`);
   }
 });

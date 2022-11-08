@@ -158,8 +158,8 @@ export const validate = (
       try {
         const value = _data[type.name];
         type.validate(value, options.strict);
-      } catch (e) {
-        errors.push(e.message);
+      } catch (e: unknown) {
+        errors.push((e as Error).message);
       }
     }
   }

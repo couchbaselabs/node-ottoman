@@ -510,7 +510,7 @@ const _buildWherePredicateRangeExpression = (
     throw new CollectionInWithinExceptions(
       `Range predicate operator '${operator}' only allow required properties '$expr' and '$satisfies'. Properties ['${keys
         .filter((key) => !['$expr', '$satisfies'].includes(key))
-        .join(`', '`)}'] are not valid.`,
+        .join(', ')}'] are not valid.`,
     );
   }
   const { $expr, $satisfies } = rangePredicate;

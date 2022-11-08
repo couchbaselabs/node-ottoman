@@ -26,14 +26,14 @@ describe('Errors Name', () => {
     try {
       await Card.findByCardNumber();
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(BuildIndexQueryError);
       expect(message).toBe(`Function 'findByCardNumber' received wrong argument value, 'undefined' wasn't expected`);
     }
     try {
       await Card.findByCardNumber([]);
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(BuildIndexQueryError);
       expect(message).toBe(
         `Function 'findByCardNumber' received wrong number of arguments, '1:[number]' argument(s) was expected and '0:[]' were received`,
@@ -50,7 +50,7 @@ describe('Errors Name', () => {
     try {
       model('Card', CardSchema);
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(BuildIndexQueryError);
       expect(message).toBe(
         `Unexpected index type 'dummyIndexType' in index 'findByCardNumber', was expected 'refdoc', 'n1ql' or 'view'`,
@@ -70,7 +70,7 @@ describe('Errors Name', () => {
     try {
       await Card.findByCardNumber(['cardNumber', 'zipCode']);
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(BuildIndexQueryError);
       expect(message).toBe(
         `Function 'findByCardNumber' received wrong number of arguments, '1:[cardNumber]' argument(s) was expected and '2:[cardNumber,zipCode]' were received`,
@@ -82,7 +82,7 @@ describe('Errors Name', () => {
     try {
       cast({ name: 'jane', age: 3 }, schema, { strategy: CAST_STRATEGY.KEEP, strict: true });
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(ValidationError);
       expect(message).toBe(`Cast Strategy 'keep' or 'defaultOrKeep' isn't support when strict is set to true.`);
     }
