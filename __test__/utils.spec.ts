@@ -103,7 +103,7 @@ test('keyGeneratorDelimiter fail not allowed characters', async () => {
     new Ottoman({ keyGeneratorDelimiter: ',' });
   } catch (e) {
     expect(e).toBeInstanceOf(BadKeyGeneratorDelimiterError);
-    expect(e.message).toBe(`Invalid keyGeneratorDelimiter value, the supported characters ~!#$%&*_-:<>?`);
+    expect((e as Error).message).toBe(`Invalid keyGeneratorDelimiter value, the supported characters ~!#$%&*_-:<>?`);
   }
 });
 
@@ -112,7 +112,7 @@ test('keyGeneratorDelimiter fail exceed maximum allowed characters', async () =>
     new Ottoman({ keyGeneratorDelimiter: ':::' });
   } catch (e) {
     expect(e).toBeInstanceOf(BadKeyGeneratorDelimiterError);
-    expect(e.message).toBe(`keyGeneratorDelimiter only support up to 2 characters`);
+    expect((e as Error).message).toBe(`keyGeneratorDelimiter only support up to 2 characters`);
   }
 });
 
@@ -122,7 +122,7 @@ test('keyGeneratorDelimiter at Model level fail exceed maximum allowed character
     ottoman2.model('Delimiter', { name: String }, { keyGeneratorDelimiter: ':::' });
   } catch (e) {
     expect(e).toBeInstanceOf(BadKeyGeneratorDelimiterError);
-    expect(e.message).toBe(`keyGeneratorDelimiter only support up to 2 characters`);
+    expect((e as Error).message).toBe(`keyGeneratorDelimiter only support up to 2 characters`);
   }
 });
 
@@ -157,7 +157,7 @@ describe('pathToN1QL', () => {
     try {
       pathToN1QL([pathTestMember] as any);
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(PathN1qlError);
       expect(message).toBe(`Unexpected member expression type 'dummyIdentifierType'.`);
     }
@@ -166,7 +166,7 @@ describe('pathToN1QL', () => {
     try {
       pathToN1QL([pathTestSubscript] as any);
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(PathN1qlError);
       expect(message).toBe(`Unexpected subscript expression type 'dummyIdentifierType'.`);
     }
@@ -175,7 +175,7 @@ describe('pathToN1QL', () => {
     try {
       pathToN1QL([pathTestNoOperation] as any);
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(PathN1qlError);
       expect(message).toBe(`Unexpected path operation type 'dummyOperationType'.`);
     }
@@ -210,7 +210,7 @@ test('set function fail', async () => {
     set(envVariable, { flag: true });
   } catch (e) {
     expect(e).toBeInstanceOf(ValidationError);
-    expect(e.message).toBe('set second argument must be number | string | boolean value');
+    expect((e as Error).message).toBe('set second argument must be number | string | boolean value');
   }
 });
 

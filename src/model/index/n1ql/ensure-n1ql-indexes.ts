@@ -91,7 +91,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
   }
 
   for await (const index of asyncIndexesQuery()) {
-    if (isDebugMode() && index) {
+    if (isDebugMode() && index !== undefined) {
       console.log(index);
     }
   }

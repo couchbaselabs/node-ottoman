@@ -48,7 +48,7 @@ describe('Test ottoman instances', () => {
     try {
       instance.cluster;
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(OttomanError);
       expect(message).toBe('No active connection detected, please try to connect.');
     }
@@ -61,7 +61,7 @@ describe('Test ottoman instances', () => {
     try {
       instance.model('User', { lastname: String });
     } catch (e) {
-      const { message } = e;
+      const { message } = e as Error;
       expect(e).toBeInstanceOf(OttomanError);
       expect(message).toBe(`A model with name 'User' has already been registered.`);
     }

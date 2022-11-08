@@ -37,6 +37,7 @@ import {
   ViewIndexManager,
   Collection,
   NodeCallback,
+  CouchbaseError,
 } from 'couchbase';
 import { generateUUID } from '../utils/generate-uuid';
 
@@ -223,6 +224,7 @@ export class Ottoman {
     this.id = generateUUID();
     this.config = config;
     if (!__ottoman) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       __ottoman = this;
     }
     __ottomanInstances.push(this);
@@ -306,8 +308,8 @@ export class Ottoman {
   ): Promise<boolean | undefined | void> {
     try {
       return await this.collectionManager.dropCollection(collectionName, scopeName, options);
-    } catch (e) {
-      parseError(e, { collectionName, scopeName });
+    } catch (e: unknown) {
+      parseError(e as CouchbaseError, { collectionName, scopeName });
     }
   }
 
@@ -320,7 +322,7 @@ export class Ottoman {
     try {
       return await this.collectionManager.dropScope(scopeName, options);
     } catch (e) {
-      parseError(e, { scopeName });
+      parseError(e as CouchbaseError, { scopeName });
     }
   }
 
@@ -333,7 +335,7 @@ export class Ottoman {
     try {
       return await this.bucketManager.dropBucket(bucketName, options);
     } catch (e) {
-      parseError(e, { bucketName });
+      parseError(e as CouchbaseError, { bucketName });
     }
   }
 
@@ -513,7 +515,7 @@ const tryCreateCollection = async (
   delayMS = 5000,
 ) => {
   let collectionDoesNotExists = true;
-  let err = null;
+  let err: unknown = null;
   let tryDelay = 0;
   let tryCount = 0;
   while (collectionDoesNotExists && tryCount < retries + 1) {
@@ -521,13 +523,13 @@ const tryCreateCollection = async (
     try {
       await createCollection({ collectionManager, collectionName, scopeName, maxExpiry });
     } catch (e) {
-      if (e instanceof (couchbase as any).CollectionExistsError) collectionDoesNotExists = false;
+      if (e instanceof couchbase.CollectionExistsError) collectionDoesNotExists = false;
       err = e;
     }
     tryDelay += Math.max(Math.min(tryDelay * 10, delayMS), 100);
     tryCount++;
   }
-  if (collectionDoesNotExists && err) throw new Error(err);
+  if (collectionDoesNotExists && err) throw err;
 };
 
 export const getDefaultInstance = () => __ottoman;
