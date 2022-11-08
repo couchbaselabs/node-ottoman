@@ -43,7 +43,7 @@ describe('Collection operators', () => {
     };
 
     expect(() => buildWhereClauseExpr('', where)).toThrowError(
-      `Range predicate operator '$any' only allow required properties '$expr' and '$satisfies'. Properties ['$dummyExpr', '$dummySatisfies'] are not valid.`,
+      `Range predicate operator '$any' only allow required properties '$expr' and '$satisfies'. Properties ['$dummyExpr, $dummySatisfies'] are not valid.`,
     );
   });
   test(`-> build where clause CollectionRangePredicateOperator many expression defined`, async () => {
