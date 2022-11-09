@@ -71,7 +71,7 @@
     "vuepress-plugin-one-click-copy": "^1.0.6"
   },
   "dependencies": {
-    "couchbase": "^3.2.4",
+    "couchbase": "^3.2.6",
     "jsonpath": "^1.1.1",
     "lodash": "^4.17.21",
     "uuid": "^8.3.2"

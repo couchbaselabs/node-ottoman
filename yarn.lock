@@ -3727,16 +3727,16 @@ cosmiconfig@^7.0.1:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-couchbase@^3.2.4:
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/couchbase/-/couchbase-3.2.5.tgz#1e718cffafb73140680b2093f27f8fe591c7a2aa"
-  integrity sha512-oXcW9UI6rBxRwzOIzJ1yWpR8Vka0x2neXT9SHuHDNR3JqWnFSmf2WezjjqsVVZDk1DmBA2R9cGX7e67fkpkEvg==
+couchbase@^3.2.6:
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/couchbase/-/couchbase-3.2.6.tgz#a0af4360d9151885463018107cfbe23210ff02f7"
+  integrity sha512-m2tjRdGggvAuK1UjK4qeWNsxfZ6Uon3cnFdyZVTtmvIGdoU7vUgICDbj9EdvsMTmqGHvczcPsaITTorsFVXMBQ==
   dependencies:
     bindings "^1.5.0"
     debug "^4.3.4"
-    nan "^2.15.0"
+    nan "^2.17.0"
     parse-duration "^1.0.2"
-    prebuild-install "^7.0.1"
+    prebuild-install "^7.1.1"
 
 create-ecdh@^4.0.0:
   version "4.0.4"
@@ -7845,10 +7845,15 @@ multimatch@^4.0.0:
     arrify "^2.0.1"
     minimatch "^3.0.4"
 
-nan@^2.12.1, nan@^2.15.0:
+nan@^2.12.1:
   version "2.15.0"
   resolved "https://registry.npmjs.org/nan/-/nan-2.15.0.tgz"
   integrity sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==
+
+nan@^2.17.0:
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.17.0.tgz#c0150a2368a182f033e9aa5195ec76ea41a199cb"
+  integrity sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==
 
 nanomatch@^1.2.9:
   version "1.2.13"
@@ -8855,7 +8860,7 @@ postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.26, postcss@^7.0.2
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-prebuild-install@^7.0.1:
+prebuild-install@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-7.1.1.tgz#de97d5b34a70a0c81334fd24641f2a1702352e45"
   integrity sha512-jAXscXWMcCK8GgCoHOfIr0ODh5ai8mj63L2nWrjuAgXE6tDyYGnx4/8o/rCgU+B4JSyZBKbeZqzhtwtC3ovxjw==
