@@ -1,0 +1,19 @@
+name: PR
+
+on:
+  issues:
+    types: [opened]
+
+env:
+  NUMBER: ${{ github.event.issue.number }}
+  URL: ${{ github.event.issue.bodyUrl}}
+jobs:
+  new_issue:
+    name: New Issue
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Newly opened issue at "
+          echo $URL
+          echo "Issue number "
+          echo $NUMBER
