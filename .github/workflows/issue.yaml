@@ -3,6 +3,8 @@ name: PR
 on:
   issues:
     types: [opened]
+  push:
+    branches: ['devadv-2257-issue']
 jobs:
   new_issue:
     name: New Issue
