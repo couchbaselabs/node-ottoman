@@ -3,7 +3,7 @@ name: PR
 on:
   issues:
     branches: [ "devadv-2257-issue" ] 
-    types: [opened]
+    types: [edited]
 
 env:
   NUMBER: ${{ github.event.issue.number }}
