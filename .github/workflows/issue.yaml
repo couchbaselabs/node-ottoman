@@ -7,7 +7,6 @@ on:
     types: [opened]
 
 env:
-  NUMBER: ${{ github.event.issue.number }}
   URL: ${{ github.event.issue.bodyUrl}}
   AUTHOR: ${{ github.event.issue.author }}
   BODYTEXT: ${{ github.event.issue.bodyText }}
@@ -16,6 +15,7 @@ jobs:
     name: New Issue
     runs-on: ubuntu-latest
     steps:
+      - name: Print github event
       - run: |
           echo "${{ github.event.action }}"
           echo "Newly opened issue at "
@@ -26,3 +26,5 @@ jobs:
           echo $AUTHOR
           echo "Body of the issue is "
           echo $BODYTEXT
+        env:
+          NUMBER: ${{ github.event.issue.number }}
