@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "devadv-2257-issue" ] 
   issues:
-    types: [open]
+    types: [opened]
 
 env:
   NUMBER: ${{ github.event.issue.number }}
