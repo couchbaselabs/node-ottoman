@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print github event
-      - run: |
+        run: |
           echo "${{ github.event.action }}"
           echo "Newly opened issue at "
           echo $URL
