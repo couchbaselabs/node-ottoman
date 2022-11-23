@@ -3,26 +3,15 @@ name: PR
 on:
   push:
     branches: [ "devadv-2257-issue" ] 
-
-env:
-  URL: ${{ github.event.issue.bodyUrl}}
-  AUTHOR: ${{ github.event.issue.author }}
-  BODYTEXT: ${{ github.event.issue.bodyText }}
+  issues:
+    types: [opened]
 jobs:
   new_issue:
     name: New Issue
     runs-on: ubuntu-latest
     steps:
-      - name: Print github event
-        run: |
-          echo "${{ github.event.action }}"
-          echo "Newly opened issue at "
-          echo $URL
-          echo "Issue number "
-          echo $NUMBER
-          echo "Author is "
-          echo $AUTHOR
-          echo "Body of the issue is "
-          echo $BODYTEXT
+      - name: Save the PR number in an artifact
+        shell: bash
         env:
-          NUMBER: ${{ github.event.issue.number }}
+          PR_NUM: ${{ github.event.number }}
+        run: echo $PR_NUM > pr_num.txt
