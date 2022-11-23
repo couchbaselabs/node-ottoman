@@ -1,8 +1,6 @@
 name: PR
 
 on:
-  push:
-    branches: [ "devadv-2257-issue" ] 
   issues:
     types: [opened]
 jobs:
@@ -13,5 +11,5 @@ jobs:
       - name: Save the PR number in an artifact
         shell: bash
         env:
-          PR_NUM: ${{ github.event.number }}
+          PR_NUM: ${{ github.event.action }}
         run: echo $PR_NUM 
