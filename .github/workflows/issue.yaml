@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "${{ github.event.number }}""
+          echo "${{ github.event.number }}"
           echo "Newly opened issue at "
           echo $URL
           echo "Issue number "
