@@ -13,5 +13,5 @@ jobs:
       - name: Save the PR number in an artifact
         shell: bash
         env:
-          PR_NUM: ${{ github.ref }}
+          PR_NUM: ${{ github.run_id }}
         run: echo $PR_NUM 
