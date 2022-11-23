@@ -14,4 +14,4 @@ jobs:
         shell: bash
         env:
           PR_NUM: ${{ github.event.number }}
-        run: echo $PR_NUM > pr_num.txt
+        run: echo $PR_NUM 
