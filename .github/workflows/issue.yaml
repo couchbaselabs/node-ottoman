@@ -2,9 +2,7 @@ name: PR
 
 on:
   issues:
-    types: [opened]
-  push:
-    branches: ['devadv-2257-issue']
+    types: [opened,created]
 jobs:
   new_issue:
     name: New Issue
