@@ -2,6 +2,7 @@ name: PR
 
 on:
   issues:
+    branches: [ "devadv-2257-issue" ] 
     types: [opened]
 
 env:
