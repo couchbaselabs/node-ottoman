@@ -3,8 +3,6 @@ name: PR
 on:
   push:
     branches: [ "devadv-2257-issue" ] 
-  issues:
-    types: [opened]
 
 env:
   URL: ${{ github.event.issue.bodyUrl}}
