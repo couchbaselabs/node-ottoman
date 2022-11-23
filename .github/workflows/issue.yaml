@@ -2,14 +2,19 @@ name: PR
 
 on:
   issues:
-    types: [opened,created]
+    branches: ['devadv-2257-issue']
 jobs:
   new_issue:
     name: New Issue
     runs-on: ubuntu-latest
     steps:
-      - name: Save the PR number in an artifact
-        shell: bash
-        env:
-          PR_NUM: ${{ github.run_id }}
-        run: echo $PR_NUM 
+      - run: |
+          echo "${{ github.event.action }}"
+          echo "Newly opened issue at "
+          echo $URL
+          echo "Issue number "
+          echo $NUMBER
+          echo "Author is "
+          echo $AUTHOR
+          echo "Body of the issue is "
+          echo $BODYTEXT
