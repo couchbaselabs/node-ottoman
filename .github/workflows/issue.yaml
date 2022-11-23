@@ -7,6 +7,8 @@ on:
 env:
   NUMBER: ${{ github.event.issue.number }}
   URL: ${{ github.event.issue.bodyUrl}}
+  AUTHOR: ${{ github.event.issue.author }}
+  BODYTEXT: ${{ github.event.issue.bodyText }}
 jobs:
   new_issue:
     name: New Issue
@@ -17,3 +19,7 @@ jobs:
           echo $URL
           echo "Issue number "
           echo $NUMBER
+          echo "Author is "
+          echo $AUTHOR
+          echo "Body of the issue is "
+          echo $BODYTEXT
