@@ -2,6 +2,7 @@ name: PR
 
 on:
   issues:
+    types: [opened]
     branches: ['devadv-2257-issue']
 jobs:
   new_issue:
