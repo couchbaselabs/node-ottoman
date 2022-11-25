@@ -14,4 +14,4 @@ jobs:
           echo "Issue title: ${{ github.event.issue.title }}"
           echo "Issue body: ${{ github.event.issue.body }}"
           echo "Issue URL: ${{ github.event.issue.bodyUrl }}"
-          ../.github/workflows/send_issue.sh ${ISSUE_TITLE} ${ISSUE_BODY} ${ISSUE_URL} ${GITHUB_RUN_ID} ${secrets.SLACK_WEBHOOK_URL} ${{ secrets.API_TOKEN_TO_GITHUB }}
+          #../.github/workflows/send_issue.sh ${ISSUE_TITLE} ${ISSUE_BODY} ${ISSUE_URL} ${GITHUB_RUN_ID} ${secrets.SLACK_WEBHOOK_URL} ${{ secrets.API_TOKEN_TO_GITHUB }}
