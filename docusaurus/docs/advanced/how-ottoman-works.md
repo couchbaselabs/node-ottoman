@@ -1,3 +1,8 @@
+---
+sidebar_position: 1
+title: How Ottoman Works
+---
+
 # How Ottoman Works
 
 This section is for those who want to understand how Ottoman works in depth.
@@ -21,7 +26,7 @@ Using the default `keyGenerator` function that Ottoman provides and assuming you
 - `User::0477024c`
 
 ::: tip Notice
-This resulted key is a combination of the prefix as provided by the default  `keyGenerator` function (`${metadata.modelName}`) [appended with an ID](/guides/model.html#model-id) (`0477024c`).
+This resulted key is a combination of the prefix as provided by the default  `keyGenerator` function (`${metadata.modelName}`) [appended with an ID](/docs/basic/model.html#model-id) (`0477024c`).
 :::
 
 #### Override `keyGenerator` function
@@ -155,7 +160,7 @@ const bucket = cluster.bucket('travel-sample');
 const collection = bucket.scope('inventory').collection('airport');
 ```
 
-### Model *[find](/interfaces/imodel.html#find)*
+### Model *[find](/docs/api/interfaces/imodel.html#find)*
 
 - Let's see a simple filterless search implementation.
 
@@ -274,7 +279,7 @@ Result: [
 | NodeJs SDK  | 3.43 |  9.78 |
 :::
 
-### Model *[findOneAndUpdate](/interfaces/imodel.html#findoneandupdate)*
+### Model *[findOneAndUpdate](/docs/api/interfaces/imodel.html#findoneandupdate)*
 
 #### SDK:
 
@@ -345,7 +350,7 @@ Result: {
 | NodeJs SDK  | 11.06 |  7.95 |
 :::
 
-### Model *[findOneAndRemove](/interfaces/imodel.html#findoneandremove)*
+### Model *[findOneAndRemove](/docs/api/interfaces/imodel.html#findoneandremove)*
 
 #### SDK:
 
@@ -516,7 +521,7 @@ Output:
 
 #### OTTOMAN
 
-The way to do the same example above in Ottoman is as simple as using Model's [createMany](/advanced/how-ottoman-works.html#bulk-operations) function as we can see below:
+The way to do the same example above in Ottoman is as simple as using Model's [createMany](/docs/advanced/how-ottoman-works.html#bulk-operations) function as we can see below:
 
 ```typescript
 try {

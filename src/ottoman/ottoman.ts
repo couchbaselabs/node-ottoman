@@ -382,7 +382,7 @@ export class Ottoman {
   /**
    * Executes N1QL Queries.
    *
-   * Ottoman provides a powerful [Query Builder](/guides/query-builder) system to create valid N1QL queries using method chaining.
+   * Ottoman provides a powerful [Query Builder](docs/basic/query-builder) system to create valid N1QL queries using method chaining.
    * See the example below:
    *
    * @example

@@ -421,7 +421,7 @@ export abstract class Document {
    * Reverts population. Switches back document reference.
    *
    * @example
-   * To get in context about the Card and Issue Models [see the populate example.](/classes/document.html#populate).
+   * To get in context about the Card and Issue Models [see the populate example.](/docs/api/classes/document.html).
    * ```javascript
    * const card = await Card.findById(cardId);
    * console.log(card.issues); // ['issueId']
@@ -462,7 +462,7 @@ export abstract class Document {
    * Allows to know if a document field is populated.
    *
    * @example
-   * To get in context about the Card and Issue Models [see the populate example.](/classes/document.html#populate).
+   * To get in context about the Card and Issue Models [see the populate example.](/docs/api/classes/document.html).
    * ```javascript
    * const card = await Card.findById(cardId);
    * console.log(card.issues); // ['issueId']

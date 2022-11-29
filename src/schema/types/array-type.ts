@@ -5,7 +5,7 @@ import { CoreTypeOptions, IOttomanType } from '../interfaces/schema.types';
 import { CAST_STRATEGY, checkCastStrategy, ensureArrayItemsType } from '../../utils/cast-strategy';
 
 /**
- * Array type supports arrays of [SchemaTypes](/classes/schema.html#static-types) and arrays of subdocuments.
+ * Array type supports arrays of [SchemaTypes](/docs/api/classes/schema.html) and arrays of subdocuments.
  *
  * ## Options
  *

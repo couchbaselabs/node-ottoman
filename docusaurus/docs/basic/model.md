@@ -1,27 +1,32 @@
+---
+sidebar_position: 3
+title: Models
+---
+
 # Model
 
-[Models](/classes/model.html) are fancy constructors compiled from [Schema](/guides/schema) definitions.
+[Models](/docs/api/classes/model.html) are fancy constructors compiled from [Schema](/docs/basic/schema) definitions.
 
-An instance of a model is called a [document](/guides/document.html).
+An instance of a model is called a [document](/docs/basic/document.html).
 
 Models are responsible for creating and reading documents from the underlying Couchbase database.
 
 ## Compiling Your First Model
 
-When you call [model()](/classes/ottoman.html#model) function on a schema, Ottoman compiles a model for you.
+When you call [model()](/docs/api/classes/ottoman.html#model) function on a schema, Ottoman compiles a model for you.
 
 ```javascript
 const schema = new Schema({ name: String, age: Number });
 const User = model('User', schema);
 ```
 
-::: warning
-The [model()](/classes/ottoman.html#model) function makes a copy of the `schema`. Make sure that you've added everything you want to the `schema`, including hooks, before calling `model()`!
+:::caution
+The [model()](/docs/api/classes/ottoman.html#model) function makes a copy of the `schema`. Make sure that you've added everything you want to the `schema`, including hooks, before calling `model()`!
 :::
 
 ### Model Options
 
-You can pass a third argument to [model()](/classes/ottoman.html#model) functions in order to setup your needs.
+You can pass a third argument to [model()](/docs/api/classes/ottoman.html#model) functions in order to setup your needs.
 In the next example we will set the `collectionName` to be `users`.
 
 ```javascript
@@ -75,7 +80,7 @@ interface ModelOptions {
 - `keyGenerator`: function to generate the key to store documents.
 - `keyGeneratorDelimiter`: string value used to build the document key. The default value is `::`
 
-If you don't provided a `keyGenerator` or `keyGeneratorDelimiter` implementation it will be inherited by `Ottoman` instance options, check this in [Ottoman options](/guides/ottoman.html#ottoman-constructor-options)
+If you don't provided a `keyGenerator` or `keyGeneratorDelimiter` implementation it will be inherited by `Ottoman` instance options, check this in [Ottoman options](/docs/basic/ottoman.html#ottoman-constructor-options)
 
 ### Model Id
 
@@ -98,7 +103,7 @@ You can also get the `id` value by calling the `doc._getId()` methods, regardles
 
 ## Constructing Documents
 
-An instance of a model is called a [document](/guides/document). Creating and saving them to the database is easy.
+An instance of a model is called a [document](/docs/basic/document). Creating and saving them to the database is easy.
 
 ```javascript
 const User = model('User', schema);
@@ -113,13 +118,13 @@ User.create({ name: 'Jane', age: 29 });
 ```
 
 Note that no users will be created/removed until the connection that your model uses is open.
-Every model has an associated connection. When you use [model()](/classes/ottoman.html#model),
+Every model has an associated connection. When you use [model()](/docs/api/classes/ottoman.html#model),
 your model will use the default Ottoman connection.
 
 ### Create Many
 
 Also, you can use `createMany` static function to create multiples documents at once.
-See the [API](/interfaces/imodel.html#static-createmany) docs for more detail.
+See the [API](/docs/api/interfaces/imodel.html#static-createmany) docs for more detail.
 
 ```javascript
 User.createMany([{ name: 'John' }, { name: 'Jane' }]);
@@ -132,7 +137,7 @@ The response status will be **SUCCESS** as long as no error occurs, otherwise it
 ## Querying
 
 Finding documents is easy with Ottoman, powered by the built-in Query Builder.
-Documents can be retrieved using each `models` [find](/interfaces/imodel.html#find), [findById](/interfaces/imodel.html#findbyid), [findOne](/interfaces/imodel.html#findone), defined [indexes](/guides/schema.html#indexes) or where [static methods](/guides/schema.html#statics).
+Documents can be retrieved using each `models` [find](/docs/api/interfaces/imodel.html#find), [findById](/docs/api/interfaces/imodel.html#findbyid), [findOne](/docs/api/interfaces/imodel.html#findone), defined [indexes](/docs/basic/schema.html#indexes) or where [static methods](/docs/basic/schema.html#statics).
 
 ```javascript
 User.find({ name: 'Jane' });
@@ -159,7 +164,7 @@ User.findById('userId', { select: 'name, cards', populate: 'cards' });
 // will return the user document with the current id only with the fields name and cards populated
 ```
 
-The find options are: [link](/classes/findoptions.html#hierarchy)
+The find options are: [link](/docs/api/classes/findoptions.html#hierarchy)
 
 ```typescript
 export interface IFindOptions {
@@ -283,13 +288,13 @@ UserModel.find([
 ```
 :::
 
-See the chapter on queries for more details on how to use the [Query](/guides/query-builder) API.
+See the chapter on queries for more details on how to use the [Query](/docs/basic/query-builder) API.
 
 ### Use of `lean`
 
-By default, Ottoman queries return an instance of the [Ottoman Document class](/classes/document.html). Documents have a lot of internal state for change tracking. Enabling the [`lean`](/classes/findoptions.html#optional-lean) option tells Ottoman to skip instantiating a full Ottoman Document and just give you the plain old JavaScript object (POJO).
+By default, Ottoman queries return an instance of the [Ottoman Document class](/docs/api/classes/document.html). Documents have a lot of internal state for change tracking. Enabling the [`lean`](/docs/api/classes/findoptions.html#optional-lean) option tells Ottoman to skip instantiating a full Ottoman Document and just give you the plain old JavaScript object (POJO).
 
-The `lean` feature is only for the documents (Models instances) query functions like [find](/interfaces/imodel.html#find), [findById](/interfaces/imodel.html#findbyid), [findOne](/interfaces/imodel.html#findone), etc.
+The `lean` feature is only for the documents (Models instances) query functions like [find](/docs/api/interfaces/imodel.html#find), [findById](/docs/api/interfaces/imodel.html#findbyid), [findOne](/docs/api/interfaces/imodel.html#findone), etc.
 
 ```ts
 const UserModel = model('User', schema);
@@ -325,13 +330,13 @@ The downside of enabling `lean` is that lean docs don't have:
 - Change tracking
 - Casting and validations
 - Hooks
-- `save()`, `remove()` and others `model`'s [methods](/classes/model.html#methods-2)
+- `save()`, `remove()` and others `model`'s [methods](/docs/api/classes/model.html#methods-2)
 
 This is the main `lean` feature difference when is applied over an Ottoman document
 :::
 
-::: warning
-[ManyQueryResponse](/classes/manyqueryresponse.html) is an util class and doesn't have this `lean` feature.
+:::caution
+[ManyQueryResponse](/docs/api/classes/manyqueryresponse.html) is an util class and doesn't have this `lean` feature.
 :::
 
 ### Use `lean` and  `populate`
@@ -521,14 +526,14 @@ app.put('/person/:id', function (req, res) {
 ## Deleting
 
 Models have static `removeById()` function to remove documents matching the given id value.
-See the [API](/interfaces/imodel.html#static-removebyid) docs for more detail.
+See the [API](/docs/api/interfaces/imodel.html#static-removebyid) docs for more detail.
 
 ```javascript
 User.removeById('userId');
 ```
 
 Models have static `removeMany()` function to remove all documents matching the given condition.
-See the [API](/interfaces/imodel.html#static-removemany) docs for more detail.
+See the [API](/docs/api/interfaces/imodel.html#static-removemany) docs for more detail.
 
 ```javascript
 User.removeMany({ name: { $like: '%JohnDoe%' } });
@@ -541,7 +546,7 @@ The response status will be **SUCCESS** as long as no error occurs, otherwise it
 ## Updating
 
 Each `model` has its own `updateById` method for modifying documents in the database without returning them to your application.
-See the [API](/interfaces/imodel.html#static-updatebyid) docs for more detail.
+See the [API](/docs/api/interfaces/imodel.html#static-updatebyid) docs for more detail.
 
 ```javascript
 User.updateById('userId', { age: 30 });
@@ -549,18 +554,18 @@ User.updateById('userId', { age: 30 });
 ```
 
 Models have static method `replaceById` which has the same behavior as **updateById**, except that the replaceById replaces the existing document with the given document.
-See the [API](/interfaces/imodel.html#static-replacebyid) docs for more detail.
+See the [API](/docs/api/interfaces/imodel.html#static-replacebyid) docs for more detail.
 
 ```javascript
 User.replaceById('userId', { age: 30, name: 'John' });
 ```
 
-::: warning
+:::caution
 The replaceById method completely replaces the existing document as long as the new document complies with the schema rules.
 :::
 
 Models have static `updateMany` function to update all documents matching the given condition.
-See the [API](/interfaces/imodel.html#static-updatemany) docs for more detail.
+See the [API](/docs/api/interfaces/imodel.html#static-updatemany) docs for more detail.
 
 ```javascript
 User.updateMany({ name: { $like: '%JohnDoe%' } }, { name: 'John' });
@@ -571,7 +576,7 @@ The response status will be **SUCCESS** as long as no error occurs, otherwise it
 :::
 
 Models have static `findOneAndUpdate` function to finds a document that matches the conditions of the collection and updates it.
-See the [API](/interfaces/imodel.html#static-findoneandupdate) docs for more detail.
+See the [API](/docs/api/interfaces/imodel.html#static-findoneandupdate) docs for more detail.
 
 ```javascript
 User.findOneAndUpdate({ name: { $like: '%John Doe%' } }, { name: 'John' }, { new: true, upsert: true });
@@ -598,7 +603,7 @@ const models = {
 };
 ```
 
-::: warning
+:::caution
 Duplicate Model's name will throw an exception notifying about the register model duplication.
 :::
 
@@ -649,8 +654,8 @@ User.dropCollection('Cat')
 User.dropCollection('Cat', 'scopeB')
 ```
 
-To check the dropCollection API click [here](/interfaces/imodel.html#static-dropcollection)
+To check the dropCollection API click [here](/docs/api/interfaces/imodel.html#static-dropcollection)
 
 ## Next Up
 
-Now that we've covered `Models`, let's take a look at [Documents](/guides/document).
+Now that we've covered `Models`, let's take a look at [Documents](/docs/basic/document).

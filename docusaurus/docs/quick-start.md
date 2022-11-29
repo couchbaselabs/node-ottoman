@@ -1,3 +1,8 @@
+---
+sidebar_position: -4
+title: Quickstart
+---
+
 # Quick Start with Ottoman v2
 
 >Before we get started with Ottoman and Node JS, we need to ensure you have Couchbase up and running.

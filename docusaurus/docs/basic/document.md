@@ -1,10 +1,15 @@
+---
+sidebar_position: 4
+title: Documents
+---
+
 # Documents
 
-Ottoman [documents](/classes/document.html) represent a one-to-one mapping to documents as stored in Couchbase Server. Each document is an instance of its [Model](/guides/model.html).
+Ottoman [documents](/docs/api/classes/document.html) represent a one-to-one mapping to documents as stored in Couchbase Server. Each document is an instance of its [Model](/docs/basic/model.html).
 
 ## Documents vs Models
 
-[Document](/classes/document.html) and [Model](/classes/model.html) are distinct classes in Ottoman. The Model class is a subclass of the Document class. When you use the Model constructor, you create a new document.
+[Document](/docs/api/classes/document.html) and [Model](/docs/api/classes/model.html) are distinct classes in Ottoman. The Model class is a subclass of the Document class. When you use the Model constructor, you create a new document.
 
 ```javascript
 const MyModel = ottoman.model('Test', new Schema({ name: String }));
@@ -57,7 +62,7 @@ The `save()` function is generally the right way to update a document with Ottom
 
 ## Validating
 
-Documents are casted and validated before saved. Ottoman casts values to the specified type and then validates them. Internally, Ottoman calls the document's `_validate()` [method](/classes/model.html#validate) before saving.
+Documents are casted and validated before saved. Ottoman casts values to the specified type and then validates them. Internally, Ottoman calls the document's `_validate()` [method](/docs/api/classes/model.html#validate) before saving.
 
 ```javascript
 const schema = new Schema({ name: String, age: { type: Number, min: 0 } });
@@ -97,7 +102,7 @@ const Story = model('Story', storySchema);
 const Person = model('Person', personSchema);
 ```
 
-So far we've created two [Models](/guides/model.html). Our `Person` model has its `stories` field set to an array of `id`s.
+So far we've created two [Models](/docs/basic/model.html). Our `Person` model has its `stories` field set to an array of `id`s.
 The `ref` option is what tells Ottoman which model to use during population, in our case the `Story` model. All `id`s we store here must be document `id`s from the `Story` model.
 
 ### Saving Refs
@@ -141,9 +146,9 @@ console.log('The author is %s', story.author.name);
 
 Populated paths are no longer set to their original `id`, their value is replaced with the Ottoman document returned from the database by performing a separate query before returning the results.
 
-Arrays of refs work the same way. Just call the [_populate](/classes/document.html#populate) method on the query, and an array of documents will be returned _in place_ of the original `id`s.
+Arrays of refs work the same way. Just call the [_populate](/docs/api/classes/document.html#populate) method on the query, and an array of documents will be returned _in place_ of the original `id`s.
 
-You can see more examples of pupulate [here](/classes/document.html#populate).
+You can see more examples of pupulate [here](/docs/api/classes/document.html#populate).
 
 ### Checking Whether a Field is Populated
 
@@ -188,10 +193,10 @@ const stories = await Story.find({ title: 'Casino Royale' }, { populate: 'author
 In the above example Ottoman will populate all references on story and story's children.
 It doesn't matter if they are single or array references.
 
-::: warning
+:::caution
 Beware from setting a large integer value on populate `deep` argument, it could affect the query performance.
 :::
 
 ## Next Up
 
-Now that we've covered Documents, let's take a look at [Query Builder](/guides/query-builder).
+Now that we've covered Documents, let's take a look at [Query Builder](/docs/basic/query-builder).

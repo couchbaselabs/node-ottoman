@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        node_version: [ '14' ]
+        node_version: [ '16' ]
 
     steps:
       - uses: actions/checkout@v2
@@ -43,8 +43,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/.vuepress/dist
-
-#      - name: Semantic Release
-#        run: yarn semver
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
