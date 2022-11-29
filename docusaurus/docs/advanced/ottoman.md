@@ -1,4 +1,9 @@
-# Ottoman
+---
+sidebar_position: 2
+title: Advanced Concepts
+---
+
+# Advanced Concepts
 
 This section will cover some advanced concepts and options in `Ottoman`.
 
@@ -28,7 +33,7 @@ interface OttomanConfig {
 - `keyGenerator`: Function to generate the key to store documents. Default: `(params: { metadata: ModelMetadata }) => string`
 - `keyGeneratorDelimiter`: String value used to build the document key. Default: `::`
 
-A complete new section is available to show how the [key-generation-layer](/advanced/how-ottoman-works.html#key-generation-layer) works.
+A complete new section is available to show how the [key-generation-layer](/docs/advanced/how-ottoman-works.html#key-generation-layer) works.
 
 ### PopulateMaxDeep Option
 

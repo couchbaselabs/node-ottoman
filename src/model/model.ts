@@ -246,7 +246,7 @@ export interface IModel<T = any, R = any> {
   removeById(id: string): Promise<{ cas: any }>;
 
   /**
-   * Creates a [document](/classes/document) from the given data.
+   * Creates a [document](/docs/api/classes/document) from the given data.
    * Result will be the same that -> new Model(data)
    *
    * @example
@@ -272,8 +272,8 @@ export interface IModel<T = any, R = any> {
    * const result = await User.removeMany({ name:'John Doe' }, { ignoreCase: true })
    * ```
    *
-   * @param filter Filter Condition [Where Expression](/classes/query.html#where)
-   * @param options [Find Options](/classes/findoptions.html#class-findoptions)
+   * @param filter Filter Condition [Where Expression](/docs/api/classes/query.html)
+   * @param options [Find Options](/docs/api/classes/findoptions.html#class-findoptions)
    *
    *
    */
@@ -389,9 +389,9 @@ export interface IModel<T = any, R = any> {
    * testRounds();
    * ```
    *
-   * @param filter Filter Condition [Where Expression](/classes/query.html#where)
+   * @param filter Filter Condition [Where Expression](/docs/api/classes/query.html)
    * @param doc Values for the fields to update
-   * @param options [Update Many Options](/interfaces/updatemanyoptions.html)
+   * @param options [Update Many Options](/docs/api/interfaces/updatemanyoptions.html)
    *
    */
   updateMany<Query = T, Result = T>(
@@ -408,12 +408,12 @@ export interface IModel<T = any, R = any> {
    * const result = await User.findOneAndUpdate({ name: { $like: '%John Doe%' } }, { name: "John" })
    * ```
    *
-   * @param filter Filter Condition [Where Expression](/classes/query.html#where)
+   * @param filter Filter Condition [Where Expression](/docs/api/classes/query.html#where)
    * @param doc Values for the fields to update
-   * @param options [FindOneAndUpdateOptions](/interfaces/findoneandupdateoption.html)
+   * @param options [FindOneAndUpdateOptions](/docs/api/interfaces/findoneandupdateoption.html)
    *
    *
-   * Return a [Model](/classes/model.html) if at least one item matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/classes/DocumentNotFoundError.html) will be thrown.
+   * Return a [Model](/docs/api/classes/model.html) if at least one item matching the condition, otherwise an [exception](https://docs.couchbase.com/sdk-api/couchbase-node-client/classes/DocumentNotFoundError.html) will be thrown.
    * If options.new is **true** return the document after update otherwise by default return the document before update.
    * If options.upsert is **true** insert a document if the document does not exist.
    * options.strict used for strategy to apply on immutables properties
@@ -483,14 +483,14 @@ export interface IModel<T = any, R = any> {
    * const result = await User.findOneAndRemove({ name: { $like: '%John Doe%' } })
    * ```
    *
-   * @param filter Filter Condition [Where Expression](/classes/query.html#where)
+   * @param filter Filter Condition [Where Expression](/docs/api/classes/query.html#where)
    *
    */
   findOneAndRemove<Query = T, Result = R>(filter?: LogicalWhereExpr<Query>): Promise<Result>;
   findOneAndRemove<Query = T, Result = R>(filter?: LogicalWhereExpr<Query>): Promise<IDocument<Result>>;
 
   /**
-   * Return a [Query](/classes/query) instance in the model context
+   * Return a [Query](/docs/api/classes/query) instance in the model context
    * @example
    * ```typescript
    * const query = User.query({name: 'John Smith'})

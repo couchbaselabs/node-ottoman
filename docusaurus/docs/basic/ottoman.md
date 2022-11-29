@@ -1,3 +1,8 @@
+---
+sidebar_position: 5
+title: Ottoman Class
+---
+
 # Ottoman Class
 
 ## Defining an Ottoman Instance
@@ -57,7 +62,7 @@ The default implementation for the `keyGenerator` function is:
 KEY_GENERATOR = ({ metadata }) => `${metadata.modelName}`;
 ```
 
-`keyGenerator` can be overridden for each `Model` if needed. check this in [model options](/guides/model.html#model-options)
+`keyGenerator` can be overridden for each `Model` if needed. check this in [model options](/docs/basic/model.html#model-options)
 
 `keyGeneratorDelimiter` has 2 restrictions:
 
@@ -76,15 +81,15 @@ Some examples of `keyGeneratorDelimiter`:
 - `_`
 - `##`
 
-`keyGeneratorDelimiter` can be overridden for each `Model` if needed. For more info see: [model options](/guides/model.html#model-options)
+`keyGeneratorDelimiter` can be overridden for each `Model` if needed. For more info see: [model options](/docs/basic/model.html#model-options)
 
 ## Connections
 
-All your [Models](/guides/model) will be created via a connection and it will map to a Collection.
+All your [Models](/docs/basic/model) will be created via a connection and it will map to a Collection.
 
 ## Create a Connection
 
-You can connect to Couchbase Server with the [connect()](/classes/ottoman.html#connect) method.
+You can connect to Couchbase Server with the [connect()](/docs/api/classes/ottoman.html#connect) method.
 
 ```javascript
 import { Ottoman } from 'ottoman';
@@ -243,7 +248,7 @@ main();
 ```
 
 ::: tip
-Notice we [start](/classes/ottoman.html#start) using Ottoman without creating any instance, it's possible by using the `connect` function.
+Notice we [start](/docs/api/classes/ottoman.html#start) using Ottoman without creating any instance, it's possible by using the `connect` function.
 `connect` function will create a default ottoman instance with default options if there's not an ottoman default instance created yet.
 :::
 
@@ -372,7 +377,7 @@ The **Ottoman** class will provide three main methods to bootstrap the app:
 
 - `ensureCollections` will attempt to create collections and scopes for each model
 - `ensureIndexes` will attempt to create all indexes defined in the schema definition
-- [start](/classes/ottoman.html#start) method is just a shortcut to run `ensureCollections` and `ensureIndexes`
+- [start](/docs/api/classes/ottoman.html#start) method is just a shortcut to run `ensureCollections` and `ensureIndexes`
 
 Notice: It's not required to execute the `start` method for Ottoman work.
 
@@ -430,10 +435,10 @@ Notice: `IndexOnline` event will depend on `start` or `ensureIndexes` been calle
 
 Ottoman provides these helpers functions:
 
-- [dropBucket](/classes/ottoman.html#dropbucket) drops a bucket from the cluster.
-- [dropScope](/classes/ottoman.html#dropscope) drops a scope from a bucket.
-- [dropCollection](/classes/ottoman.html#dropcollection) drops a collection from a scope in a bucket.
+- [dropBucket](/docs/api/classes/ottoman.html#dropbucket) drops a bucket from the cluster.
+- [dropScope](/docs/api/classes/ottoman.html#dropscope) drops a scope from a bucket.
+- [dropCollection](/docs/api/classes/ottoman.html#dropcollection) drops a collection from a scope in a bucket.
 
 ## Next Up
 
-Great job! Now we're connected, let's take a look at [Schemas](/guides/schema).
+Great job! Now we're connected, let's take a look at [Schemas](/docs/basic/schema).

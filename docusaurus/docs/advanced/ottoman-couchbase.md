@@ -1,10 +1,10 @@
 # Ottoman for Couchbase Node.js SDK developers
 
-[Ottoman](/guides/ottoman.html) is an Object Data Modeler (ODM) for Couchbase’s Node.js SDK providing JSON schema and validation for NoSQL.
+[Ottoman](/docs/basic/ottoman.html) is an Object Data Modeler (ODM) for Couchbase’s Node.js SDK providing JSON schema and validation for NoSQL.
 
 ## Why Use an ODM for Couchbase
 
-With Ottoman, you declare [schema](/guides/schema.html) in your code. Although Couchbase has no schema enforcement for your documents, most applications need some level of schema even in NoSQL. We will explore how to achieve `schema` and validation in NoSQL using Ottoman and Couchbase.
+With Ottoman, you declare [schema](/docs/basic/schema.html) in your code. Although Couchbase has no schema enforcement for your documents, most applications need some level of schema even in NoSQL. We will explore how to achieve `schema` and validation in NoSQL using Ottoman and Couchbase.
 
 It’s important to validate that documents meet certain requirements before persisting. Although Ottoman creates an abstraction over the Couchbase SDK, the benefits outweigh the drawbacks. A developer creates a lot of logic around creating and updating documents, writing *pre/post* lifecycle, working with data structures, and validation.
 
@@ -43,7 +43,7 @@ Similar to `types` in Couchbase 6.x (latest Couchbase major version at the time 
 
 ## Documents
 
-[Documents](/guides/document.html) are comparable to rows of data in a relational database. Traditional RDBMS systems will reference related documents from other tables. You can also do this with a JSON document, however it is suggested to include that information as an embedded document when possible, as we see with the ***hotel*** document’s `phone` number property which is an array of phone numbers. Albeit a very simple example of this, think if you had an `address` property that itself was another JSON object with many properties, you may think this needs to be given its own document, but nesting that information in the parent document in most cases is fine.
+[Documents](/docs/basic/document.html) are comparable to rows of data in a relational database. Traditional RDBMS systems will reference related documents from other tables. You can also do this with a JSON document, however it is suggested to include that information as an embedded document when possible, as we see with the ***hotel*** document’s `phone` number property which is an array of phone numbers. Albeit a very simple example of this, think if you had an `address` property that itself was another JSON object with many properties, you may think this needs to be given its own document, but nesting that information in the parent document in most cases is fine.
 
 ## Fields
 
@@ -51,11 +51,11 @@ Also known as attributes, are similar to columns in a relational database and wi
 
 ## Schema
 
-While Couchbase is schema-less or schema-flexible, we can still enforce structure at the application level for our documents with [Schemas](/guides/schema.html).
+While Couchbase is schema-less or schema-flexible, we can still enforce structure at the application level for our documents with [Schemas](/docs/basic/schema.html).
 
 ## Model
 
-[Model](/guides/model.html) is a constructor method that takes a `schema` and creates an instance of a `document` equivalent to a single record in a relational database. This *document instance* can be constructed and then persisted to Couchbase by Ottoman [using the `save()` method](/guides/model.html#constructing-documents).
+[Model](/docs/basic/model.html) is a constructor method that takes a `schema` and creates an instance of a `document` equivalent to a single record in a relational database. This *document instance* can be constructed and then persisted to Couchbase by Ottoman [using the `save()` method](/docs/basic/model.html#constructing-documents).
 
 ## Getting Started
 
@@ -110,7 +110,7 @@ Together this imports the `ottoman` package and specifies the `_default` ***coll
 
 ### Ottoman Schema and Models
 
-Models are fancy constructors compiled from [Schema](/guides/schema.html) definitions. An instance of a `model` is called a `document`. [Models](/guides/model.html) in Ottoman help you to easily *create*, *read*, *update*, and *delete* documents in your Couchbase database.
+Models are fancy constructors compiled from [Schema](/docs/basic/schema.html) definitions. An instance of a `model` is called a `document`. [Models](/docs/basic/model.html) in Ottoman help you to easily *create*, *read*, *update*, and *delete* documents in your Couchbase database.
 
 Creating an Ottoman `model` comprises a few things:
 
@@ -130,17 +130,17 @@ const airlineSchema = new Schema({
 
 Here we define three properties **(callsign, country, name)** within our `schema`, all of type `String`. By specifying a `type` for each of our `model` properties, maps to an internal validator that will be triggered when the `model` is saved to the database and fail if the data type of the value is not of type `String`.
 
-The following [Schema Types]() are permitted:
+The following Schema Types are permitted:
 
-- [String](/classes/stringtype)
-- [Number](/classes/numbertype)
-- [Boolean](/classes/booleantype)
-- [Date](/classes/datetype)
-- [Array](/classes/arraytype)
-- [Embed](/classes/embedtype)
-- [Reference](/classes/referencetype)
-- [Mixed](/classes/mixedtype)
-- *[Custom](/guides/schema.html#custom-schematypes)*
+- [String](/docs/api/classes/stringtype)
+- [Number](/docs/api/classes/numbertype)
+- [Boolean](/docs/api/classes/booleantype)
+- [Date](/docs/api/classes/datetype)
+- [Array](/docs/api/classes/arraytype)
+- [Embed](/docs/api/classes/embedtype)
+- [Reference](/docs/api/classes/referencetype)
+- [Mixed](/docs/api/classes/mixedtype)
+- *[Custom](/docs/api/guides/schema.html#custom-schematypes)*
 
 ### Defining a Document Model
 
@@ -152,7 +152,7 @@ const Airline = ottoman.model('Airline', airlineSchema)
 ```
 :::
 
-When you call the [`model()`](/classes/ottoman.html#model) function it creates a copy of the `schema` and compiles the `model` for you.
+When you call the [`model()`](/docs/api/classes/ottoman.html#model) function it creates a copy of the `schema` and compiles the `model` for you.
 
 Let’s also give the `airlineSchema` a ***phone number*** property. We can add a validation function that will ensure that the value is a valid phone number. Replace the `airlineSchema` section with these three blocks of code:
 
@@ -179,9 +179,9 @@ In the example above, wee see how to create a custom `validator`, we just happen
 
 ### Defining Validators
 
-[Validators]() registered with Ottoman (as we have done here with the `ottoman.addValidators()` method) will be called once for every value our document’s property has in the array. If the property did not have an array and instead just a single *String* value, the validator would only be run once. For this reason, I print out the problematic phone number if the validation fails.
+Validators registered with Ottoman (as we have done here with the `ottoman.addValidators()` method) will be called once for every value our document’s property has in the array. If the property did not have an array and instead just a single *String* value, the validator would only be run once. For this reason, I print out the problematic phone number if the validation fails.
 
-There is however an easier way to validate any document properties value so long as the check you are performing uses a regular expression. The [ValidatorOption](/interfaces/validatoroption.html#hierarchy') can take a regexp and message as an argument, so we can reduce our code down to:
+There is however an easier way to validate any document properties value so long as the check you are performing uses a regular expression. The [ValidatorOption](/docs/api/interfaces/validatoroption.html#hierarchy') can take a regexp and message as an argument, so we can reduce our code down to:
 
 ::: tip Update Schema to use Validator
 ```js
@@ -236,7 +236,7 @@ ottoman.start()
 ```
 :::
 
-You may be wondering why we don’t just call the `save()` Document function on its own. Instead, we call it after the `ottoman.start()` is finished. The start method is a shortcut to run `ensureCollections` and `ensureIndexes`. All you have to know for now is that this method makes sure that the proper Ottoman-related indexes have been created on Couchbase and this is important to ensure we can run things like the `find()` method and use tools like the [QueryBuilder]() which we will get to at the end of the article.
+You may be wondering why we don’t just call the `save()` Document function on its own. Instead, we call it after the `ottoman.start()` is finished. The start method is a shortcut to run `ensureCollections` and `ensureIndexes`. All you have to know for now is that this method makes sure that the proper Ottoman-related indexes have been created on Couchbase and this is important to ensure we can run things like the `find()` method and use tools like the QueryBuilder which we will get to at the end of the article.
 
 At this point, if you were to run all of the code we have written using Node, our `document` would be saved to the database:
 
@@ -262,7 +262,7 @@ _Model {
 The following fields are returned:
 
 1. `callsign`, `country`, and `name` fields are all `String`, the most basic value we could have in a `document`.
-2. `id` field is auto-generated by Couchbase and is a **unique key**. The ***ID*** value is what you will use in any case to find a `document` with Ottoman in methods like [findById]() or [removeById]()
+2. `id` field is auto-generated by Couchbase and is a **unique key**. The ***ID*** value is what you will use in any case to find a `document` with Ottoman in methods like findById or removeById
 3. `phone` field is represented by an array and contains valid *phone numbers*.
 4. `_type` field can help us to organize our documents like a table does in a relational database, in Couchbase 7, we can use `collections` and `scopes`.
 
@@ -324,7 +324,7 @@ This will help us to separate some of our code so we are not repeating it in eac
 
 ### Find Documents
 
-Let’s try to retrieve the record we saved to the database earlier. The [model class](/classes/model.html) exposes several static and instance methods to perform operations on the database. We will now try to find the record that we created previously using the find method and pass the `callsign` as the search term. Let’s create a new file named `findAirline.js` and we can add the following code:
+Let’s try to retrieve the record we saved to the database earlier. The [model class](/docs/api/classes/model.html) exposes several static and instance methods to perform operations on the database. We will now try to find the record that we created previously using the find method and pass the `callsign` as the search term. Let’s create a new file named `findAirline.js` and we can add the following code:
 
 ::: tip Find Airline Document by `callsign`
 ```js
@@ -414,7 +414,7 @@ _Model {
 
 ### Remove Documents
 
-Ottoman has several methods that deal with removing documents: [remove](/classes/document.html#remove), [removeById](/interfaces/imodel.html#removebyid) and [removeMany](/interfaces/imodel.html#removemany). Considering the many examples we have had so far, each of these should be very easy to understand how to use, so we will just provide a simple example here to show how to remove a `document` that we have already found using the [find](/interfaces/imodel.html#find) method.
+Ottoman has several methods that deal with removing documents: [remove](/docs/api/classes/document.html#remove), [removeById](/docs/api/interfaces/imodel.html#removebyid) and [removeMany](/docs/api/interfaces/imodel.html#removemany). Considering the many examples we have had so far, each of these should be very easy to understand how to use, so we will just provide a simple example here to show how to remove a `document` that we have already found using the [find](/docs/api/interfaces/imodel.html#find) method.
 
 ::: tip Remove Airline Document by ID
 ```js
@@ -441,14 +441,14 @@ Remove `document` result is a simple [cas value](https://docs.couchbase.com/node
 
 We have already seen our middleware in action, our `validator` that we initially created can take advantage of middleware using functions that run at specific stages of a pipeline passing control during the execution of asynchronous functions.
 
-### [Available Hooks](/guides/schema.html#hooks)
+### [Available Hooks](/docs/basic/schema.html#hooks)
 
 - validate
 - save
 - update
 - remove
 
-Example of Middleware (a.k.a. [pre](/guides/schema.html#register-hooks-with-pre) and [post](/guides/schema.html#post-hooks) hooks)
+Example of Middleware (a.k.a. [pre](/docs/basic/schema.html#register-hooks-with-pre) and [post](/docs/basic/schema.html#post-hooks) hooks)
 
 Let’s try an example by simply generating a log in the console before and after the creation (`save`) of a `document`, We are going to create a new file called `createWithHooks.js` and most of the code will look familiar except we have added `pre` and `post` hooks that will just report to us the document `name` ***pre-save*** and document `id` ***post-save***:
 
@@ -533,9 +533,9 @@ We got our messages before and after the save. With validation, you can ensure c
 
 Ottoman has a very rich API that handles many complex operations supported by Couchbase and N1QL. Our query builder behind the scenes creates your N1QL statements for you. When using [Query Builder](/guides/query-builder.html#using-the-query-builder) you have three options of which mode to use.
 
-1. [Using parameters](/guides/query-builder.html#build-a-query-by-using-parameters)
-2. [Using Access Functions](/guides/query-builder.html#build-a-query-by-using-access-functions)
-3. [Using parameters and Access Functions](/guides/query-builder.html#build-a-query-by-using-parameters-and-function-parameters)
+1. [Using parameters](/docs/basic/query-builder.html#build-a-query-by-using-parameters)
+2. [Using Access Functions](/docs/basic/query-builder.html#build-a-query-by-using-access-functions)
+3. [Using parameters and Access Functions](/docs/basic/query-builder.html#build-a-query-by-using-parameters-and-function-parameters)
 
 In the next three examples, we will do the same thing using each of the three different `QueryBuilder` modes (*params*, *access functions*, and *mixed-mode*). Each example will:
 

@@ -1,6 +1,11 @@
+---
+sidebar_position: 6
+title: Query Builder    
+---
+
 # Query Builder
 
-[Query Builder](/classes/query.html) is a flexible tool designed to create N1QL queries by specifying parameters and methods. Query Builder lets you: create queries of unlimited length and complexity without the need to know the syntax of N1QL Queries.
+[Query Builder](/docs/api/classes/query.html) is a flexible tool designed to create N1QL queries by specifying parameters and methods. Query Builder lets you: create queries of unlimited length and complexity without the need to know the syntax of N1QL Queries.
 
 ## Using the Query Builder
 
@@ -8,7 +13,7 @@ There are 3 ways to use the Query Builder: by using parameters, by using access 
 
 ### Build a Query by Using Parameters
 
-To create queries by using parameters it is mandatory to define in the query constructor the [**parameters**](/interfaces/iconditionexpr.html#hierarchy) of the query and the **name** of the collection.
+To create queries by using parameters it is mandatory to define in the query constructor the [**parameters**](/docs/api/interfaces/iconditionexpr.html#hierarchy) of the query and the **name** of the collection.
 
 ```ts
 const params = {
@@ -285,7 +290,7 @@ WHERE (address LIKE "%57-59%"
 
 ## N1QL SELECT Clause Structure
 
-See definition [here](/classes/query.html#select)
+See definition [here](/docs/api/classes/query.html#select)
 
 The syntax of a SELECT clause in n1ql is documented [here](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/select-syntax.html).
 
@@ -344,7 +349,7 @@ WHERE a.type = "hotel"
 
 ## N1QL WHERE Clause Structure
 
-See definition [here](/classes/query.html#where)
+See definition [here](/docs/api/classes/query.html#where)
 
 The syntax of a WHERE clause in N1QL is documented [here](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/where.html).
 
@@ -713,12 +718,12 @@ For above examples we get this output:
 
 Notice: Currently the JOIN clause is only supported in string format.
 
-See definition [here](/classes/query.html#plainJoin)
+See definition [here](/docs/api/classes/query.html#plainJoin)
 
 The syntax of a JOIN clause in n1ql is documented [here](https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/join.html).
 
 ## N1QL GROUP BY Clause Structure
 
-See definition [here](/classes/query.html#groupby)
+See definition [here](/docs/api/classes/query.html#groupby)
 
 The syntax of a GROUP BY clause in n1ql is documented [here](https://docs.couchbase.com/server/6.5/n1ql/n1ql-language-reference/groupby.html).

@@ -1,3 +1,8 @@
+---
+sidebar_position: -1
+title: Building Your First App
+---
+
 # Building Your First App
 
 Our goal is to provide you with a demo application to explore how to setup and use Ottoman using best practices.

@@ -1,3 +1,8 @@
+---
+sidebar_position: 2
+title: Schemas
+---
+
 # Schema
 
 Schema maps to a Couchbase collection and defines the shape of the documents within that collection.
@@ -29,9 +34,9 @@ const blogSchema = new Schema({
 });
 ```
 
-For more information about options, please [review the types](/guides/schema.html#allowed-schematypes)
+For more information about options, please [review the types](/docs/basic/schema.html#allowed-schematypes)
 
-Each key in our code `blogSchema` defines a property in our documents which will be cast to its associated [SchemaType](#allowed-schematypes). For example, we've defined a property `title` that will be cast to the [String](/classes/stringtype.html) SchemaType and property `date` which will be cast to a [Date](/classes/datetype.html) SchemaType.
+Each key in our code `blogSchema` defines a property in our documents which will be cast to its associated [SchemaType](#allowed-schematypes). For example, we've defined a property `title` that will be cast to the [String](/docs/api/classes/stringtype.html) SchemaType and property `date` which will be cast to a [Date](/docs/api/classes/datetype.html) SchemaType.
 
 Please note above that if a property only requires a type, it can be specified using a shorthand notation (contrast the `title` property above with the `date` property).
 
@@ -42,15 +47,15 @@ The `meta` above cannot have its own validation as a side-effect of this. If val
 
 ## Allowed SchemaTypes
 
-- [String](/classes/stringtype)
-- [Number](/classes/numbertype)
-- [Boolean](/classes/booleantype)
-- [Date](/classes/datetype)
-- [Array](/classes/arraytype)
-- [Embed](/classes/embedtype)
-- [Reference](/classes/referencetype)
-- [Mixed](/classes/mixedtype)
-- *[Custom](/guides/schema.html#custom-schematypes)*
+- [String](/docs/api/classes/stringtype)
+- [Number](/docs/api/classes/numbertype)
+- [Boolean](/docs/api/classes/booleantype)
+- [Date](/docs/api/classes/datetype)
+- [Array](/docs/api/classes/arraytype)
+- [Embed](/docs/api/classes/embedtype)
+- [Reference](/docs/api/classes/referencetype)
+- [Mixed](/docs/api/classes/mixedtype)
+- *[Custom](/docs/api/guides/schema.html#custom-schematypes)*
 
 Schemas not only define the structure of your document and casting of properties, they also define document [instance methods](#instance-methods), [static Model methods](#statics),
 [compound indexes](#indexes), [plugins](#plugins), and document lifecycle [hooks](#hooks).
@@ -59,7 +64,7 @@ Schemas not only define the structure of your document and casting of properties
 
 Ottoman supports custom types. Before you reach for a custom type, however, know that a custom type is overkill for most use cases.
 
-Let's take a look at an example of a basic schema type: a 1-byte integer. To create a new schema type, you need to inherit from `IOttomanType` and add the corresponding `registerType`. The only methods you need to implement are [cast()](/guides/schema.html#cast-method) and [validate()](/guides/schema.html#validate-method).
+Let's take a look at an example of a basic schema type: a 1-byte integer. To create a new schema type, you need to inherit from `IOttomanType` and add the corresponding `registerType`. The only methods you need to implement are [cast()](/docs/basic/schema.html#cast-method) and [validate()](/docs/basic/guides/schema.html#validate-method).
 
 ```typescript
 class Int8 extends IOttomanType {
@@ -164,7 +169,7 @@ const schema = Schema({
 
 ## Creating a Model
 
-To use our schema definition, we need to convert our `blogSchema` into a [Model](/guides/model.html) we can work with. To do so, we pass it into `model(modelName, schema)`:
+To use our schema definition, we need to convert our `blogSchema` into a [Model](/docs/basic/model.html) we can work with. To do so, we pass it into `model(modelName, schema)`:
 
 ```javascript
 const Blog = model('Blog', blogSchema);
@@ -173,7 +178,7 @@ const Blog = model('Blog', blogSchema);
 
 ## Instance Methods
 
-Instances of `Models` are [documents](/guides/document.md). Documents have many of their own [built-in instance methods](/classes/document.html). We may also define our own custom document instance methods.
+Instances of `Models` are [documents](/docs/basic/document.md). Documents have many of their own [built-in instance methods](/docs/api/classes/document.html). We may also define our own custom document instance methods.
 
 ```javascript
 import { connect, Schema } from 'ottoman';
@@ -235,7 +240,7 @@ Do **not** declare _statics_ using ES6 arrow functions (`=>`). Arrow functions [
 
 You can specify several indexes on a model. There are different kinds of indexes, each with its own benefits and restrictions.
 
-To specify indexes on a [Schema](/guides/schema), use the index key on the schema:
+To specify indexes on a [Schema](/docs/basic/schema), use the index key on the schema:
 
 ```javascript
 import { Schema } from 'ottoman';
@@ -426,7 +431,7 @@ console.log(userRefdoc);
 }
 ```
 
-::: warning
+:::caution
 **Refdoc Index** is not managed by Couchbase but strictly by Ottoman. It does not guarantee consistency if the keys that are a part of these indexes are updated by an external operation, like N1QL for example.
 
 **_Needs to be used with caution!!!_**
@@ -693,7 +698,7 @@ const user = new User(doc, { strict: false }); // disables strict mode
 
 Defines this path as `immutable`. Ottoman prevents you from changing `immutable` paths allowing, you to safely write untrusted data to Couchbase without any additional validation.
 
-With update functions Ottoman also strips updates to `immutable` properties from [updateById()](/interfaces/imodel.html#updatebyid), [updateMany()](/interfaces/imodel.html#updatemany), [replaceById()](/interfaces/imodel.html#replacebyid) and [findOneAndUpdate()](/interfaces/imodel.html#findoneandupdate). Your update will succeed if you try to overwrite an `immutable` property, Ottoman will just strip out the `immutable` property.
+With update functions Ottoman also strips updates to `immutable` properties from [updateById()](/docs/api/interfaces/imodel.html#updatebyid), [updateMany()](/docs/api/interfaces/imodel.html#updatemany), [replaceById()](/docs/api/interfaces/imodel.html#replacebyid) and [findOneAndUpdate()](/docs/api/interfaces/imodel.html#findoneandupdate). Your update will succeed if you try to overwrite an `immutable` property, Ottoman will just strip out the `immutable` property.
 
 Let's see this option in action using `findOneAndUpdate` on `immutable` properties:
 
@@ -949,4 +954,4 @@ When a schema is added, the following properties are copied: fields, statics, in
 
 ## Next Up
 
-Nice, now we'll can see how [Models](/guides/model) works.
+Nice, now we'll can see how [Models](/docs/basic/model) works.

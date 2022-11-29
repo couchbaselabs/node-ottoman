@@ -1,3 +1,8 @@
+---
+sidebar_position: -5
+title: Intoduction
+---
+
 ![CI](https://github.com/couchbaselabs/node-ottoman/workflows/CI/badge.svg)
 [![codecov](https://codecov.io/gh/couchbaselabs/node-ottoman/branch/master/graph/badge.svg)](https://codecov.io/gh/couchbaselabs/node-ottoman)
 [![npm version](https://badge.fury.io/js/ottoman.svg)](https://badge.fury.io/js/ottoman)
@@ -24,9 +29,9 @@ That's it, you are ready to use Ottoman.
 
 Supported version are:
 
-| Ottoman     | Nodejs  | Couchbase SDK | Couchbase Server
-| ----------- |---------|---------------| -----------------
-| ^2.0.0      | ^12.0.0 | ^4.1.3        | ^6.5.0
+| Ottoman     | Nodejs      | Couchbase SDK   | Couchbase Server
+| ----------- | ----------- | --------------- | -----------------
+| ^2.0.0      | ^8.0.0      |  ^3.2.2         | ^6.5.0
 
 ***Notice: make sure you are using supported versions***
 

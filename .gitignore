@@ -104,4 +104,4 @@ dist
 .tern-port
 .idea
 lib
-docs
+/docusaurus/docs/api/
