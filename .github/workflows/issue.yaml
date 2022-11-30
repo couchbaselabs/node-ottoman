@@ -1,4 +1,4 @@
-name: PR
+name: Issue Opened
 
 on:
   issues:
@@ -16,21 +16,20 @@ jobs:
     - uses: actions/checkout@v2
     - name: Send Issues to slack
       run: |
-        echo "${{ github.event.action.number }}"
         echo "Newly opened issue at "
         # ISSUE_TITLE=${{ github.event.issue.title }}
         # ISSUE_BODY=${{ github.event.issue.body }}
-        # ISSUE_URL=${{ github.event.issue.url }}
+        # ISSUE_URL=${{ github.event.issue.issue_url }}
         TIME_STAMP="`date +%s`"
         cat <<EOT > /tmp/slack_message.json
         {
           "type": "mrkdwn",
-          "text": "New Issue Opened on Node Ottoman ",
+          "text": " Issue Opened on Node Ottoman ",
           "attachments": [
             { 
-            "fallback": "New Node Ottoman Issue",
+            "fallback": " Node Ottoman Issue",
             "color": "#36a64f",
-            "pretext": "Newly Opened Issue : $ISSUE_TITLE \n \n $ISSUE_BODY \n \n For more details about issue: $ISSUE_URL ",
+            "pretext": " Opened Issue : $ISSUE_TITLE \n \n $ISSUE_BODY \n \n For more details about issue: $ISSUE_URL ",
             "footer_icon": "https://www.couchbase.com/webfiles/1629373386042/images/favicon.ico",
             "ts": ${TIME_STAMP}
         }
