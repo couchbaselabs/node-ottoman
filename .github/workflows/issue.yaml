@@ -30,7 +30,7 @@ jobs:
             { 
             "fallback": "New Node Ottoman Issue",
             "color": "#36a64f",
-            "pretext": "Newly Opened Issue : ${ISSUE_TITLE} \n \n ${ISSUE_BODY} \n \n For more details about issue: ${ISSUE_URL} ",
+            "pretext": "Newly Opened Issue : $ISSUE_TITLE \n \n $ISSUE_BODY \n \n For more details about issue: $ISSUE_URL ",
             "footer_icon": "https://www.couchbase.com/webfiles/1629373386042/images/favicon.ico",
             "ts": ${TIME_STAMP}
         }
