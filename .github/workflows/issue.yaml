@@ -20,9 +20,9 @@ jobs:
       run: |
         echo "${{ github.event.action.number }}"
         echo "Newly opened issue at "
-        ISSUE_TITLE=${{ github.event.issue.title }}
-        ISSUE_BODY=${{ github.event.issue.body }}
-        ISSUE_URL=${{ github.event.issue.url }}
+        # ISSUE_TITLE=${{ github.event.issue.title }}
+        # ISSUE_BODY=${{ github.event.issue.body }}
+        # ISSUE_URL=${{ github.event.issue.url }}
         TIME_STAMP="`date +%s`"
         cat <<EOT > /tmp/slack_message.json
         {
