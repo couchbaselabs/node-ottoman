@@ -8,10 +8,10 @@ API_TOKEN_TO_GITHUB="$6"
 cat <<EOT > /tmp/slack_message.json
 {
     "type": "mrkdwn",
-    "text": "New Issue Opened on Node Ottoman ",
+    "text": "New Test Issue Opened on Node Ottoman ",
     "attachments": [
         {
-            "fallback": "Issue",
+            "fallback": "Test Ottoman Issue",
             "color": "#36a64f",
             "pretext": "Newly Opened Issue : ${ISSUE_TITLE} \n \n ${ISSUE_BODY} \n \n For more details about issue: ${ISSUE_URL} ",
             "footer_icon": "https://www.couchbase.com/webfiles/1629373386042/images/favicon.ico",
