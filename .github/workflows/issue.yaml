@@ -1,8 +1,10 @@
 name: PR
 
 on:
-  issues:
-    types: [opened, reopened]
+  push:
+    branches: [ "devadv-2257-issue" ] 
+  # issues:
+  #   types: [opened, reopened]
 
 env:
   ISSUE_URL: ${{ github.event.issue.url }}
@@ -18,6 +20,25 @@ jobs:
       run: |
         echo "${{ github.event.action.number }}"
         echo "Newly opened issue at "
-        cd .github/workflows
-        chmod a+x send_issue.sh
-        ./send_issue.sh ${ISSUE_TITLE} ${ISSUE_BODY} ${ISSUE_URL} ${GITHUB_RUN_ID} ${{ secrets.SLACK_WEBHOOK_URL_DA_ALERTS_SUCCESS }} ${{ secrets.API_TOKEN_TO_GITHUB }}
+        ISSUE_TITLE=${{ github.event.issue.title }}
+        ISSUE_BODY=${{ github.event.issue.body }}
+        ISSUE_URL=${{ github.event.issue.url }}
+        TIME_STAMP="`date +%s`"
+        cat <<EOT > /tmp/slack_message.json
+        {
+          "type": "mrkdwn",
+          "text": "New Issue Opened on Node Ottoman ",
+          "attachments": [
+            { 
+            "fallback": "New Node Ottoman Issue",
+            "color": "#36a64f",
+            "pretext": "Newly Opened Issue : ${ISSUE_TITLE} \n \n ${ISSUE_BODY} \n \n For more details about issue: ${ISSUE_URL} ",
+            "footer_icon": "https://www.couchbase.com/webfiles/1629373386042/images/favicon.ico",
+            "ts": ${TIME_STAMP}
+        }
+          ]
+        }
+        EOT
+        cat /tmp/slack_message.json
+        SLACK_WEBHOOK_URL="${{ secrets.SLACK_WEBHOOK_URL_DA_ALERTS_SUCCESS }}"
+        curl -X POST -H 'Content-type: application/json' --data @/tmp/slack_message.json ${SLACK_WEBHOOK_URL}
