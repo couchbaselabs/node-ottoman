@@ -1,10 +1,10 @@
 #!/bin/bash -x
-ISSUE_TITLE="$1"
-ISSUE_BODY="$2"
-ISSUE_URL="$3"
-RUN_ID="$4"
-SLACK_WEBHOOK_URL="$5"
-API_TOKEN_TO_GITHUB="$6"
+# ISSUE_TITLE="$1"
+# ISSUE_BODY="$2"
+# ISSUE_URL="$3"
+RUN_ID="$1"
+SLACK_WEBHOOK_URL="$2"
+API_TOKEN_TO_GITHUB="$3"
 # cat <<EOT > /tmp/slack_message.json
 # {
 #     "type": "mrkdwn",
