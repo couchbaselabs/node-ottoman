@@ -9,10 +9,10 @@ TIME_STAMP="`date +%s`"
 cat <<EOT > /tmp/slack_message.json
 {
     "type": "mrkdwn",
-    "text": "New Test Issue Opened on Node Ottoman ",
+    "text": "New Issue Opened on Node Ottoman ",
     "attachments": [
         {
-            "fallback": "Test Ottoman Issue",
+            "fallback": "New Node Ottoman Issue",
             "color": "#36a64f",
             "pretext": "Newly Opened Issue : ${ISSUE_TITLE} \n \n ${ISSUE_BODY} \n \n For more details about issue: ${ISSUE_URL} ",
             "footer_icon": "https://www.couchbase.com/webfiles/1629373386042/images/favicon.ico",
