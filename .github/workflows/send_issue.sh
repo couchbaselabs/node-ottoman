@@ -1,11 +1,10 @@
 #!/bin/bash -x
-# ISSUE_TITLE="$1"
-# ISSUE_BODY="$2"
-# ISSUE_URL="$3"
-RUN_ID="$1"
-SLACK_WEBHOOK_URL="$2"
-API_TOKEN_TO_GITHUB="$3"
-ISSUE_TITLE = "THIS IS A TEST ISSUE"
+ISSUE_TITLE="$1"
+ISSUE_BODY="$2"
+ISSUE_URL="$3"
+RUN_ID="$4"
+SLACK_WEBHOOK_URL="$5"
+API_TOKEN_TO_GITHUB="$6"
 TIME_STAMP="`date +%s`"
 cat <<EOT > /tmp/slack_message.json
 {
@@ -15,7 +14,7 @@ cat <<EOT > /tmp/slack_message.json
         {
             "fallback": "Test Ottoman Issue",
             "color": "#36a64f",
-            "pretext": "Newly Opened Issue : ${ISSUE_TITLE} \n \n \n \n For more details about issue: ",
+            "pretext": "Newly Opened Issue : ${ISSUE_TITLE} \n \n ${ISSUE_BODY} \n \n For more details about issue: ${ISSUE_URL} ",
             "footer_icon": "https://www.couchbase.com/webfiles/1629373386042/images/favicon.ico",
             "ts": ${TIME_STAMP}
         }
