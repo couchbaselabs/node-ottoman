@@ -22,4 +22,4 @@ cat <<EOT > /tmp/slack_message.json
 EOT
 
 cat /tmp/slack_message.json
-curl -s -X POST -H 'Content-type: application/json' --data @/tmp/slack_message.json ${SLACK_WEBHOOK_URL}
+curl -X POST -H 'Content-type: application/json' --data @/tmp/slack_message.json "${SLACK_WEBHOOK_URL}"

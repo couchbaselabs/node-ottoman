@@ -18,8 +18,6 @@ jobs:
         echo "ISSUE_TITLE: ${{ github.event.issue.title }}"
         echo "ISSUE_BODY: ${{ github.event.issue.body }}"
         echo "ISSUE_URL: ${{ github.event.issue.issue_url }}"
-        ls -la
         cd .github/workflows
         chmod a+x send_issue.sh
-        ls -la
         ./send_issue.sh ${ISSUE_TITLE} ${ISSUE_BODY} ${ISSUE_URL} ${GITHUB_RUN_ID} ${{ secrets.SLACK_WEBHOOK_URL_DA_ALERTS_SUCCESS }} ${{ secrets.API_TOKEN_TO_GITHUB }}
