@@ -6,6 +6,7 @@ RUN_ID="$1"
 SLACK_WEBHOOK_URL="$2"
 API_TOKEN_TO_GITHUB="$3"
 ISSUE_TITLE = "THIS IS A TEST ISSUE"
+TIME_STAMP="`date +%s`"
 cat <<EOT > /tmp/slack_message.json
 {
     "type": "mrkdwn",
