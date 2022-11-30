@@ -1,10 +1,8 @@
 name: PR
 
 on:
-  push:
-    branches: [ "devadv-2257-issue" ] 
-  # issues:
-  #   types: [opened, reopened]
+  issues:
+    types: [opened, reopened]
 
 env:
   ISSUE_URL: ${{ github.event.issue.url }}
