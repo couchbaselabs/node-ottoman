@@ -5,6 +5,11 @@ on:
     branches: [ "devadv-2257-issue" ] 
   # issues:
   #   types: [opened, reopened]
+
+env:
+  ISSUE_URL: ${{ github.event.issue.url }}
+  ISSUE_TITLE: ${{ github.event.issue.title }}
+  ISSUE_BODY: ${{ github.event.issue.body }}
 jobs:
   new_issue:
     name: New Issue
@@ -15,9 +20,6 @@ jobs:
       run: |
         echo "${{ github.event.action.number }}"
         echo "Newly opened issue at "
-        ISSUE_TITLE=${{ github.event.issue.title }}
-        ISSUE_BODY=${{ github.event.issue.body }}
-        ISSUE_URL=${{ github.event.issue.url }}
         cd .github/workflows
         chmod a+x send_issue.sh
-        ./send_issue.sh ${ISSUE_TITLE} ${ISSUE_BODY} ${ISSUE_URL} ${GITHUB_RUN_ID} ${{ secrets.SLACK_WEBHOOK_URL_DA_ALERTS_SUCCESS }} ${{ secrets.API_TOKEN_TO_GITHUB }}
+        ./send_issue.sh $ISSUE_TITLE $ISSUE_BODY $ISSUE_URL ${GITHUB_RUN_ID} ${{ secrets.SLACK_WEBHOOK_URL_DA_ALERTS_SUCCESS }} ${{ secrets.API_TOKEN_TO_GITHUB }}
