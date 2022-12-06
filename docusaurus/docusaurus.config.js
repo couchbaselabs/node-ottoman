@@ -104,6 +104,7 @@ const config = {
       {
         entryPoints: ['../src/index.ts'],
         tsconfig: '../tsconfig.json',
+        exclude: '**/node_modules/**',
       },
     ],
   ],

@@ -31,8 +31,6 @@ import {
   DropScopeOptions,
   QueryOptions,
   ConnectOptions as CouchbaseConnectOptions,
-  NoopTracer,
-  NoopMeter,
   QueryIndexManager,
   ViewIndexManager,
   Collection,
@@ -240,14 +238,6 @@ export class Ottoman {
    */
   connect = async (connectOptions: ConnectOptions | string): Promise<Ottoman> => {
     const options = typeof connectOptions === 'object' ? connectOptions : extractConnectionString(connectOptions);
-
-    // temporary solution to segmentation fault, this code will be removed after brett notification.
-    if (!options.tracer) {
-      options.tracer = new NoopTracer();
-    }
-    if (!options.meter) {
-      options.meter = new NoopMeter();
-    }
 
     const { connectionString, bucketName, ..._options } = options;
     this._cluster = await Cluster.connect(connectionString, _options);

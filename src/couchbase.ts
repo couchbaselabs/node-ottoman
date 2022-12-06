@@ -16,7 +16,6 @@ export {
   CreateScopeOptions,
   CreateCollectionOptions,
   DropScopeOptions,
-  RequestSpan,
   DropBucketOptions,
   Collection,
   QueryOptions,
