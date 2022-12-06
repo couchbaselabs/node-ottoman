@@ -2,3 +2,5 @@ coverage:
   range: 60..90
   round: down
   precision: 2
+codecov:
+  allow_pseudo_compare: False
