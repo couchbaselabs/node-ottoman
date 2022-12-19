@@ -26,7 +26,7 @@ Supported version are:
 
 | Ottoman | Nodejs | Couchbase SDK | Couchbase Server |
 |---------|--------|---------------|------------------|
-| ^2.0.0  | ^8.0.0 | ^3.2.2        | ^6.5.0           |
+| ^2.0.0  | ^8.0.0 | ^4.2.0        | ^6.5.0           |
 
 ***Notice: make sure you are using supported versions***
 
