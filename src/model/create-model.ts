@@ -1,5 +1,5 @@
 import { DocumentNotFoundError, DropCollectionOptions } from 'couchbase';
-import { getValueByPath, Query, SearchConsistency, setValueByPath } from '..';
+import { getValueByPath, Model, Query, SearchConsistency, setValueByPath } from '..';
 import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 import { createMany, find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
 import { FindByIdOptions, IFindOptions } from '../handler/';
@@ -17,7 +17,6 @@ import { CreateModel } from './interfaces/create-model.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
-import { Model } from './model';
 import { ModelTypes, saveOptions } from './model.types';
 import { getModelMetadata, getPopulated, setModelMetadata } from './utils/model.utils';
 import { IConditionExpr } from '../query';
