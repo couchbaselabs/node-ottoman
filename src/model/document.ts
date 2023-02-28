@@ -17,7 +17,8 @@ import { removeLifeCycle } from './utils/remove-life-cycle';
 import { storeLifeCycle } from './utils/store-life-cycle';
 import { setValueByPath } from '../utils';
 
-export type IDocument<T = any> = Document & T;
+type CleanDocument = Omit<Document, '$' | '$isNew'>;
+export type IDocument<T = any> = CleanDocument & T;
 
 /**
  * Document class represents a database document and provides useful methods to work with.

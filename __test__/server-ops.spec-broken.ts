@@ -58,7 +58,7 @@ describe('Ottoman.dropScope', () => {
         error.message = 'failed to drop scope';
         parseError(error, { scopeName: 'DummyScopeTestError' });
       } else await ottoman.dropScope('DummyScopeTestError');
-    } catch (e) {
+    } catch (e: any) {
       expect(e).toBeInstanceOf(ScopeNotFoundError);
       expect(e.cause.message.endsWith(`scope 'DummyScopeTestError' not found`)).toBe(true);
     }
@@ -81,7 +81,7 @@ describe('Ottoman.dropCollection', () => {
         const error = new CollectionNotFoundError(new Error('failed to drop collection'));
         parseError(error, { collectionName: 'DummyCollectionTestError', scopeName: DEFAULT_SCOPE });
       } else await ottoman.dropCollection('DummyCollectionTestError', DEFAULT_SCOPE);
-    } catch (e) {
+    } catch (e: any) {
       expect(e).toBeInstanceOf(CollectionNotFoundError);
       expect(e.cause.message.endsWith(`in scope '_default' collection 'DummyCollectionTestError' not found`)).toBe(
         true,
@@ -96,8 +96,7 @@ describe('Ottoman.dropCollection', () => {
         error.message = 'failed to drop collection';
         parseError(error, { collectionName: 'DummyCollectionTestError', scopeName: 'DummyScopeTestError' });
       } else await ottoman.dropCollection('DummyCollectionTestError', 'DummyScopeTestError');
-    } catch (e) {
-      const { message } = e;
+    } catch (e: any) {
       expect(e).toBeInstanceOf(ScopeNotFoundError);
       expect(
         e.cause.message.endsWith(`collection 'DummyCollectionTestError', scope 'DummyScopeTestError' not found`),
@@ -119,7 +118,7 @@ describe('Ottoman.dropBucket', () => {
     const ottoman = getDefaultInstance();
     try {
       await ottoman.dropBucket('DummyBucketTestError');
-    } catch (e) {
+    } catch (e: any) {
       expect(e).toBeInstanceOf(BucketNotFoundError);
       expect(e.cause.message.endsWith(`bucket 'DummyBucketTestError' not found`)).toBe(true);
     }

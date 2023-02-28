@@ -2,6 +2,8 @@ interface StoreOptions {
   cas?: string;
   transcoder?: any;
   timeout?: number;
+  maxExpiry?: number;
+  expiry?: number;
 }
 
 /**
@@ -10,6 +12,10 @@ interface StoreOptions {
  */
 export const store = (key, data, options: StoreOptions, collection): Promise<any> => {
   let storePromise;
+  if (options.maxExpiry !== undefined) {
+    options.expiry = options.maxExpiry;
+    delete options.maxExpiry;
+  }
   if (options.cas) {
     storePromise = collection.replace(key, data, options);
   } else {
