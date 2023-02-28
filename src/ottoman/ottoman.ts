@@ -254,11 +254,11 @@ export class Ottoman {
    * const User = connection.model('User', { name: String }, { collectionName: 'users' });
    * ```
    */
-  model<T = any, R = any>(
+  model<T = any, R = T>(
     name: string,
     schema: Schema | Record<string, unknown>,
     options: ModelOptions = {},
-  ): ModelTypes<T> {
+  ): ModelTypes<T, R> {
     if (this.models[name]) {
       throw new OttomanError(`A model with name '${name}' has already been registered.`);
     }
@@ -539,8 +539,8 @@ export const start = () => __ottoman && __ottoman.start();
 export const getModel = (name: string) => __ottoman && __ottoman.getModel(name);
 export const getCollection = (collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) =>
   __ottoman && __ottoman.getCollection(collectionName, scopeName);
-export const model = <T = any, R = any>(
+export const model = <T = any, R = T>(
   name: string,
   schema: Schema | Record<string, unknown>,
   options?: ModelOptions,
-): ModelTypes<T> => __ottoman && __ottoman.model<T, R>(name, schema, options);
+): ModelTypes<T, R> => __ottoman && __ottoman.model<T, R>(name, schema, options);
