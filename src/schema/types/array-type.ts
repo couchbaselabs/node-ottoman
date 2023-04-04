@@ -52,4 +52,5 @@ export class ArrayType extends CoreType {
   }
 }
 
-export const arrayTypeFactory = (name: string, item: CoreType): ArrayType => new ArrayType(name, item);
+export const arrayTypeFactory = (name: string, item: CoreType, options?: CoreTypeOptions): ArrayType =>
+  new ArrayType(name, item, options);
