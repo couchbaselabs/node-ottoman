@@ -2,7 +2,14 @@ import { is, isSchemaFactoryType } from '../../utils';
 import { BuildSchemaError, ValidationError } from '../errors';
 import { Schema } from '../schema';
 import { CoreType } from '../types';
-import { CustomValidations, FactoryFunction, FieldMap, IOttomanType, SchemaDef } from '../interfaces/schema.types';
+import {
+  CoreTypeOptions,
+  CustomValidations,
+  FactoryFunction,
+  FieldMap,
+  IOttomanType,
+  SchemaDef,
+} from '../interfaces/schema.types';
 import { cast, CAST_STRATEGY, CastOptions } from '../../utils/cast-strategy';
 
 type ParseResult = {
@@ -37,7 +44,7 @@ export const buildFields = (obj: Schema | SchemaDef, strict = true): FieldMap =>
     if (!opts.type) {
       throw new BuildSchemaError(`Property '${_key}' is a required type`);
     }
-    fields[_key] = _makeField(_key, opts);
+    fields[_key] = _makeField(_key, opts, obj[_key]);
   }
   return fields;
 };
@@ -105,10 +112,13 @@ const _getFieldType = (type: any): any => {
  * @param def result of parsing the field schema
  * @throws BuildSchemaError
  */
-const _makeField = (name: string, def: ParseResult): IOttomanType => {
+const _makeField = (name: string, def: ParseResult, arrayOptions?: CoreTypeOptions): IOttomanType => {
   const typeFactory = Schema.FactoryTypes[String(def.type)];
   if (typeFactory === undefined) {
     throw new BuildSchemaError(`Unsupported type specified in the property '${name}'`);
+  }
+  if (arrayOptions !== undefined) {
+    return typeFactory(name, def.options, arrayOptions);
   }
   return typeFactory(name, def.options);
 };

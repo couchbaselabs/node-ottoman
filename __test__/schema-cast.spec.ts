@@ -48,10 +48,14 @@ test('support array of primitive types', () => {
     coordinates: {
       type: [Number],
       required: true,
+      default: [0],
     },
+    articles: { default: () => [], type: [{ type: String, ref: 'Article' }] },
   });
   const fields = schema.fields;
   expect(fields.coordinates.typeName).toBe(Array.name);
+  expect((fields.articles as ArrayType).options).toBeDefined();
+  expect((fields.articles as ArrayType).options!.default).toBeInstanceOf(Function);
   expect((fields.coordinates as ArrayType).itemType.typeName).toBe(Number.name);
 });
 
