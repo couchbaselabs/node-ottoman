@@ -80,6 +80,7 @@ const config = {
             ],
             position: 'right',
           },
+          { label: 'CLI', to: '/docs/cli', position: 'right' },
           { label: 'Example', to: '/docs/first-app', position: 'right' },
           { label: 'FAQ', to: '/docs/faq', position: 'right' },
           {
