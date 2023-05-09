@@ -1,6 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
+import Link from '@docusaurus/Link';
 import styles from './styles.module.css';
+import GenerateImg from '@site/static/img/generate.png';
 
 const FeatureList = [
   {
@@ -32,28 +34,49 @@ const FeatureList = [
 
 function Feature({ Svg, title, description }) {
   return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+    <>
+      <div className={clsx('col col--4')}>
+        <div className="text--center">
+          <Svg className={styles.featureSvg} role="img" />
+        </div>
+        <div className="text--center padding-horiz--md">
+          <h3>{title}</h3>
+          <p>{description}</p>
+        </div>
       </div>
-      <div className="text--center padding-horiz--md">
-        <h3>{title}</h3>
-        <p>{description}</p>
-      </div>
-    </div>
+    </>
   );
 }
 
 export default function HomepageFeatures() {
   return (
-    <section className={styles.features}>
+    <>
       <div className="container">
-        <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
-          ))}
+        <div className="row" style={{ marginTop: 16 }}>
+          <div className="text--center" style={{ width: '100%' }}>
+            <h3>
+              Spin up your project in a few steps using the <Link to="docs/cli">CLI</Link>
+            </h3>
+          </div>
+        </div>
+        <div className="row" style={{ justifyContent: 'center' }}>
+          <pre>
+            <code>$ npx ottoman-cli generate</code>
+          </pre>
+        </div>
+        <div className="row" style={{ justifyContent: 'center' }}>
+          <img src={GenerateImg} />
         </div>
       </div>
-    </section>
+      <section className={styles.features}>
+        <div className="container">
+          <div className="row">
+            {FeatureList.map((props, idx) => (
+              <Feature key={idx} {...props} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

@@ -20,6 +20,11 @@ If you still need to perform these tasks please use one of the following:
 
 - [5-minute Couchbase Docker Container Configuration](https://docs.couchbase.com/tutorials/quick-start/quickstart-docker-image-manual-cb65.html)
 
+:::tip The Recommended way is using the CLI
+The easiest way to start an Ottoman project is using the [Ottoman CLI](/docs/cli) tool, 
+to autogenerate your project. The [CLI](/docs/cli) will setup and spin up a project in a few steps, [check it here](/docs/cli).
+:::
+
 ## Create the Ottoman NodeJS Project
 
 In this exercise, we will be working with the [Ottoman v2 ODM (Object Document Mapper)](https://github.com/couchbaselabs/node-ottoman)

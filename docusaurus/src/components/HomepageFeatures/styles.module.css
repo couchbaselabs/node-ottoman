@@ -10,3 +10,9 @@
   height: 200px;
   width: 200px;
 }
+
+.cliIntructions {
+  padding: 8px 16px;
+  background-color: silver;
+  border-radius: 5px;
+}

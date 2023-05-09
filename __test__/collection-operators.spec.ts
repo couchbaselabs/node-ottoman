@@ -263,7 +263,7 @@ describe('Collection operators', () => {
     });
 
     const collectionName = 'airline';
-    const Airline = model(collectionName, airlineSchema, { modelKey: 'type' });
+    const Airline = model(collectionName, airlineSchema, { modelKey: 'type', scopeName: 'inventory' });
 
     const ottoman = getDefaultInstance();
     await startInTest(ottoman);
