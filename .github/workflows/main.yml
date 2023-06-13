@@ -35,6 +35,13 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
 
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v1.3.0
+        with:
+          envKey_ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+          envKey_ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+          directory: docusaurus/
+
       - name: Generate docs
         run: yarn docs
 
