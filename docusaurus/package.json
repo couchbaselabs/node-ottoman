@@ -26,6 +26,7 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.2.0",
     "docusaurus-plugin-typedoc": "^0.17.5",
+    "dotenv": "^16.1.4",
     "got": "11.8.5",
     "trim": "0.0.3",
     "typedoc": "^0.23.21",

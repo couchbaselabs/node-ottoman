@@ -16,6 +16,9 @@ $ yarn start
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
+#### Environment Variables
+The `.env.example` file shows the required environment variables that must be replaced in order for Algolia DocSearch to work locally.
+
 ### Build
 
 ```
