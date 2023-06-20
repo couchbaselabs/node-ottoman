@@ -16,6 +16,16 @@ describe('schema custom validators', () => {
           throw new Error('Not an integer!');
         }
       },
+      email: (val: any) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailRegex.test(val)) {
+          // email is not correct
+          throw new Error('invalid email');
+        }
+
+        return true;
+      },
     });
   });
   test('should validate the data with custom validators', () => {
@@ -76,5 +86,38 @@ describe('schema custom validators', () => {
         fails: 'Not valid',
       }),
     ).toThrow(new BuildSchemaError('Validator object properties must be functions.'));
+  });
+
+  test('email validation optional succeed', async () => {
+    const UserSchema = new Schema({
+      firstName: { type: String, required: true },
+      lastName: { type: String, required: true },
+      email: { type: String, required: true, validator: 'email' },
+      altEmail: { type: String, validator: Schema.validators.email },
+    });
+
+    const jane = {
+      firstName: 'Jane',
+      lastName: 'Smith',
+      email: 'user@user.com',
+    };
+    expect(() => validate(jane, UserSchema)).not.toThrow();
+  });
+
+  test('email validation fails', async () => {
+    const UserSchema = new Schema({
+      firstName: { type: String, required: true },
+      lastName: { type: String, required: true },
+      email: { type: String, required: true, validator: 'email' },
+      altEmail: { type: String, validator: Schema.validators.email },
+    });
+
+    const jane = {
+      firstName: 'Jane',
+      lastName: 'Smith',
+      email: 'user@user.com',
+      altEmail: 'abc',
+    };
+    expect(() => validate(jane, UserSchema)).toThrow();
   });
 });
