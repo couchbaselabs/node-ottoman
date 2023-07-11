@@ -41,7 +41,7 @@ ottoman-cli generate
 ottoman-cli migrate
 ```
 
-Ottoman CLI `migrate` command will sync your database with the information took from your models.
+The Ottoman CLI's `migrate` command will sync your database with the information took from your models.
 Scopes, Collections and Indexes will be created automatically after run the `migrate` command.
 
 Constraints:
