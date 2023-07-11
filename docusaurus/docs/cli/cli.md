@@ -3,7 +3,7 @@
 ## Goals:
 - Provide some useful tools while working with Ottoman.
 - Speed up the Ottoman setup process.
-- Help to keep database sync easily in Development and Production environments.
+- Help keep databases in sync across Development and Production environments.
 - Automate Ottoman's process.
 
 ## Install
