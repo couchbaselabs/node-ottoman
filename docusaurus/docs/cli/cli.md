@@ -4,7 +4,7 @@
 - Provide some useful tools while working with Ottoman.
 - Speed up the Ottoman setup process.
 - Help keep databases in sync across Development and Production environments.
-- Automate Ottoman's process.
+- Automate Ottoman's setup process.
 
 ## Install
 ```shell
