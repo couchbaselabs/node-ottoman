@@ -26,7 +26,7 @@ npx ottoman-cli generate <do not required previous installation>
 
 ### Generate command
 
-Ottoman CLI `generate` command will create an Ottoman app for you in no time,
+The Ottoman CLI's `generate` command will bootstrap an Ottoman app for you in no time!
 just follow the available steps in the wizard. Happy Coding!
 
 ```shell
