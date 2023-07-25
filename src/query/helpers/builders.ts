@@ -190,7 +190,7 @@ const _buildLetExpr = (letExpr?: LetExprType, clause = 'LET') => {
 const _buildOrderByExpr = (orderExpr: Record<string, SortType> | undefined) => {
   return !!orderExpr
     ? ` ORDER BY ${Object.keys(orderExpr)
-        .map((value: string) => `${escapeReservedWords(value)} ${orderExpr[value]}`)
+        .map((value: string) => `${value.includes('[') ? value : escapeReservedWords(value)} ${orderExpr[value]}`)
         .join(',')}`
     : '';
 };

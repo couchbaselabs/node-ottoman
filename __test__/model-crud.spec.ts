@@ -80,6 +80,17 @@ describe('Test Document Access Functions', () => {
     expect(user.isActive).toBe(true);
   });
 
+  test('UserModel.update -> Update a document with array props', async () => {
+    const addressSchema = new Schema({ city: String });
+    const personSchema = new Schema({ address: [addressSchema] });
+    const Model = model('Person', personSchema);
+    await startInTest(getDefaultInstance());
+    const result = await Model.create({ address: [{ city: 'xxx1' }, { city: 'xxx2' }] });
+    await Model.updateById(result.id, { address: [{ city: 'xxx3' }] });
+    const doc = await Model.findById(result.id);
+    expect(doc.address?.length).toBe(1);
+  });
+
   test('UserModel.update -> Update a document, throw DocumentNotFound', async () => {
     const UserModel = model<IUser>('User', schema);
     await startInTest(getDefaultInstance());

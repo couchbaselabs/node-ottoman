@@ -1,5 +1,4 @@
 import { DocumentExistsError, DocumentNotFoundError } from 'couchbase';
-import _ from 'lodash';
 import { ImmutableError } from '../exceptions/ottoman-errors';
 import { validate } from '../schema';
 import { ApplyStrategy, CAST_STRATEGY, CastOptions } from '../utils/cast-strategy';
@@ -16,6 +15,7 @@ import { getModelMetadata, getPopulated } from './utils/model.utils';
 import { removeLifeCycle } from './utils/remove-life-cycle';
 import { storeLifeCycle } from './utils/store-life-cycle';
 import { setValueByPath } from '../utils';
+import { mergeDoc } from '../utils/merge';
 
 type CleanDocument = Omit<Document, '$' | '$isNew'>;
 export type IDocument<T = any> = CleanDocument & T;
@@ -187,7 +187,7 @@ export abstract class Document {
     }
     const modelKeyObj = {};
     setValueByPath(modelKeyObj, modelKey, modelName);
-    const addedMetadata = _.merge({}, data, modelKeyObj);
+    const addedMetadata = mergeDoc(data, modelKeyObj);
     const { document } = await storeLifeCycle({ key, id, data: addedMetadata, options: _options, metadata, refKeys });
     return this._applyData(document).$wasNew();
   }
