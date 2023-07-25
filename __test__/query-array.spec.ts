@@ -1,4 +1,4 @@
-import { model, Schema, SearchConsistency, getDefaultInstance, set } from '../src';
+import { model, Schema, SearchConsistency, getDefaultInstance, set, Query } from '../src';
 import { startInTest } from './testData';
 
 describe('Query Builder Array', () => {
@@ -23,15 +23,28 @@ describe('Query Builder Array', () => {
     });
     await house.save();
 
+    const house2 = new House({
+      title: 'City House',
+      address: { line1: 'city house', state: 'FL' },
+      numbers: [1, 5],
+    });
+    await house2.save();
+
+    const house3 = new House({
+      title: 'Highway House',
+      address: { line1: 'Highway house', state: 'FL' },
+      numbers: [1, 5, 4000000],
+    });
+    await house3.save();
+
     const filter = {
-      title: 'Beach House',
       $any: {
         $expr: [{ search: { $in: 'numbers' } }],
-        $satisfies: { search: 10 },
+        $satisfies: { search: { $gte: 5, $lte: 15 } },
       },
     };
 
-    const results = await House.find(filter, { consistency: SearchConsistency.LOCAL });
+    const results = await House.find(filter, { sort: { 'numbers[-1]': 'DESC' }, consistency: SearchConsistency.LOCAL });
     expect(results.rows.length).toBeGreaterThanOrEqual(1);
   });
 });

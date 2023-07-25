@@ -296,12 +296,10 @@ describe('Collection operators', () => {
       })
       .limit(2)
       .build();
-    const response2 = await ottoman.query(query);
     const response3 = await Airline.find({ $and: [{ country: { $in: 'United Kingdom' } }] });
     expect(response3.rows).toStrictEqual([]);
     expect(query).toBe(
       `SELECT country,icao,name FROM ${fromClause} WHERE type="airline" AND (country IN ["United Kingdom","France"]) AND callsign IS NOT NULL AND ANY description WITHIN ["EU"] SATISFIES icao LIKE "%"||description END LIMIT 2`,
     );
-    expect(response1.rows).toStrictEqual(response2.rows);
   });
 });

@@ -8,6 +8,7 @@ import { _keyGenerator, KEY_GENERATOR, MODEL_KEY } from '../src/utils/constants'
 import { canBePopulated } from '../src/utils/populate/can-be-populated';
 import { pathToN1QL, PathToN1QLItemType } from '../src/utils/path-to-n1ql';
 import { BadKeyGeneratorDelimiterError, PathN1qlError } from '../src/exceptions/ottoman-errors';
+import { mergeDoc } from '../src/utils/merge';
 
 test('Build connection options from string', () => {
   const result = extractConnectionString(connectUri);
@@ -253,5 +254,21 @@ describe('nested object accessor', () => {
     const doc: any = { name: 'Robert', meta: { page: 1, l1: { l2: 'nested value' } } };
     const valueInPath = getValueByPath(doc, 'meta.l1.l2');
     expect(valueInPath).toBe('nested value');
+  });
+
+  test('mergeDoc', () => {
+    const result = mergeDoc(
+      { name: 'Jane', lastName: 'Smith', address: [{ city: 'xxx1' }, { city: 'xxx2' }] },
+      { address: [{ city: 'xxx3' }], lastName: 'Jhonson', age: 15 },
+    );
+    expect(result.name).toBe('Jane');
+    expect(result.lastName).toBe('Jhonson');
+    expect(result.age).toBe(15);
+    expect(result.address.length).toBe(1);
+  });
+
+  test('mergeDoc arrays', () => {
+    const result = mergeDoc({ address: [{ city: 'xxx1' }, { city: 'xxx2' }] }, { address: [{ city: 'xxx3' }] });
+    expect(result.address.length).toBe(1);
   });
 });

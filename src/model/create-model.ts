@@ -20,7 +20,7 @@ import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { ModelTypes, saveOptions } from './model.types';
 import { getModelMetadata, getPopulated, setModelMetadata } from './utils/model.utils';
 import { IConditionExpr } from '../query';
-import _ from 'lodash';
+import { mergeDoc } from '../utils/merge';
 
 /**
  * @ignore
@@ -247,7 +247,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
       const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
       if (value[ID_KEY]) {
         const strategy = CAST_STRATEGY.THROW;
-        const obj = _.merge({}, value, data);
+        const obj = mergeDoc(value, data);
         (value as Model)._applyData(obj, options.strict);
         const instance = new _Model({ ...value }, { strategy });
         const _options: any = {};
