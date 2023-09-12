@@ -13,6 +13,7 @@ export { Model, IModel } from './model/model';
 export { Document, IDocument } from './model/document';
 export { ModelOptions, CreateModelOptions } from './model/interfaces/create-model.interface';
 export { FindOneAndUpdateOption } from './model/interfaces/find.interface';
+export { UpdateManyOptions } from './model/interfaces/update-many.interface';
 export { ModelTypes, saveOptions } from './model/model.types';
 export { getModelMetadata } from './model/utils/model.utils';
 export { ViewIndexOptions } from './model/index/view/view-index-options';

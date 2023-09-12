@@ -1,6 +1,6 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
-require('dotenv').config()
+require('dotenv').config();
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
@@ -100,13 +100,13 @@ const config = {
         darkTheme: darkCodeTheme,
       },
       algolia: {
-        appId: process.env.ALGOLIA_APP_ID,
-        apiKey: process.env.ALGOLIA_API_KEY,
+        appId: process.env.ALGOLIA_APP_ID || 'dev',
+        apiKey: process.env.ALGOLIA_API_KEY || 'dev',
         indexName: 'ottomanjs',
         contextualSearch: true,
         searchParameters: {},
-        searchPagePath: 'search'
-      }
+        searchPagePath: 'search',
+      },
     }),
   plugins: [
     [

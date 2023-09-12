@@ -140,7 +140,7 @@ The following Schema Types are permitted:
 - [Embed](/docs/api/classes/embedtype)
 - [Reference](/docs/api/classes/referencetype)
 - [Mixed](/docs/api/classes/mixedtype)
-- *[Custom](/docs/api/guides/schema.html#custom-schematypes)*
+- *[Custom](/docs/basic/schema#custom-schematypes)*
 
 ### Defining a Document Model
 
@@ -531,7 +531,7 @@ We got our messages before and after the save. With validation, you can ensure c
 
 ## Query Building
 
-Ottoman has a very rich API that handles many complex operations supported by Couchbase and N1QL. Our query builder behind the scenes creates your N1QL statements for you. When using [Query Builder](/guides/query-builder.html#using-the-query-builder) you have three options of which mode to use.
+Ottoman has a very rich API that handles many complex operations supported by Couchbase and N1QL. Our query builder behind the scenes creates your N1QL statements for you. When using [Query Builder](/docs/basic/query-builder.html#using-the-query-builder) you have three options of which mode to use.
 
 1. [Using parameters](/docs/basic/query-builder.html#build-a-query-by-using-parameters)
 2. [Using Access Functions](/docs/basic/query-builder.html#build-a-query-by-using-access-functions)

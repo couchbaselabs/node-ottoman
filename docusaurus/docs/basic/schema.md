@@ -55,7 +55,7 @@ The `meta` above cannot have its own validation as a side-effect of this. If val
 - [Embed](/docs/api/classes/embedtype)
 - [Reference](/docs/api/classes/referencetype)
 - [Mixed](/docs/api/classes/mixedtype)
-- *[Custom](/docs/api/guides/schema.html#custom-schematypes)*
+- *[Custom](/docs/basic/schema#custom-schematypes)*
 
 Schemas not only define the structure of your document and casting of properties, they also define document [instance methods](#instance-methods), [static Model methods](#statics),
 [compound indexes](#indexes), [plugins](#plugins), and document lifecycle [hooks](#hooks).
@@ -64,7 +64,7 @@ Schemas not only define the structure of your document and casting of properties
 
 Ottoman supports custom types. Before you reach for a custom type, however, know that a custom type is overkill for most use cases.
 
-Let's take a look at an example of a basic schema type: a 1-byte integer. To create a new schema type, you need to inherit from `IOttomanType` and add the corresponding `registerType`. The only methods you need to implement are [cast()](/docs/basic/schema.html#cast-method) and [validate()](/docs/basic/guides/schema.html#validate-method).
+Let's take a look at an example of a basic schema type: a 1-byte integer. To create a new schema type, you need to inherit from `IOttomanType` and add the corresponding `registerType`. The only methods you need to implement are [cast()](/docs/basic/schema.html#cast-method) and [validate()](/docs/basic/schema.html#validate-method).
 
 ```typescript
 class Int8 extends IOttomanType {
