@@ -446,13 +446,13 @@ export abstract class Document {
       if (Array.isArray(data)) {
         for (let i = 0; i < data.length; i++) {
           const field = data[i];
-          if (field && field[this.$.ID_KEY]) {
-            data[i] = field[this.$.ID_KEY];
+          if (field && field._getId && field._getId()) {
+            data[i] = field._getId();
           }
         }
       } else if (typeof data === 'object') {
-        if (data && data[this.$.ID_KEY]) {
-          this[fieldName] = data[this.$.ID_KEY];
+        if (data && data._getId && data._getId()) {
+          this[fieldName] = data._getId();
         }
       }
     }

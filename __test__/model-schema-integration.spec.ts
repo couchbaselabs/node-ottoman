@@ -24,7 +24,7 @@ describe('Test Model-Schema Integration and Validations', () => {
 
   test('Ensure document save references instead of populated objects', async () => {
     const Card = model('Card', CardSchema);
-    const Cat = model('Cat', CatSchema);
+    const Cat = model('Cat', CatSchema, { idKey: 'catId' });
     const UserSchema = new Schema({
       isActive: Boolean,
       name: String,
@@ -44,7 +44,7 @@ describe('Test Model-Schema Integration and Validations', () => {
     const catCreated2 = await Cat.create({ name: 'Garfield', age: 27 });
     const user = new User(populateDoc);
     user.card = cardCreated.id;
-    user.cats = [catCreated.id, catCreated2.id];
+    user.cats = [catCreated._getId(), catCreated2._getId()];
     const validated = await user._validate();
     expect(validated).toBeTruthy();
     expect(user._getIdField()).toBe('id');
