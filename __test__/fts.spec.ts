@@ -1,4 +1,9 @@
 import { searchQuery, SearchQuery } from '../src';
+import { delay } from './testData';
+
+beforeAll(async () => {
+  await delay(15000);
+});
 
 test('fts match results', async () => {
   const result = await searchQuery('hotels', SearchQuery.match('Gillingham'), { limit: 5 });
