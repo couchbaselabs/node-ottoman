@@ -38,6 +38,9 @@ import {
   CouchbaseError,
 } from 'couchbase';
 import { generateUUID } from '../utils/generate-uuid';
+import { SearchQuery } from 'couchbase/dist/searchquery';
+import { SearchMetaData, SearchQueryOptions, SearchResult, SearchRow } from 'couchbase/dist/searchtypes';
+import { StreamableRowPromise } from 'couchbase/dist/streamablepromises';
 
 export interface ConnectOptions extends CouchbaseConnectOptions {
   connectionString: string;
@@ -351,6 +354,18 @@ export class Ottoman {
     );
   }
 
+  getIndexes() {
+    return this.cluster.searchIndexes().getAllIndexes();
+  }
+
+  searchQuery(
+    indexName: string,
+    query: SearchQuery,
+    options?: SearchQueryOptions,
+  ): StreamableRowPromise<SearchResult, SearchRow, SearchMetaData> {
+    return this.cluster!.searchQuery(indexName, query, options);
+  }
+
   /**
    * Closes the current connection.
    *
@@ -535,12 +550,18 @@ export const close = async (): Promise<void> => {
     await __ottoman.close();
   }
 };
-export const start = () => __ottoman && __ottoman.start();
-export const getModel = (name: string) => __ottoman && __ottoman.getModel(name);
+export const start = () => __ottoman?.start();
+export const getModel = (name: string) => __ottoman?.getModel(name);
 export const getCollection = (collectionName = DEFAULT_COLLECTION, scopeName = DEFAULT_SCOPE) =>
-  __ottoman && __ottoman.getCollection(collectionName, scopeName);
+  __ottoman?.getCollection(collectionName, scopeName);
 export const model = <T = any, R = T>(
   name: string,
   schema: Schema | Record<string, unknown>,
   options?: ModelOptions,
-): ModelTypes<T, R> => __ottoman && __ottoman.model<T, R>(name, schema, options);
+): ModelTypes<T, R> => __ottoman?.model<T, R>(name, schema, options);
+
+export const searchQuery = (
+  indexName: string,
+  query: SearchQuery,
+  options?: SearchQueryOptions,
+): StreamableRowPromise<SearchResult, SearchRow, SearchMetaData> => __ottoman?.searchQuery(indexName, query, options);
