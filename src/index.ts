@@ -8,6 +8,7 @@ export {
   getOttomanInstances,
   getModel,
   Ottoman,
+  searchQuery,
 } from './ottoman/ottoman';
 export { Model, IModel } from './model/model';
 export { Document, IDocument } from './model/document';
