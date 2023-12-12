@@ -22,4 +22,7 @@ export {
   QueryProfileMode,
   MutationState,
   QueryScanConsistency,
+  SearchQuery,
+  SearchScanConsistency,
+  TermSearchFacet,
 } from 'couchbase';
