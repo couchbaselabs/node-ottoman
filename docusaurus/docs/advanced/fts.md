@@ -188,7 +188,7 @@ at the cost of slightly higher latency since the index needs to be updated first
 There are two ways to control consistency: either by supplying a custom `SearchScanConsistency` or using `consistentWith`.
 At the moment the cluster only supports `consistentWith`, which is why you only see `SearchScanConsistency.NotBounded`
 in the enum which is the default setting.
-The way to make sure that recently written documents show up in the search works as follows (commonly referred to "`read your own writes"` — RYOW):
+The way to make sure that recently written documents show up in the search works as follows (commonly referred to "read your own writes" — RYOW):
 
 #### Scan consistency example:
 
