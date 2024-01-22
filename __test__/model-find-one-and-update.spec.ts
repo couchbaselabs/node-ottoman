@@ -9,11 +9,19 @@ describe('Test findOneAndUpdate function', () => {
     });
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
-    await Cat.create({ name: 'Figaro', age: 27 });
-    const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' });
-    const cleanUp = async () => await Cat.removeById(response.id);
+    await Cat.create({ name: 'Figaro123', age: 27 });
+    const response = await Cat.findOneAndUpdate(
+      { name: { $like: '%Figaro123%' } },
+      { name: 'Kitty' },
+      { consistency: SearchConsistency.LOCAL },
+    );
+    const cleanUp = async () => {
+      if (response.id) {
+        await Cat.removeById(response.id);
+      }
+    };
     await cleanUp();
-    expect(response.name).toBe('Figaro');
+    expect(response.name).toBe('Figaro123');
   });
   test('Test find item and update check stored document', async () => {
     const CatSchema = new Schema({
@@ -22,12 +30,16 @@ describe('Test findOneAndUpdate function', () => {
     });
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
-    await Cat.create({ name: 'Figaro', age: 27 });
-    const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' });
+    await Cat.create({ name: 'Figaro456', age: 27 });
+    const response = await Cat.findOneAndUpdate(
+      { name: { $like: '%Figaro456%' } },
+      { name: 'Kitty' },
+      { consistency: SearchConsistency.LOCAL },
+    );
     const doc = await Cat.findById(response.id);
     const cleanUp = async () => await Cat.removeById(response.id);
     await cleanUp();
-    expect(response.name).toBe('Figaro');
+    expect(response.name).toBe('Figaro456');
     expect(doc.name).toBe('Kitty');
     expect(response.id).toBe(doc.id);
   });
@@ -38,8 +50,12 @@ describe('Test findOneAndUpdate function', () => {
     });
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
-    await Cat.create({ name: 'Figaro', age: 27 });
-    const response = await Cat.findOneAndUpdate({ name: { $like: '%Figaro%' } }, { name: 'Kitty' }, { new: true });
+    await Cat.create({ name: 'Figaro789', age: 27 });
+    const response = await Cat.findOneAndUpdate(
+      { name: { $like: '%Figaro789%' } },
+      { name: 'Kitty' },
+      { new: true, consistency: SearchConsistency.LOCAL },
+    );
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
     expect(response.name).toBe('Kitty');
@@ -52,7 +68,11 @@ describe('Test findOneAndUpdate function', () => {
     const Cat = model('Cat', CatSchema);
     await startInTest(getDefaultInstance());
     await Cat.create({ name: 'Cat0', age: 27 });
-    const response = await Cat.findOneAndUpdate({ name: 'Kitty' }, { name: 'Kitty', age: 20 }, { upsert: true });
+    const response = await Cat.findOneAndUpdate(
+      { name: 'Kitty' },
+      { name: 'Kitty', age: 20 },
+      { upsert: true, consistency: SearchConsistency.LOCAL },
+    );
     const cleanUp = async () => await Cat.removeMany({ _type: 'Cat' });
     await cleanUp();
     expect(response.name).toBe('Kitty');
@@ -68,7 +88,12 @@ describe('Test findOneAndUpdate function', () => {
     }
     const Cat = model<ICat>('Cat', CatSchema);
     await startInTest(getDefaultInstance());
-    const run = async () => await Cat.findOneAndUpdate({ name: { $like: 'DummyCatName91' } }, { name: 'Kitty' });
+    const run = async () =>
+      await Cat.findOneAndUpdate(
+        { name: { $like: 'DummyCatName91' } },
+        { name: 'Kitty' },
+        { consistency: SearchConsistency.LOCAL },
+      );
     await expect(run).rejects.toThrow(DocumentNotFoundError);
   });
 

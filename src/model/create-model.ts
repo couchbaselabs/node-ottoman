@@ -3,7 +3,7 @@ import { getValueByPath, Model, Query, SearchConsistency, setValueByPath } from 
 import { BuildIndexQueryError, OttomanError } from '../exceptions/ottoman-errors';
 import { createMany, find, FindOptions, ManyQueryResponse, removeMany, updateMany } from '../handler';
 import { FindByIdOptions, IFindOptions } from '../handler/';
-import { LogicalWhereExpr } from '../query';
+import { IConditionExpr, LogicalWhereExpr } from '../query';
 import { Schema } from '../schema';
 import { cast, CAST_STRATEGY, CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
 import { _keyGenerator, DEFAULT_MAX_EXPIRY } from '../utils/constants';
@@ -19,7 +19,6 @@ import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { ModelTypes, saveOptions } from './model.types';
 import { getModelMetadata, getPopulated, setModelMetadata } from './utils/model.utils';
-import { IConditionExpr } from '../query';
 import { mergeDoc } from '../utils/merge';
 
 /**
@@ -351,7 +350,7 @@ export const _buildModel = (metadata: ModelMetadata) => {
         saveOptions.enforceRefCheck = options.enforceRefCheck;
       }
       try {
-        const before = await _Model.findOne(filter, { ...options, consistency: 1 });
+        const before = await _Model.findOne(filter, { ...options, consistency: SearchConsistency.LOCAL });
         if (before) {
           const toSave = new _Model({ ...before }).$wasNew();
           toSave._applyData({ ...doc }, options.strict);

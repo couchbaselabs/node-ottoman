@@ -1,7 +1,6 @@
 import { DocumentNotFoundError, getDefaultInstance, getModelMetadata, IManyQueryResponse, model, Schema } from '../src';
-import { updateCallback } from '../src/handler';
+import { StatusExecution, updateCallback } from '../src/handler';
 import { consistency, startInTest } from './testData';
-import { StatusExecution } from '../lib/types/handler';
 
 describe('Test Document Update Many', () => {
   test('Test Update Many Function', async () => {
