@@ -24,9 +24,9 @@ That's it, you are ready to use Ottoman.
 
 Supported version are:
 
-| Ottoman | Nodejs | Couchbase SDK | Couchbase Server |
-|---------|--------|---------------|------------------|
-| ^2.0.0  | ^8.0.0 | ^4.2.0        | ^6.5.0           |
+| Ottoman | Nodejs  | Couchbase SDK | Couchbase Server |
+|---------|---------|---------------|------------------|
+| ^2.0.0  | ^12.0.0 | ^4.2.0        | ^7.2.0           |
 
 ***Notice: make sure you are using supported versions***
 
@@ -66,7 +66,7 @@ If you are using the legacy version of Ottoman, check out the [V1 docs](https://
 
 ## Ottoman v2 main goals
 
-- To add support to Couchbase SDK 3.
+- To add support to Couchbase SDK 3.x and above
 - To add typescript support.
 - To have a powerful query builder built-in.
 - To allow adding indexes to improve queries performance.
