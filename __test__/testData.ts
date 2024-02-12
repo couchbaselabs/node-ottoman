@@ -1,4 +1,4 @@
-import { Ottoman, SearchConsistency } from '../src';
+import { LogicalWhereExpr, Ottoman, SearchConsistency, FindOptions, ModelTypes } from '../src';
 
 export const bucketName = 'travel-sample';
 export const username = 'Administrator';
@@ -16,6 +16,14 @@ export const delay = (timems: number): Promise<boolean> =>
 export const startInTest = async (ottoman: Ottoman): Promise<boolean> => {
   await ottoman.start();
   return true;
+};
+
+export const cleanUp = <T = any>(
+  model: ModelTypes<T>,
+  query: LogicalWhereExpr<T> = { _type: model.collectionName },
+  options: FindOptions = { consistency: SearchConsistency.LOCAL },
+) => {
+  return model.removeMany(query, options);
 };
 
 export const consistency = { consistency: SearchConsistency.LOCAL };

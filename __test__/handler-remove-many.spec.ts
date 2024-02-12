@@ -70,7 +70,7 @@ describe('Test Document Remove Many', () => {
     const Cat = model('Cat', CatSchema);
     const metadata = getModelMetadata(Cat);
     try {
-      await removeCallback('dummy_id', metadata);
+      await removeCallback('dummy_id', metadata, {}, {});
     } catch (err) {
       const error = err as StatusExecution;
       const dnf = new DocumentNotFoundError();
