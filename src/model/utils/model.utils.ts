@@ -38,6 +38,7 @@ export const getPopulated = async (options: PopulateAuxOptionsType): Promise<Mod
     ottoman,
     modelName,
     enforceRefCheck = schema.options.enforceRefCheck,
+    transactionContext,
   } = options;
 
   let isObject = false;
@@ -72,7 +73,7 @@ export const getPopulated = async (options: PopulateAuxOptionsType): Promise<Mod
         }
 
         const populate = populateMaxDeep === 0 ? undefined : current?.populate ?? current ?? '*';
-        const params = { select, lean, populateMaxDeep, populate };
+        const params = { select, lean, populateMaxDeep, populate, transactionContext };
         if (Array.isArray(ref)) {
           const promises: Promise<any>[] = [];
           const l = ref.length;

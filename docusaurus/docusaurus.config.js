@@ -74,6 +74,7 @@ const config = {
             label: 'Advanced',
             items: [
               { label: 'Full Text Search', to: '/docs/advanced/fts' },
+              { label: 'Transactions', to: '/docs/advanced/transactions' },
               { label: 'How Ottoman Works', to: '/docs/advanced/how-ottoman-works' },
               { label: 'Ottoman', to: '/docs/advanced/ottoman' },
               { label: 'Mongoose to Ottoman', to: '/docs/advanced/mongoose-to-couchbase' },

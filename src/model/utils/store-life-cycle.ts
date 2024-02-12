@@ -34,7 +34,7 @@ export const storeLifeCycle = async ({ key, id, data, options, metadata, refKeys
       if (fieldType instanceof ReferenceType) {
         const RefModel = ottoman.getModel(fieldType.refModel);
         try {
-          await RefModel.findById(document[fieldType.name]);
+          await RefModel.findById(document[fieldType.name], { transactionContext: options.transactionContext });
         } catch (e) {
           if (e instanceof DocumentNotFoundError) {
             switch (enforceRefCheck) {
