@@ -12,7 +12,7 @@ title: Quickstart
 
 ## Prerequisites: Three Steps required to Query our Bucket
 
-1. Setup Couchbase Server 6.5 and ensure it is running.
+1. Setup Couchbase Server 7.2 and ensure it is running.
 2. Create an empty bucket named "default".
 3. Add a primary and adaptive index for our default bucket.
 
@@ -28,9 +28,9 @@ to autogenerate your project. The [CLI](/docs/cli) will setup and spin up a proj
 ## Create the Ottoman NodeJS Project
 
 In this exercise, we will be working with the [Ottoman v2 ODM (Object Document Mapper)](https://github.com/couchbaselabs/node-ottoman)
-in conjunction with the [NodeJS SDK v3](https://docs.couchbase.com/nodejs-sdk/current/hello-world/start-using-sdk.html)
+in conjunction with the [NodeJS SDK v3 and above](https://docs.couchbase.com/nodejs-sdk/current/hello-world/start-using-sdk.html)
 
-This tutorial was written using Node JS version 12.14, NPM version 6.13, and the Couchbase SDK 3.0, but higher version numbers should do.
+This tutorial was written using Node JS version 12.14, NPM version 6.13, and the Couchbase SDK 4, but higher version numbers should do.
 
 You can check your version numbers by running the following commands:
 
