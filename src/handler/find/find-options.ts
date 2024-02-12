@@ -1,6 +1,7 @@
 import { PopulateFieldsType } from '../../model/populate.types';
 import { ISelectType, SortType } from '../../query';
 import { SearchConsistency } from '../../utils/search-consistency';
+import { TransactionAttemptContext } from 'couchbase';
 
 export class FindOptions implements IFindOptions {
   skip?: number;
@@ -22,6 +23,7 @@ export class FindOptions implements IFindOptions {
   lean?: boolean;
   ignoreCase?: boolean;
   enforceRefCheck?: boolean | 'throw';
+  transactionContext?: TransactionAttemptContext;
   constructor(data: FindOptions) {
     for (const key in data) {
       this[key] = data[key];

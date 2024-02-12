@@ -25,4 +25,5 @@ export {
   SearchQuery,
   SearchScanConsistency,
   TermSearchFacet,
+  TransactionAttemptContext,
 } from 'couchbase';
