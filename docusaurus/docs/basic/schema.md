@@ -232,7 +232,7 @@ console.log(dogs);
 - Overwriting a default Ottoman document method may lead to unpredictable results.
 - The example above uses the `Schema.methods` object directly to save an instance method.
 
-::: danger Note
+:::danger Note
 Do **not** declare _methods_ using ES6 arrow functions (`=>`). Arrow functions [explicitly prevent binding](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) `this`, so your method will **not** have access to the document, and the above examples will not work.
 :::
 
@@ -813,7 +813,7 @@ will get:
 ImmutableError: Field 'cardNumber' is immutable and current cast strategy is set to 'throw'
 ```
 
-::: tip NOTE
+:::tip NOTE
 Ottoman's immutability only applies to `document` that have already been saved to the database.
 ```ts
 // Define schema
@@ -973,7 +973,7 @@ boeing.add(plane);
 boeing.add({ status: Boolean });
 ```
 
-::: tip
+:::tip
 When a schema is added, the following properties are copied: fields, statics, indexes, methods, and hooks. Properties that already exist in the schema (fields, statics, indexes, methods) are overwritten by those of the added schema, except for hooks that are combined.
 :::
 
