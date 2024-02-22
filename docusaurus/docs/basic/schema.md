@@ -252,7 +252,7 @@ const Animal = model('Animal', animalSchema);
 let animals = await Animal.findByName('fido');
 ```
 
-::: danger Note
+:::danger Note
 Do **not** declare _statics_ using ES6 arrow functions (`=>`). Arrow functions [explicitly prevent binding](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) `this`, so the above examples will **not** work because of the value of `this`.
 :::
 
