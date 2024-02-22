@@ -171,7 +171,7 @@ success: user Major added!
 If we open our Web UI at [localhost:8091](http://localhost:8091/) and navigate to the "Buckets" tab,
 we can see that the `User` collection, and two records have been added to the `default` bucket.
 
-::: tip Note
+:::tip Note
 You can edit the document in place by clicking the pencil icon or remove them individually with the trash icon.
 You can also edit the buckets and in the section "Advanced bucket settings" enable Flush. When flushed, all items in the bucket are removed.
 This is a quick way to remove all documents.
@@ -209,7 +209,7 @@ main = async () => {
 }
 ```
 
-::: tip Note
+:::tip Note
 If we had a lot more data and we were expecting hundreds of records to be returned,
 we could page the results with our options to get the second page (pagination), like this:
 :::
@@ -246,7 +246,7 @@ Query results:  [
 ]
 ```
 
-::: tip Note
+:::tip Note
 In our case indexes were added manually, if not Ottoman would have given us this error message:
 :::
 
@@ -261,7 +261,7 @@ In our case indexes were added manually, if not Ottoman would have given us this
 ]
 ```
 
-::: details Here you can see the complete content of the server.js file.
+:::details Here you can see the complete content of the server.js file.
 ```javascript
 const ottoman = require('ottoman');
 

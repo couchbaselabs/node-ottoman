@@ -34,7 +34,7 @@ const schema = new Schema({ name: String, age: Number });
 const User = model('User', schema, { collectionName: 'users' });
 ```
 
-::: tip Defining Collection Name
+:::tip Defining Collection Name
 Models will be mapped to your Collections, if no Collection name option is provided then the Collection name will be equal to the Model name.
 There is an exception to this rule:
 
@@ -97,7 +97,7 @@ const User = model('User', schema, { collectionName: 'users', idKey: '__id' });
 
 The above example will override the default `id` with `__id`, now for the `User`'s documents you can get the `id` value from doc.\_\_id.
 
-::: tip
+:::tip
 You can also get the `id` value by calling the `doc._getId()` methods, regardless of the `id` property name.
 :::
 
@@ -130,7 +130,7 @@ See the [API](/docs/api/interfaces/imodel.html#static-createmany) docs for more 
 User.createMany([{ name: 'John' }, { name: 'Jane' }]);
 ```
 
-::: tip
+:::tip
 The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
 :::
 
@@ -277,7 +277,7 @@ $> Documents: [
 ]
 ```
 
-::: tip Note
+:::tip Note
 Using `ignoreCase` as part of find functions options will always prioritize the value of `$ignoreCase` defined in the clause
 
 ```typescript
@@ -325,7 +325,7 @@ console.log(normalDoc instanceof Object); // true
 console.log(normalDoc.constructor.name === '_Model'); // true
 ```
 
-::: tip NOTE
+:::tip NOTE
 The downside of enabling `lean` is that lean docs don't have:
 - Change tracking
 - Casting and validations
@@ -467,7 +467,7 @@ _Model {
 
 > If we try to call `userWithLean.toJSON()` will get `TypeError: userWithLean.toJSON is not a function`
 
-::: tip NOTE
+:::tip NOTE
 
 When document to populate does not exist, the corresponding id is kept:
 
@@ -539,7 +539,7 @@ See the [API](/docs/api/interfaces/imodel.html#static-removemany) docs for more 
 User.removeMany({ name: { $like: '%JohnDoe%' } });
 ```
 
-::: tip
+:::tip
 The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
 :::
 
@@ -571,7 +571,7 @@ See the [API](/docs/api/interfaces/imodel.html#static-updatemany) docs for more 
 User.updateMany({ name: { $like: '%JohnDoe%' } }, { name: 'John' });
 ```
 
-::: tip
+:::tip
 The response status will be **SUCCESS** as long as no error occurs, otherwise it will be **FAILURE**.
 :::
 
@@ -582,7 +582,7 @@ See the [API](/docs/api/interfaces/imodel.html#static-findoneandupdate) docs for
 User.findOneAndUpdate({ name: { $like: '%John Doe%' } }, { name: 'John' }, { new: true, upsert: true });
 ```
 
-::: tip
+:::tip
 By default the option **new** and **upsert** are **false**
 
 If options.new is **true** return the document after update otherwise by default return the document before update.
