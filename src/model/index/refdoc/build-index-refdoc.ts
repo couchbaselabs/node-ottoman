@@ -1,15 +1,26 @@
 import { indexFieldsName } from '../helpers/index-field-names';
 import { ModelMetadata } from '../../interfaces/model-metadata.interface';
+import { TransactionAttemptContext } from 'couchbase';
 
 export const buildViewRefdoc =
   (metadata: ModelMetadata, Model, fields, prefix) =>
-  async (values, options = {}) => {
+  async (values, options: { transactionContext?: TransactionAttemptContext } = {}) => {
     values = Array.isArray(values) ? values : [values];
     const key = buildRefKey(fields, values, prefix);
     const { collection } = metadata;
-    const result = await collection().get(key, options);
-    if (result && result.value) {
-      return Model.findById(result.value);
+    const c = collection();
+    if (options.transactionContext) {
+      const { transactionContext } = options;
+      const result = await transactionContext.get(c, key);
+      console.log(result);
+      if (result?.content) {
+        return Model.findById(result.content, { transactionContext: transactionContext });
+      }
+    } else {
+      const result = await c.get(key, options);
+      if (result?.value) {
+        return Model.findById(result.value);
+      }
     }
   };
 

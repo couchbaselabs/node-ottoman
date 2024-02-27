@@ -16,8 +16,7 @@ export const removeLifeCycle = async ({ id, options, metadata, refKeys, data }) 
   const result = await remove(id, _collection, options);
 
   // After store document update index refdocs
-  refKeys.add = [];
-  await updateRefdocIndexes(refKeys, null, _collection);
+  await updateRefdocIndexes(refKeys, null, _collection, options.transactionContext);
 
   await execHooks(schema, 'preHooks', HOOKS.REMOVE, { document, result });
 

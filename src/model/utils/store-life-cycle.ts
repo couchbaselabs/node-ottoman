@@ -65,7 +65,7 @@ export const storeLifeCycle = async ({ key, id, data, options, metadata, refKeys
   const result = await store(key, document, options, _colleciton);
 
   // After storing the document update the index refdocs
-  await updateRefdocIndexes(refKeys, id, _colleciton);
+  await updateRefdocIndexes(refKeys, id, _colleciton, options.transactionContext);
 
   if (options.cas) {
     await execHooks(schema, 'postHooks', HOOKS.UPDATE, document);
