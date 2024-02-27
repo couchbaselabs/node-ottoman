@@ -1,4 +1,5 @@
 import { applyDefaultValue, CoreType, IOttomanType, Schema, ValidationError } from '../schema';
+import { TransactionAttemptContext } from 'couchbase';
 
 /**
  * Cast Strategies
@@ -51,6 +52,7 @@ export type MutationFunctionOptions = {
   strict?: ApplyStrategy;
   maxExpiry?: number;
   enforceRefCheck?: boolean | 'throw';
+  transactionContext?: TransactionAttemptContext;
 };
 
 export const cast = (

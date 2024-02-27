@@ -1,5 +1,6 @@
 import { IFindOptions } from '../../handler';
 import { MutationFunctionOptions } from '../../utils/cast-strategy';
+import { TransactionAttemptContext } from '../../couchbase';
 
 /**
  * Find One and Update Option parameter.
@@ -21,4 +22,5 @@ export interface FindOneAndUpdateOption extends IFindOptions, MutationFunctionOp
    * set to 'throw': will throw an exception.
    */
   enforceRefCheck?: boolean | 'throw';
+  transactionContext?: TransactionAttemptContext;
 }

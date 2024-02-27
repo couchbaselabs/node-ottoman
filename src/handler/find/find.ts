@@ -8,6 +8,7 @@ import { getProjectionFields } from '../../utils/query/extract-select';
 import { isNumber } from '../../utils/type-helpers';
 import { FindOptions } from './find-options';
 import { MODEL_KEY } from '../../utils/constants';
+import { TransactionQueryOptions } from 'couchbase';
 
 /**
  * Find documents using filter and options.
@@ -28,6 +29,7 @@ export const find =
       lean,
       ignoreCase,
       enforceRefCheck,
+      transactionContext,
     } = options;
     const { ottoman, collectionName, modelKey, scopeName, modelName, ID_KEY, schema } = metadata;
     const { bucketName, cluster, couchbase } = ottoman;
@@ -98,7 +100,12 @@ export const find =
     if (isDebugMode()) {
       console.log(n1ql);
     }
-    const result = await cluster.query(n1ql, queryOptions);
+    let result;
+    if (transactionContext) {
+      result = await transactionContext.query(n1ql, queryOptions as TransactionQueryOptions);
+    } else {
+      result = await cluster.query(n1ql, queryOptions);
+    }
 
     if (direct) return result;
 
@@ -111,6 +118,7 @@ export const find =
         modelName,
         fieldsName: populate,
         enforceRefCheck,
+        transactionContext,
       } as PopulateAuxOptionsType;
       result.rows = await Promise.all(result.rows.map((pojo) => getPopulated({ ...params, pojo })));
     } else {

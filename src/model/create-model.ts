@@ -17,7 +17,7 @@ import { CreateModel } from './interfaces/create-model.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
-import { ModelTypes, saveOptions } from './model.types';
+import { ModelTypes, saveOptions, CountOptions, CountOptions as removeOptions } from './model.types';
 import { getModelMetadata, getPopulated, setModelMetadata } from './utils/model.utils';
 import { mergeDoc } from '../utils/merge';
 
@@ -144,6 +144,10 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return ottoman.bucketName;
     }
 
+    static get collectionName(): string {
+      return metadata.collectionName;
+    }
+
     static query(params: IConditionExpr): Query {
       return new Query(params, this.namespace);
     }
@@ -170,11 +174,12 @@ export const _buildModel = (metadata: ModelMetadata) => {
       return ottoman.dropCollection(_scopeName, _collectionName, options);
     }
 
-    static count = async (filter: LogicalWhereExpr = {}) => {
+    static count = async (filter: LogicalWhereExpr = {}, options: CountOptions = {}) => {
       const response = await find(metadata)(filter, {
         select: 'RAW COUNT(*) as count',
         noCollection: true,
         consistency: SearchConsistency.LOCAL,
+        transactionContext: options.transactionContext,
       });
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
         return response.rows[0];
@@ -183,7 +188,15 @@ export const _buildModel = (metadata: ModelMetadata) => {
     };
 
     static findById = async (id: string, options: FindByIdOptions = {}): Promise<Model | Record<string, unknown>> => {
-      const { populate, populateMaxDeep: deep, select, lean, enforceRefCheck = false, ...findOptions } = options;
+      const {
+        populate,
+        populateMaxDeep: deep,
+        select,
+        lean,
+        transactionContext,
+        enforceRefCheck = false,
+        ...findOptions
+      } = options;
       const modelKeyClean = modelKey.split('.')[0];
       let isModelKeyAddedToSelect = false;
       if (select) {
@@ -195,7 +208,15 @@ export const _buildModel = (metadata: ModelMetadata) => {
         findOptions['project'] = extractSelect(selectArray, { noCollection: true }, false, modelKey.split('.')[0]);
       }
       const key = _keyGenerator!(keyGenerator, { metadata, id }, keyGeneratorDelimiter);
-      const { value: pojo } = await collection().get(key, findOptions);
+
+      let pojo;
+      if (transactionContext) {
+        const { content } = await transactionContext.get(collection(), key);
+        pojo = content;
+      } else {
+        const { value } = await collection().get(key, findOptions);
+        pojo = value;
+      }
 
       if (getValueByPath(pojo, metadata.modelKey) !== metadata.modelName) {
         throw new DocumentNotFoundError();
@@ -206,7 +227,17 @@ export const _buildModel = (metadata: ModelMetadata) => {
       }
 
       if (populate) {
-        return getPopulated({ fieldsName: populate, deep, lean, pojo, schema, modelName, ottoman, enforceRefCheck });
+        return getPopulated({
+          fieldsName: populate,
+          deep,
+          lean,
+          pojo,
+          schema,
+          modelName,
+          ottoman,
+          enforceRefCheck,
+          transactionContext,
+        });
       }
       if (lean) return pojo;
       const ModelFactory = ottoman.getModel(modelName);
@@ -243,7 +274,10 @@ export const _buildModel = (metadata: ModelMetadata) => {
         throw new Error(`data contains id field with different value to the id provided! -> ${id} != ${data[ID_KEY]}`);
       }
       const key = id || data[ID_KEY];
-      const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
+      const value = await _Model.findById(key, {
+        withExpiry: !!options.maxExpiry,
+        transactionContext: options.transactionContext,
+      });
       if (value[ID_KEY]) {
         const strategy = CAST_STRATEGY.THROW;
         const obj = mergeDoc(value, data);
@@ -253,13 +287,19 @@ export const _buildModel = (metadata: ModelMetadata) => {
         if (options.maxExpiry) {
           _options.maxExpiry = options.maxExpiry;
         }
+        if (options.transactionContext) {
+          _options.transactionContext = options.transactionContext;
+        }
         return instance.save(false, options);
       }
     };
 
     static replaceById = async (id: string, data, options: MutationFunctionOptions = { strict: true }) => {
       const key = id || data[ID_KEY];
-      const value = await _Model.findById(key, { withExpiry: !!options.maxExpiry });
+      const value = await _Model.findById(key, {
+        withExpiry: !!options.maxExpiry,
+        transactionContext: options.transactionContext,
+      });
       if (value[ID_KEY]) {
         const temp = {};
         Object.keys(data).map((key) => {
@@ -290,6 +330,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
         if (options.maxExpiry) {
           _options.maxExpiry = options.maxExpiry;
         }
+        if (options.transactionContext) {
+          _options.transactionContext = options.transactionContext;
+        }
         if (options.hasOwnProperty('enforceRefCheck')) {
           _options.enforceRefCheck = options.enforceRefCheck;
         }
@@ -297,11 +340,11 @@ export const _buildModel = (metadata: ModelMetadata) => {
       }
     };
 
-    static removeById = (id: string) => {
+    static removeById = (id: string, options: removeOptions = {}) => {
       const modelKeyObj = {};
       setValueByPath(modelKeyObj, modelKey, modelName);
       const instance = new _Model({ ...{ [ID_KEY]: id, ...modelKeyObj } });
-      return instance.remove();
+      return instance.remove(options);
     };
 
     static fromData(data: Record<string, any>): _Model<any> {
@@ -311,7 +354,10 @@ export const _buildModel = (metadata: ModelMetadata) => {
     static removeMany = async (filter: LogicalWhereExpr = {}, options: FindOptions = {}) => {
       const response = await find(metadata)(filter, options);
       if (response.hasOwnProperty('rows') && response.rows.length > 0) {
-        return removeMany(metadata)(response.rows.map((v) => v[ID_KEY]));
+        return removeMany(metadata)(
+          response.rows.map((v) => v[ID_KEY]),
+          options.transactionContext ? { transactionContext: options.transactionContext } : {},
+        );
       }
       return new ManyQueryResponse('SUCCESS', { match_number: 0, success: 0, errors: [], data: [] });
     };
@@ -346,6 +392,9 @@ export const _buildModel = (metadata: ModelMetadata) => {
       if (options.maxExpiry) {
         saveOptions.maxExpiry = options.maxExpiry;
       }
+      if (options.transactionContext) {
+        saveOptions.transactionContext = options.transactionContext;
+      }
       if (options.hasOwnProperty('enforceRefCheck')) {
         saveOptions.enforceRefCheck = options.enforceRefCheck;
       }
@@ -365,10 +414,10 @@ export const _buildModel = (metadata: ModelMetadata) => {
       }
     };
 
-    static findOneAndRemove = async (filter: LogicalWhereExpr = {}) => {
-      const doc = await _Model.findOne(filter, { consistency: 1 });
+    static findOneAndRemove = async (filter: LogicalWhereExpr = {}, options: removeOptions = {}) => {
+      const doc = await _Model.findOne(filter, { ...options, consistency: 1 });
       if (doc) {
-        await doc.remove();
+        await doc.remove(options);
         return doc;
       }
       throw new DocumentNotFoundError();

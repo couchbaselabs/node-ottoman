@@ -125,7 +125,7 @@ const main = async () => {
     connectionString: 'couchbase://localhost',
     bucketName: 'travel-sample',
     username: 'admin',
-    password: 'password'
+    password: 'password',
   });
 }
 

@@ -1,4 +1,7 @@
+import { TransactionAttemptContext } from 'couchbase';
+
 export class FindByIdOptions {
+  transactionContext?: TransactionAttemptContext;
   select?: string | string[];
   populate?: string | string[];
   withExpiry?: boolean;

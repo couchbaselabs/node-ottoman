@@ -36,6 +36,8 @@ import {
   Collection,
   NodeCallback,
   CouchbaseError,
+  TransactionAttemptContext,
+  TransactionOptions,
 } from 'couchbase';
 import { generateUUID } from '../utils/generate-uuid';
 import { SearchQuery } from 'couchbase/dist/searchquery';
@@ -412,7 +414,10 @@ export class Ottoman {
    * WHERE (address LIKE '%57-59%' OR free_breakfast = true)
    * ```
    */
-  async query(query: string, options: QueryOptions = {}) {
+  async query(query: string, options: QueryOptions & { transactionContext?: TransactionAttemptContext } = {}) {
+    if (options.transactionContext) {
+      return options.transactionContext.query(query, options);
+    }
     return this.cluster.query(query, options);
   }
 
@@ -490,6 +495,13 @@ export class Ottoman {
   async start(options: StartOptions = {}) {
     await this.ensureCollections();
     await this.ensureIndexes(options);
+  }
+
+  async $transactions(
+    transactionFn: (attempt: TransactionAttemptContext) => Promise<void>,
+    config?: TransactionOptions,
+  ) {
+    await this.cluster.transactions().run(transactionFn, config);
   }
 }
 

@@ -4,7 +4,7 @@ import { IConditionExpr, LogicalWhereExpr, Query } from '../query';
 import { UpdateManyOptions } from './interfaces/update-many.interface';
 import { FindOneAndUpdateOption } from './interfaces/find.interface';
 import { CastOptions, MutationFunctionOptions } from '../utils/cast-strategy';
-import { ModelTypes, saveOptions } from './model.types';
+import { CountOptions as removeOptions, CountOptions, ModelTypes, saveOptions } from './model.types';
 
 export class Model<T = any, R = any> extends Document {}
 /**
@@ -67,7 +67,7 @@ export interface IModel<T = any, R = any> {
    * User.count({ name: { $like: "%Jane%" } })
    * ```
    */
-  count(filter?: LogicalWhereExpr<T>): Promise<any>;
+  count(filter?: LogicalWhereExpr<T>, options?: CountOptions): Promise<any>;
 
   /**
    * Retrieves a document by id.
@@ -119,7 +119,10 @@ export interface IModel<T = any, R = any> {
    * const user = await User.createMany([{ name: "John Doe" }, { name: "Jane Doe" }]);
    * ```
    */
-  createMany<Doc = T, Result = R>(docs: Doc[] | Doc): Promise<ManyQueryResponse<IDocument<Result>>>;
+  createMany<Doc = T, Result = R>(
+    docs: Doc[] | Doc,
+    options?: saveOptions,
+  ): Promise<ManyQueryResponse<IDocument<Result>>>;
 
   /**
    * Updates a document.
@@ -242,7 +245,7 @@ export interface IModel<T = any, R = any> {
    * const result = await User.removeById('userId');
    * ```
    */
-  removeById(id: string): Promise<{ cas: any }>;
+  removeById(id: string, options?: removeOptions): Promise<{ cas: any }>;
 
   /**
    * Creates a [document](/docs/api/classes/document) from the given data.
@@ -508,6 +511,16 @@ export interface IModel<T = any, R = any> {
    * ```
    */
   namespace: string;
+
+  /**
+   * Return string value with the model collection name
+   * @example
+   * ```javascript
+   * console.log(User.collectionName)
+   * // "User"
+   * ```
+   */
+  collectionName: string;
 
   /**
    * dropCollection drops a collection from a scope in a bucket.

@@ -12,18 +12,18 @@ import { ManyQueryResponse, StatusExecution } from './types';
  */
 export const removeMany =
   (metadata: ModelMetadata) =>
-  async (ids): Promise<ManyQueryResponse> => {
-    return await batchProcessQueue(metadata)(ids, removeCallback, {}, {}, 100);
+  async (ids, options = {}): Promise<ManyQueryResponse> => {
+    return await batchProcessQueue(metadata)(ids, removeCallback, {}, options, 100);
   };
 
 /**
  * @ignore
  */
-export const removeCallback = (id: string, metadata: ModelMetadata): Promise<StatusExecution> => {
+export const removeCallback = (id: string, metadata: ModelMetadata, extra, options): Promise<StatusExecution> => {
   const model = metadata.ottoman.getModel(metadata.modelName);
 
   return model
-    .removeById(id)
+    .removeById(id, options)
     .then(() => {
       return Promise.resolve(new StatusExecution(id, 'SUCCESS'));
     })

@@ -7,7 +7,7 @@ import { extractDataFromModel } from '../utils/extract-data-from-model';
 import { generateUUID } from '../utils/generate-uuid';
 import { extractSchemaReferencesFields, extractSchemaReferencesFromGivenFields } from '../utils/schema.utils';
 import { ModelMetadata } from './interfaces/model-metadata.interface';
-import { saveOptions } from './model.types';
+import { removeOptions, saveOptions } from './model.types';
 import { PopulateFieldsType, PopulateOptionsType } from './populate.types';
 import { arrayDiff } from './utils/array-diff';
 import { getModelRefKeys } from './utils/get-model-ref-keys';
@@ -169,7 +169,10 @@ export abstract class Document {
     } else {
       try {
         key = _keyGenerator!(keyGenerator, { metadata, id }, keyGeneratorDelimiter);
-        const { cas, value: oldData } = await collection().get(key);
+
+        const { cas, value: oldData } = await (options.transactionContext
+          ? options.transactionContext.get(collection(), key)
+          : collection().get(key));
         if (cas && onlyCreate) {
           throw new DocumentExistsError();
         }
@@ -202,7 +205,7 @@ export abstract class Document {
    * await user.remove();
    * ```
    */
-  async remove(options = {}) {
+  async remove(options: removeOptions = {}) {
     const data = extractDataFromModel(this);
     const metadata = this.$;
     const { keyGenerator, scopeName, collectionName, ottoman, keyGeneratorDelimiter } = metadata;
