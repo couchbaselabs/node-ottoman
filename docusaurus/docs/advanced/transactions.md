@@ -23,7 +23,7 @@ If not, please check the basics:
 ## Creating a Transaction
 
 To create a transaction, an application must supply its logic inside an arrow function,
-including any conditional logic required. Once the arrow function has successfully run to conclusion,
+including any conditional logic required. Once the arrow function has successfully run to completion,
 the transaction will be automatically committed.
 If at any point an error occurs, the transaction will rollback and the arrow function may run again.
 
@@ -57,7 +57,7 @@ The $transaction arrow function gets passed a `TransactionAttemptContext` object
 Since the arrow function could be rerun multiple times, it is important that it does not contain any side effects.
 In particular, you should never perform regular operations on a Collection, such as `create()` without using the `ctx`, inside the arrow function.
 Such operations may be performed multiple times, and will not be performed transactionally.
-Instead, you should perform these operations through the using the `{ transactionContext: ctx }` to pass the Transaction Context.
+Instead, you should perform these operations by using the `{ transactionContext: ctx }` to pass the Transaction Context.
 
 In the event that a transaction fails, your application could run into the following errors:
 - `TransactionCommitAmbiguousError`
@@ -65,7 +65,7 @@ In the event that a transaction fails, your application could run into the follo
 
 Refer to [Error Handling](https://docs.couchbase.com/nodejs-sdk/current/concept-docs/transactions-error-handling.html#transaction_errors) for more details on these.
 
-Method that currently support transaction context:
+Methods that currently support transaction context:
 
 Ottoman:
 - `query`
@@ -93,7 +93,7 @@ Document:
 ### Transaction Syntax
 
 The syntax is pretty simple, just need to define the function to be run by `$transaction`,
-then you only need to use the `ctx` parameter as option for the operations inside the `$transaction` function.
+then you only need to use the `ctx` parameter as an option for the operations inside the `$transaction` function.
 
 ```typescript
 await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
@@ -122,7 +122,7 @@ await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
 })
 ```
 
-This way you are cancelling the transaction, so no changes inside the `$transaction` function will be committed.
+This way you are canceling the transaction, so no changes inside the `$transaction` function will be committed.
 
 ### Handle Error
 
@@ -163,9 +163,9 @@ See [Concurrency with Non-Transactional Writes](https://docs.couchbase.com/nodej
 
 ### Configuration
 
-The default configuration should be appropriate for most use-cases.
+The default configuration should be appropriate for most use cases.
 Transactions can optionally be globally configured when configuring the Cluster.
-For example, if you want to change the level of durability which must be attained, 
+For example, if you want to change the level of durability which that be attained, 
 this can be configured as part of the connect options:
 
 ```typescript
@@ -192,7 +192,7 @@ The default configuration will perform all writes with the durability setting `M
 ensuring that each write is available in-memory on the majority of replicas before the transaction continues. 
 There are two higher durability settings available that will additionally wait for all mutations
 to be written to physical storage on either the active or the majority of replicas, 
-before continuing. This further increases safety, at a cost of additional latency.
+before continuing. This further increases safety, at the cost of additional latency.
 
 :::warning Caution
 A level of `None` is present but its use is discouraged and unsupported.
