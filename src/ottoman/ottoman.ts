@@ -497,6 +497,23 @@ export class Ottoman {
     await this.ensureIndexes(options);
   }
 
+  /**
+   * The `$transactions` function passes a `TransactionAttemptContext` object to the transaction function.
+   * @param transactionFn The function to be executed as a transaction.
+   *
+   * @param config
+   * - `durabilityLevel`: Specifies the level of synchronous durability level.
+   * - `timeout`: Specifies the timeout for the transaction.
+   *
+   * @example
+   * ```javascript
+   * await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
+   *  const user = await User.create({ name: "John Doe" }, { transactionContext: ctx });
+   * });
+   * ```
+   *
+   * Notice: You **MUST pass the `transactionContext` option in the model methods** to execute the operation(s) as a transaction.
+   */
   async $transactions(
     transactionFn: (attempt: TransactionAttemptContext) => Promise<void>,
     config?: TransactionOptions,
