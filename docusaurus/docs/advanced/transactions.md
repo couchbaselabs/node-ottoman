@@ -29,14 +29,14 @@ If at any point an error occurs, the transaction will rollback and the arrow fun
 
 ```typescript
   const schema = new Schema({ name: String, age: Number });
-  const Swam = model('Swam', schema);
+  const Swan = model('Swan', schema);
   await start();
   try {
     await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
-      const odette = new Swam({ name: 'Odette', age: 30 });
+      const odette = new Swan({ name: 'Odette', age: 30 });
       await odette.save(false, { transactionContext: ctx });
       // check the document was created in the transaction context
-      const doc = await Swam.findById(odette.id, { transactionContext: ctx });
+      const doc = await Swan.findById(odette.id, { transactionContext: ctx });
       console.log(doc);
     });
   } catch (error) {
@@ -49,7 +49,7 @@ If at any point an error occurs, the transaction will rollback and the arrow fun
     }
   }
   // check the document was successfully committed
-  const doc = await Swam.findById(odette.id);
+  const doc = await Swan.findById(odette.id);
   console.log(doc)
 ```
 
@@ -97,7 +97,7 @@ then you only need to use the `ctx` parameter as an option for the operations in
 
 ```typescript
 await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
-  const odette = Swam.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
+  const odette = Swan.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
 })
 ```
 
@@ -118,7 +118,7 @@ To trigger a `rollback` manually you should execute `ctx._rollback` function.
 
 ```typescript
 await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
-  const odette = Swam.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
+  const odette = Swan.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
   ctx._rollback();
 })
 ```
@@ -132,7 +132,7 @@ While creating a transaction you always should wrap it inside a `try catch` bloc
 ```typescript
 try {
   await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
-    const odette = Swam.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
+    const odette = Swan.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
   });
 } catch (error) {
   if (error instanceof TransactionFailedError) {
@@ -214,21 +214,21 @@ Inside the `$transaction` function you can do almost everything you can do with 
 
 ```typescript
 const schema = new Schema({ name: String, age: Number });
-const Swam = model('Swam', schema);
+const Swan = model('Swan', schema);
 await start();
 try {
   await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
     const name = `Odette`;
-    const odette = new Swam({ name, age: 30 });
+    const odette = new Swan({ name, age: 30 });
     await odette.save(false, { transactionContext: ctx });
     // check the document was created in the transaction context
-    const list = await Swam.find({ name: 'Odette' }, { transactionContext: ctx });
+    const list = await Swan.find({ name: 'Odette' }, { transactionContext: ctx });
   });
 } catch (e) {
   // Error handling logic goes here.
 }
 // check the document was successfully committed
-const list = await Swam.find({ name: 'Odette' }, { consistency: SearchConsistency.LOCAL });
+const list = await Swan.find({ name: 'Odette' }, { consistency: SearchConsistency.LOCAL });
 ```
 
 #### Bulk operations 
@@ -276,17 +276,17 @@ console.log(list.rows)
 
 ```typescript
 const schema = new Schema({ name: String, age: Number });
-const Swam = model('Swam', schema);
+const Swan = model('Swan', schema);
 await start();
 try {
   await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
     const name = `Odette`;
-    const odette = new Swam({ name, age: 30 });
+    const odette = new Swan({ name, age: 30 });
     // save the document in the transaction context
     await odette.save(false, { transactionContext: ctx });
     
     // check the document was created in the transaction context
-    const list = await Swam.find({}, { transactionContext: ctx });
+    const list = await Swan.find({}, { transactionContext: ctx });
     console.log(list)
     
     // trigger the rollback (abort)
@@ -296,7 +296,7 @@ try {
   // Error handling logic goes here.
 }
 // check the document wasn't committed
-const list = await Swam.find({}, { consistency: SearchConsistency.LOCAL });
+const list = await Swan.find({}, { consistency: SearchConsistency.LOCAL });
 console.log(list);
 // the document shouldn't be created.
 ```
@@ -305,10 +305,10 @@ console.log(list);
 :::danger Pitfall
 **RefDoc Indexes are not currently supported with transactions.** Avoid accessing or mutating schemas that are indexed with a RefDoc index within a transaction. Doing so will lead to unexpected results, and operations will not function as a transaction.
 :::
-Any schema in your Ottoman project that is indexed with a [RefDoc index](/docs/basic/schema#refdoc) should **not be accessed or mutated within a transaction.** For example, if the `Swam` schema is indexed with a RefDoc index, the following code will work, but the transaction will not be atomic:
+Any schema in your Ottoman project that is indexed with a [RefDoc index](/docs/basic/schema#refdoc) should **not be accessed or mutated within a transaction.** For example, if the `Swan` schema is indexed with a RefDoc index, the following code will work, but the transaction will not be atomic:
 ```typescript
 await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
-  const odette = Swam.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
+  const odette = Swan.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
 })
 ```
 It is acceptable to access _other_ schemas that are **not** indexed with a RefDoc index within a transaction. Ottoman will warn you if your project has **any** refdoc indexes when you attempt to use transactions, but it is up to you to ensure that you do not access or mutate these particular schemas within a transaction. 
