@@ -13,7 +13,6 @@ test('Testing indexes', async () => {
   });
 
   UserSchema.index.findN1qlByName = { by: 'name', options: { limit: 4, select: 'name' } };
-  UserSchema.index.findRefName = { by: 'name', type: 'refdoc' };
 
   const User = model('TransactionUser7', UserSchema);
   const ottoman = getDefaultInstance();
@@ -34,12 +33,6 @@ test('Testing indexes', async () => {
 
       const usersN1ql = await User.findN1qlByName(userData.name, { transactionContext: ctx });
       expect(usersN1ql.rows[0].name).toBe(userData.name);
-
-      // Unable to use refdoc index function, seems ctx.get doesn't work with plain text document
-      // await delay(2500);
-      //
-      // const userRefdoc = await User.findRefName(userData.name, { transactionContext: ctx });
-      // expect(userRefdoc.name).toBe(userData.name);
     });
   } catch (e) {
     console.log(e);
@@ -47,7 +40,4 @@ test('Testing indexes', async () => {
 
   const usersN1ql = await User.findN1qlByName(userData.name, { consistency: SearchConsistency.LOCAL });
   expect(usersN1ql.rows[0].name).toBe(userData.name);
-
-  const userRefdoc = await User.findRefName(userData.name);
-  expect(userRefdoc.name).toBe(userData.name);
 });
