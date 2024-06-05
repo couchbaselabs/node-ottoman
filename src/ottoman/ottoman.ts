@@ -501,6 +501,12 @@ export class Ottoman {
     transactionFn: (attempt: TransactionAttemptContext) => Promise<void>,
     config?: TransactionOptions,
   ) {
+    if (Object.keys(this.refdocIndexes).length > 0) {
+      console.warn(
+        '\x1b[4m\x1b[43mWARNING:\x1b[0m One or more RefDoc indexes have been detected in this project. RefDoc indexes are not currently supported in transactions. \nFor more information visit https://ottomanjs.com/docs/advanced/transactions#transactions-with-refdoc-indexes.',
+      );
+    }
+
     await this.cluster.transactions().run(transactionFn, config);
   }
 }
