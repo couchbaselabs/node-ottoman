@@ -179,40 +179,40 @@ test('transactions model.updateById', async () => {
 
 test('transactions model.find', async () => {
   const schema = new Schema({ name: String, age: Number });
-  const Swam = model('Swam', schema);
+  const Swan = model('Swan', schema);
   const otttoman = getDefaultInstance();
   await otttoman.start();
   try {
     await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
       const name = `Odette-${generateUUID()}`;
-      const odette = new Swam({ name, age: 30 });
+      const odette = new Swan({ name, age: 30 });
       await odette.save(false, { transactionContext: ctx });
       // check the document was created in the transaction context
-      const list = await Swam.find({ name: { $like: 'Odette-%' } }, { transactionContext: ctx });
+      const list = await Swan.find({ name: { $like: 'Odette-%' } }, { transactionContext: ctx });
       expect(list.rows.length).toBe(1);
     });
   } catch (e) {
     console.log(e);
   }
   // check the document was successfully committed
-  const list = await Swam.find({ name: { $like: 'Odette-%' } }, { consistency: SearchConsistency.LOCAL });
+  const list = await Swan.find({ name: { $like: 'Odette-%' } }, { consistency: SearchConsistency.LOCAL });
   expect(list.rows.length).toBe(1);
-  await cleanUp(Swam, { name: { $like: 'Odette-%' } });
+  await cleanUp(Swan, { name: { $like: 'Odette-%' } });
 });
 
 test('transactions model.findOne', async () => {
   const schema = new Schema({ name: String, age: Number });
-  const Swam = model('Swam', schema);
+  const Swan = model('Swan', schema);
   const filter = { name: { $like: 'Odette-%' } };
   const otttoman = getDefaultInstance();
   await otttoman.start();
   try {
     await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
       const name = `Odette-${generateUUID()}`;
-      const odette = new Swam({ name, age: 30 });
+      const odette = new Swan({ name, age: 30 });
       await odette.save(false, { transactionContext: ctx });
       // check the document was created in the transaction context
-      const doc = await Swam.findOne(filter, { transactionContext: ctx });
+      const doc = await Swan.findOne(filter, { transactionContext: ctx });
       expect(doc).toBeDefined();
       expect(doc.id).toBe(odette.id);
     });
@@ -220,25 +220,25 @@ test('transactions model.findOne', async () => {
     console.log(e);
   }
   // check the document was successfully committed
-  const doc = await Swam.findOne(filter, { consistency: SearchConsistency.LOCAL });
+  const doc = await Swan.findOne(filter, { consistency: SearchConsistency.LOCAL });
   expect(doc).toBeDefined();
   expect(doc.id).toBeDefined();
-  await cleanUp(Swam, filter);
+  await cleanUp(Swan, filter);
 });
 
 test('transactions model.findOneAndUpdate', async () => {
   const schema = new Schema({ name: String, age: Number });
-  const Swam = model('Swam', schema);
+  const Swan = model('Swan', schema);
   const filter = { name: { $like: 'Odette-%' } };
   const otttoman = getDefaultInstance();
   await otttoman.start();
   try {
     await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
       const name = `Odette-${generateUUID()}`;
-      const odette = new Swam({ name, age: 30 });
+      const odette = new Swan({ name, age: 30 });
       await odette.save(false, { transactionContext: ctx });
       // check the document was created in the transaction context
-      const doc = await Swam.findOneAndUpdate(
+      const doc = await Swan.findOneAndUpdate(
         filter,
         { name: 'Marie' },
         { consistency: SearchConsistency.LOCAL, transactionContext: ctx, new: true },
@@ -251,10 +251,10 @@ test('transactions model.findOneAndUpdate', async () => {
     console.log(e);
   }
   // check the document was successfully committed
-  const doc = await Swam.findOne({ name: 'Marie' }, { consistency: SearchConsistency.LOCAL });
+  const doc = await Swan.findOne({ name: 'Marie' }, { consistency: SearchConsistency.LOCAL });
   expect(doc).toBeDefined();
   expect(doc.id).toBeDefined();
-  await cleanUp(Swam);
+  await cleanUp(Swan);
 });
 
 test('transactions document.populate', async () => {
@@ -381,16 +381,16 @@ test('transactions model.createMany and model.removeMany', async () => {
 
 test('transactions rollback', async () => {
   const schema = new Schema({ name: String, age: Number });
-  const Swam = model('Swam', schema);
+  const Swan = model('Swan', schema);
   const otttoman = getDefaultInstance();
   await otttoman.start();
   try {
     await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
       const name = `Odette-${generateUUID()}`;
-      const odette = new Swam({ name, age: 30 });
+      const odette = new Swan({ name, age: 30 });
       await odette.save(false, { transactionContext: ctx });
       // check the document was created in the transaction context
-      const list = await Swam.find({}, { transactionContext: ctx });
+      const list = await Swan.find({}, { transactionContext: ctx });
       expect(list.rows.length).toBe(1);
       await ctx._rollback();
     });
@@ -398,7 +398,7 @@ test('transactions rollback', async () => {
     console.log(e);
   }
   // check the document wasn't committed
-  const list = await Swam.find({}, { consistency: SearchConsistency.LOCAL });
+  const list = await Swan.find({}, { consistency: SearchConsistency.LOCAL });
   expect(list.rows.length).toBe(0);
 });
 
