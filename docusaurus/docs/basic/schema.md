@@ -452,10 +452,14 @@ console.log(userRefdoc);
 }
 ```
 
-:::caution
-**Refdoc Index** is not managed by Couchbase but strictly by Ottoman. It does not guarantee consistency if the keys that are a part of these indexes are updated by an external operation, like N1QL for example.
+:::danger
+**RefDoc Indexes** are not currently supported with transactions. If you plan to use transactions, see [Ottoman Transactions](/docs/advanced/transactions#transactions-with-refdoc-indexes) for more information.
+:::
 
-**_Needs to be used with caution!!!_**
+:::caution
+**RefDoc Index** is not managed by Couchbase but strictly by Ottoman. It does not guarantee consistency if the keys that are a part of these indexes are updated by an external operation, like N1QL for example.
+
+**_Please use with caution!_**
 :::
 
 ### View

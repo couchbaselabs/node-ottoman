@@ -3,7 +3,7 @@ sidebar_position: 0
 title: Transactions
 ---
 
-A practical guide on using Couchbase Distributed ACID transactions.
+A practical guide on using Couchbase Distributed ACID transactions in Ottoman.
 
 This guide will show you examples of how to perform multi-document ACID (atomic, consistent, isolated, and durable)
 database transactions within your application.
@@ -11,7 +11,7 @@ database transactions within your application.
 Refer to the [Transaction Concepts](https://docs.couchbase.com/nodejs-sdk/current/concept-docs/transactions.html) concept page for a high-level overview.
 
 :::info Info
-Ottoman's `transactions` implementation is intuitive and simple, if you already know how to use `Ottoman` you can start working with transactions in no time.
+Ottoman's `transactions` implementation is intuitive and simple. If you already know how to use `Ottoman` you can start working with transactions in no time.
 
 If not, please check the basics:
 - [Ottoman](/docs/basic/ottoman) object
@@ -53,7 +53,7 @@ If at any point an error occurs, the transaction will rollback and the arrow fun
   console.log(doc)
 ```
 
-The $transaction arrow function gets passed a `TransactionAttemptContext` object--generally referred to as `ctx` in these examples.
+The `$transaction` arrow function gets passed a `TransactionAttemptContext` object--generally referred to as `ctx` in these examples.
 Since the arrow function could be rerun multiple times, it is important that it does not contain any side effects.
 In particular, you should never perform regular operations on a Collection, such as `create()` without using the `ctx`, inside the arrow function.
 Such operations may be performed multiple times, and will not be performed transactionally.
@@ -107,8 +107,9 @@ this way the operation will know you intend to use it as a transaction, use it a
 :::
 
 :::warning Pitfall
-Not using the `{ transactionContext: ctx }` option inside the `$transaction` function will conduce to unexpected results.
-Keep a sharp eye on it.
+The **`{ transactionContext: ctx }` option _must_ be passed as a parameter when inside of a `$transaction` function**. Not passing this context will lead to unexpected results, and operations will not function as a transaction.
+
+Keep a sharp eye on it!
 :::
 
 ### Rollback
@@ -196,7 +197,7 @@ before continuing. This further increases safety, at the cost of additional late
 
 :::warning Caution
 A level of `None` is present but its use is discouraged and unsupported.
-If durability is set to `None`, then ACID semantics are not guaranteed.
+If durability is set to `None`, then ACID compliance is not guaranteed.
 :::
 
 ### Ways of usage
@@ -299,6 +300,20 @@ const list = await Swam.find({}, { consistency: SearchConsistency.LOCAL });
 console.log(list);
 // the document shouldn't be created.
 ```
+
+### Transactions with RefDoc Indexes
+:::danger Pitfall
+**RefDoc Indexes are not currently supported with transactions.** Avoid accessing or mutating schemas that are indexed with a RefDoc index within a transaction. Doing so will lead to unexpected results, and operations will not function as a transaction.
+:::
+Any schema in your Ottoman project that is indexed with a [RefDoc index](/docs/basic/schema#refdoc) should **not be accessed or mutated within a transaction.** For example, if the `Swam` schema is indexed with a RefDoc index, the following code will work, but the transaction will not be atomic:
+```typescript
+await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
+  const odette = Swam.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
+})
+```
+It is acceptable to access _other_ schemas that are **not** indexed with a RefDoc index within a transaction. Ottoman will warn you if your project has **any** refdoc indexes when you attempt to use transactions, but it is up to you to ensure that you do not access or mutate these particular schemas within a transaction. 
+
+
 
 ### Additional Resources
 
