@@ -12,7 +12,6 @@ export const buildViewRefdoc =
     if (options.transactionContext) {
       const { transactionContext } = options;
       const result = await transactionContext.get(c, key);
-      console.log(result);
       if (result?.content) {
         return Model.findById(result.content, { transactionContext: transactionContext });
       }
