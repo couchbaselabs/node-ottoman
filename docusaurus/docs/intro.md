@@ -80,7 +80,7 @@ If you are using the legacy version of Ottoman, check out the [V1 docs](https://
 
 ## Documentation
 
-Checkout our [examples](https://ottomanjs.com/guides/first-app.html)  and [docs](https://ottomanjs.com/guides/quick-start.html) for typescript and javascript implementation.
+Check out our [examples](https://ottomanjs.com/docs/first-app) and [docs](https://ottomanjs.com/docs/quick-start) for typescript and javascript implementation.
 
 ## Questions
 
