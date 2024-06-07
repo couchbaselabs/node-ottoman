@@ -112,40 +112,6 @@ The **`{ transactionContext: ctx }` option _must_ be passed as a parameter when 
 Keep a sharp eye on it!
 :::
 
-### Rollback
-
-To trigger a `rollback` manually you should execute the `ctx._rollback` function.
-
-```typescript
-await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
-  const odette = Swan.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
-  await ctx._rollback();
-})
-```
-
-This way you are canceling the transaction, so no changes inside the `$transaction` function will be committed.
-
-:::info Important
-**Be sure to `await` the `ctx._rollback()`**, instead of using promise chaining. Not doing so can lead to unexpected results and race conditions. 
-:::
-
-### Commit
-
-To manually commit the transaction, you should execute the `ctx._commit` function.
-
-```typescript
-await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
-  const odette = Swan.create({ name: 'Gloria', age: 26 }, { transactionContext: ctx });
-  await ctx._commit();
-})
-```
-
-This will commit the changes inside the `$transaction` function.
-
-:::info Important
-**Be sure to `await` the `ctx._commit()`**, instead of using promise chaining. Not doing so can lead to unexpected results and race conditions.
-:::
-
 ### Handle Error
 
 While creating a transaction you always should wrap it inside a `try catch` block and handle the exceptions.
@@ -291,35 +257,6 @@ try {
 // query the list of documents to check they were updated and committed
 const list = await Duck.find({ age: 84 }, { consistency: SearchConsistency.LOCAL });
 console.log(list.rows)
-```
-
-#### Rolling back a transaction
-
-```typescript
-const schema = new Schema({ name: String, age: Number });
-const Swan = model('Swan', schema);
-await start();
-try {
-  await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
-    const name = `Odette`;
-    const odette = new Swan({ name, age: 30 });
-    // save the document in the transaction context
-    await odette.save(false, { transactionContext: ctx });
-    
-    // check the document was created in the transaction context
-    const list = await Swan.find({}, { transactionContext: ctx });
-    console.log(list)
-    
-    // trigger the rollback (abort)
-    await ctx._rollback();
-  });
-} catch (e) {
-  // Error handling logic goes here.
-}
-// check the document wasn't committed
-const list = await Swan.find({}, { consistency: SearchConsistency.LOCAL });
-console.log(list);
-// the document shouldn't be created.
 ```
 
 ### Transactions with RefDoc Indexes
