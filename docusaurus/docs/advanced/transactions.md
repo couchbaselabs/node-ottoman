@@ -114,16 +114,37 @@ Keep a sharp eye on it!
 
 ### Rollback
 
-To trigger a `rollback` manually you should execute `ctx._rollback` function.
+To trigger a `rollback` manually you should execute the `ctx._rollback` function.
 
 ```typescript
 await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
   const odette = Swan.create({ name: 'Odette', age: 30 }, { transactionContext: ctx });
-  ctx._rollback();
+  await ctx._rollback();
 })
 ```
 
 This way you are canceling the transaction, so no changes inside the `$transaction` function will be committed.
+
+:::info Important
+**Be sure to `await` the `ctx._rollback()`**, instead of using promise chaining. Not doing so can lead to unexpected results and race conditions. 
+:::
+
+### Commit
+
+To manually commit the transaction, you should execute the `ctx._commit` function.
+
+```typescript
+await otttoman.$transactions(async (ctx: TransactionAttemptContext) => {
+  const odette = Swan.create({ name: 'Gloria', age: 26 }, { transactionContext: ctx });
+  await ctx._commit();
+})
+```
+
+This will commit the changes inside the `$transaction` function.
+
+:::info Important
+**Be sure to `await` the `ctx._commit()`**, instead of using promise chaining. Not doing so can lead to unexpected results and race conditions.
+:::
 
 ### Handle Error
 
