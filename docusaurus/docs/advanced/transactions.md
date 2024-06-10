@@ -11,7 +11,10 @@ database transactions within your application.
 Refer to the [Transaction Concepts](https://docs.couchbase.com/nodejs-sdk/current/concept-docs/transactions.html) concept page for a high-level overview.
 
 :::info Info
-Ottoman's `transactions` implementation is intuitive and simple. If you already know how to use `Ottoman` you can start working with transactions in no time.
+
+**Notice:** Transactions support was added in ottoman version `2.5.0`. Please update to `2.5.0` or later to use transactions.
+
+Ottoman's transactions implementation is intuitive and simple. If you already know how to use Ottoman, you can start working with transactions in no time.
 
 If not, please check the basics:
 - [Ottoman](/docs/basic/ottoman) object
