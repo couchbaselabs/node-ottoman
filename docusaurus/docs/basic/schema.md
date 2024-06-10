@@ -457,7 +457,7 @@ console.log(userRefdoc);
 :::
 
 :::caution
-**RefDoc Index** is not managed by Couchbase but strictly by Ottoman. It does not guarantee consistency if the keys that are a part of these indexes are updated by an external operation, like N1QL for example.
+**RefDoc Indexes** are not managed by Couchbase but strictly by Ottoman. It does not guarantee consistency if the keys that are a part of these indexes are updated by an external operation, like N1QL for example.
 
 **_Please use with caution!_**
 :::
