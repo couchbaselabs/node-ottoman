@@ -1,41 +1,41 @@
-name: Issue Opened
+# name: Issue Opened
 
-on:
-  issues:
-    types: [opened, reopened]
+# on:
+#   issues:
+#     types: [opened, reopened]
 
-env:
-  ISSUE_URL: ${{ github.event.issue.html_url }}
-  ISSUE_TITLE: ${{ github.event.issue.title }}
-  ISSUE_BODY: ${{ github.event.issue.body }}
-jobs:
-  new_issue:
-    name: New Issue
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Send Issues to slack
-      run: |
-        echo "Newly opened issue at "
-        # ISSUE_TITLE=${{ github.event.issue.title }}
-        # ISSUE_BODY=${{ github.event.issue.body }}
-        # ISSUE_URL=${{ github.event.issue.issue_url }}
-        TIME_STAMP="`date +%s`"
-        cat <<EOT > /tmp/slack_message.json
-        {
-          "type": "mrkdwn",
-          "text": " Issue Opened on Node Ottoman ",
-          "attachments": [
-            { 
-            "fallback": " Node Ottoman Issue",
-            "color": "#36a64f",
-            "pretext": " Opened Issue : $ISSUE_TITLE \n \n $ISSUE_BODY \n \n For more details about issue: $ISSUE_URL ",
-            "footer_icon": "https://www.couchbase.com/webfiles/1629373386042/images/favicon.ico",
-            "ts": ${TIME_STAMP}
-        }
-          ]
-        }
-        EOT
-        cat /tmp/slack_message.json
-        SLACK_WEBHOOK_URL="${{ secrets.SLACK_WEBHOOK_URL_DA_ALERTS_SUCCESS }}"
-        curl -X POST -H 'Content-type: application/json' --data @/tmp/slack_message.json ${SLACK_WEBHOOK_URL}
+# env:
+#   ISSUE_URL: ${{ github.event.issue.html_url }}
+#   ISSUE_TITLE: ${{ github.event.issue.title }}
+#   ISSUE_BODY: ${{ github.event.issue.body }}
+# jobs:
+#   new_issue:
+#     name: New Issue
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Send Issues to slack
+#       run: |
+#         echo "Newly opened issue at "
+#         # ISSUE_TITLE=${{ github.event.issue.title }}
+#         # ISSUE_BODY=${{ github.event.issue.body }}
+#         # ISSUE_URL=${{ github.event.issue.issue_url }}
+#         TIME_STAMP="`date +%s`"
+#         cat <<EOT > /tmp/slack_message.json
+#         {
+#           "type": "mrkdwn",
+#           "text": " Issue Opened on Node Ottoman ",
+#           "attachments": [
+#             { 
+#             "fallback": " Node Ottoman Issue",
+#             "color": "#36a64f",
+#             "pretext": " Opened Issue : $ISSUE_TITLE \n \n $ISSUE_BODY \n \n For more details about issue: $ISSUE_URL ",
+#             "footer_icon": "https://www.couchbase.com/webfiles/1629373386042/images/favicon.ico",
+#             "ts": ${TIME_STAMP}
+#         }
+#           ]
+#         }
+#         EOT
+#         cat /tmp/slack_message.json
+#         SLACK_WEBHOOK_URL="${{ secrets.SLACK_WEBHOOK_URL_DA_ALERTS_SUCCESS }}"
+#         curl -X POST -H 'Content-type: application/json' --data @/tmp/slack_message.json ${SLACK_WEBHOOK_URL}
