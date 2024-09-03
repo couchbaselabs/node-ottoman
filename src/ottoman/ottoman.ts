@@ -76,7 +76,7 @@ export type OttomanEvents = 'IndexOnline';
  * Store default connection.
  */
 export let __ottoman: Ottoman;
-export const __ottomanInstances: Ottoman[] = [];
+export let __ottomanInstances: Ottoman[] = [];
 
 export class Ottoman {
   private n1qlIndexes: Record<string, { fields: string[]; modelName: string }> = {};
@@ -376,13 +376,13 @@ export class Ottoman {
    * connection.close().then(() => console.log('connection closed'));
    * ```
    */
-  async close() {
-    console.log('Closing: ', this.id, exports.__ottoman ? exports.__ottoman.id : '____');
+  async close(): Promise<void> {
+    console.log('Closing: ', this.id, __ottoman ? __ottoman.id : '____');
     if (this.cluster) {
-      exports.__ottomanInstances = exports.__ottomanInstances.filter((instance) => instance.id !== this.id);
-      if (exports.__ottoman?.id === this.id) {
-        console.log(exports.__ottoman.id, '__ottoman -> undefined');
-        exports.__ottoman = undefined;
+      __ottomanInstances = __ottomanInstances.filter((instance) => instance.id !== this.id);
+      if (__ottoman?.id === this.id) {
+        console.log(__ottoman.id, '__ottoman -> undefined');
+        (__ottoman as any) = undefined;
       }
       await this.cluster.close();
       this._cluster = undefined;
