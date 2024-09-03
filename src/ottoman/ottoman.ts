@@ -385,6 +385,7 @@ export class Ottoman {
         exports.__ottoman = undefined;
       }
       await this.cluster.close();
+      this._cluster = undefined;
     }
   }
 
