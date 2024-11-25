@@ -38,7 +38,10 @@ const { connect, model, start, close } = require('ottoman');
 const main = async () => {
   await connect("couchbase://localhost/travel-sample@admin:password");
 
-  const User = model('User', { name: String });
+  const User = model('User', { name: String }, { 
+    collectionName: "_default",
+    scopeName: "_default",
+  });
 
   const user = new User({ name: 'Jane Doe' });
 
