@@ -134,7 +134,7 @@ const AirportModel = model(
   });
 ```
 
-### Ottoman vs SDK Connection
+### Ottoman vs. SDK Connection
 
 Create our Ottoman instance and connect:
 

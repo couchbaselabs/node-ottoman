@@ -2,8 +2,9 @@
 // Note: type annotations allow type checking and IDEs autocompletion
 require('dotenv').config();
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const { themes } = require('prism-react-renderer');
+const lightCodeTheme = themes.github;
+const darkCodeTheme = themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -117,6 +118,22 @@ const config = {
         entryPoints: ['../src/index.ts'],
         tsconfig: '../tsconfig.json',
         exclude: '**/node_modules/**',
+        readme: 'none',
+      },
+    ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/docs/api/enums/SearchConsistency',
+            to: '/docs/api/enumerations/SearchConsistency',
+          },
+          {
+            from: '/docs/api/enums/VALIDATION_STRATEGY',
+            to: '/docs/api/enumerations/VALIDATION_STRATEGY',
+          },
+        ],
       },
     ],
   ],

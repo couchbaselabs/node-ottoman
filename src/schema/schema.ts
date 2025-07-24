@@ -155,7 +155,7 @@ export class Schema {
    *   const result = schema.validate({name: 'John Doe', age: '34'});
    *   console.log(result)
    * ```
-   * > {name: 'John Doe', age: 34}
+   * > `{name: 'John Doe', age: 34}`
    */
   validate(data: unknown, options: { strict?: boolean } = {}) {
     const _options = {
@@ -176,7 +176,7 @@ export class Schema {
    *   const result = schema.cast({ name: 'John Doe', age: '34' });
    *   console.log(result)
    * ```
-   * > { name: 'John Doe', age: 34 }
+   * > `{ name: 'John Doe', age: 34 }`
    */
   cast(data: unknown, options: CastOptions = {}) {
     options.strict = options.strict !== undefined ? options.strict : this.options.strict;
@@ -194,7 +194,7 @@ export class Schema {
    *   const result = schema.applyDefaultsToObject({});
    *   console.log(result)
    * ```
-   * > { amount: 5 }
+   * > `{ amount: 5 }`
    */
   applyDefaultsToObject(obj) {
     for (const key in this.fields) {
