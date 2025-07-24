@@ -118,6 +118,22 @@ const config = {
         entryPoints: ['../src/index.ts'],
         tsconfig: '../tsconfig.json',
         exclude: '**/node_modules/**',
+        readme: 'none',
+      },
+    ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            from: '/docs/api/enums/SearchConsistency',
+            to: '/docs/api/enumerations/SearchConsistency',
+          },
+          {
+            from: '/docs/api/enums/VALIDATION_STRATEGY',
+            to: '/docs/api/enumerations/VALIDATION_STRATEGY',
+          },
+        ],
       },
     ],
   ],
