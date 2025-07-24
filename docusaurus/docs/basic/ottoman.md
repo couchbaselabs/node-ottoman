@@ -247,7 +247,7 @@ const main = async () => {
 main();
 ```
 
-::: tip
+:::tip
 Notice we [start](/docs/api/classes/ottoman.html#start) using Ottoman without creating any instance, it's possible by using the `connect` function.
 `connect` function will create a default ottoman instance with default options if there's not an ottoman default instance created yet.
 :::
@@ -355,7 +355,7 @@ ottoman1.close();
 close();
 ```
 
-::: tip
+:::tip
 Always remember to close your connections.
 :::
 

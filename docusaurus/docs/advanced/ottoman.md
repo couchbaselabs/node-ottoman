@@ -129,7 +129,7 @@ const spaceX = await Company.findOne({name: 'Space X'});
 await spaceX._populate('*')
 ```
 
-::: tip
+:::tip
 The '_populate' function will receive 1 or many field names separate by a comma to know
 the field to populate or just use the `*` wildcard to populate all references in the document,
 as we showed in the above example. If you want just to populate the `ceo` field for example you
@@ -201,7 +201,7 @@ the result will be:
 
 Congratulations! You retrieve the entire `Space X` data, from the nested Schemas `Company -> Person -> Address` design.
 
-::: tip Rewriting `populateMaxDeep`
+:::tip Rewriting `populateMaxDeep`
 `populateMaxDeep` option is set to 1, as we can see in the previous example, but you can override it when creating the
 `Ottoman` instance.
 
