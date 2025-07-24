@@ -39,7 +39,7 @@ node --version
 npm --version
 ```
 
-::: tip Note
+:::tip Note
 You can get to the Couchbase Server Web UI at any time by visiting [localhost:8091](http://localhost:8091/).
 :::
 

@@ -246,7 +246,7 @@ WHERE (address IS NULL
 LIMIT 20
 ```
 
-::: tip Note
+:::tip Note
 Can also use `ignoreCase` as part of the `build` method, this will always prioritize the `$ignoreCase` value defined in clause
 
 ```ts

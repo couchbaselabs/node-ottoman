@@ -64,7 +64,7 @@ You should see results similar to the following:
 Nice Job!
 ```
 
-::: tip Note
+:::tip Note
 If you are using the legacy version of Ottoman, check out the [V1 docs](https://v1.ottomanjs.com/).
 :::
 
@@ -103,7 +103,7 @@ Thank you to all the people who already contributed to Couchbase Ottoman!
 
 1. [Install Couchbase Server Using Docker](https://docs.couchbase.com/server/current/install/getting-started-docker.html).
 
-::: tip Note
+:::tip Tip
 Check results on [http://localhost:8091/](http://localhost:8091/) couchbase web client.
 :::
 

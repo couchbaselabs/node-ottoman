@@ -25,7 +25,7 @@ Using the default `keyGenerator` function that Ottoman provides and assuming you
 
 - `User::0477024c`
 
-::: tip Notice
+:::tip Notice
 This resulted key is a combination of the prefix as provided by the default  `keyGenerator` function (`${metadata.modelName}`) [appended with an ID](/docs/basic/model.html#model-id) (`0477024c`).
 :::
 
@@ -61,7 +61,7 @@ Let see how Ottoman handles a new document creation.
 
 ![How to Use](./create.png)
 
-::: tip Notice
+:::tip Notice
 Using Ottoman you only need to think about `id` in order to execute CRUD Operations over documents.
 All the `key` management will be automatically handled by Ottoman.
 :::

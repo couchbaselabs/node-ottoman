@@ -21,7 +21,7 @@ If you are familiar with Mongoose, an ODM for MongoDB, you will feel pretty comf
 In Ottoman, we have many constructs to help define schema and models at the application level. Let’s go over some of the most important terms you need to know in Ottoman.
 
 
-::: tip Couchbase document example:
+:::tip Couchbase document example:
 ```json
 {
   "id": 10,
@@ -87,7 +87,7 @@ Can use the IDE that is best to your liking and open the created directory `intr
 
 We will start working out of the file `./createAirline.js` under the project root and add the following (based on the default configuration):
 
-::: tip Connecting to Couchbase in Ottoman
+:::tip Connecting to Couchbase in Ottoman
 ```js
 const { Ottoman, model, Schema } = require('ottoman')
 
@@ -118,7 +118,7 @@ Creating an Ottoman `model` comprises a few things:
 
 A `schema` defines `document` properties through an object where the key name corresponds to the property name in the `collection`.
 
-::: tip Create an Airline Schema
+:::tip Create an Airline Schema
 ```js
 const airlineSchema = new Schema({
   callsign: String,
@@ -146,7 +146,7 @@ The following Schema Types are permitted:
 
 We need to call the `model` constructor on the `ottoman` instance and pass it the name of the `collection` and a reference to the `schema` definition.
 
-::: tip Create Airline Model
+:::tip Create Airline Model
 ```js
 const Airline = ottoman.model('Airline', airlineSchema)
 ```
@@ -156,7 +156,7 @@ When you call the [`model()`](/docs/api/classes/ottoman.html#model) function it 
 
 Let’s also give the `airlineSchema` a ***phone number*** property. We can add a validation function that will ensure that the value is a valid phone number. Replace the `airlineSchema` section with these three blocks of code:
 
-::: tip Add Validator to Airline Schema
+:::tip Add Validator to Airline Schema
 ```js
 const regx = /^(\([0-9]{3}\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$/
 if ( value && !value.match(regx) ) {
@@ -183,7 +183,7 @@ Validators registered with Ottoman (as we have done here with the `ottoman.addVa
 
 There is however an easier way to validate any document properties value so long as the check you are performing uses a regular expression. The [ValidatorOption](/docs/api/interfaces/validatoroption.html#hierarchy') can take a regexp and message as an argument, so we can reduce our code down to:
 
-::: tip Update Schema to use Validator
+:::tip Update Schema to use Validator
 ```js
 const regx = /^(\([0-9]{3}\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$/
 const airlineSchema = new Schema({
@@ -205,7 +205,7 @@ Most of the basic operations are covered in our Ottoman V2 documentation, we wil
 
 Considering the code that we already went over above that creates a `schema`, `model`, and `validators`. *Saving* a `model` and *persisting* it to the database is quite easy. Let’s create a new **Airline** `model` using our `Schema` and then *save/persist* it to the database.
 
-::: tip Create Document & Save to Couchbase
+:::tip Create Document & Save to Couchbase
 ```js
 // Constructing our document
 const cbAirlines = new Airline({
@@ -275,7 +275,7 @@ If we enter an invalid phone number and run node `createAirline.js` this file ag
 ValidationError: Phone Number 321-321-32xx is not valid
 ```
 
-::: tip Export Schema and Model
+:::tip Export Schema and Model
 
 You can define your *connection*, *schema*, and *models* in separate files, export, and use them in other files. Create a new file named `airline-schema-model.js` and move our `schema` and `model` definition to it:
 
@@ -300,7 +300,7 @@ exports.Airline = Airline;
 
 Now we can create a few new files, `findAirline.js`, `updateAirline.js`, and `removeAirline.js` and populate each file with the following:
 
-::: tip Boilerplate for Multiple Files
+:::tip Boilerplate for Multiple Files
 ```js
 const { Ottoman } = require('ottoman')
 const ottoman = new Ottoman({ collectionName: '_default' });
@@ -326,7 +326,7 @@ This will help us to separate some of our code so we are not repeating it in eac
 
 Let’s try to retrieve the record we saved to the database earlier. The [model class](/docs/api/classes/model.html) exposes several static and instance methods to perform operations on the database. We will now try to find the record that we created previously using the find method and pass the `callsign` as the search term. Let’s create a new file named `findAirline.js` and we can add the following code:
 
-::: tip Find Airline Document by `callsign`
+:::tip Find Airline Document by `callsign`
 ```js
 // Find the Couchbase Airline document by Callsign from Couchbase Server
 const findDocument = async () => {
@@ -367,7 +367,7 @@ Find document result:
 
 Let’s modify the record above by finding it using the `callsign`, which we can assume that `callsign` will be a unique field in our data, then we can update the `document` all in a single operation.
 
-::: tip Find Airline Document and Update
+:::tip Find Airline Document and Update
 ```js
 // Update the Couchbase Airline document by Callsign from Couchbase Server
 const findDocumentAndUpdate = async () => {
@@ -416,7 +416,7 @@ _Model {
 
 Ottoman has several methods that deal with removing documents: [remove](/docs/api/classes/document.html#remove), [removeById](/docs/api/interfaces/imodel.html#removebyid) and [removeMany](/docs/api/interfaces/imodel.html#removemany). Considering the many examples we have had so far, each of these should be very easy to understand how to use, so we will just provide a simple example here to show how to remove a `document` that we have already found using the [find](/docs/api/interfaces/imodel.html#find) method.
 
-::: tip Remove Airline Document by ID
+:::tip Remove Airline Document by ID
 ```js
 // Remove the Couchbase Airline document by ID from Couchbase Server
 const removeDocument = async () => {
@@ -452,7 +452,7 @@ Example of Middleware (a.k.a. [pre](/docs/basic/schema.html#register-hooks-with-
 
 Let’s try an example by simply generating a log in the console before and after the creation (`save`) of a `document`, We are going to create a new file called `createWithHooks.js` and most of the code will look familiar except we have added `pre` and `post` hooks that will just report to us the document `name` ***pre-save*** and document `id` ***post-save***:
 
-::: tip Create Document with Pre/Post Save Hooks
+:::tip Create Document with Pre/Post Save Hooks
 ```js
 const { Ottoman } = require('ottoman')
 const ottoman = new Ottoman({ collectionName: '_default' });
@@ -547,7 +547,7 @@ In the next three examples, we will do the same thing using each of the three di
 
 Let’s first create a new file named `findWithQueryBuilder.js`, and add the following code:
 
-::: tip Find Airline Document with QueryBuilder
+:::tip Find Airline Document with QueryBuilder
 ```js
 const { Ottoman, Query } = require('ottoman')
 const ottoman = new Ottoman({ collectionName: '_default' });
@@ -588,7 +588,7 @@ This file has a comment in the middle that says: ***“Replace with QueryBuilder
 
 ### Parameters
 
-::: tip Demonstrate Query Builder using Parameters
+:::tip Demonstrate Query Builder using Parameters
 ```js
 const generateQuery = async () => {
   try {
@@ -617,7 +617,7 @@ const generateQuery = async () => {
 
 ### Mixed Mode
 
-::: tip Demonstrate Query Builder using Mixed Mode (Parameters & Access Functions)
+:::tip Demonstrate Query Builder using Mixed Mode (Parameters & Access Functions)
 ```js
 const generateQuery = async () => {
   try {
