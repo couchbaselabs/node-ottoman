@@ -1,4 +1,4 @@
-# Ottoman Vs SDK Comparison
+# Ottoman vs. SDK Comparison
 
 This document outlines subtle differences between Ottoman and Node.js SDK
 and also demonstrate the value proposition (advantages) that Ottoman brings over Node.js SDK.
