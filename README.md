@@ -59,9 +59,8 @@ You should see results similar to the following:
 Nice Job!
 ```
 
-::: tip Note
-If you are using the legacy version of Ottoman, check out the [V1 docs](https://v1.ottomanjs.com/).
-:::
+> [!NOTE]
+> If you are using the legacy version of Ottoman, check out the [V1 docs](https://v1.ottomanjs.com/).
 
 
 ## Ottoman v2 main goals
@@ -98,9 +97,8 @@ Thank you to all the people who already contributed to Couchbase Ottoman!
 
 1. [Install Couchbase Server Using Docker](https://docs.couchbase.com/server/current/install/getting-started-docker.html).
 
-::: tip Note
-Check results on [http://localhost:8091/](http://localhost:8091/) couchbase web client.
-:::
+> [!TIP]
+> Check results on [http://localhost:8091/](http://localhost:8091/) couchbase web client.
 
 
 2. Get the repo and install dependencies
