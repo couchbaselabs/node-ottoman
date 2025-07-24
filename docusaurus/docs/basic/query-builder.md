@@ -298,33 +298,33 @@ The syntax of a SELECT clause in n1ql is documented [here](https://docs.couchbas
 
 | key        | value    |
 | ---------- | -------- |
-| \$all      | ALL      |
-| \$distinct | DISTINCT |
-| \$raw      | RAW      |
-| \$element  | ELEMENT  |
-| \$value    | VALUE    |
+| `$all`      | ALL      |
+| `$distinct` | DISTINCT |
+| `$raw`      | RAW      |
+| `$element`  | ELEMENT  |
+| `$value`    | VALUE    |
 
 ### Available Aggregation Functions
 
 | key            | value         |
 | -------------- | ------------- |
-| \$arrayAgg     | ARRAY_AGG     |
-| \$avg          | AVG           |
-| \$mean         | MEAN          |
-| \$count        | COUNT         |
-| \$countn       | COUNTN        |
-| \$max          | MAX           |
-| \$median       | MEDIAN        |
-| \$min          | MIN           |
-| \$stddev       | STDDEV        |
-| \$stddevPop    | STDDEV_POP    |
-| \$stddevSamp   | STDDEV_SAMP   |
-| \$sum          | SUM           |
-| \$variance     | VARIANCE      |
-| \$variancePop  | VARIANCE_POP  |
-| \$varianceSamp | VARIANCE_SAMP |
-| \$varPop       | VAR_SAMP      |
-| \$varSamp      | VAR_SAMP      |
+| `$arrayAgg`     | ARRAY_AGG     |
+| `$avg`          | AVG           |
+| `$mean`         | MEAN          |
+| `$count`        | COUNT         |
+| `$countn`       | COUNTN        |
+| `$max`          | MAX           |
+| `$median`       | MEDIAN        |
+| `$min`          | MIN           |
+| `$stddev`       | STDDEV        |
+| `$stddevPop`    | STDDEV_POP    |
+| `$stddevSamp`   | STDDEV_SAMP   |
+| `$sum`          | SUM           |
+| `$variance`     | VARIANCE      |
+| `$variancePop`  | VARIANCE_POP  |
+| `$varianceSamp` | VARIANCE_SAMP |
+| `$varPop`       | VAR_SAMP      |
+| `$varSamp`      | VAR_SAMP      |
 
 ### N1QL SELECT Nested Clause Example
 
@@ -355,50 +355,50 @@ The syntax of a WHERE clause in N1QL is documented [here](https://docs.couchbase
 
 ### Available Comparison Operators
 
-| key            | value          |
-| -------------- | -------------- |
-| \$isNull       | IS NULL        |
-| \$isNotNull    | IS NOT NULL    |
-| \$isMissing    | IS MISSING     |
-| \$isNotMissing | IS NOT MISSING |
-| \$isValued     | IS VALUED      |
-| \$isNotValued  | IS NOT VALUED  |
-| \$eq           | =              |
-| \$neq          | \!=            |
-| \$gt           | >              |
-| \$gte          | >=             |
-| \$lt           | <              |
-| \$lte          | <=             |
-| \$like         | LIKE           |
-| \$notLike      | NOT LIKE       |
-| \$btw          | BETWEEN        |
-| \$notBtw       | NOT BETWEEN    |
+| key             | value          |
+|-----------------|----------------|
+| `$isNull`       | IS NULL        |
+| `$isNotNull`    | IS NOT NULL    |
+| `$isMissing`    | IS MISSING     |
+| `$isNotMissing` | IS NOT MISSING |
+| `$isValued`     | IS VALUED      |
+| `$isNotValued`  | IS NOT VALUED  |
+| `$eq`           | =              |
+| `$neq`          | !=             |
+| `$gt`           | >              |
+| `$gte`          | >=             |
+| `$lt`           | &lt;           |
+| `$lte`          | &lt;=          |
+| `$like`         | LIKE           |
+| `$notLike`      | NOT LIKE       |
+| `$btw`          | BETWEEN        |
+| `$notBtw`       | NOT BETWEEN    |
 
 ### Available Logical Operators
 
-| key   | value |
-| ----- | ----- |
-| \$and | AND   |
-| \$or  | OR    |
-| \$not | NOT   |
+| key    | value |
+|--------|-------|
+| `$and` | AND   |
+| `$or`  | OR    |
+| `$not` | NOT   |
 
 ### Available Collection Operators
 
-| key         | value      |
-| ----------- | ---------- |
-| \$any       | ANY        |
-| \$every     | EVERY      |
-| \$in        | IN         |
-| \$notIn     | NOT IN     |
-| \$within    | WITHIN     |
-| \$notWithin | NOT WITHIN |
-| \$satisfies | SATISFIES  |
+| key          | value      |
+|--------------|------------|
+| `$any`       | ANY        |
+| `$every`     | EVERY      |
+| `$in`        | IN         |
+| `$notIn`     | NOT IN     |
+| `$within`    | WITHIN     |
+| `$notWithin` | NOT WITHIN |
+| `$satisfies` | SATISFIES  |
 
 Available String Modifiers:
 
-| key          | value   |
-| ------------ | ------- |
-| \$ignoreCase | Boolean |
+| key           | value   |
+|---------------|---------|
+| `$ignoreCase` | Boolean |
 
 ## Functional *COLLECTION* Operators Examples
 
