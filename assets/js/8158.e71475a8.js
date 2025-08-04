@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkottoman_documentation=self.webpackChunkottoman_documentation||[]).push([[8158],{8158:(a,o,t)=>{t.r(o),t.d(o,{DocSearchModal:()=>e.a1});var e=t(3219)}}]);
