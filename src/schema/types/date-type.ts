@@ -67,11 +67,15 @@ export class DateType extends CoreType {
   }
 
   cast(value: any, strategy = CAST_STRATEGY.DEFAULT_OR_DROP) {
+    if(value === null || value === undefined) {
+      return value;
+    }
+    
     if (isDateValid(value)) {
       return new Date(value);
-    } else {
-      return checkCastStrategy(value, strategy, this);
-    }
+    } 
+    
+    return checkCastStrategy(value, strategy, this);
   }
 
   validate(value: unknown, strategy) {
