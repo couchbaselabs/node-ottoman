@@ -273,40 +273,40 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@couchbase/couchbase-darwin-arm64-napi@4.4.6":
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-darwin-arm64-napi/-/couchbase-darwin-arm64-napi-4.4.6.tgz#b66071c9e98c50763a66bc2c12de6549ff82f4f7"
-  integrity sha512-U7Bw4LR6l/9IX5KRtXeY61fKkLqyZAeAvY7ms9dfA5jObhI4JG33238JJdgrBQgjoA4+1PjmhgRzkXviDqfClg==
+"@couchbase/couchbase-darwin-arm64-napi@4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-darwin-arm64-napi/-/couchbase-darwin-arm64-napi-4.6.0.tgz#af4e76a046437b6c205ee6825f2047b0ed551d04"
+  integrity sha512-zSL/I4tipdgszW8Yz3P5KxVKoZruHsUdeE01CrkEPOZh23xpbFRj0RQSM3eIuxy5AsBkg1aFq5icY0Yqmt1g9g==
 
-"@couchbase/couchbase-darwin-x64-napi@4.4.6":
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-darwin-x64-napi/-/couchbase-darwin-x64-napi-4.4.6.tgz#60d8774abccbbcb641a83f17d2f23234e148ad11"
-  integrity sha512-knZ8zSL1+bFviiMpTIZbXvpQy4yy8VJrKpZBOgcwlmCcKdikI3a0gankHN9Z5CKcG776uCt3cpLBAPkW7u59tQ==
+"@couchbase/couchbase-darwin-x64-napi@4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-darwin-x64-napi/-/couchbase-darwin-x64-napi-4.6.0.tgz#e2db4c84a7eae965dd84d3bf217564f65b399626"
+  integrity sha512-rn5NaWee//FFWtslivULMHVr1yzoAxkvxmvaAhf8VTHLRQuCxzgF2c6vzHisq9ztIdNfVwCHUrr7+A5ocfKpSg==
 
-"@couchbase/couchbase-linux-arm64-napi@4.4.6":
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-linux-arm64-napi/-/couchbase-linux-arm64-napi-4.4.6.tgz#5fee2c6c827d56b6aef5c96f4b60789f52106171"
-  integrity sha512-XTuGtjAES0Khp2QK6Zm9G997nshpadJNW4faI0PpnGMsfis/YX9PDZ9EVmiCZRJHZIv3QHTStKv9FETQppNNmg==
+"@couchbase/couchbase-linux-arm64-napi@4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-linux-arm64-napi/-/couchbase-linux-arm64-napi-4.6.0.tgz#c80d208b7ef608868c118342e8fe55178fab8f4a"
+  integrity sha512-AcAxOzuMJ8cFEiCshY/GUWBiviAtx/YGzaHWGyMds0jKgfm8HD1UquLnyic1KnrjB6wXflIDDKSVQ12uBTb2eQ==
 
-"@couchbase/couchbase-linux-x64-napi@4.4.6":
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-linux-x64-napi/-/couchbase-linux-x64-napi-4.4.6.tgz#7d5602eff19c2035b2dcec97fd5b6216e34410ad"
-  integrity sha512-lL0koZuDL2lnP67Hs0IDswjfDglGItLxmdNWbh+NkQAAucsBP2lMT/hpvBC7gniWz6/GsoilSrgoQp3VFvE8aw==
+"@couchbase/couchbase-linux-x64-napi@4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-linux-x64-napi/-/couchbase-linux-x64-napi-4.6.0.tgz#95681450d7731a174784059086e482473663020b"
+  integrity sha512-Q9fXaD/McHUDKcINYyRrsbSk5lUrWL+XkLoV69aKo3DTqwRWAw7JuDjM87hOM1mIBbT9cPYtOaHzDiwkX3SJ5w==
 
-"@couchbase/couchbase-linuxmusl-arm64-napi@4.4.6":
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-linuxmusl-arm64-napi/-/couchbase-linuxmusl-arm64-napi-4.4.6.tgz#67046b1ac1e3e6541ed49f5abedf8d74b7b4eac7"
-  integrity sha512-4LuCGnMfDvlkUGebZIeCMWb6eM0O1b0pskx4lhpIWlF93xblxpVp6NnhtDDxXh7wtR381eoJiA7DtqxdR1cOWw==
+"@couchbase/couchbase-linuxmusl-arm64-napi@4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-linuxmusl-arm64-napi/-/couchbase-linuxmusl-arm64-napi-4.6.0.tgz#b5057236e734b54e81b9895d151c13e98f71cebc"
+  integrity sha512-GzrLNC34DP3Ac4hzd5R81Xz6VWVGJHmqzHcZGchaAJblUlG1l+ni2eGU4X2KG3t9pSAmBCfu7FsELZDaoYZibQ==
 
-"@couchbase/couchbase-linuxmusl-x64-napi@4.4.6":
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-linuxmusl-x64-napi/-/couchbase-linuxmusl-x64-napi-4.4.6.tgz#4f23a022a2dc0c344e254803b03b034e2c9342b2"
-  integrity sha512-ARBFWUCgs0O3fLyjKEkD6Yxmhcgeq+KuV15CMCcst+9ZLWqStwxvTsJp9UtPhi5rcJ+6pX5uMh7vqbxxURbcyA==
+"@couchbase/couchbase-linuxmusl-x64-napi@4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-linuxmusl-x64-napi/-/couchbase-linuxmusl-x64-napi-4.6.0.tgz#7e5a3b1be13d58c73c5163d960221a74766d62a4"
+  integrity sha512-v6t93c3LJg+ZgpLc+yG7bSKYNb7QPizh5CApU5GpeurPnyK2Osp9CV5JCY3OMSbZuK9zWkRgMIzQN/AJNKNbZQ==
 
-"@couchbase/couchbase-win32-x64-napi@4.4.6":
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-win32-x64-napi/-/couchbase-win32-x64-napi-4.4.6.tgz#167d7ade4d38f34956b99f01f830463aa412b420"
-  integrity sha512-oA6V2toH5MxHmekiW+9aa1yZrWKReI24XMcxccibgc5g4h0rQ5zHszmbYTj/t6ndk8UjXAJNhOx9uhX8JZqLFw==
+"@couchbase/couchbase-win32-x64-napi@4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@couchbase/couchbase-win32-x64-napi/-/couchbase-win32-x64-napi-4.6.0.tgz#d79acd47b6d8f49d53127dc7fd19bed35a4434e7"
+  integrity sha512-T1zLkY3EugmBhWOOhn22hfs0gD/yBpFza0ReePTwxYU93cxKofx3Sh5+QQWebsrOablYJy7lt4o3oLtGqYwu8g==
 
 "@eslint/eslintrc@^1.3.3":
   version "1.4.1"
@@ -1158,7 +1158,7 @@ cliui@^8.0.1:
     strip-ansi "^6.0.1"
     wrap-ansi "^7.0.0"
 
-cmake-js@^7.3.0:
+cmake-js@^7.3.1:
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/cmake-js/-/cmake-js-7.3.1.tgz#ed661eebd22a56d4743d7d2106a56fe50aa4355c"
   integrity sha512-aJtHDrTFl8qovjSSqXT9aC2jdGfmP8JQsPtjdLAXFfH1BF4/ImZ27Jx0R61TFg8Apc3pl6e2yBKMveAeRXx2Rw==
@@ -1235,21 +1235,21 @@ convert-source-map@^2.0.0:
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-2.0.0.tgz#4b560f649fc4e918dd0ab75cf4961e8bc882d82a"
   integrity sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==
 
-couchbase@4.4.6:
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/couchbase/-/couchbase-4.4.6.tgz#cfccce4eb11c8254f37d282d5db89ee6fd8062a0"
-  integrity sha512-sCHCDyrT8f0kiup7QzLnXDc+N/YWTLqqE4Oiu/0uf6PFhJnq7Qksp7K9SPsm4z5COWRiRfZdgOqXzBaHFO3lpA==
+couchbase@4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/couchbase/-/couchbase-4.6.0.tgz#0719ef5fcf9fcb9be5befcc952f241e3d124d4b6"
+  integrity sha512-2rW9a61ktoJTczjmb+TWXzqcTe0nGQWH6wjyzWrfZXZdvuNRDrnM/Sf+Ao3OAtol0jc7YJD7OPw5WoT3mv1G/Q==
   dependencies:
-    cmake-js "^7.3.0"
-    node-addon-api "^8.0.0"
+    cmake-js "^7.3.1"
+    node-addon-api "^8.3.1"
   optionalDependencies:
-    "@couchbase/couchbase-darwin-arm64-napi" "4.4.6"
-    "@couchbase/couchbase-darwin-x64-napi" "4.4.6"
-    "@couchbase/couchbase-linux-arm64-napi" "4.4.6"
-    "@couchbase/couchbase-linux-x64-napi" "4.4.6"
-    "@couchbase/couchbase-linuxmusl-arm64-napi" "4.4.6"
-    "@couchbase/couchbase-linuxmusl-x64-napi" "4.4.6"
-    "@couchbase/couchbase-win32-x64-napi" "4.4.6"
+    "@couchbase/couchbase-darwin-arm64-napi" "4.6.0"
+    "@couchbase/couchbase-darwin-x64-napi" "4.6.0"
+    "@couchbase/couchbase-linux-arm64-napi" "4.6.0"
+    "@couchbase/couchbase-linux-x64-napi" "4.6.0"
+    "@couchbase/couchbase-linuxmusl-arm64-napi" "4.6.0"
+    "@couchbase/couchbase-linuxmusl-x64-napi" "4.6.0"
+    "@couchbase/couchbase-win32-x64-napi" "4.6.0"
 
 create-jest@^29.7.0:
   version "29.7.0"
@@ -2812,10 +2812,10 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
-node-addon-api@^8.0.0:
-  version "8.3.1"
-  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-8.3.1.tgz#53bc8a4f8dbde3de787b9828059da94ba9fd4eed"
-  integrity sha512-lytcDEdxKjGJPTLEfW4mYMigRezMlyJY8W4wxJK8zE533Jlb8L8dRuObJFWg2P+AuOIxoCgKF+2Oq4d4Zd0OUA==
+node-addon-api@^8.3.1:
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-8.5.0.tgz#c91b2d7682fa457d2e1c388150f0dff9aafb8f3f"
+  integrity sha512-/bRZty2mXUIFY/xU5HLvveNHlswNJej+RnxBjOMkidWfwZzgTbPG1E3K5TOxRLOR+5hX7bSofy8yf1hZevMS8A==
 
 node-api-headers@^1.1.0:
   version "1.5.0"
