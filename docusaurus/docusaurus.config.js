@@ -111,6 +111,9 @@ const config = {
         searchPagePath: 'search',
       },
     }),
+  // Scarf pixel – fires on every page view (SPA-aware)
+  clientModules: [require.resolve('./src/scarf.js')],
+
   plugins: [
     [
       'docusaurus-plugin-typedoc',
