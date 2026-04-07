@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@scarf/scarf": "1.4.0",
-    "couchbase": "4.6.1",
+    "couchbase": "4.7.0",
     "jsonpath": "1.3.0",
     "lodash": "4.18.1",
     "uuid": "9.0.0"
