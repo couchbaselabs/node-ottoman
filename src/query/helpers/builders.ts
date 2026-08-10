@@ -1,4 +1,4 @@
-import { BuildQueryError } from '../../exceptions/ottoman-errors';
+import { BuildIndexQueryError, BuildQueryError } from '../../exceptions/ottoman-errors';
 import {
   CollectionInWithinExceptions,
   QueryGroupByParamsException,
@@ -24,7 +24,7 @@ import {
   LogicalWhereExpr,
   SortType,
 } from '../interface/query.types';
-import { escapeFromClause, escapeReservedWords } from '../utils';
+import { escapeFromClause, escapeIdentifier, escapeReservedWords } from '../utils';
 import {
   AggDict,
   CollectionDeepSearchOperatorDict,
@@ -575,13 +575,36 @@ export const buildIndexExpr = (
   usingGSI?: boolean,
   withExpr?: IIndexWithParams,
 ): string => {
-  if (['BUILD', 'CREATE', 'CREATE PRIMARY'].includes(type) && on) {
-    return `${type} INDEX \`${name}\` ON \`${collection}\`(${buildOnExpr(on)})${buildWhereExpr(where)} ${
+  const _type = _buildIndexType(type);
+  const _name = escapeIdentifier(name);
+  const _collection = escapeIdentifier(collection);
+  if (['BUILD', 'CREATE', 'CREATE PRIMARY'].includes(_type) && on) {
+    return `${_type} INDEX ${_name} ON ${_collection}(${buildOnExpr(on)})${buildWhereExpr(where)} ${
       usingGSI ? 'USING GSI' : ''
     } ${buildWithExpr(withExpr)}`;
   } else {
-    return `${type} INDEX \`${collection}\`.\`${name}\`${usingGSI ? ' USING GSI' : ''}`;
+    return `${_type} INDEX ${_collection}.${_name}${usingGSI ? ' USING GSI' : ''}`;
   }
+};
+
+/**
+ * Index statements supported by the builder.
+ * @ignore
+ * */
+const INDEX_TYPES: IndexType[] = ['CREATE', 'BUILD', 'DROP', 'CREATE PRIMARY'];
+
+/**
+ * The statement keyword is interpolated as bare N1QL, so it is checked against the
+ * supported statements rather than quoted.
+ * @ignore
+ * */
+const _buildIndexType = (type: IndexType): IndexType => {
+  if (!INDEX_TYPES.includes(type)) {
+    throw new BuildIndexQueryError(
+      `The index type '${type}' is not valid, use one of '${INDEX_TYPES.join(`' | '`)}'`,
+    );
+  }
+  return type;
 };
 
 /**

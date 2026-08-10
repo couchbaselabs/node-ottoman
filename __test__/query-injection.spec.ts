@@ -1,5 +1,5 @@
 import { buildIndexExpr, IIndexOnParams, Query } from '../src';
-import { BuildQueryError } from '../src/exceptions/ottoman-errors';
+import { BuildIndexQueryError, BuildQueryError } from '../src/exceptions/ottoman-errors';
 
 describe('Test N1QL injection hardening', () => {
   test('A string value containing a double quote cannot terminate the literal', async () => {
@@ -55,5 +55,34 @@ describe('Test N1QL injection hardening', () => {
     const query = new Query({}, 'travel-sample').select('*').orderBy({ name: 'DESC' }).build();
 
     expect(query).toStrictEqual('SELECT * FROM `travel-sample` ORDER BY name DESC');
+  });
+
+  test('A backtick in an index name cannot close the identifier quoting', async () => {
+    const index = buildIndexExpr('travel-sample', 'DROP', 'idx` ; DROP INDEX `other');
+
+    expect(index).toStrictEqual('DROP INDEX `travel-sample`.`idx`` ; DROP INDEX ``other`');
+  });
+
+  test('A backtick in the collection name cannot close the identifier quoting', async () => {
+    const index = buildIndexExpr('bucket` ; SELECT 1 FROM `x', 'DROP', 'idx_test');
+
+    expect(index).toStrictEqual('DROP INDEX `bucket`` ; SELECT 1 FROM ``x`.`idx_test`');
+  });
+
+  test('An unsupported index statement is rejected', async () => {
+    expect(() => buildIndexExpr('travel-sample', 'DROP INDEX x; CREATE' as any, 'idx_test')).toThrow(
+      BuildIndexQueryError,
+    );
+  });
+
+  test('Valid index expressions are unchanged', async () => {
+    const on: IIndexOnParams[] = [{ name: 'callsign', sort: 'ASC' }];
+
+    expect(buildIndexExpr('travel-sample', 'CREATE', 'idx_test', on)).toStrictEqual(
+      'CREATE INDEX `idx_test` ON `travel-sample`(callsign["ASC"])  ',
+    );
+    expect(buildIndexExpr('travel-sample', 'DROP', 'idx_test')).toStrictEqual(
+      'DROP INDEX `travel-sample`.`idx_test`',
+    );
   });
 });

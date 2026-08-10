@@ -15,6 +15,17 @@ export const escapeFromClause = (str: string) => {
 };
 
 /**
+ * Wrap a single identifier in backticks.
+ *
+ * N1QL escapes a backtick inside a quoted identifier by doubling it, so doubling
+ * here keeps the identifier intact while making it impossible for the value to
+ * close the quoting and continue the statement.
+ * */
+export const escapeIdentifier = (identifier: string) => {
+  return `\`${String(identifier).replace(/`/g, '``')}\``;
+};
+
+/**
  * Convert select expression into an Array of selection keys
  * */
 export const parseStringSelectExpr = (expr: string): string[] => {
