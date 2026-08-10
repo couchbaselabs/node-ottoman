@@ -129,10 +129,17 @@ export const escapeReservedWords = (field: string) => {
         return value;
       })
       .join('.');
-    // Quote names containing a dash. The leading run is required so that the dash of a
-    // negative array subscript — which has `[` in front of it, not a name — is not treated
-    // as a dashed identifier and quoted into `numbers[`-1`]`.
-    expr = expr.replace(/([a-zA-Z0-9]+-[a-zA-Z0-9]*)/g, '`$&`');
+    // Quote names containing a dash.
+    //
+    // The run is matched with a single character class so the match cannot backtrack.
+    // Requiring a dash *after* an alphanumeric run — `[a-zA-Z0-9]+-` — reads more directly
+    // but is quadratic: for every start position in a long dash-free name the engine
+    // matches to the end and then backtracks the whole way looking for the dash.
+    //
+    // Whether the run is a dashed name is then decided with plain string checks. A run
+    // starting with the dash is a negative array subscript, where the preceding character
+    // is `[` rather than part of a name, and must not be quoted into `numbers[`-1`]`.
+    expr = expr.replace(/[a-zA-Z0-9-]+/g, (run) => (run.includes('-') && !run.startsWith('-') ? `\`${run}\`` : run));
     return expr;
   }
   return field;

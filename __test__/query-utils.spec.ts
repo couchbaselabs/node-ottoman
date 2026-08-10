@@ -86,6 +86,18 @@ describe('Test Query Builder Utils', () => {
     expect(escapeReservedWords('Travel-Sample')).toStrictEqual('`Travel-Sample`');
   });
 
+  test('A dash-free name of any length is escaped in linear time', async () => {
+    // The dash-quoting pass used to be quadratic: a long name with no dash made the
+    // engine backtrack from every start position. At this size that took minutes.
+    const field = `${'0'.repeat(200000)}.x`;
+
+    expect(escapeReservedWords(field)).toStrictEqual(field);
+  });
+
+  test('A name with several dashes is quoted as one identifier', async () => {
+    expect(escapeReservedWords('a-b-c')).toStrictEqual('`a-b-c`');
+  });
+
   test('escape fromClause', () => {
     const escaped = escapeFromClause('travel-sample');
     expect(escaped).toBe('`travel-sample`');
