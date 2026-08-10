@@ -1,3 +1,4 @@
+import { WhereClauseException } from './exceptions';
 import { n1qlReservedWords } from './helpers';
 
 const replaceList = ['ALL', 'DISTINCT', 'RAW', 'ELEMENT', 'VALUE'];
@@ -64,6 +65,50 @@ const extractAsValue = (expr: string): string => {
     return result[1].trim();
   }
   return expr.trim();
+};
+
+/**
+ * A single path segment: an optionally backtick-quoted name, followed by any number of
+ * array subscripts (`[0]`, `[-1]`, `[*]`).
+ * @ignore
+ * */
+const FIELD_SEGMENT = '`?[A-Za-z_$][A-Za-z0-9_$-]*`?(?:\\[(?:\\*|-?\\d+)\\])*';
+
+/**
+ * A field path is one or more of those segments joined by dots.
+ * @ignore
+ * */
+const FIELD_PATH_EXPR = new RegExp(`^${FIELD_SEGMENT}(?:\\.${FIELD_SEGMENT})*$`);
+
+/**
+ * Escape a name used as a document field in a WHERE clause.
+ *
+ * `escapeReservedWords` only adds backticks for reserved words and for names holding a
+ * dash or subscript; every other name is emitted verbatim. That is fine for the clauses
+ * whose operands are deliberately N1QL expressions (GROUP BY, `$field`), but a WHERE key
+ * is a document field, and these keys routinely come from request data. A key such as
+ * `'a) OR 1=1 --'` would otherwise be interpolated as syntax, so a name that is not a
+ * field path is rejected instead of escaped.
+ * */
+export const escapeFieldName = (field: string) => {
+  if (!FIELD_PATH_EXPR.test(field)) {
+    throw new WhereClauseException(
+      `The field name '${field}' is not a valid field path. Expected a document field, optionally dotted and subscripted, e.g. 'address.city' or 'numbers[-1]'.`,
+    );
+  }
+  return escapeReservedWords(field);
+};
+
+/**
+ * Escape the left-hand side of a collection `IN`/`WITHIN` operator.
+ *
+ * Unlike an ordinary comparison, this side may be a literal being searched for rather
+ * than a field — `"CORSAIR" WITHIN t` is valid. A quoted literal is re-escaped so that a
+ * quote inside it cannot terminate it; anything else has to be a field path.
+ * */
+export const escapeSearchExpr = (expr: string) => {
+  const literal = /^"([\s\S]*)"$/.exec(expr);
+  return literal ? JSON.stringify(literal[1]) : escapeFieldName(expr);
 };
 
 /**

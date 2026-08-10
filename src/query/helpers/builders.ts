@@ -24,7 +24,7 @@ import {
   LogicalWhereExpr,
   SortType,
 } from '../interface/query.types';
-import { escapeFromClause, escapeIdentifier, escapeReservedWords } from '../utils';
+import { escapeFieldName, escapeFromClause, escapeIdentifier, escapeReservedWords, escapeSearchExpr } from '../utils';
 import {
   AggDict,
   CollectionDeepSearchOperatorDict,
@@ -369,19 +369,19 @@ const _buildFieldClauseExpr = (field: BuildFieldClauseExprType, ignoreCase = fal
 
       const fieldExpr = field[value]?.['$field'];
       if (fieldExpr && typeof fieldExpr === 'string') {
-        return `${escapeReservedWords(value)}=${fieldExpr}`;
+        return `${escapeFieldName(value)}=${fieldExpr}`;
       }
 
       if (!value.includes('$')) {
         if (typeof field[value] === 'string') {
-          const comparator = escapeReservedWords(value);
+          const comparator = escapeFieldName(value);
           const toCompare = stringifyValues(field[value]);
           return ignoreCase
             ? applyIgnoreCase(ignoreCase, comparator, '=', toCompare, true)
             : `${comparator}=${toCompare}`;
         }
         if (typeof field[value] === 'number' || typeof field[value] === 'boolean' || Array.isArray(field[value])) {
-          return `${escapeReservedWords(value)}=${stringifyValues(field[value])}`;
+          return `${escapeFieldName(value)}=${stringifyValues(field[value])}`;
         }
       }
       throw new QueryOperatorNotFoundException(value);
@@ -417,7 +417,11 @@ const _buildComparisonClauseExpr = (fieldName: string, comparison: ComparisonWhe
       .map((key: string) => {
         const value = comparison[key];
         if (value != null) {
-          const field = escapeReservedWords(fieldName);
+          // A collection operator can search for a literal, so its left-hand side is not
+          // necessarily a field name.
+          const field = CollectionDeepSearchOperatorDict.hasOwnProperty(key)
+            ? escapeSearchExpr(fieldName)
+            : escapeFieldName(fieldName);
           if (ComparisonEmptyOperatorDict.hasOwnProperty(key)) {
             return `${field} ${ComparisonEmptyOperatorDict[key]}`;
           }

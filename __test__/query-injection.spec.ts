@@ -1,5 +1,6 @@
 import { buildIndexExpr, IIndexOnParams, Query } from '../src';
 import { BuildIndexQueryError, BuildQueryError } from '../src/exceptions/ottoman-errors';
+import { WhereClauseException } from '../src/query/exceptions';
 
 describe('Test N1QL injection hardening', () => {
   test('A string value containing a double quote cannot terminate the literal', async () => {
@@ -55,6 +56,48 @@ describe('Test N1QL injection hardening', () => {
     const query = new Query({}, 'travel-sample').select('*').orderBy({ name: 'DESC' }).build();
 
     expect(query).toStrictEqual('SELECT * FROM `travel-sample` ORDER BY name DESC');
+  });
+
+  test('A WHERE key that is not a field path is rejected', async () => {
+    const build = () =>
+      new Query({}, 'travel-sample')
+        .select('*')
+        .where({ 'a) OR 1=1 --': 'v' })
+        .build();
+
+    expect(build).toThrow(WhereClauseException);
+  });
+
+  test('A WHERE key that is not a field path is rejected for comparison operators too', async () => {
+    const build = () =>
+      new Query({}, 'travel-sample')
+        .select('*')
+        .where({ 'a) OR 1=1 --': { $gt: 1 } })
+        .build();
+
+    expect(build).toThrow(WhereClauseException);
+  });
+
+  test('Legitimate field paths are still accepted', async () => {
+    const query = new Query({}, 'travel-sample')
+      .select('*')
+      .where({ 'address.city': 'Paris', 'numbers[0]': 3, 'travel-sample.callsign': { $like: '%AF%' } })
+      .build();
+
+    expect(query).toStrictEqual(
+      'SELECT * FROM `travel-sample` WHERE address.city="Paris" AND numbers[0]=3 AND `travel-sample`.callsign LIKE "%AF%"',
+    );
+  });
+
+  test('A quote in a collection-operator literal cannot terminate it', async () => {
+    const query = new Query({}, 'travel-sample t')
+      .select('*')
+      .where({ ['"a" OR 1=1 OR "b"']: { $within: { $field: 't' } } })
+      .build();
+
+    expect(query).toStrictEqual(
+      `SELECT * FROM \`travel-sample\` t WHERE ${JSON.stringify('a" OR 1=1 OR "b')} WITHIN t`,
+    );
   });
 
   test('A backtick in an index name cannot close the identifier quoting', async () => {
