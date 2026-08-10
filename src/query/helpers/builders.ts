@@ -91,7 +91,7 @@ export const selectBuilder = (
       havingExpr,
     )}${_buildOrderByExpr(orderBy)}${_buildLimitExpr(limit)}${_buildOffsetExpr(offset)}`;
   } catch (exception) {
-    if (exception instanceof WhereClauseException) {
+    if (exception instanceof WhereClauseException || exception instanceof BuildQueryError) {
       throw exception;
     }
     throw new SelectClauseException();
@@ -190,9 +190,33 @@ const _buildLetExpr = (letExpr?: LetExprType, clause = 'LET') => {
 const _buildOrderByExpr = (orderExpr: Record<string, SortType> | undefined) => {
   return !!orderExpr
     ? ` ORDER BY ${Object.keys(orderExpr)
-        .map((value: string) => `${value.includes('[') ? value : escapeReservedWords(value)} ${orderExpr[value]}`)
+        .map(
+          (value: string) =>
+            `${value.includes('[') ? value : escapeReservedWords(value)} ${_buildSortDirection(orderExpr[value])}`,
+        )
         .join(',')}`
     : '';
+};
+
+/**
+ * Sort directions accepted by the ORDER BY and index ON clauses.
+ * @ignore
+ * */
+const SORT_DIRECTIONS = ['ASC', 'DESC'];
+
+/**
+ * A sort direction is interpolated into the statement as bare N1QL, so it has to be
+ * checked against the allowed keywords rather than quoted.
+ * @ignore
+ * */
+const _buildSortDirection = (sort: SortType): string => {
+  const direction = String(sort).toUpperCase();
+  if (!SORT_DIRECTIONS.includes(direction)) {
+    throw new BuildQueryError(
+      `The sort direction '${sort}' is not valid, use one of '${SORT_DIRECTIONS.join(`' | '`)}'`,
+    );
+  }
+  return direction;
 };
 
 /**
@@ -576,7 +600,7 @@ const buildOnExpr = (on: IIndexOnParams[]) => {
  * */
 const buildOnSortExpr = (onExpr?: IIndexOnParams) => {
   if (onExpr && onExpr.hasOwnProperty('sort')) {
-    return `["${onExpr.sort}"]`;
+    return `["${_buildSortDirection(onExpr.sort as SortType)}"]`;
   }
   return '';
 };

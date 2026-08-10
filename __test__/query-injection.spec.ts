@@ -1,4 +1,5 @@
-import { Query } from '../src';
+import { buildIndexExpr, IIndexOnParams, Query } from '../src';
+import { BuildQueryError } from '../src/exceptions/ottoman-errors';
 
 describe('Test N1QL injection hardening', () => {
   test('A string value containing a double quote cannot terminate the literal', async () => {
@@ -31,8 +32,28 @@ describe('Test N1QL injection hardening', () => {
       .where({ address: { $like: injected } })
       .build();
 
-    expect(query).toStrictEqual(
-      `SELECT * FROM \`travel-sample\` WHERE address LIKE ${JSON.stringify(injected)}`,
-    );
+    expect(query).toStrictEqual(`SELECT * FROM \`travel-sample\` WHERE address LIKE ${JSON.stringify(injected)}`);
+  });
+
+  test('An ORDER BY direction that is not ASC or DESC is rejected', async () => {
+    const build = () =>
+      new Query({}, 'travel-sample')
+        .select('*')
+        .orderBy({ name: 'ASC, (SELECT 1)' as any })
+        .build();
+
+    expect(build).toThrow(BuildQueryError);
+  });
+
+  test('An index ON sort direction that is not ASC or DESC is rejected', async () => {
+    const on = [{ name: 'callsign', sort: 'ASC"] , ["injected' }] as unknown as IIndexOnParams[];
+
+    expect(() => buildIndexExpr('travel-sample', 'CREATE', 'idx_test', on)).toThrow(BuildQueryError);
+  });
+
+  test('Valid sort directions are still accepted and normalised', async () => {
+    const query = new Query({}, 'travel-sample').select('*').orderBy({ name: 'DESC' }).build();
+
+    expect(query).toStrictEqual('SELECT * FROM `travel-sample` ORDER BY name DESC');
   });
 });
