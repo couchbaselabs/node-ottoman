@@ -18,6 +18,15 @@ describe('Test Query Builder Utils', () => {
     expect(result).toStrictEqual(['address']);
   });
 
+  test('Result modifier keywords are stripped when there is no alias', async () => {
+    expect(parseStringSelectExpr('DISTINCT a, b as c')).toStrictEqual(['a', 'c']);
+    expect(parseStringSelectExpr('RAW type, address')).toStrictEqual(['type', 'address']);
+  });
+
+  test('A field whose name contains a keyword is not mangled', async () => {
+    expect(parseStringSelectExpr('allowed, values as v')).toStrictEqual(['allowed', 'v']);
+  });
+
   test('Test get Projections fields with an empty select', () => {
     const result = getProjectionFields('travel-sample', '');
     expect(result.fields).toStrictEqual([]);

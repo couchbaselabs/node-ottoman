@@ -81,8 +81,6 @@ describe('Test N1QL injection hardening', () => {
     expect(buildIndexExpr('travel-sample', 'CREATE', 'idx_test', on)).toStrictEqual(
       'CREATE INDEX `idx_test` ON `travel-sample`(callsign["ASC"])  ',
     );
-    expect(buildIndexExpr('travel-sample', 'DROP', 'idx_test')).toStrictEqual(
-      'DROP INDEX `travel-sample`.`idx_test`',
-    );
+    expect(buildIndexExpr('travel-sample', 'DROP', 'idx_test')).toStrictEqual('DROP INDEX `travel-sample`.`idx_test`');
   });
 });

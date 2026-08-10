@@ -2,6 +2,13 @@ import { n1qlReservedWords } from './helpers';
 
 const replaceList = ['ALL', 'DISTINCT', 'RAW', 'ELEMENT', 'VALUE'];
 
+/**
+ * Matches the result-modifier keywords as whole words, so a field whose name merely
+ * contains one of them (`allowed`, `values`) is left alone.
+ * @ignore
+ * */
+const replaceListExpr = new RegExp(`\\b(${replaceList.join('|')})\\b`, 'g');
+
 export const escapeFromClause = (str: string) => {
   const trimStr = str.trim();
   const [collection, ...rest] = trimStr.split(' ');
@@ -32,10 +39,7 @@ export const parseStringSelectExpr = (expr: string): string[] => {
   if (expr.indexOf(',') === -1 && expr.indexOf(' as ') === -1) {
     return [expr];
   }
-  let resultExpr = expr.replace(/[()]/g, '');
-  replaceList.forEach((value: string) => {
-    resultExpr = resultExpr.replace(new RegExp(`/[${value}]/`, 'g'), '');
-  });
+  const resultExpr = expr.replace(/[()]/g, '').replace(replaceListExpr, '');
   return resultExpr.split(',').map((v: string) => {
     return extractAsValue(v);
   });

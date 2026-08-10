@@ -600,9 +600,7 @@ const INDEX_TYPES: IndexType[] = ['CREATE', 'BUILD', 'DROP', 'CREATE PRIMARY'];
  * */
 const _buildIndexType = (type: IndexType): IndexType => {
   if (!INDEX_TYPES.includes(type)) {
-    throw new BuildIndexQueryError(
-      `The index type '${type}' is not valid, use one of '${INDEX_TYPES.join(`' | '`)}'`,
-    );
+    throw new BuildIndexQueryError(`The index type '${type}' is not valid, use one of '${INDEX_TYPES.join(`' | '`)}'`);
   }
   return type;
 };
