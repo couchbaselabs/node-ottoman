@@ -33,6 +33,16 @@ export const escapeIdentifier = (identifier: string) => {
 };
 
 /**
+ * Quote every segment of a dotted field path.
+ *
+ * Each segment is escaped on its own so that `metadata.doc_type` stays a path to a
+ * nested field rather than collapsing into a single identifier containing a dot.
+ * */
+export const escapeFieldPath = (path: string) => {
+  return String(path).split('.').map(escapeIdentifier).join('.');
+};
+
+/**
  * Convert select expression into an Array of selection keys
  * */
 export const parseStringSelectExpr = (expr: string): string[] => {

@@ -1,5 +1,5 @@
 import { parseStringSelectExpr, getProjectionFields, Query, escapeReservedWords } from '../src';
-import { escapeFromClause } from '../src/query/utils';
+import { escapeFieldPath, escapeFromClause, escapeIdentifier } from '../src/query/utils';
 
 describe('Test Query Builder Utils', () => {
   test('Test the conversion of select expression into an Array of selection keys', async () => {
@@ -25,6 +25,17 @@ describe('Test Query Builder Utils', () => {
 
   test('A field whose name contains a keyword is not mangled', async () => {
     expect(parseStringSelectExpr('allowed, values as v')).toStrictEqual(['allowed', 'v']);
+  });
+
+  test('escapeIdentifier quotes an identifier and doubles embedded backticks', async () => {
+    expect(escapeIdentifier('travel-sample')).toStrictEqual('`travel-sample`');
+    expect(escapeIdentifier('idx` ; DROP INDEX `other')).toStrictEqual('`idx`` ; DROP INDEX ``other`');
+  });
+
+  test('escapeFieldPath quotes each segment so a nested path stays a path', async () => {
+    expect(escapeFieldPath('_type')).toStrictEqual('`_type`');
+    expect(escapeFieldPath('metadata.doc_type')).toStrictEqual('`metadata`.`doc_type`');
+    expect(escapeFieldPath('a`.`b')).toStrictEqual('`a```.```b`');
   });
 
   test('Test get Projections fields with an empty select', () => {
