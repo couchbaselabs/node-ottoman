@@ -77,6 +77,15 @@ describe('Test Query Builder Utils', () => {
     expect(expr3).toStrictEqual('`travel-sample`');
   });
 
+  test('A negative array subscript is not quoted as a dashed identifier', async () => {
+    expect(escapeReservedWords('numbers[-1]')).toStrictEqual('numbers[-1]');
+    expect(escapeReservedWords('a.numbers[-2].b')).toStrictEqual('a.numbers[-2].b');
+  });
+
+  test('A dashed name is quoted regardless of case', async () => {
+    expect(escapeReservedWords('Travel-Sample')).toStrictEqual('`Travel-Sample`');
+  });
+
   test('escape fromClause', () => {
     const escaped = escapeFromClause('travel-sample');
     expect(escaped).toBe('`travel-sample`');

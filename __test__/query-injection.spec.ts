@@ -59,11 +59,7 @@ describe('Test N1QL injection hardening', () => {
   });
 
   test('A WHERE key that is not a field path is rejected', async () => {
-    const build = () =>
-      new Query({}, 'travel-sample')
-        .select('*')
-        .where({ 'a) OR 1=1 --': 'v' })
-        .build();
+    const build = () => new Query({}, 'travel-sample').select('*').where({ 'a) OR 1=1 --': 'v' }).build();
 
     expect(build).toThrow(WhereClauseException);
   });

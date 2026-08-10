@@ -129,7 +129,10 @@ export const escapeReservedWords = (field: string) => {
         return value;
       })
       .join('.');
-    expr = expr.replace(/([a-z0-9]*\-[a-z0-9]*)/g, '`$&`');
+    // Quote names containing a dash. The leading run is required so that the dash of a
+    // negative array subscript — which has `[` in front of it, not a name — is not treated
+    // as a dashed identifier and quoted into `numbers[`-1`]`.
+    expr = expr.replace(/([a-zA-Z0-9]+-[a-zA-Z0-9]*)/g, '`$&`');
     return expr;
   }
   return field;
