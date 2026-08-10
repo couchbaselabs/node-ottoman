@@ -467,8 +467,16 @@ const _buildCollectionInWithinOperator = (
   return `${searchExpr} ${CollectionDeepSearchOperatorDict[operator]} ${target}`;
 };
 
+/**
+ * Render a value as a N1QL literal.
+ *
+ * N1QL string literals accept the same escape sequences as JSON, so the output of
+ * `JSON.stringify` is already a valid literal. Stripping the backslashes it emits
+ * would let a value containing `"` terminate the literal and inject arbitrary N1QL.
+ * @ignore
+ * */
 const stringifyValues = (value: unknown) => {
-  return JSON.stringify(value).replace(/\\/gi, '');
+  return JSON.stringify(value);
 };
 
 /**
