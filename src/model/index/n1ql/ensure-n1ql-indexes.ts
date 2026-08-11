@@ -4,6 +4,7 @@ import { ModelMetadata } from '../../interfaces/model-metadata.interface';
 import { isDebugMode } from '../../../utils/is-debug-mode';
 import { Ottoman } from '../../../ottoman/ottoman';
 import { DEFAULT_COLLECTION } from '../../../utils/constants';
+import { escapeFieldPath, escapeIdentifier } from '../../../query/utils';
 import { IndexExistsError } from 'couchbase';
 
 /**
@@ -29,10 +30,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
         ? `Ottoman${scopeName}${modelName}`
         : `Ottoman${scopeName}${scapedModelKey}`;
     if (!existingIndexesNames.includes(name)) {
-      const on =
-        collectionName !== DEFAULT_COLLECTION
-          ? `\`${bucketName}\`.\`${scopeName}\`.\`${collectionName}\``
-          : `\`${bucketName}\``;
+      const on = buildKeyspace(bucketName, scopeName, collectionName);
       try {
         if (!indexesToBuild[on]) {
           indexesToBuild[on] = [];
@@ -61,10 +59,7 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
         const Model = ottoman.getModel(index.modelName);
         const metadata = getModelMetadata(Model);
         const { scopeName, collectionName } = metadata;
-        const on =
-          collectionName !== DEFAULT_COLLECTION
-            ? `\`${bucketName}\`.\`${scopeName}\`.\`${collectionName}\``
-            : `\`${bucketName}\``;
+        const on = buildKeyspace(bucketName, scopeName, collectionName);
         yield cluster
           .query(queryBuildIndexDefered(indexNameSanitized, fieldNames, metadata, on))
           .then(() => {
@@ -129,21 +124,30 @@ export const ensureN1qlIndexes = async (ottoman: Ottoman, n1qlIndexes) => {
   return Promise.resolve(true);
 };
 
+// Build the escaped keyspace an index is created on.
+const buildKeyspace = (bucketName: string, scopeName: string, collectionName: string): string => {
+  return collectionName !== DEFAULT_COLLECTION
+    ? [bucketName, scopeName, collectionName].map(escapeIdentifier).join('.')
+    : escapeIdentifier(bucketName);
+};
+
 // Create the ottoman type index, needed to make model lookups fast.
 const queryForIndexOttomanType = (ottomanType: string, on: string, collectionKey: string): string => {
-  return `CREATE INDEX \`${ottomanType}\` ON ${on}(\`${collectionKey}\`) USING GSI WITH {"defer_build": true}`;
+  return `CREATE INDEX ${escapeIdentifier(ottomanType)} ON ${on}(${escapeFieldPath(
+    collectionKey,
+  )}) USING GSI WITH {"defer_build": true}`;
 };
 
 // Map createIndex across all individual n1ql model indexes.
 // concurrency: 1 is important to avoid overwhelming the server.
 const queryBuildIndexDefered = (indexName, fields, metadata: ModelMetadata, on: string) => {
   const { modelKey, modelName } = metadata;
-  return `CREATE INDEX \`${indexName}\` ON ${on}(${fields.join(
-    ',',
-  )}) WHERE ${modelKey}="${modelName}"  USING GSI WITH {"defer_build": true}`;
+  return `CREATE INDEX ${escapeIdentifier(indexName)} ON ${on}(${fields.join(',')}) WHERE ${escapeFieldPath(
+    modelKey,
+  )}=${JSON.stringify(modelName)}  USING GSI WITH {"defer_build": true}`;
 };
 
 // All indexes were built deferred, so now kick off actual build.
 const queryBuildIndexes = (on, indexesName: string[]) => {
-  return `BUILD INDEX ON ${on}(${indexesName.map((idx) => `\`${idx}\``).join(',')}) USING GSI`;
+  return `BUILD INDEX ON ${on}(${indexesName.map((idx) => escapeIdentifier(idx)).join(',')}) USING GSI`;
 };

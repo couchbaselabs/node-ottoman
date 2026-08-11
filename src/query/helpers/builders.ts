@@ -1,4 +1,4 @@
-import { BuildQueryError } from '../../exceptions/ottoman-errors';
+import { BuildIndexQueryError, BuildQueryError } from '../../exceptions/ottoman-errors';
 import {
   CollectionInWithinExceptions,
   QueryGroupByParamsException,
@@ -24,7 +24,7 @@ import {
   LogicalWhereExpr,
   SortType,
 } from '../interface/query.types';
-import { escapeFromClause, escapeReservedWords } from '../utils';
+import { escapeFieldName, escapeFromClause, escapeIdentifier, escapeReservedWords, escapeSearchExpr } from '../utils';
 import {
   AggDict,
   CollectionDeepSearchOperatorDict,
@@ -91,7 +91,7 @@ export const selectBuilder = (
       havingExpr,
     )}${_buildOrderByExpr(orderBy)}${_buildLimitExpr(limit)}${_buildOffsetExpr(offset)}`;
   } catch (exception) {
-    if (exception instanceof WhereClauseException) {
+    if (exception instanceof WhereClauseException || exception instanceof BuildQueryError) {
       throw exception;
     }
     throw new SelectClauseException();
@@ -190,9 +190,33 @@ const _buildLetExpr = (letExpr?: LetExprType, clause = 'LET') => {
 const _buildOrderByExpr = (orderExpr: Record<string, SortType> | undefined) => {
   return !!orderExpr
     ? ` ORDER BY ${Object.keys(orderExpr)
-        .map((value: string) => `${value.includes('[') ? value : escapeReservedWords(value)} ${orderExpr[value]}`)
+        .map(
+          (value: string) =>
+            `${value.includes('[') ? value : escapeReservedWords(value)} ${_buildSortDirection(orderExpr[value])}`,
+        )
         .join(',')}`
     : '';
+};
+
+/**
+ * Sort directions accepted by the ORDER BY and index ON clauses.
+ * @ignore
+ * */
+const SORT_DIRECTIONS = ['ASC', 'DESC'];
+
+/**
+ * A sort direction is interpolated into the statement as bare N1QL, so it has to be
+ * checked against the allowed keywords rather than quoted.
+ * @ignore
+ * */
+const _buildSortDirection = (sort: SortType): string => {
+  const direction = String(sort).toUpperCase();
+  if (!SORT_DIRECTIONS.includes(direction)) {
+    throw new BuildQueryError(
+      `The sort direction '${sort}' is not valid, use one of '${SORT_DIRECTIONS.join(`' | '`)}'`,
+    );
+  }
+  return direction;
 };
 
 /**
@@ -345,19 +369,19 @@ const _buildFieldClauseExpr = (field: BuildFieldClauseExprType, ignoreCase = fal
 
       const fieldExpr = field[value]?.['$field'];
       if (fieldExpr && typeof fieldExpr === 'string') {
-        return `${escapeReservedWords(value)}=${fieldExpr}`;
+        return `${escapeFieldName(value)}=${fieldExpr}`;
       }
 
       if (!value.includes('$')) {
         if (typeof field[value] === 'string') {
-          const comparator = escapeReservedWords(value);
+          const comparator = escapeFieldName(value);
           const toCompare = stringifyValues(field[value]);
           return ignoreCase
             ? applyIgnoreCase(ignoreCase, comparator, '=', toCompare, true)
             : `${comparator}=${toCompare}`;
         }
         if (typeof field[value] === 'number' || typeof field[value] === 'boolean' || Array.isArray(field[value])) {
-          return `${escapeReservedWords(value)}=${stringifyValues(field[value])}`;
+          return `${escapeFieldName(value)}=${stringifyValues(field[value])}`;
         }
       }
       throw new QueryOperatorNotFoundException(value);
@@ -393,7 +417,11 @@ const _buildComparisonClauseExpr = (fieldName: string, comparison: ComparisonWhe
       .map((key: string) => {
         const value = comparison[key];
         if (value != null) {
-          const field = escapeReservedWords(fieldName);
+          // A collection operator can search for a literal, so its left-hand side is not
+          // necessarily a field name.
+          const field = CollectionDeepSearchOperatorDict.hasOwnProperty(key)
+            ? escapeSearchExpr(fieldName)
+            : escapeFieldName(fieldName);
           if (ComparisonEmptyOperatorDict.hasOwnProperty(key)) {
             return `${field} ${ComparisonEmptyOperatorDict[key]}`;
           }
@@ -467,8 +495,16 @@ const _buildCollectionInWithinOperator = (
   return `${searchExpr} ${CollectionDeepSearchOperatorDict[operator]} ${target}`;
 };
 
+/**
+ * Render a value as a N1QL literal.
+ *
+ * N1QL string literals accept the same escape sequences as JSON, so the output of
+ * `JSON.stringify` is already a valid literal. Stripping the backslashes it emits
+ * would let a value containing `"` terminate the literal and inject arbitrary N1QL.
+ * @ignore
+ * */
 const stringifyValues = (value: unknown) => {
-  return JSON.stringify(value).replace(/\\/gi, '');
+  return JSON.stringify(value);
 };
 
 /**
@@ -543,13 +579,34 @@ export const buildIndexExpr = (
   usingGSI?: boolean,
   withExpr?: IIndexWithParams,
 ): string => {
-  if (['BUILD', 'CREATE', 'CREATE PRIMARY'].includes(type) && on) {
-    return `${type} INDEX \`${name}\` ON \`${collection}\`(${buildOnExpr(on)})${buildWhereExpr(where)} ${
+  const _type = _buildIndexType(type);
+  const _name = escapeIdentifier(name);
+  const _collection = escapeIdentifier(collection);
+  if (['BUILD', 'CREATE', 'CREATE PRIMARY'].includes(_type) && on) {
+    return `${_type} INDEX ${_name} ON ${_collection}(${buildOnExpr(on)})${buildWhereExpr(where)} ${
       usingGSI ? 'USING GSI' : ''
     } ${buildWithExpr(withExpr)}`;
   } else {
-    return `${type} INDEX \`${collection}\`.\`${name}\`${usingGSI ? ' USING GSI' : ''}`;
+    return `${_type} INDEX ${_collection}.${_name}${usingGSI ? ' USING GSI' : ''}`;
   }
+};
+
+/**
+ * Index statements supported by the builder.
+ * @ignore
+ * */
+const INDEX_TYPES: IndexType[] = ['CREATE', 'BUILD', 'DROP', 'CREATE PRIMARY'];
+
+/**
+ * The statement keyword is interpolated as bare N1QL, so it is checked against the
+ * supported statements rather than quoted.
+ * @ignore
+ * */
+const _buildIndexType = (type: IndexType): IndexType => {
+  if (!INDEX_TYPES.includes(type)) {
+    throw new BuildIndexQueryError(`The index type '${type}' is not valid, use one of '${INDEX_TYPES.join(`' | '`)}'`);
+  }
+  return type;
 };
 
 /**
@@ -568,7 +625,7 @@ const buildOnExpr = (on: IIndexOnParams[]) => {
  * */
 const buildOnSortExpr = (onExpr?: IIndexOnParams) => {
   if (onExpr && onExpr.hasOwnProperty('sort')) {
-    return `["${onExpr.sort}"]`;
+    return `["${_buildSortDirection(onExpr.sort as SortType)}"]`;
   }
   return '';
 };
